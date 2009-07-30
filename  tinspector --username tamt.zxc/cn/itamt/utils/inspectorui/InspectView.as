@@ -172,7 +172,7 @@ package cn.itamt.utils.inspectorui {
 				_structView.x = (stage.stageWidth - _structView.width) / 2;
 				_structView.y = stage.stageHeight - _structView.height;
 			}else {
-				if(_structView.target == target){
+				if(_structView.target == target) {
 					stage.removeChild(_structView);
 					_structView.dispose();
 					_structView = null;
@@ -208,6 +208,11 @@ package cn.itamt.utils.inspectorui {
 				stage.removeChild(_layoutView);
 				_layoutView.dispose();
 				_layoutView = null;
+			}
+			if(_structView) {
+				stage.removeChild(_structView);
+				_structView.dispose();
+				_structView = null;	
 			}
 		}
 

@@ -250,25 +250,6 @@
 		private function onLiveInspect(evt : Event) : void {
 			inspect(inspectView.target);
 		}
-		
-		/*
-			 
-			关闭按钮
-			var close_sp:Shape = new Shape();
-			addChild(close_sp);
-			with(close_sp){
-				//背景
-				graphics.beginFill(0, 1);
-				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
-				graphics.endFill();
-				
-				graphics.lineStyle(3, 0xff0000);
-				graphics.moveTo(8.7, 8.7);
-				graphics.lineTo(14.2, 14.2);
-				graphics.moveTo(8.7, 14.2);
-				graphics.lineTo(14.2, 8.7);
-			} 
-		 */
 	}
 }
 
