@@ -1,5 +1,4 @@
 package cn.itamt.utils.inspectorui {
-	import flash.text.TextFormat;	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Sprite;
@@ -8,7 +7,10 @@ package cn.itamt.utils.inspectorui {
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
-	import flash.utils.getQualifiedClassName;	
+	import flash.text.TextFormat;
+	import flash.utils.getQualifiedClassName;
+	
+	import cn.itamt.utils.inspector.events.InspectEvent;		
 
 	/**
 	 * @author tamt
@@ -171,6 +173,7 @@ package cn.itamt.utils.inspectorui {
 				_structView.inspect(target);
 				_structView.x = (stage.stageWidth - _structView.width) / 2;
 				_structView.y = stage.stageHeight - _structView.height;
+				_structView.addEventListener(InspectEvent.LIVE_INSPECT, onStructViewLiveInspect);
 			}else {
 				if(_structView.target == target) {
 					stage.removeChild(_structView);
@@ -180,6 +183,12 @@ package cn.itamt.utils.inspectorui {
 					_structView.inspect(target);
 				}
 			}
+		}
+		
+		private function onStructViewLiveInspect(evt:InspectEvent):void{
+			trace("[InspectView][onStructViewLiveInspect]");
+			this.target = evt.inspectTarget;
+			dispatchEvent(new Event(InspectView.LIVE_INSPECT));
 		}
 
 		private function onInpectFromLayout(evt : Event) : void {
