@@ -1,7 +1,8 @@
 package cn.itamt.utils.inspectorui {
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
-	
+	import flash.events.Event;
+
 	import cn.itamt.utils.inspectorui.StructureElement;
 	import cn.itamt.utils.inspectorui.StructureElementView;	
 
@@ -11,6 +12,9 @@ package cn.itamt.utils.inspectorui {
 	public class InspectStructureView extends Sprite {
 		private var _margin : Number = 10;
 		private var _target : DisplayObject;
+		private var _elesContainer : Sprite;
+		private var _viewEles : Array = [];
+		private var _scroller : InspectScroller;
 
 		public function get target() : DisplayObject {
 			return _target;
@@ -28,6 +32,9 @@ package cn.itamt.utils.inspectorui {
 				}
 			}
 			
+			_elesContainer = new Sprite();
+			addChild(_elesContainer);
+				
 			_target = target;
 			
 			//索引出目标的所有"前辈对象".
@@ -65,23 +72,65 @@ package cn.itamt.utils.inspectorui {
 			}
 			
 			//绘制
-			var views : Array = [];
-			drawStructureEle(osel, views);
-			var sp : StructureElementView;
-			for(i = 0;i < views.length; i++) {
-				sp = views[i] as StructureElementView;
-				sp.y = (views.length - 1 - i) * sp.height + _margin;
-				sp.x = _margin;
-				addChild(sp);
-			}
+			_viewEles = [];
+			drawStructureEle(osel, _viewEles);
+			
+			//绘制列表
+			renderEles();
 			
 			//绘制背景
 			drawBG();
 		}
 
+		private function renderEles() : void {
+			var maxNum : uint = 10;
+			var start : uint = 0;
+			var end : uint = start + maxNum;
+			if(_viewEles.length > maxNum) {
+				//显示滚动条
+				if(_scroller) {
+				}else {
+					_scroller = new InspectScroller(15, 20 * maxNum, 0, _viewEles.length);
+					_scroller.x = this.width - _scroller.width - _margin;
+					_scroller.y = _margin;
+					addChild(_scroller);
+					
+					_scroller.addEventListener(Event.CHANGE, onScrollEles);
+				}
+				
+				start = ((_viewEles.length - _scroller.value) < _viewEles.length) ? (_viewEles.length - _scroller.value) : (_viewEles.length - 1);
+				end = (start + maxNum < _viewEles.length) ? (start + maxNum) : _viewEles.length;
+				trace("[InspectStructureView][renderEles]",'length: ', _viewEles.length ,'scroll: ', _scroller.value, 'start: ', start, 'end: ', end);
+				var sp : StructureElementView;
+				for(var i : int = 0;i < _viewEles.length; i++) {
+					sp = _viewEles[i] as StructureElementView;
+					sp.y = (_viewEles.length - 1 - i) * sp.height + _margin;
+					sp.x = _margin;
+					if(i < start || i > end) {
+						if(_elesContainer.contains(sp))_elesContainer.removeChild(sp);
+					}else {
+						_elesContainer.addChild(sp);
+					}
+				}
+				_elesContainer.y = -(_viewEles.length - end) * sp.height;
+			}else {
+				//去除滚动条
+				if(_scroller) {
+					_scroller.dispose();
+				}
+			}
+		}
+
+		private function onScrollEles(evt : Event) : void {
+			renderEles();
+		}
+
+		private function indexOfEles() : void {
+		}
+
 		private function drawStructureEle(ele : StructureElement, arr : Array) : void {
 			var sp : StructureElementView = new StructureElementView(ele);
-			if(ele.target == _target){
+			if(ele.target == _target) {
 				sp.highLight();
 			}
 			

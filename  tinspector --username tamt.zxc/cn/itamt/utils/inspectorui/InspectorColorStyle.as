@@ -21,6 +21,9 @@ package cn.itamt.utils.inspectorui {
 		
 		public static const DEFAULT_BG:uint = 0x393939;
 		
+		public static const SCROLLBAR:uint = 0x4d4d4d;
+		public static const SCROLLBAR_BG:uint = 0x333333;
+		
 		public static function getObjectColor(src:DisplayObject):uint{
 			var str : String = getQualifiedClassName(src);
 			var classNameStr:String = str.slice((str.lastIndexOf('::') >= 0) ? (str.lastIndexOf('::') + 2) : 0);
