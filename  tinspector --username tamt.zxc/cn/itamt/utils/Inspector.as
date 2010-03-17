@@ -76,7 +76,7 @@
 		/**
 		 * @param withMenu		是否在右键菜单中显示操作选项
 		 */
-		public function init(root : DisplayObjectContainer, withMenu : Boolean = true) : void {
+		public function init(root : DisplayObjectContainer, withMenu : Boolean = true, withKeys:Boolean = true, showPropPanelAtFirst:Boolean = false, showStructPanelAtFirst:Boolean = false) : void {
 			
 			this._root = root;
 			this._stage = root.stage;
@@ -101,11 +101,11 @@
 			
 			//显示对象结构树视图
 			structureView = new StructureView();
-			//			registerView(structureView, StructureView.ID);
+			if(showStructPanelAtFirst)registerView(structureView, StructureView.ID);
 			
 			//属性面板
 			propertiesView = new PropertiesView();
-			//			registerView(this.propertiesView, PropertiesView.ID);
+			if(showPropPanelAtFirst)registerView(this.propertiesView, PropertiesView.ID);
 			
 			//快捷鍵
 			keysManager = new InspectorKeyManager();
@@ -117,7 +117,7 @@
 			this.keysManager.bindKey2View([17, 84], LiveInspectView.ID);
 			this.keysManager.bindKey2View([17, 80], PropertiesView.ID);
 			this.keysManager.bindKey2Fun([17, 73], this.toggleTurn);
-			this.registerView(keysManager, keysManager.getInspectorViewClassID());
+			if(withKeys)this.registerView(keysManager, keysManager.getInspectorViewClassID());
 			
 			//查看過濾器管理
 			filterManager = new InspectorFilterManager();

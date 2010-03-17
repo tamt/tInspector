@@ -49,6 +49,7 @@
 			
 			this.treeView.filterFun = _inspector.isInspectView;
 			this.panel.setContent(treeView);
+			this.panel.x = this.panel.y = 10;
 			this._inspector.stage.addChild(this.panel);
 		}
 

@@ -40,6 +40,7 @@ package cn.itamt.utils.inspector.ui {
 			if(this.panels == null)this.panels = [];
 			
 			var panel : PropertiesViewPanel = new PropertiesViewPanel();
+			panel.x = panel.y = 10;
 			this.panels.push(panel);
 			
 			this._inspector.stage.addChild(panel);
