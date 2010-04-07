@@ -1,10 +1,10 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.data.InspectTarget;
-	import cn.itamt.utils.inspector.ui.BaseInspectorView;
+	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
 	import flash.display.DisplayObject;
-	import flash.events.Event;	
+	import flash.events.Event;
 
 	/**
 	 * tInspector的属性视图
@@ -15,16 +15,18 @@ package cn.itamt.utils.inspector.ui {
 
 		private var panels : Array;
 
-		//		private var panel : PropertiesViewPanel;
-
 		public function PropertiesView() {
 			super();
+		}
+
+		override public function set outputerManager(value : InspectorOutPuterManager) : void {
+			trace('[PropertiesView][outputerManager]PropertiesView没有设计信息输出的接口，忽略该属性设置。');
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
 			if(panels) {
 				var l : int = panels.length;
-				for(var i : int = 0;i < l; i++) {
+				for(var i : int = 0;i < l;i++) {
 					if(panels[i] == child || panels[i].contains(child)) {
 						return true;
 					}
@@ -85,8 +87,6 @@ package cn.itamt.utils.inspector.ui {
 		 * 实时查看对象时
 		 */		
 		override public function onLiveInspect(target : InspectTarget) : void {
-			//			this.panel.onInspect(target.displayObject);
-			
 			//实现置顶
 			//DisplayObjectTool.swapToTop(this.panel);
 		}

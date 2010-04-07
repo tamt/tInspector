@@ -4,22 +4,20 @@ package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
 	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
-	import cn.itamt.utils.inspector.output.StructureTreeItemInfoOutputer;
+	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
 	import flash.display.Bitmap;
-	import flash.display.DisplayObject;
 	import flash.display.SimpleButton;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.text.AntiAliasType;
-	import flash.text.TextField;		
+	import flash.text.TextField;
 
 	public class StructureElementView extends BaseDisplayItemView {		
 		private var _tf : TextField;
 		private var btn : SimpleButton;
 		private var symbol : Bitmap;
 
-		public static var outputer : DisplayObjectInfoOutPuter;
+		public static var outputerManager : InspectorOutPuterManager;
 
 		public function StructureElementView() : void {
 			super();
@@ -55,7 +53,7 @@ package cn.itamt.utils.inspector.ui {
 		override public function setData(value : DisplayItemData) : void {
 			this._data = value;
 			
-			if(outputer == null) outputer = new StructureTreeItemInfoOutputer();
+			var outputer : DisplayObjectInfoOutPuter = outputerManager.getOutputerByInstance(this._data.displayObject);
 			_tf.htmlText = outputer.output(this._data.displayObject);
 			
 			if(_data != value) {

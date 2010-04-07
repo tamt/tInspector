@@ -16,8 +16,6 @@ package cn.itamt.utils.inspector.output {
 
 		override public function output(source : DisplayObject) : String {
 			var c : uint = InspectorColorStyle.getObjectColor(source);
-			//			_tf.textColor = InspectorColorStyle.getObjectColor(this._data.displayObject);
-			//			
 			var className : String = ClassTool.getShortClassName(source);
 			return '<font color="#' + c.toString(16) + '">' + className + '</font>(' + source.name + ')';
 		}

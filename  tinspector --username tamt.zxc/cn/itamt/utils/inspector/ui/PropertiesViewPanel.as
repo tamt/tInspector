@@ -260,17 +260,17 @@ package cn.itamt.utils.inspector.ui {
 		private function drawList() : void {
 			switch(this.state) {
 				case PROP_STATE:
-					this.propDrawList();
+					this.drawPropList();
 					break;
 				case METHOD_STATE:
-					this.methodDrawList();
+					this.drawMethodList();
 					break;
 			}
 			this.relayout();
 		}
 
 		//对象的属性重绘
-		private function propDrawList() : void {
+		private function drawPropList() : void {
 			list.graphics.clear();
 			list.graphics.lineTo(0, 0);
 			while(list.numChildren) {
@@ -304,7 +304,7 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		//对象的方法重绘
-		private function methodDrawList() : void {
+		private function drawMethodList() : void {
 			this.listMethod.graphics.clear();
 			listMethod.graphics.lineTo(0, 0);
 			while(listMethod.numChildren) {

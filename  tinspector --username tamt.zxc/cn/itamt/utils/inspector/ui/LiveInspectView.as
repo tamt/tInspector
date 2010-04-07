@@ -2,6 +2,7 @@
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
 	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
+	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -9,7 +10,7 @@
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.text.TextField;		
+	import flash.text.TextField;
 
 	/**
 	 * @author tamt
@@ -22,11 +23,10 @@
 		private var _mBtn : Sprite;
 		private var _bar : OperationBar;
 
-		public var outputer : DisplayObjectInfoOutPuter;
-
 		public function LiveInspectView() : void {
 			super();
-			//			this.mouseChildren = this.mouseEnabled = false;
+			
+			outputerManager = new InspectorOutPuterManager();
 		}
 
 		private var inited : Boolean;
@@ -68,10 +68,6 @@
 			_bar.addEventListener(OperationBar.PRESS_BROTHER, onPressBrother);
 			_bar.addEventListener(OperationBar.PRESS_STRUCTURE, onPressStructure);
 			_bar.addEventListener(OperationBar.PRESS_INFO, onPressInfo);			_bar.addEventListener(OperationBar.PRESS_FILTER, onPressFilter);			_bar.addEventListener(OperationBar.DB_CLICK_MOVE, onClickReset);
-			
-			if(outputer == null) {
-				this.outputer = new DisplayObjectInfoOutPuter();
-			}
 		}
 
 		
@@ -132,7 +128,8 @@
 				upReg = null;
 			}
 			
-			_des.htmlText = outputer.output(target.displayObject);// '[' + ClassTool.getShortClassName(target.displayObject) + ']' + '[x: ' + target.displayObject.x + ', y: ' + target.displayObject.y + '][w: ' + int(target.displayObject.width) + ', h: ' + int(target.displayObject.height) + '][r: ' + int(target.displayObject.rotation) + ']';
+			var outputer : DisplayObjectInfoOutPuter = outputerManager.getOutputerByInstance(target.displayObject);
+			_des.htmlText = outputer.output(target.displayObject);
 			_des.x = rect.x - .5;
 			_des.y = rect.y - _des.height + .5;
 			
@@ -376,13 +373,6 @@
 			_inspector.stage.dispatchEvent(new InspectorFilterEvent(InspectorFilterEvent.CHANGE, this.target.displayObject['constructor'] as Class));
 		}
 
-		/**
-		 * 自定义信息的输出
-		 */
-		override public function setInfoOutputer(outputer : DisplayObjectInfoOutPuter) : void {
-			this.outputer = outputer;
-		}
-
 		public function dispose() : void {
 			if(this.viewContainer) {
 				this.viewContainer.graphics.clear();
@@ -396,8 +386,6 @@
 			if(_des)if(_des.parent)_des.parent.removeChild(_des);
 		
 			target = null;
-			
-			outputer.dispose();
 		
 			_mBtn.removeEventListener(MouseEvent.CLICK, onClickInspect);
 			

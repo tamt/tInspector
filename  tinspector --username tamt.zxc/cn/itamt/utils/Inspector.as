@@ -19,7 +19,7 @@
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
-	import flash.utils.Dictionary;	
+	import flash.utils.Dictionary;
 
 	/**
 	 * @author tamt
@@ -31,7 +31,7 @@
 	 * @version 1.0 beta
 	 */
 	public class Inspector {
-		public static const VERSION : String = '1.0.4';
+		public static const VERSION : String = '1.0.4.5';
 
 		private static var _instance : Inspector;
 		private var _root : DisplayObjectContainer;
@@ -46,23 +46,43 @@
 			return _stage;
 		}
 
-		private var filterManager : InspectorFilterManager;
-		private var keysManager : InspectorKeyManager;
-		private var inspectView : LiveInspectView;
-		private var structureView : StructureView;
-		private var propertiesView : PropertiesView;
-		private var ctmenu : InspectorRightMenu;
+		private var _filterManager : InspectorFilterManager;
+		private var _keysManager : InspectorKeyManager;
+		private var _inspectView : LiveInspectView;
 
-		private var curInspectEle : InspectTarget;
+		/**
+		 * “鼠标查看”视图
+		 */
+		public function get liveInspectView() : LiveInspectView {
+			return _inspectView;
+		}
+
+		private var _structureView : StructureView;
+
+		public function get structureView() : StructureView {
+			return _structureView;
+		}
+
+		private var _propertiesView : PropertiesView;
+		private var _ctmenu : InspectorRightMenu;
+
+		private var _curInspectEle : InspectTarget;
 
 		public function getCurInspectTarget() : InspectTarget {
-			return curInspectEle;
+			return _curInspectEle;
 		}
 
 		public function Inspector(sf : SingletonEnforcer) {
 			super();
 			
-			liveInspectFilter = DisplayObject;
+			_liveInspectFilter = DisplayObject;
+			
+			_ctmenu = new InspectorRightMenu();
+			_inspectView = new LiveInspectView();
+			_structureView = new StructureView();
+			_propertiesView = new PropertiesView();
+			_keysManager = new InspectorKeyManager();
+			_filterManager = new InspectorFilterManager();
 		}
 
 		public static function getInstance() : Inspector {
@@ -76,13 +96,13 @@
 		/**
 		 * @param withMenu		是否在右键菜单中显示操作选项
 		 */
-		public function init(root : DisplayObjectContainer, withMenu : Boolean = true, withKeys:Boolean = true, showPropPanelAtFirst:Boolean = false, showStructPanelAtFirst:Boolean = false) : void {
+		public function init(root : DisplayObjectContainer, withMenu : Boolean = true, withKeys : Boolean = true, showPropPanelAtFirst : Boolean = false, showStructPanelAtFirst : Boolean = false) : void {
 			
 			this._root = root;
 			this._stage = root.stage;
 			
 			this._stage.addEventListener(InspectorViewOperationButton.EVT_SHOW_TIP, onShowTip);
-			this._stage.addEventListener(InspectorViewOperationButton.EVT_REMOVE_TIP, onRemoveTip);			//			this._stage.addEventListener(Event.ADDED, onSthAdd);			//			this._stage.addEventListener(Event.REMOVED, onSthRemove);
+			this._stage.addEventListener(InspectorViewOperationButton.EVT_REMOVE_TIP, onRemoveTip);
 
 			if(stage == null) {
 				throw new Error("Set inspector's stage before you call inspector.init(); ");
@@ -91,37 +111,31 @@
 			
 			//右键菜单视图
 			if(withMenu) {
-				ctmenu = new InspectorRightMenu();
-				registerView(ctmenu, InspectorRightMenu.ID);
+				registerView(_ctmenu, InspectorRightMenu.ID);
 			}
 			
 			//实时查看的视图
-			inspectView = new LiveInspectView();
-			registerView(inspectView, LiveInspectView.ID);
+			registerView(_inspectView, LiveInspectView.ID);
 			
 			//显示对象结构树视图
-			structureView = new StructureView();
-			if(showStructPanelAtFirst)registerView(structureView, StructureView.ID);
+			if(showStructPanelAtFirst)registerView(_structureView, StructureView.ID);
 			
 			//属性面板
-			propertiesView = new PropertiesView();
-			if(showPropPanelAtFirst)registerView(this.propertiesView, PropertiesView.ID);
+			if(showPropPanelAtFirst)registerView(this._propertiesView, PropertiesView.ID);
 			
 			//快捷鍵
-			keysManager = new InspectorKeyManager();
 			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.S], StructureView.ID);
 			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.T], LiveInspectView.ID);
 			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.P], PropertiesView.ID);
 			//			this.keysManager.bindKey2Fun([KeyCode.CONTROL, KeyCode.I], this.toggleTurn);
-			this.keysManager.bindKey2View([17, 83], StructureView.ID);
-			this.keysManager.bindKey2View([17, 84], LiveInspectView.ID);
-			this.keysManager.bindKey2View([17, 80], PropertiesView.ID);
-			this.keysManager.bindKey2Fun([17, 73], this.toggleTurn);
-			if(withKeys)this.registerView(keysManager, keysManager.getInspectorViewClassID());
+			this._keysManager.bindKey2View([17, 83], StructureView.ID);
+			this._keysManager.bindKey2View([17, 84], LiveInspectView.ID);
+			this._keysManager.bindKey2View([17, 80], PropertiesView.ID);
+			this._keysManager.bindKey2Fun([17, 73], this.toggleTurn);
+			if(withKeys)this.registerView(_keysManager, _keysManager.getInspectorViewClassID());
 			
 			//查看過濾器管理
-			filterManager = new InspectorFilterManager();
-			this.registerView(filterManager, filterManager.getInspectorViewClassID());
+			this.registerView(_filterManager, _filterManager.getInspectorViewClassID());
 		}
 
 		private var _views : Dictionary;
@@ -151,16 +165,16 @@
 		public function registerViewById(id : String) : void {
 			switch(id) {
 				case InspectorRightMenu.ID:
-					this.registerView(this.ctmenu, id);
+					this.registerView(this._ctmenu, id);
 					break;
 				case LiveInspectView.ID:
-					this.registerView(this.inspectView, id);
+					this.registerView(this._inspectView, id);
 					break;
 				case StructureView.ID:
-					this.registerView(this.structureView, id);
+					this.registerView(this._structureView, id);
 					break;
 				case PropertiesView.ID:
-					this.registerView(this.propertiesView, id);
+					this.registerView(this._propertiesView, id);
 					break;
 			}
 		}
@@ -189,13 +203,13 @@
 		}
 
 		//过滤实时查看.
-		private var liveInspectFilter : Class;
+		private var _liveInspectFilter : Class;
 
 		/**
 		 * 設置過濾查看器
 		 */
 		public function set inspectFilter(value : Class) : void {
-			this.liveInspectFilter = value;
+			this._liveInspectFilter = value;
 		}
 
 		/**
@@ -204,7 +218,7 @@
 		public function turnOn() : void {
 			if(_isOn)return;
 			_isOn = true;
-			curInspectEle = null;
+			_curInspectEle = null;
 			
 			for each(var view:IInspectorView in _views) {
 				view.onTurnOn();
@@ -221,7 +235,7 @@
 			
 			if(!_isOn)return;
 			_isOn = false;
-			curInspectEle = null;
+			_curInspectEle = null;
 			
 			for each(var view:IInspectorView in _views) {
 				view.onTurnOff();
@@ -241,7 +255,7 @@
 		 * @param clazz		Inspector将只查看clazz类型的显示对象.
 		 */
 		public function setInspectFilter(clazz : Class) : void {
-			this.liveInspectFilter = clazz;
+			this._liveInspectFilter = clazz;
 			
 			for each(var view:IInspectorView in _views) {
 				view.onInspectMode(clazz);
@@ -267,7 +281,7 @@
 		
 		public function startLiveInspect() : void {
 			if(!_isLiveInspecting) {
-				curInspectEle = null;
+				_curInspectEle = null;
 			
 				_isLiveInspecting = true;
 				this.stage.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
@@ -299,7 +313,7 @@
 						continue;
 					} 
 					while(target) {
-						if(target is liveInspectFilter) {
+						if(target is _liveInspectFilter) {
 							liveInspect(target, false);
 							return;
 						} else {
@@ -332,13 +346,13 @@
 		 * @param checkIsInspectorView	把InspectorView的显示对象排除掉
 		 */
 		public function liveInspect(ele : DisplayObject, checkIsInspectorView : Boolean = true) : void {
-			if(curInspectEle && curInspectEle.displayObject == ele)return;
+			if(_curInspectEle && _curInspectEle.displayObject == ele)return;
 			if(checkIsInspectorView)if(isInspectView(ele))return;
 			
-			curInspectEle = getInspectTarget(ele);
+			_curInspectEle = getInspectTarget(ele);
 			
 			for each(var view:IInspectorView in _views) {
-				view.onLiveInspect(curInspectEle);
+				view.onLiveInspect(_curInspectEle);
 			}
 		}
 
@@ -350,10 +364,10 @@
 			
 			stopLiveInspect();
 			
-			curInspectEle = getInspectTarget(ele);
+			_curInspectEle = getInspectTarget(ele);
 			
 			for each(var view:IInspectorView in _views) {
-				view.onInspect(curInspectEle);
+				view.onInspect(_curInspectEle);
 			}
 		}
 
@@ -441,7 +455,7 @@
 			if(isInspectView(evt.target as DisplayObject))return;
 			if(this._isOn) {
 				for each(var view:IInspectorView in _views) {
-					view.onUpdate(curInspectEle);
+					view.onUpdate(_curInspectEle);
 				}
 			}
 		}
@@ -453,7 +467,7 @@
 			if(isInspectView(evt.target as DisplayObject))return;
 			if(this._isOn) {
 				for each(var view:IInspectorView in _views) {
-					view.onUpdate(curInspectEle);
+					view.onUpdate(_curInspectEle);
 				}
 			}
 		}
@@ -462,5 +476,3 @@
 
 class SingletonEnforcer {
 }
-
-

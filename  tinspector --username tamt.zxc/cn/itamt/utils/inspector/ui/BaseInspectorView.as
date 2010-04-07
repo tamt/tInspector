@@ -2,12 +2,13 @@ package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.interfaces.IInspectorView;
-	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
+	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
 	import flash.display.DisplayObject;
-	import flash.display.Sprite;	
+	import flash.display.Sprite;
 
 	/**
+	 * tInspector所有plugin的基类，该类不应该被直接实例化，请扩展后使用。
 	 * @author itamt@qq.com
 	 */
 	public class BaseInspectorView implements IInspectorView {
@@ -15,6 +16,16 @@ package cn.itamt.utils.inspector.ui {
 		protected var _inspector : Inspector;
 		//查看对对象
 		protected var target : InspectTarget;
+		//信息输出器管理
+		protected var _outputerManager : InspectorOutPuterManager;
+
+		public function set outputerManager(value : InspectorOutPuterManager) : void {
+			this._outputerManager = value;
+		}
+
+		public function get outputerManager() : InspectorOutPuterManager {
+			return _outputerManager;
+		}
 
 		public function BaseInspectorView() {
 		}
@@ -107,12 +118,6 @@ package cn.itamt.utils.inspector.ui {
 		 * 当开始实时查看
 		 */
 		public function onStartLiveInspect() : void {
-		}
-
-		/**
-		 * 自定义信息的输出
-		 */
-		public function setInfoOutputer(outputer : DisplayObjectInfoOutPuter) : void {
 		}
 
 		/**

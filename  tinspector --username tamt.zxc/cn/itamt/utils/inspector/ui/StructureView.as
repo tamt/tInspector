@@ -4,12 +4,13 @@
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
 	import cn.itamt.utils.inspector.events.InspectEvent;
-	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
+	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
+	import cn.itamt.utils.inspector.output.StructureTreeItemInfoOutputer;
 
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.events.TextEvent;	
+	import flash.events.TextEvent;
 
 	/**
 	 * 显示对象结构树显示
@@ -27,6 +28,13 @@
 
 		public function StructureView() : void {
 			super();
+			
+			outputerManager = new InspectorOutPuterManager(new StructureTreeItemInfoOutputer());
+		}
+
+		override public function set outputerManager(value : InspectorOutPuterManager) : void {
+			this._outputerManager = value;
+			StructureElementView.outputerManager = this._outputerManager;
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
@@ -222,13 +230,6 @@
 		 */
 		private function onRefresh(evt : Event) : void {
 			this.onInspect(this.target);
-		}
-
-		/**
-		 * 自定义信息的输出
-		 */
-		override public function setInfoOutputer(outputer : DisplayObjectInfoOutPuter) : void {
-			this.panel.statusOutputer = outputer;
 		}
 
 		/**

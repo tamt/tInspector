@@ -2,14 +2,13 @@ package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.consts.InspectMode;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	
+	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
+
 	import flash.display.DisplayObject;
 	import flash.display.InteractiveObject;
 	import flash.events.ContextMenuEvent;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.ui.ContextMenu;
-	import flash.ui.ContextMenuItem;	
+	import flash.ui.ContextMenuItem;
 
 	/**
 	 * tInspector的右键菜单。
@@ -26,6 +25,10 @@ package cn.itamt.utils.inspector.ui {
 		private var _pView : ContextMenuItem;
 		//显示列表树视图
 		private var _sView : ContextMenuItem;
+
+		override public function set outputerManager(value : InspectorOutPuterManager) : void {
+			trace('[InspectorRightMenu][outputerManager]PropertiesView没有设计信息输出的接口，忽略该属性设置。');
+		}
 
 		public function InspectorRightMenu(on : Boolean = true, mode : String = InspectMode.DISPLAY_OBJ) {
 			_on = new ContextMenuItem(ON);
