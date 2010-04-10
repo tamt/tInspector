@@ -94,7 +94,11 @@
 		}
 
 		/**
-		 * @param withMenu		是否在右键菜单中显示操作选项
+		 * @param root						所在根对象
+		 * @param withMenu					是否在右键菜单中显示操作选项
+		 * @param withKeys					使用键盘快捷键？
+		 * @param showPropPanelAtFirst		在开启时显示属性面板？
+		 * @param showStructPanelAtFirst	在开启时显示列表结构面板？
 		 */
 		public function init(root : DisplayObjectContainer, withMenu : Boolean = true, withKeys : Boolean = true, showPropPanelAtFirst : Boolean = false, showStructPanelAtFirst : Boolean = false) : void {
 			
