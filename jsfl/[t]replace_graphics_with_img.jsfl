@@ -1,6 +1,8 @@
 ﻿//export your selection as .png image, and replace your selection with the image.
 //remind that the Dynamic TextField will be "nothing", because Flash couldn't grab the graphics of Dynamic TextField when export.
 //
+//@author www.itamt.org
+//
 
 //把舞台上选中的元素导出图片.
 //tamt	2009.12.22	ver 0.1		注意动态文本无法导出图形.
