@@ -27,7 +27,6 @@ package cn.itamt.utils.inspector.ui {
 			
 			this.setTextFormat(tfm);
 			this.defaultTextFormat = tfm;
-			trace(this.defaultTfmHtmlStr);
 			
 			this.text = text;
 			
