@@ -93,10 +93,12 @@
 			graphics.endFill();
 			
 			//绘制拖动按钮
-			_block.upState = buildBlockShape(_w, _h * _ratio, 0x4D4D4D);
-			_block.downState = buildBlockShape(_w, _h * _ratio, 0xffffff);
-			_block.overState = buildBlockShape(_w, _h * _ratio, 0xffffff);
-			_block.hitTestState = buildBlockShape(_w, _h * _ratio, 0x4D4D4D);
+			var th:Number = _h * _ratio;
+			if(th<6)th = 10;
+			_block.upState = buildBlockShape(_w, th, 0x4D4D4D);
+			_block.downState = buildBlockShape(_w, th, 0xffffff);
+			_block.overState = buildBlockShape(_w, th, 0xffffff);
+			_block.hitTestState = buildBlockShape(_w, th, 0x4D4D4D);
 		}
 
 		private var _pMouseY : Number;

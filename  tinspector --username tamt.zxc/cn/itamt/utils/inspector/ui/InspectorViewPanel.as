@@ -1,13 +1,15 @@
 ﻿package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.DisplayObjectTool;
 
+	import flash.display.CapsStyle;
 	import flash.display.DisplayObject;
+	import flash.display.JointStyle;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.filters.GlowFilter;
 	import flash.geom.Rectangle;
-	import flash.text.TextField;	
+	import flash.text.TextField;
 
 	/**
 	 * Inspector的ui面板类
@@ -45,6 +47,17 @@
 			bg.filters = [new GlowFilter(0x0, 1, 8, 8, 1)];			//			bg.filters = [new GlowFilter(0x333333, 1, 16, 16, 1)];
 
 			_virtualResizer = new Sprite();
+			_virtualResizer.graphics.lineStyle(1, 0x666666, 1, false, 'normal', CapsStyle.NONE, JointStyle.MITER);
+			_virtualResizer.graphics.beginFill(0);
+			_virtualResizer.graphics.moveTo(0, 0);
+			_virtualResizer.graphics.lineTo(-w, 0);
+			_virtualResizer.graphics.lineTo(0, -h);
+			_virtualResizer.graphics.lineTo(0, 0);
+			_virtualResizer.graphics.moveTo(-w / 2, 0);
+			_virtualResizer.graphics.moveTo(0, -h / 2);
+			_virtualResizer.graphics.endFill();
+			
+			
 			_resizer = new ResizerButton(15, 15);
 			addChild(_resizer);
 			
@@ -106,10 +119,12 @@
 		}
 
 		private function onDownResizer(evt : MouseEvent) : void {
-			this._virtualResizer.x = mouseX;
-			this._virtualResizer.y = mouseY;
+			this._virtualResizer.x = this._resizer.x;//mouseX;
+			this._virtualResizer.y = this._resizer.y;//mouseY;
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMoveResizer);
-			this._virtualResizer.startDrag(false);
+			
+			var rect:Rectangle = this.getBounds(this.stage);
+			this._virtualResizer.startDrag(false, new Rectangle(_minW, _minH, this.stage.stageWidth - _minW - rect.x - 8, this.stage.stageHeight - _minH - rect.y - 8));
 		}
 
 		protected function onMoveResizer(evt : MouseEvent) : void {
