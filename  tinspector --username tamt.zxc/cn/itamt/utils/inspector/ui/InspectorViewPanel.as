@@ -42,7 +42,7 @@
 			bg = new Sprite();
 			addChild(bg);
 			
-			bg.filters = [new GlowFilter(0x0, 1, 16, 16, 1)];			//			bg.filters = [new GlowFilter(0x333333, 1, 16, 16, 1)];
+			bg.filters = [new GlowFilter(0x0, 1, 8, 8, 1)];			//			bg.filters = [new GlowFilter(0x333333, 1, 16, 16, 1)];
 
 			_virtualResizer = new Sprite();
 			_resizer = new ResizerButton(15, 15);
@@ -160,9 +160,6 @@
 		}
 
 		public function relayout() : void {
-			//			_width = _width > _minW ? _width : _minW;
-			//			_height = _height > _minH ? _height : _minH;
-
 			drawBG();
 			if(_content)drawContent();
 			
@@ -203,8 +200,9 @@
 				}
 				
 				_scroller.x = _width - _padding.right - _scroller.width;
+				_scroller.setContenRatio(calculateContenAreaHeight() / this._content.height);
 				
-				addChild(_scroller);
+				if(_scroller.stage == null)addChild(_scroller);
 				
 				_contentContainer.scrollRect = new Rectangle(rect.x, calculateScrollRectY(), calculateContenAreaWidth() - _scroller.width, this.calculateContenAreaHeight());
 			} else {
@@ -237,11 +235,8 @@
 		}
 
 		private function onScroll(evt : Event = null) : void {
-			//			trace(_scroller.value);
 			var rect : Rectangle = _contentContainer.scrollRect;
 			rect.y = calculateScrollRectY();
-			//			rect.y = _scroller.value; 
-			//			trace(_content.height);
 			_contentContainer.scrollRect = rect;
 		}
 

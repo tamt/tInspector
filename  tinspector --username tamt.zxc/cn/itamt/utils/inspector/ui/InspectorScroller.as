@@ -16,6 +16,8 @@
 		private var _block : SimpleButton;
 		//值
 		private var  _value : Number;
+		//
+		private var _ratio:Number = 1/3;
 
 		public function set value(val : Number) : void {
 			_value = val;
@@ -58,6 +60,15 @@
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onUpBlock);
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDrag);
 		}
+		
+		/**
+		 * 设置滚动内容的比例
+		 */
+		public function setContenRatio(ratio:Number):void {
+			_ratio = ratio;
+			if(_ratio > 1)_ratio = 1;
+			this.relayout();
+		}
 
 		/**
 		 * 改变大小
@@ -82,10 +93,10 @@
 			graphics.endFill();
 			
 			//绘制拖动按钮
-			_block.upState = buildBlockShape(_w, _h / 3, 0x4D4D4D);
-			_block.downState = buildBlockShape(_w, _h / 3, 0xffffff);
-			_block.overState = buildBlockShape(_w, _h / 3, 0xffffff);
-			_block.hitTestState = buildBlockShape(_w, _h / 3, 0x4D4D4D);
+			_block.upState = buildBlockShape(_w, _h * _ratio, 0x4D4D4D);
+			_block.downState = buildBlockShape(_w, _h * _ratio, 0xffffff);
+			_block.overState = buildBlockShape(_w, _h * _ratio, 0xffffff);
+			_block.hitTestState = buildBlockShape(_w, _h * _ratio, 0x4D4D4D);
 		}
 
 		private var _pMouseY : Number;
