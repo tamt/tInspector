@@ -13,6 +13,7 @@
 
 	/**
 	 * Inspector的ui面板类
+	 * TODO:增加水平方向的滚动条支持
 	 * @author itamt@qq.com
 	 */
 	public class InspectorViewPanel extends Sprite {
@@ -44,10 +45,10 @@
 			bg = new Sprite();
 			addChild(bg);
 			
-			bg.filters = [new GlowFilter(0x0, 1, 8, 8, 1)];			//			bg.filters = [new GlowFilter(0x333333, 1, 16, 16, 1)];
+			bg.filters = [new GlowFilter(0x0, 1, 8, 8, 1)];
 
 			_virtualResizer = new Sprite();
-			_virtualResizer.graphics.lineStyle(1, 0x666666, 1, false, 'normal', CapsStyle.NONE, JointStyle.MITER);
+			_virtualResizer.graphics.lineStyle(1, 0x888888, 1, false, 'normal', CapsStyle.NONE, JointStyle.MITER);
 			_virtualResizer.graphics.beginFill(0);
 			_virtualResizer.graphics.moveTo(0, 0);
 			_virtualResizer.graphics.lineTo(-w, 0);
@@ -62,8 +63,6 @@
 			addChild(_resizer);
 			
 			_title = InspectorTextField.create(title, 0x99cc00, 12);
-			//			_title.textColor = 0x999999;
-			//			_title.htmlText = '<font size="16">' + title + '</font>';
 			_title.selectable = false;
 			_title.height = 20;
 			addChild(_title);
@@ -123,7 +122,7 @@
 			this._virtualResizer.y = this._resizer.y;//mouseY;
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMoveResizer);
 			
-			var rect:Rectangle = this.getBounds(this.stage);
+			var rect : Rectangle = this.getBounds(this.stage);
 			this._virtualResizer.startDrag(false, new Rectangle(_minW, _minH, this.stage.stageWidth - _minW - rect.x - 8, this.stage.stageHeight - _minH - rect.y - 8));
 		}
 
@@ -133,7 +132,7 @@
 
 		protected function onMouseDown(evt : MouseEvent) : void {
 			this.cacheAsBitmap = true;
-			this.startDrag(false);
+			this.startDrag(false, new Rectangle(0,0,this.stage.stageWidth, this.stage.stageHeight));
 			
 			DisplayObjectTool.swapToTop(this);
 		}
@@ -236,7 +235,7 @@
 		 */
 		private function drawBG() : void {
 			this.bg.graphics.clear();
-			this.bg.graphics.lineStyle(2, 0x666666);
+			this.bg.graphics.lineStyle(2, 0x888888);
 			this.bg.graphics.beginFill(InspectorColorStyle.DEFAULT_BG/*, .95*/);
 			this.bg.graphics.drawRoundRect(0, 0, this._width, this._height, 15, 15);
 			this.bg.graphics.endFill();
@@ -257,9 +256,18 @@
 
 		/**
 		 * 显示内容的某个区域
+		 * @param rect		要滚动显示到的区域
+		 * @param ori		方向值:0-只考虑垂直方向, 1-只考虑水平方向, 2-整个区域必须显示
 		 */
-		public function showContentArea(rect : Rectangle) : void {
+		public function showContentArea(rect : Rectangle, ori : int = 2) : void {
+			if(ori == 0){
+				rect.width = 1;
+			}else if(ori == 1){
+				rect.height = 1;
+			}
+			
 			if(_contentContainer.scrollRect.containsRect(rect))return;
+			
 			var v : Number = 100 * (rect.bottom) / (_content.height);
 			if(v < 0)v = 0;
 			if(v > 100)v = 100;

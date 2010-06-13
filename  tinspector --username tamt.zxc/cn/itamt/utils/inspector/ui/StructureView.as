@@ -102,7 +102,7 @@
 			var view : StructureElementView;
 			view = this.treeView.getObjectRenderer(target.displayObject);
 			if(view) {
-				this.panel.showContentArea(view.getBounds(view.parent));
+				this.panel.showContentArea(view.getBounds(view.parent), 0);
 			}
 			
 			//实现置顶
@@ -132,7 +132,7 @@
 			var view : StructureElementView;
 			view = this.treeView.getObjectRenderer(liveTarget.displayObject);
 			if(view) {
-				this.panel.showContentArea(view.getBounds(view.parent));
+				this.panel.showContentArea(view.getBounds(view.parent), 0);
 			}
 			
 			//实现置顶
