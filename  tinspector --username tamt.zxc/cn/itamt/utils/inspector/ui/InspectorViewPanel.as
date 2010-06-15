@@ -123,7 +123,7 @@
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMoveResizer);
 			
 			var rect : Rectangle = this.getBounds(this.stage);
-			this._virtualResizer.startDrag(false, new Rectangle(_minW, _minH, this.stage.stageWidth - _minW - rect.x - 8, this.stage.stageHeight - _minH - rect.y - 8));
+			this._virtualResizer.startDrag(false, new Rectangle(_minW, _minH, this.stage.stageWidth - _minW - rect.x - 8 - InspectorStageReference.offsetStageWidth, this.stage.stageHeight - _minH - rect.y - 8 - InspectorStageReference.offsetStageHeight));
 		}
 
 		protected function onMoveResizer(evt : MouseEvent) : void {
@@ -132,7 +132,7 @@
 
 		protected function onMouseDown(evt : MouseEvent) : void {
 			this.cacheAsBitmap = true;
-			this.startDrag(false, new Rectangle(0,0,this.stage.stageWidth, this.stage.stageHeight));
+			this.startDrag(false, new Rectangle(-InspectorStageReference.offsetStageWidth - mouseX, -InspectorStageReference.offsetStageHeight - mouseY, this.stage.stageWidth, this.stage.stageHeight));
 			
 			DisplayObjectTool.swapToTop(this);
 		}
@@ -260,9 +260,9 @@
 		 * @param ori		方向值:0-只考虑垂直方向, 1-只考虑水平方向, 2-整个区域必须显示
 		 */
 		public function showContentArea(rect : Rectangle, ori : int = 2) : void {
-			if(ori == 0){
+			if(ori == 0) {
 				rect.width = 1;
-			}else if(ori == 1){
+			}else if(ori == 1) {
 				rect.height = 1;
 			}
 			

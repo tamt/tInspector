@@ -1,4 +1,5 @@
 ﻿package cn.itamt.utils {
+	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.filter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.interfaces.IInspectorView;
@@ -104,6 +105,8 @@
 			
 			this._root = root;
 			this._stage = root.stage;
+			
+			InspectorStageReference.referenceTo(this._stage);
 			
 			this._stage.addEventListener(InspectorViewOperationButton.EVT_SHOW_TIP, onShowTip);
 			this._stage.addEventListener(InspectorViewOperationButton.EVT_REMOVE_TIP, onRemoveTip);
