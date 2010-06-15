@@ -26,7 +26,7 @@ package cn.itamt.utils.inspector.ui {
 			tf.styleSheet = css;
 			tf.width = _width - _padding.left - _padding.right;
 			tf.wordWrap = tf.multiline = true;
-			tf.htmlText = /*'<br>作者: tamt, pethan<br>*/ '<br>authors: <font color="#99cc00">itamt@qq.com  pethan@qq.vip.com</font><br><br>project: <a href="http://code.google.com/p/tcodes/wiki/tInspector">tInspector on Google Code</a><br><br>more info: <a href="http://www.itamt.org/blog">www.itamt.org</a>';
+			tf.htmlText = /*'<br>作者: tamt, pethan<br>*/ '<br>authors: <font color="#99cc00">itamt@qq.com  pethan@qq.vip.com</font><br><br>project: <a href="http://code.google.com/p/tinspector/">tInspector on Google Code</a><br><br>more info: <a href="http://www.itamt.org/blog">www.itamt.org</a>';
 			tf.height = tf.textHeight + 6;
 			this.setContent(tf);
 			
