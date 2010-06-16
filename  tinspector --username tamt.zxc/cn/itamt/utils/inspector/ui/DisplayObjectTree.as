@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.ObjectPool;
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
-	
+
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -60,7 +60,7 @@ package cn.itamt.utils.inspector.ui {
 
 			if(_root is DisplayObjectContainer) {
 				var container : DisplayObjectContainer = _root as DisplayObjectContainer;
-				for(var i : int = 0;i < container.numChildren; i++) {
+				for(var i : int = 0;i < container.numChildren;i++) {
 					addDisplayItem(getDisplayItem(container.getChildAt(i)));
 				}
 			}
@@ -74,7 +74,7 @@ package cn.itamt.utils.inspector.ui {
 
 			if(object is DisplayObjectContainer) {
 				var container : DisplayObjectContainer = object as DisplayObjectContainer;
-				for(var i : int = 0;i < container.numChildren; i++) {
+				for(var i : int = 0;i < container.numChildren;i++) {
 					buildTree(container.getChildAt(i));
 				}
 			}
@@ -165,11 +165,11 @@ package cn.itamt.utils.inspector.ui {
 			}
 			
 			var item : DisplayItemData;
-			for(var i : int = 0;i < _data.length; i++) {
+			for(var i : int = 0;i < _data.length;i++) {
 				item = _data[i];
 				if(item.displayObject.stage == null)continue;
 				if(filterFun) {
-					if(filterFun.apply(null, [item.displayObject])){
+					if(filterFun.apply(null, [item.displayObject])) {
 						continue;
 					}
 				}
@@ -216,7 +216,7 @@ package cn.itamt.utils.inspector.ui {
 			if(item.hasChildren) {
 				if(item.displayObject is DisplayObjectContainer) {
 					var container : DisplayObjectContainer = item.displayObject as DisplayObjectContainer;
-					for(var i : int = 0;i < container.numChildren; i++) {
+					for(var i : int = 0;i < container.numChildren;i++) {
 						removeItemAndChilds(getDisplayItem(container.getChildAt(i)));
 					}
 				}
@@ -227,7 +227,7 @@ package cn.itamt.utils.inspector.ui {
 			this.removeDisplayItem(item);
 			if(item.hasChildren) {
 				var container : DisplayObjectContainer = item.displayObject as DisplayObjectContainer;
-				for(var i : int = 0;i < container.numChildren; i++) {
+				for(var i : int = 0;i < container.numChildren;i++) {
 					removeItemAndChilds(getDisplayItem(container.getChildAt(i)));
 				}
 			}
@@ -238,7 +238,7 @@ package cn.itamt.utils.inspector.ui {
 				if(item.displayObject is DisplayObjectContainer) {
 					var container : DisplayObjectContainer = item.displayObject as DisplayObjectContainer;
 					var childItem : DisplayItemData;
-					for(var i : int = container.numChildren - 1;i >= 0; i--) {
+					for(var i : int = container.numChildren - 1;i >= 0;i--) {
 						childItem = getDisplayItem(container.getChildAt(i));
 						addDisplayItemAfter(childItem, item);
 						if(childItem.hasChildren && childItem.isExpand) {

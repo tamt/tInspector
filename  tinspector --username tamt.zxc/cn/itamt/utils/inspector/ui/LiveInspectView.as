@@ -163,7 +163,7 @@
 			
 			drager.x = viewContainer.mouseX;
 			drager.y = viewContainer.mouseY;
-			drager.startDrag(true);
+			drager.startDrag(true/*, new Rectangle(-InspectorStageReference.offsetStageWidth, -InspectorStageReference.offsetStageHeight, InspectorStageReference.stageWidth, InspectorStageReference.stageHeight)*/);
 			
 			dist.x = drager.x - dist.x;
 			dist.y = drager.y - dist.y;

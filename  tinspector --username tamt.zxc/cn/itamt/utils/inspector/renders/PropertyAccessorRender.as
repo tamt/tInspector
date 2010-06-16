@@ -13,14 +13,14 @@ package cn.itamt.utils.inspector.renders {
 	 * @author itamt@qq.com
 	 */
 	public class PropertyAccessorRender extends Sprite {
-		private var name_tf : TextField;
-		private var valueEditor : BasePropertyEditor;
+		protected var name_tf : TextField;
+		protected var valueEditor : BasePropertyEditor;
 
-		private var _width : Number;
-		private var _height : Number;
+		protected var _width : Number;
+		protected var _height : Number;
 
-		private var _target : *;
-		private var _xml : XML;
+		protected var _target : *;
+		protected var _xml : XML;
 
 		public function get xml() : XML {
 			return _xml;
@@ -94,7 +94,7 @@ package cn.itamt.utils.inspector.renders {
 			drawBg();
 		}
 
-		private function drawBg() : void {			
+		protected function drawBg() : void {			
 			this.graphics.clear();
 			this.graphics.beginFill(_favIconBtn.normalMode ? 0x282828 : /*0x512000*/ 0x282828);
 			this.graphics.drawRoundRect(0, 0, name_tf.width + 16, _height, 5, 5);
@@ -131,7 +131,7 @@ package cn.itamt.utils.inspector.renders {
 		/**
 		 * 创建属性编辑器
 		 */
-		private function createPropertyEditor(type : String) : BasePropertyEditor {
+		protected function createPropertyEditor(type : String) : BasePropertyEditor {
 			switch(type) {
 				case 'String':
 					return new StringPropertyEditor();

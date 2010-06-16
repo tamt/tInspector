@@ -38,7 +38,7 @@ package cn.itamt.utils.inspector.ui {
 				sp.graphics.endFill();
 			} else {
 				sp.graphics.lineStyle(3, 0x282828);
-				sp.graphics.beginFill(0x666666);
+				sp.graphics.beginFill(0x222222);
 				//				sp.graphics.drawRoundRect(0, 0, 15, 15, 6, 6);
 				sp.graphics.drawCircle(7, 7, 7);
 				sp.graphics.endFill();

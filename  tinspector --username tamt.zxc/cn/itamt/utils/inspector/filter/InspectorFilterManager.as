@@ -18,6 +18,8 @@ package cn.itamt.utils.inspector.filter {
 		private var _defaultFilter : Class;
 		private var _curFilter : Class;
 		private var _inspector : Inspector;
+		
+		private var _view:InspectorFileterManagerPanel;
 
 		public function InspectorFilterManager() {
 		}
@@ -44,6 +46,7 @@ package cn.itamt.utils.inspector.filter {
 				if(_history == null)_history = [];
 				if(_history.indexOf(_curFilter) < 0) {
 					_history.push(_curFilter);
+					if(_view)_view.addFilterItem(_curFilter);
 				}
 			}
 		}
@@ -81,11 +84,19 @@ package cn.itamt.utils.inspector.filter {
 			_inspector = inspector;
 		}
 
-		public function onTurnOn() : void {	
+		public function onTurnOn() : void {
+			_view = new InspectorFileterManagerPanel();
+			_view.setFilterList(this._history);
+			
+			_inspector.stage.addChild(_view);
 			_inspector.stage.addEventListener(InspectorFilterEvent.CHANGE, toChangeFilter, false, 0, true);
 		}
 
 		public function onTurnOff() : void {
+			if(_view.stage)_view.parent.removeChild(_view);
+			_view.dispose();
+			_view = null;
+			
 			_inspector.stage.removeEventListener(InspectorFilterEvent.CHANGE, toChangeFilter);
 		}
 
