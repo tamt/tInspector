@@ -41,6 +41,10 @@ package cn.itamt.utils.inspector.filter {
 			this.drawList();
 		}
 		
+		public function activeFilterItem(filter:Class):void{
+			
+		}
+		
 		private function drawList():void{
 			_listContainer.graphics.clear();
 			_listContainer.graphics.lineTo(0, 0);

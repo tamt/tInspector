@@ -326,7 +326,7 @@
 						continue;
 					} 
 					while(target) {
-						if(target is _liveInspectFilter) {
+//						if(target is _liveInspectFilter) {						if(_filterManager.checkInFilter(target)) {
 							liveInspect(target, false);
 							return;
 						} else {

@@ -1,11 +1,12 @@
 package cn.itamt.utils.inspector.filter {
+	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
 	import cn.itamt.utils.inspector.interfaces.IInspectorView;
 
 	import flash.display.DisplayObject;
-	import flash.events.EventDispatcher;	
+	import flash.events.EventDispatcher;
 
 	/**
 	 * 管理tInspector的查看過濾器
@@ -15,11 +16,13 @@ package cn.itamt.utils.inspector.filter {
 		public static const ID : String = 'InspectorFilterManager';
 
 		private var _history : Array;
+		//处于启用状态的过滤器
+		private var _activeFilters : Array;
 		private var _defaultFilter : Class;
 		private var _curFilter : Class;
 		private var _inspector : Inspector;
-		
-		private var _view:InspectorFileterManagerPanel;
+
+		private var _view : InspectorFileterManagerPanel;
 
 		public function InspectorFilterManager() {
 		}
@@ -36,19 +39,68 @@ package cn.itamt.utils.inspector.filter {
 		 */
 		public function applyFilter(filter : Class) : void {
 			if(_curFilter != filter) {
-				if(_curFilter != null){
+				if(_curFilter != null) {
 					//TODO:清理工作
 				}
 				
 				_curFilter = filter;
-				this._inspector.setInspectFilter(_curFilter);
 
 				if(_history == null)_history = [];
 				if(_history.indexOf(_curFilter) < 0) {
 					_history.push(_curFilter);
 					if(_view)_view.addFilterItem(_curFilter);
 				}
+
+				if(_activeFilters == null)_activeFilters = [];
+				if(_activeFilters.indexOf(_curFilter) < 0) {
+					_activeFilters.push(_curFilter);
+					if(_view)_view.activeFilterItem(_curFilter);
+				}
+				
+				_activeFilters.sort(comapreClass);
 			}
+		}
+
+		private function comapreClass(a : Class, b : Class) : int {
+			if(a == b)return 0;
+			
+			//判断a是否是b的基类
+			var c : Class = b;
+			while(c = ClassTool.getParentClassOf(c)) {
+				if(c == Object) {
+					//判断b是否是a的基类
+					c = a;
+					while(c = ClassTool.getParentClassOf(c)) {
+						if(c == Object) {
+							return 0;
+						}else if(b == c) {
+							return -1;
+						}
+					}
+				}else if(a == c) {
+					return 1;
+				}
+			}
+			
+			return 0;
+		}
+
+		/**
+		 * 检查一个对象是不是可以过滤
+		 */
+		public function checkInFilter(target : DisplayObject) : Boolean {
+			if(_activeFilters == null){
+				if(target is _defaultFilter)return true;
+				return false;
+			}
+			var l : int = _activeFilters.length;
+			for(var i:int = 0; i<l; i++){
+				if(target is _activeFilters[i])return true;
+			}
+			
+//			if(target is _defaultFilter)return true;
+			
+			return false;
 		}
 
 		/**
@@ -58,7 +110,6 @@ package cn.itamt.utils.inspector.filter {
 			if(this._defaultFilter == null) {
 				this._defaultFilter = DisplayObject;
 			}
-			this.applyFilter(this._defaultFilter);
 		}
 
 		/**
@@ -85,6 +136,8 @@ package cn.itamt.utils.inspector.filter {
 		}
 
 		public function onTurnOn() : void {
+			_defaultFilter = DisplayObject;
+			
 			_view = new InspectorFileterManagerPanel();
 			_view.setFilterList(this._history);
 			

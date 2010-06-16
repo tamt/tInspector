@@ -1,4 +1,6 @@
 package cn.itamt.utils {
+	import flash.utils.getQualifiedSuperclassName;
+	import flash.utils.getDefinitionByName;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	import flash.utils.getQualifiedClassName;	
@@ -50,6 +52,11 @@ package cn.itamt.utils {
 
 		public static function getClassName(value : *) : String {
 			return getQualifiedClassName(value);
+		}
+
+		public static function getParentClassOf(clazz : Class) : Class {
+//			trace(getQualifiedSuperclassName(clazz));
+			return getDefinitionByName(getQualifiedSuperclassName(clazz)) as Class;
 		}
 	}
 }
