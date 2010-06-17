@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.ui {
+﻿package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
 
 	import flash.display.Graphics;
@@ -25,7 +25,8 @@ package cn.itamt.utils.inspector.ui {
 			upHandler = onMouseUp;
 			dragHandler = onDrag;
 			
-			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);			this.addEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
+			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
+			this.addEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
 		}
 
 		private var inited : Boolean;
@@ -34,7 +35,8 @@ package cn.itamt.utils.inspector.ui {
 			if(inited)return;
 			
 			inited = true;
-			this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);			this.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+			this.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 		}
 
 		private function onRemoved(evt : Event) : void {
@@ -47,17 +49,17 @@ package cn.itamt.utils.inspector.ui {
 			lastMousePt = new Point(evt.stageX, evt.stageY);
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			
-			if(this.downHandler)this.downHandler.call(null, this);
+			if(this.downHandler!=null)this.downHandler.call(null, this);
 		}
 
 		private function onMouseUp(evt : MouseEvent) : void {
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			
-			if(this.downHandler)this.upHandler.call(null, this);
+			if(this.downHandler!=null)this.upHandler.call(null, this);
 		}
 
 		private function onMouseMove(evt : MouseEvent) : void {
-			if(this.dragHandler)this.dragHandler.call(null, this);
+			if(this.dragHandler!=null)this.dragHandler.call(null, this);
 			
 			lastMousePt.x = evt.stageX;
 			lastMousePt.y = evt.stageY;

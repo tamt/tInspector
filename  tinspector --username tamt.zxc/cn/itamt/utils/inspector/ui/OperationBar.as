@@ -1,4 +1,6 @@
 package cn.itamt.utils.inspector.ui {
+	import cn.itamt.utils.Inspector;
+
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -52,7 +54,7 @@ package cn.itamt.utils.inspector.ui {
 									_struBtn = new InspectorViewStructureButton,
 									_filterBtn = new InspectorFilterClassButton];
 			var btn : InspectorViewOperationButton;
-			for(var i : int = 0;i < btns.length; i++) {
+			for(var i : int = 0;i < btns.length;i++) {
 				btn = btns[i] as InspectorViewOperationButton;
 				addChild(btn);
 				if(i == 0) {
@@ -160,10 +162,12 @@ package cn.itamt.utils.inspector.ui {
 				_broBtn.enabled = false;
 			}
 			
-			if(target is DisplayObjectContainer){
+			if(target is DisplayObjectContainer) {
 			} else {
 				_childBtn.enabled = false;
 			}
+			
+			_filterBtn.active = !Inspector.getInstance().filterManager.isFilterActiving(target['constructor'] as Class);
 		}
 	}
 }

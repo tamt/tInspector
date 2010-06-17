@@ -8,10 +8,35 @@ package cn.itamt.utils.inspector.ui {
 	 * @author itamt@qq.com
 	 */
 	public class InspectorFilterClassButton extends InspectorViewOperationButton {
+		private var _active : Boolean = true;
+
 		public function InspectorFilterClassButton() {
 			super();
 			
 			_tip = InspectorLanguageManager.getStr('SetFilterClass');
+		}
+
+		public function set active(value : Boolean) : void {
+			_active = value;
+			if(active) {
+				this.downState = buildDownState();
+				this.upState = buildUpState();
+				this.overState = buildOverState();
+				this.hitTestState = buildHitState();
+			
+				_tip = InspectorLanguageManager.getStr('SetFilterClass');
+			} else {
+				this.downState = buildUpState();
+				this.upState = buildDownState();
+				this.overState = buildOverState();
+				this.hitTestState = buildHitState();
+			
+				_tip = InspectorLanguageManager.getStr('unSetFilterClass');
+			}
+		}
+
+		public function get active() : Boolean {
+			return _active;
 		}
 
 		override protected function buildOverState() : Shape {

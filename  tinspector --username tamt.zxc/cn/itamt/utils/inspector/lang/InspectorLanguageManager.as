@@ -1,8 +1,4 @@
 package cn.itamt.utils.inspector.lang {
-	import cn.itamt.utils.inspector.lang.CN;
-	import cn.itamt.utils.inspector.lang.EN;
-	import cn.itamt.utils.inspector.lang.Lang;
-
 	import flash.system.Capabilities;
 
 	/**

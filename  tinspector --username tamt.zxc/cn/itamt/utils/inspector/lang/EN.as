@@ -17,6 +17,7 @@ InspectBrother	=	inspect next
 InspectInfo		=	show info
 ViewStructure	=	show structure
 SetFilterClass	=	set as filter
+unSetFilterClass	=	unset as filter
 Refresh			=	refresh
 Property		=	Property
 Method			=	Method
@@ -33,6 +34,8 @@ MarkProperty	=	mark property
 DelMark			=	delete mark
 StructurePanel	=	structure panel
 PropertyPanel	=	property panel
+InspectorFilterManager = inspect filter panel
+FilterAllDisplayObject	=	all DisplayObject
 ]]>
 					</lang>;
 		}

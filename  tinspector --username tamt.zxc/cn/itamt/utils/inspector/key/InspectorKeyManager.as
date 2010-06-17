@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.key {
+﻿package cn.itamt.utils.inspector.key {
 	import cn.itamt.keyboard.Shortcut;
 	import cn.itamt.keyboard.ShortcutEvent;
 	import cn.itamt.keyboard.ShortcutManager;
@@ -18,7 +18,8 @@ package cn.itamt.utils.inspector.key {
 		public static const ID : String = 'inspector_key_manager';
 
 		private var _inspector : Inspector;
-		private var _keyViewMap : Dictionary;		private var _keyFunMap : Dictionary;
+		private var _keyViewMap : Dictionary;
+		private var _keyFunMap : Dictionary;
 
 		public function InspectorKeyManager() : void {
 			super();
@@ -94,7 +95,7 @@ package cn.itamt.utils.inspector.key {
 					delete _keyFunMap[shortcut];
 				}
 			} else {
-				if(fun) {
+				if(fun!=null) {
 					for(var i:* in _keyFunMap) {
 						if(_keyFunMap[i] == fun) {
 							_keyFunMap[i] = null;
@@ -113,7 +114,7 @@ package cn.itamt.utils.inspector.key {
 			}
 			
 			var fun : Function = _keyFunMap[evt.shortcut];
-			if(fun) {
+			if(fun!=null) {
 				fun.call();
 			}
 		}

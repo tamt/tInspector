@@ -5,7 +5,7 @@ package cn.itamt.utils.inspector.events {
 	 * @author itamt@qq.com
 	 */
 	public class InspectorFilterEvent extends Event {
-		public static const CHANGE : String = "inspector_change_filter";
+		public static const CHANGE : String = "inspector_change_filter";		public static const APPLY : String = "inspector_apply_filter";		public static const KILL : String = "inspector_kill_filter";
 
 		public var filter : Class;
 

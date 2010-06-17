@@ -25,6 +25,8 @@ package cn.itamt.utils.inspector.ui {
 		private var _pView : ContextMenuItem;
 		//显示列表树视图
 		private var _sView : ContextMenuItem;
+		//查看類型的設置面板
+		private var _fView : ContextMenuItem;
 
 		override public function set outputerManager(value : InspectorOutPuterManager) : void {
 			trace('[InspectorRightMenu][outputerManager]PropertiesView没有设计信息输出的接口，忽略该属性设置。');
@@ -46,6 +48,8 @@ package cn.itamt.utils.inspector.ui {
 			_pView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
 			_sView = new ContextMenuItem(InspectorLanguageManager.getStr("StructurePanel"));
 			_sView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
+			_fView = new ContextMenuItem(InspectorLanguageManager.getStr("InspectorFilterManager"));
+			_fView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
 			
 			_on.enabled = on;
 			_off.enabled = !on;
@@ -64,6 +68,7 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		private var _pOn : Boolean;		private var _sOn : Boolean;
+		private var _fOn : Boolean;
 
 		override public function onRegisterView(viewClassId : String) : void {
 			switch(viewClassId) {
@@ -74,6 +79,10 @@ package cn.itamt.utils.inspector.ui {
 				case "StructurePanel":
 					_sOn = true;
 					_sView.caption = InspectorLanguageManager.getStr("StructurePanel") + '\t√';
+					break;
+				case "InspectorFilterManager":
+					_fOn = true;
+					_fView.caption = InspectorLanguageManager.getStr("InspectorFilterManager") + '\t√';
 					break;
 			}
 		}
@@ -91,6 +100,10 @@ package cn.itamt.utils.inspector.ui {
 					_sOn = false;
 					_sView.caption = InspectorLanguageManager.getStr("StructurePanel");
 					break;
+				case "InspectorFilterManager":
+					_fOn = false;
+					_fView.caption = InspectorLanguageManager.getStr("InspectorFilterManager");
+					break;
 			}
 		}
 
@@ -98,14 +111,14 @@ package cn.itamt.utils.inspector.ui {
 			_on.enabled = false;
 			_off.enabled = true;
 			
-			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = true;
+			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = _fView.enabled = true;
 		}
 
 		override public function onTurnOff() : void {
 			_on.enabled = true;
 			_off.enabled = false;
 			
-			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = false;
+			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = _fView.enabled = false;
 		}
 
 		/**
@@ -137,8 +150,8 @@ package cn.itamt.utils.inspector.ui {
 				}
 				menu.customItems.push(_on);
 				menu.customItems.push(_off);
-				menu.customItems.push(_dspMode);				menu.customItems.push(_intMode);
-				menu.customItems.push(_pView);				menu.customItems.push(_sView);
+				//				menu.customItems.push(_dspMode);				//				menu.customItems.push(_intMode);
+				menu.customItems.push(_pView);				menu.customItems.push(_sView);				menu.customItems.push(_fView);
 				obj.contextMenu = menu;
 			}
 		}
@@ -158,12 +171,6 @@ package cn.itamt.utils.inspector.ui {
 				case _off:
 					_inspector.turnOff();
 					break;
-				case _dspMode:
-					_inspector.setInspectFilter(DisplayObject);
-					break;
-				case _intMode:
-					_inspector.setInspectFilter(InteractiveObject);
-					break;
 				case _pView:
 					if(_pOn) {
 						_inspector.unregisterViewById("PropertyPanel");
@@ -176,6 +183,13 @@ package cn.itamt.utils.inspector.ui {
 						_inspector.unregisterViewById("StructurePanel");
 					} else {
 						_inspector.registerViewById("StructurePanel");
+					}
+					break;
+				case _fView:
+					if(_fOn) {
+						_inspector.unregisterViewById("InspectorFilterManager");
+					} else {
+						_inspector.registerViewById("InspectorFilterManager");
 					}
 					break;
 			}

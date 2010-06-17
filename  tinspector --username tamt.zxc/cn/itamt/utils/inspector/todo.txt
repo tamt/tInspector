@@ -103,7 +103,7 @@ TODO LIST:
 TODO LIST:
 	i.属性面板的"查看方法".
 	ii.StructureView的tip.
-	iii.	
+	iii.
 
 30.LiveInspectView添加一个按钮用于关闭"实时查看"的, 现有的"关闭"用于关闭整个LiveInspectView.
 (OK)31.StructureView对空对象(null)或者是不复在显示列表里的对象....
@@ -121,9 +121,15 @@ TODO LIST:
 	tInsepctor 1.0.4	实现快捷键控制(OK)
 	tInspector 1.0.4.5	实现可以根据不同的类设定不同的Outputer.(OK)
 	tInspector 1.0.4.6	Inspector直接提供静态方法,如turnOn, liveInsepct等.
-	tInspector 1.0.6	可自定义查看某个类型的InspectTarget.(即为Inspector中的liveInspectFilter提供交互界面和设置的API).
-	tInspector 1.0.6.5	InspectorFilterManager……提供介面支持.
+	tInspector 1.0.6	可自定义查看某个类型的InspectTarget.(即为Inspector中的liveInspectFilter提供交互界面和设置的API).(OK)
+	tInspector 1.0.6.5	InspectorFilterManager……提供介面支持.(OK)
 	tInspector 1.0.7	优化InspectorView中的列表的渲染方式.
 	tInspector 1.0.9	修复bug
+	tInspector 1.1		代码优化、整理
 	
-	tInspector 1.1*		实现属性面板中的方法可调用
+	tInspector 1.1.*	实现属性面板中的方法可调用
+	
+	tInspector 1.2		
+	
+	//////////////////////////////////////////
+	tInspector 2.0		

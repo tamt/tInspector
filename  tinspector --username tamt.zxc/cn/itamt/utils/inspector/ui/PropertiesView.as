@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.ui {
+﻿package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
@@ -75,7 +75,7 @@ package cn.itamt.utils.inspector.ui {
 				}
 			}
 			
-			var panel : PropertiesViewPanel = new PropertiesViewPanel();
+			panel = new PropertiesViewPanel();
 			this.panels.push(panel);
 			
 			this._inspector.stage.addChild(panel);

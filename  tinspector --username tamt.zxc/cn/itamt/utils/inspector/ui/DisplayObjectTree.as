@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.ui {
+﻿package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.ObjectPool;
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
@@ -168,12 +168,13 @@ package cn.itamt.utils.inspector.ui {
 			for(var i : int = 0;i < _data.length;i++) {
 				item = _data[i];
 				if(item.displayObject.stage == null)continue;
-				if(filterFun) {
+				if(filterFun!=null) {
 					if(filterFun.apply(null, [item.displayObject])) {
 						continue;
 					}
 				}
-				//				var render : BaseDisplayItemView = new _itemRenderer();				var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
+				//				var render : BaseDisplayItemView = new _itemRenderer();
+				var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
 				render.setData(item);
 				render.x = 0;
 				render.y = _list.height + 2;
@@ -189,7 +190,8 @@ package cn.itamt.utils.inspector.ui {
 		public function getDisplayItem(object : DisplayObject) : DisplayItemData {
 			if(_map[object] == null) {
 				_map[object] = new DisplayItemData(object);
-				(_map[object] as DisplayItemData).addEventListener(DisplayItemEvent.EXPAND, onExpandCollapseItem);				(_map[object] as DisplayItemData).addEventListener(DisplayItemEvent.COLLAPSE, onExpandCollapseItem);
+				(_map[object] as DisplayItemData).addEventListener(DisplayItemEvent.EXPAND, onExpandCollapseItem);
+				(_map[object] as DisplayItemData).addEventListener(DisplayItemEvent.COLLAPSE, onExpandCollapseItem);
 			}
 			
 			return _map[object];

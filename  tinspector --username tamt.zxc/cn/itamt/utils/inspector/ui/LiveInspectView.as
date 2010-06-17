@@ -396,5 +396,12 @@
 			_bar.removeEventListener(OperationBar.PRESS_CHILD, onPressChild);
 			_bar.removeEventListener(OperationBar.PRESS_BROTHER, onPressBrother);			_bar.removeEventListener(OperationBar.PRESS_STRUCTURE, onPressStructure);			_bar.removeEventListener(OperationBar.PRESS_INFO, onPressInfo);
 		}
+
+		/**
+		 * 需要更新某个显示对象时.
+		 */
+		override public function onUpdate(target : InspectTarget = null) : void {
+			_bar.validate(target.displayObject);
+		}
 	}
 }

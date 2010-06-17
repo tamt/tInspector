@@ -32,8 +32,8 @@ package cn.itamt.utils.inspector.filter {
 			addChild(name_tf);
 			
 			valueBtn = new ToggleBooleanButton();
-			addChild(valueBtn);
 			valueBtn.addEventListener(Event.CHANGE, onChange);
+			addChild(valueBtn);
 			
 			this.relayout();
 		}
@@ -41,7 +41,7 @@ package cn.itamt.utils.inspector.filter {
 		protected function drawBg() : void {			
 			this.graphics.clear();
 			this.graphics.beginFill(0x282828);
-			this.graphics.drawRoundRect(0, 0, Math.max(name_tf.x + name_tf.textWidth + 16, _width), _height, 5, 5);
+			//			this.graphics.drawRoundRect(0, 0, Math.max(name_tf.x + name_tf.textWidth + 16, _width), _height, 5, 5);			this.graphics.drawRoundRect(0, 0, name_tf.x + name_tf.textWidth + 16, _height, 5, 5);
 			this.graphics.endFill();
 		}
 
@@ -55,17 +55,33 @@ package cn.itamt.utils.inspector.filter {
 		public function set data(value : Object) : void {
 			_filter = value as Class;
 			
-			name_tf.text = ClassTool.getClassName(value);
+			this.label = ClassTool.getClassName(value).replace("::", ".");
+		}
+
+		public function set label(val : String) : void {
+			name_tf.text = (val == null ? '' : val);
 			
 			this.relayout();
+		}
+
+		public function get label() : String {
+			return name_tf.text;
 		}
 
 		public function get data() : * {
 			return _filter;
 		}
 
+		public function set enable(value : Boolean) : void {
+			valueBtn.value = value;
+		}
+
+		public function get enable() : Boolean {
+			return valueBtn.value;
+		}
+
 		private function onChange(evt : Event) : void {
-			this.dispatchEvent(new InspectorFilterEvent(InspectorFilterEvent.CHANGE, this._filter));
+			this.dispatchEvent(new InspectorFilterEvent(valueBtn.value ? InspectorFilterEvent.APPLY : InspectorFilterEvent.KILL, this._filter, true, true));
 		}
 	}
 }

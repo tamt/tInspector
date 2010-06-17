@@ -17,6 +17,7 @@ InspectBrother	=	查看下一個顯示對象
 InspectInfo		=	查看詳細信息
 ViewStructure	=	查看顯示列表結構
 SetFilterClass	=	只查看該類型
+unSetFilterClass	=	不查看該類型
 Refresh			=	刷新
 Property		=	屬性
 Method			=	方法
@@ -33,6 +34,8 @@ MarkProperty	=	收藏
 DelMark			=	刪除
 StructurePanel	=	顯示結構面板
 PropertyPanel	=	屬性面板
+InspectorFilterManager = 設置查看類型
+FilterAllDisplayObject	=	所有顯示對象
 ]]>
 					</lang>;
 		}
