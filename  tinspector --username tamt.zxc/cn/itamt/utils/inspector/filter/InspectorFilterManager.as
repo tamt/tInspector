@@ -1,4 +1,6 @@
 package cn.itamt.utils.inspector.filter {
+	import flash.display.SimpleButton;
+
 	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
@@ -7,6 +9,8 @@ package cn.itamt.utils.inspector.filter {
 	import cn.itamt.utils.inspector.ui.BaseInspectorView;
 
 	import flash.display.DisplayObject;
+	import flash.display.Shape;
+	import flash.display.Sprite;
 	import flash.events.Event;
 
 	/**
@@ -16,27 +20,38 @@ package cn.itamt.utils.inspector.filter {
 	public class InspectorFilterManager extends BaseInspectorView implements IInspectorView {
 		public static const ID : String = 'InspectorFilterManager';
 
-		private var _history : Array;
+		private var _history : Array = [DisplayObject, Sprite, Shape, SimpleButton];
 		//处于启用状态的过滤器
 		private var _activeFilters : Array;
-		private var _defaultFilter : Class;
+		//清除設置前，進行保存設置的
+		private var _savedFilters : Array;
+		//默认的查看类型
+		private var _defaultFilter : Class = DisplayObject;
 
 		private var _view : InspectorFileterManagerPanel;
 
-		public function InspectorFilterManager() {
-		}
-
-		/**
-		 * 設置默認的查看過濾器
-		 */
-		public function setDefaultFilter(clazz : Class) : void {
-			_defaultFilter = clazz;
+		public function InspectorFilterManager() {			
+			this.applyFilter(_defaultFilter);
 		}
 
 		/**
 		 * 應用某個過濾器
 		 */
 		public function applyFilter(filter : Class) : void {
+			if(filter == _defaultFilter) {
+				if(_activeFilters != null)_savedFilters = _activeFilters.slice();
+				_activeFilters = null;
+				if(_view)_view.setActivedList(_activeFilters);
+			} else {
+				if(_activeFilters != null) {
+					var t : int = _activeFilters.indexOf(_defaultFilter);
+					if(t >= 0) {
+						_activeFilters.splice(t, 1);
+						if(_view != null)_view.inactiveFilterItem(_defaultFilter);
+					}
+				}
+			}
+			
 			if(_history == null)_history = [];
 			if(_history.indexOf(filter) < 0) {
 				_history.push(filter);
@@ -49,7 +64,7 @@ package cn.itamt.utils.inspector.filter {
 				if(_view != null)_view.activeFilterItem(filter);
 				if(_inspector != null)_inspector.updateInsectorView();
 			}
-				
+			
 			_activeFilters.sort(comapreClass);
 		}
 
@@ -57,6 +72,11 @@ package cn.itamt.utils.inspector.filter {
 		 * 删除一个过滤器
 		 */
 		public function killFilter(filter : Class) : void {
+			if(filter == _defaultFilter) {
+				if(_savedFilters != null)_activeFilters = _savedFilters.slice();
+				if(_view)_view.setActivedList(_activeFilters);
+			}
+			
 			if(_activeFilters == null)return;
 			var t : int = _activeFilters.indexOf(filter);
 			if(t >= 0) {
@@ -101,7 +121,7 @@ package cn.itamt.utils.inspector.filter {
 		 */
 		public function checkInFilter(target : DisplayObject) : Boolean {
 			if(_activeFilters == null || _activeFilters.length == 0) {
-				if(target is _defaultFilter)return true;
+				//				if(target is _defaultFilter)return true;
 				return false;
 			}
 			
@@ -119,11 +139,9 @@ package cn.itamt.utils.inspector.filter {
 		public function isFilterActiving(filter : Class) : Boolean {
 			if(_activeFilters == null)return false;
 			return _activeFilters.indexOf(filter) >= 0;
-			return false;
 		}
 
 		private function toChangeFilter(evt : InspectorFilterEvent) : void {
-			trace('[InspectorFilterManager][toChangeFilter]' + evt.type);
 			if(evt.type == InspectorFilterEvent.APPLY) {
 				this.applyFilter(evt.filter);
 			}else if(evt.type == InspectorFilterEvent.KILL) {
@@ -156,16 +174,14 @@ package cn.itamt.utils.inspector.filter {
 			}
 		}
 
-		override public function onTurnOn() : void {
-			_defaultFilter = DisplayObject;
-			
+		override public function onTurnOn() : void {			
 			_view = new InspectorFileterManagerPanel(InspectorLanguageManager.getStr('InspectorFilterManager'));
 			_view.setFilterList(this._history);
 			_view.setActivedList(this._activeFilters);
 			_view.addEventListener(Event.CLOSE, onClickClose);
 			
 			_inspector.stage.addChild(_view);
-			_inspector.stage.addEventListener(InspectorFilterEvent.APPLY, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.KILL, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.CHANGE, toChangeFilter, false, 0, true);
+			_inspector.stage.addEventListener(InspectorFilterEvent.APPLY, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.KILL, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.CHANGE, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.RESTORE, toChangeFilter, false, 0, true);
 		}
 
 		override public function onTurnOff() : void {
@@ -178,7 +194,7 @@ package cn.itamt.utils.inspector.filter {
 			
 			_inspector.stage.removeEventListener(InspectorFilterEvent.APPLY, toChangeFilter);
 			_inspector.stage.removeEventListener(InspectorFilterEvent.KILL, toChangeFilter);
-			_inspector.stage.removeEventListener(InspectorFilterEvent.CHANGE, toChangeFilter);
+			_inspector.stage.removeEventListener(InspectorFilterEvent.CHANGE, toChangeFilter);			_inspector.stage.removeEventListener(InspectorFilterEvent.RESTORE, toChangeFilter);
 		}
 
 		override public function onUnRegister(inspector : Inspector) : void {

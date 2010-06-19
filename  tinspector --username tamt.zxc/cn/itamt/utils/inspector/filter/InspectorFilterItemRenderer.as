@@ -1,4 +1,6 @@
 package cn.itamt.utils.inspector.filter {
+	import flash.display.DisplayObject;
+
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
 	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
@@ -40,7 +42,7 @@ package cn.itamt.utils.inspector.filter {
 
 		protected function drawBg() : void {			
 			this.graphics.clear();
-			this.graphics.beginFill(0x282828);
+			this.graphics.beginFill(_filter == DisplayObject ? 0x006666 : 0x282828);
 			//			this.graphics.drawRoundRect(0, 0, Math.max(name_tf.x + name_tf.textWidth + 16, _width), _height, 5, 5);			this.graphics.drawRoundRect(0, 0, name_tf.x + name_tf.textWidth + 16, _height, 5, 5);
 			this.graphics.endFill();
 		}

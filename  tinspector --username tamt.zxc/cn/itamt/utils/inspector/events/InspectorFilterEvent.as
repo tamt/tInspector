@@ -6,6 +6,7 @@ package cn.itamt.utils.inspector.events {
 	 */
 	public class InspectorFilterEvent extends Event {
 		public static const CHANGE : String = "inspector_change_filter";		public static const APPLY : String = "inspector_apply_filter";		public static const KILL : String = "inspector_kill_filter";
+		public static const RESTORE:String = "inspector_restore_filter";
 
 		public var filter : Class;
 
