@@ -1,4 +1,4 @@
-package cn.itamt.utils {
+﻿package cn.itamt.utils {
 	import flash.utils.getQualifiedSuperclassName;
 	import flash.utils.getDefinitionByName;
 	import flash.utils.Dictionary;
@@ -18,14 +18,16 @@ package cn.itamt.utils {
 		 */
 		public static function getClassConstantsName(clazz : Class, cache : Boolean = true) : Array {
 			var arr : Array;
+			var xml:XML;
+			var list:XMLList;
+			var constant:XML;
 			if(cache) {
 				if(class_constant_cache == null)class_constant_cache = new Dictionary();
 				arr = class_constant_cache[clazz];
 				if(arr == null) {
 					arr = [];
-					var xml : XML = describeType(clazz);
-					var list : XMLList = xml.constant;
-					var constant : XML;
+					xml = describeType(clazz);
+					list = xml.constant;
 					for each(constant in list) {
 						arr.push(constant.@name);
 					}
@@ -34,9 +36,8 @@ package cn.itamt.utils {
 				}
 			} else {
 				arr = [];
-				var xml : XML = describeType(clazz);
-				var list : XMLList = xml.constant;
-				var constant : XML;
+				xml = describeType(clazz);
+				list = xml.constant;
 				for each(constant in list) {
 					arr.push(constant.@name);
 				}

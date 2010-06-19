@@ -122,15 +122,6 @@ package cn.itamt.utils.inspector.filter {
 			return false;
 		}
 
-		/**
-		 * 重設回默認的過濾器
-		 */
-		public function resotreFilter() : void {
-			if(this._defaultFilter == null) {
-				this._defaultFilter = DisplayObject;
-			}
-		}
-
 		private function toChangeFilter(evt : InspectorFilterEvent) : void {
 			trace('[InspectorFilterManager][toChangeFilter]' + evt.type);
 			if(evt.type == InspectorFilterEvent.APPLY) {

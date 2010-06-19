@@ -1,10 +1,10 @@
 ﻿package cn.itamt.utils {
-	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.filter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.interfaces.IInspectorView;
 	import cn.itamt.utils.inspector.key.InspectorKeyManager;
 	import cn.itamt.utils.inspector.ui.InspectorRightMenu;
+	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
 	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
 	import cn.itamt.utils.inspector.ui.LiveInspectView;
@@ -32,7 +32,7 @@
 	 * @version 1.0 beta
 	 */
 	public class Inspector {
-		public static const VERSION : String = '1.0.4.5';
+		public static const VERSION : String = '1.0.6.5';
 
 		private static var _instance : Inspector;
 		private var _root : DisplayObjectContainer;
@@ -48,6 +48,11 @@
 		}
 
 		private var _filterManager : InspectorFilterManager;
+
+		public function get filterManager() : InspectorFilterManager {
+			return _filterManager;
+		}
+
 		private var _keysManager : InspectorKeyManager;
 		private var _inspectView : LiveInspectView;
 
@@ -76,8 +81,6 @@
 		public function Inspector(sf : SingletonEnforcer) {
 			super();
 			
-			_liveInspectFilter = DisplayObject;
-			
 			_ctmenu = new InspectorRightMenu();
 			_inspectView = new LiveInspectView();
 			_structureView = new StructureView();
@@ -93,7 +96,7 @@
 
 			return _instance;
 		}
-		
+
 		////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////
 		/////////////////////public functions///////////////////
@@ -140,10 +143,11 @@
 			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.S], StructureView.ID);
 			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.T], LiveInspectView.ID);
 			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.P], PropertiesView.ID);
-			//			this.keysManager.bindKey2Fun([KeyCode.CONTROL, KeyCode.I], this.toggleTurn);
+			//			this.keysManager.bindKey2Fun([KeyCode.CONTROL, KeyCode.I], this.toggleTurn);			//			this.keysManager.bindKey2Fun([KeyCode.CONTROL, KeyCode.F], InspectorFilterManager.ID);
 			this._keysManager.bindKey2View([17, 83], StructureView.ID);
 			this._keysManager.bindKey2View([17, 84], LiveInspectView.ID);
 			this._keysManager.bindKey2View([17, 80], PropertiesView.ID);
+			this._keysManager.bindKey2View([17, 70], InspectorFilterManager.ID);
 			this._keysManager.bindKey2Fun([17, 73], this.toggleTurn);
 			if(withKeys)this.registerView(_keysManager, _keysManager.getInspectorViewClassID());
 			
@@ -189,6 +193,9 @@
 				case PropertiesView.ID:
 					this.registerView(this._propertiesView, id);
 					break;
+				case InspectorFilterManager.ID:
+					this.registerView(this._filterManager, id);
+					break;
 			}
 		}
 
@@ -213,16 +220,6 @@
 			} else {
 				this.registerViewById(viewID);
 			}
-		}
-
-		//过滤实时查看.
-		private var _liveInspectFilter : Class;
-
-		/**
-		 * 設置過濾查看器
-		 */
-		public function set inspectFilter(value : Class) : void {
-			this._liveInspectFilter = value;
 		}
 
 		/**
@@ -260,18 +257,6 @@
 				this.turnOff();
 			} else {
 				this.turnOn();
-			}
-		}
-
-		/**
-		 * 设置Inspector的查看過濾.
-		 * @param clazz		Inspector将只查看clazz类型的显示对象.
-		 */
-		public function setInspectFilter(clazz : Class) : void {
-			this._liveInspectFilter = clazz;
-			
-			for each(var view:IInspectorView in _views) {
-				view.onInspectMode(clazz);
 			}
 		}
 
@@ -325,8 +310,7 @@
 					if(isInspectView(target)) {
 						continue;
 					} 
-					while(target) {
-//						if(target is _liveInspectFilter) {						if(_filterManager.checkInFilter(target)) {
+					while(target) {						if(_filterManager.checkInFilter(target)) {
 							liveInspect(target, false);
 							return;
 						} else {
@@ -381,6 +365,17 @@
 			
 			for each(var view:IInspectorView in _views) {
 				view.onInspect(_curInspectEle);
+			}
+		}
+
+		/**
+		 * 更新当前的查看对象
+		 */
+		public function updateInsectorView() : void {
+			if(_curInspectEle != null) {
+				for each(var view:IInspectorView in _views) {
+					view.onUpdate(_curInspectEle);
+				}
 			}
 		}
 
@@ -461,29 +456,29 @@
 			evt.stopImmediatePropagation();
 		}
 
-		/**
-		 * 有显示对象加入显示列表时
-		 */
-		private function onSthAdd(evt : Event) : void {
-			if(isInspectView(evt.target as DisplayObject))return;
-			if(this._isOn) {
-				for each(var view:IInspectorView in _views) {
-					view.onUpdate(_curInspectEle);
-				}
-			}
-		}
-
-		/**
-		 * 有显示对象移出显示列表时
-		 */
-		private function onSthRemove(evt : Event) : void {
-			if(isInspectView(evt.target as DisplayObject))return;
-			if(this._isOn) {
-				for each(var view:IInspectorView in _views) {
-					view.onUpdate(_curInspectEle);
-				}
-			}
-		}
+//		/**
+//		 * 有显示对象加入显示列表时
+//		 */
+//		private function onSthAdd(evt : Event) : void {
+//			if(isInspectView(evt.target as DisplayObject))return;
+//			if(this._isOn) {
+//				for each(var view:IInspectorView in _views) {
+//					view.onUpdate(_curInspectEle);
+//				}
+//			}
+//		}
+//
+//		/**
+//		 * 有显示对象移出显示列表时
+//		 */
+//		private function onSthRemove(evt : Event) : void {
+//			if(isInspectView(evt.target as DisplayObject))return;
+//			if(this._isOn) {
+//				for each(var view:IInspectorView in _views) {
+//					view.onUpdate(_curInspectEle);
+//				}
+//			}
+//		}
 	}
 }
 
