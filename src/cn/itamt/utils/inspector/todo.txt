@@ -1,0 +1,135 @@
+(OK)1.顯示對象的註冊點十字星顯示。
+(OK)2.修正拖動時的“跳動”bug。
+(OK)3.修正右鍵inspector off時的bug。
+4.操作條的位置可能會跑到舞臺的外面去……
+(OK)5.Stage上的inspect可能會查看到InspectView產生異常。
+(OK)6.对象本身的注册点, 以及相对于父容器的注册点.
+(OK)7.View结构采用Inspector.getInstance().registerView()的方式.实现IInspectorView接口;
+8.让注册点也有tip.
+(OK)9.StructureView与LayoutView必须支持resize的布局.
+(OK)10.StructureView的滚动条考虑支持鼠标滚轮.
+(OK)11.StructureView的交互方式:
+	(OK)a.mouseOver节点, 则liveInspect该显示对象
+	(OK)b.单击节点, 则Inspect该显示对象.
+	(OK)c.a时, 如果当前有inspect节点, 则鼠标离开(ROLL_OUT)面板, 会保持inspect.
+12.属性面板.
+	(OK)a.支持编辑属性.
+	(OK)b.可以自定义让指定的属性在"常用属性"中显示.
+	c*.支持属性的查找.
+	d.函数的调用.
+	(OK)e.支持两种模式:单例模式.
+(NO)13.LayoutView.
+(OK)14.StructureView应该置顶.
+(OK)15.InspectorViewPanel的功能还不完善
+	(OK)a.resize的时候, content的scrollRect没有相应调整.
+	(OK)b.content的尺寸发生变化的时候没有更新滚动条的尺寸位置.
+(OK)16.StructureView:鼠标离开(ROLL_OUT)面板, 会保持inspect, 但如果inspect对象没有在显示当中时...会有空对象的bug.
+17.tInspector的内存管理.
+18.StructureView由LiveInspectView的"查看详细信息"触发.
+19.StructureView添加鼠标经过的“拍照”功能。
+(OK)20.属性面板实现之后，“查看”下为什么Flash IDE中的动态文本的锯齿很清晰。
+21.提供接口，使developer可以自定义要显示的信息。
+22.利用as3swf实现一个SWF shape转AS3的工具。方便界面的制作。
+(OK)23.需要一个图片转Base64字符串的工具。
+(OK)24.在StructureView底部显示一个对象到stage层级关系的文本信息。
+25.LiveInspectView添加两个按钮：“查看详细信息”，“查看显示对象结构树”。
+(OK)26.StructureView左下角显示target的层级信息:target.>.target.parent..>.....>.Stage
+(OK)27.显示对象计数.
+(OK)28.PropertiesView分两层:
+	(OK)a.常用属性.
+	(OK)b.完整属性.
+
+29.LiveInspectView在单击mBtn后似乎mBtn还是会响应鼠标, 导致鼠标无法操作下面的元素.
+
+///////2010.02.04///////新功能开发截止. 接下来只对已有功能进行完善.
+TODO LIST:
+	i.属性面板的"查看方法".
+	ii.StructureView的tip.
+	iii.	
+
+30.LiveInspectView添加一个按钮用于关闭"实时查看"的, 现有的"关闭"用于关闭整个LiveInspectView.
+(OK)31.StructureView对空对象(null)或者是不复在显示列表里的对象....
+(OK)32.StructureView添加刷新按钮.
+(OK)33.LiveInspectView的显示对象矩形的算法必须修改...
+
+////
+34.tInspector独立做成AIR客户端????
+35.IInspectorView添加onInspectNull方法?(当所查看的对象已经从显示列表对象中删除时执行).或者说在InspectTarget只是DisplayObject的一个代理.这样就避免出现了...
+
+(OK)1.顯示對象的註冊點十字星顯示。
+(OK)2.修正拖動時的“跳動”bug。
+(OK)3.修正右鍵inspector off時的bug。
+4.操作條的位置可能會跑到舞臺的外面去……
+(OK)5.Stage上的inspect可能會查看到InspectView產生異常。
+(OK)6.对象本身的注册点, 以及相对于父容器的注册点.
+(OK)7.View结构采用Inspector.getInstance().registerView()的方式.实现IInspectorView接口;
+8.让注册点也有tip.
+(OK)9.StructureView与LayoutView必须支持resize的布局.
+(OK)10.StructureView的滚动条考虑支持鼠标滚轮.
+(OK)11.StructureView的交互方式:
+	(OK)a.mouseOver节点, 则liveInspect该显示对象
+	(OK)b.单击节点, 则Inspect该显示对象.
+	(OK)c.a时, 如果当前有inspect节点, 则鼠标离开(ROLL_OUT)面板, 会保持inspect.
+12.属性面板.
+	(OK)a.支持编辑属性.
+	(OK)b.可以自定义让指定的属性在"常用属性"中显示.
+	c*.支持属性的查找.
+	d.函数的调用.
+	(OK)e.支持两种模式:单例模式.
+(NO)13.LayoutView.
+(OK)14.StructureView应该置顶.
+(OK)15.InspectorViewPanel的功能还不完善
+	(OK)a.resize的时候, content的scrollRect没有相应调整.
+	(OK)b.content的尺寸发生变化的时候没有更新滚动条的尺寸位置.
+(OK)16.StructureView:鼠标离开(ROLL_OUT)面板, 会保持inspect, 但如果inspect对象没有在显示当中时...会有空对象的bug.
+17.tInspector的内存管理.
+18.StructureView由LiveInspectView的"查看详细信息"触发.
+19.StructureView添加鼠标经过的“拍照”功能。
+(OK)20.属性面板实现之后，“查看”下为什么Flash IDE中的动态文本的锯齿很清晰。
+(OK)21.提供接口，使developer可以自定义要显示的信息。
+(OK)22.利用as3swf实现一个SWF shape转AS3的工具。方便界面的制作。
+(OK)23.需要一个图片转Base64字符串的工具。
+(OK)24.在StructureView底部显示一个对象到stage层级关系的文本信息。
+25.LiveInspectView添加两个按钮：“查看详细信息”，“查看显示对象结构树”。
+(OK)26.StructureView左下角显示target的层级信息:target.>.target.parent..>.....>.Stage
+(OK)27.显示对象计数.
+(OK)28.PropertiesView分两层:
+	(OK)a.常用属性.
+	(OK)b.完整属性.
+
+(OK)29.LiveInspectView在单击mBtn后似乎mBtn还是会响应鼠标, 导致鼠标无法操作下面的元素.
+
+///////2010.02.04///////新功能开发截止. 接下来只对已有功能进行完善.
+TODO LIST:
+	i.属性面板的"查看方法".
+	ii.StructureView的tip.
+	iii.
+
+30.LiveInspectView添加一个按钮用于关闭"实时查看"的, 现有的"关闭"用于关闭整个LiveInspectView.
+(OK)31.StructureView对空对象(null)或者是不复在显示列表里的对象....
+(OK)32.StructureView添加刷新按钮.
+(OK)33.LiveInspectView的显示对象矩形的算法必须修改...
+
+////
+34.tInspector独立做成AIR客户端????
+35.IInspectorView添加onInspectNull方法?(当所查看的对象已经从显示列表对象中删除时执行).或者说在InspectTarget只是DisplayObject的一个代理.这样就避免出现了...
+
+版本安排:
+	tInspector 1.0.1	实现Transform变形交互(OK)
+	tInspector 1.0.2	实现信息输出可自定义(OK)
+	tInspector 1.0.3	多语言可配置(OK), 字體樣式自動設置
+	tInsepctor 1.0.4	实现快捷键控制(OK)
+	tInspector 1.0.4.5	实现可以根据不同的类设定不同的Outputer.(OK)
+	tInspector 1.0.4.6	Inspector直接提供静态方法,如turnOn, liveInsepct等.
+	tInspector 1.0.6	可自定义查看某个类型的InspectTarget.(即为Inspector中的liveInspectFilter提供交互界面和设置的API).(OK)
+	tInspector 1.0.6.5	InspectorFilterManager……提供介面支持.(OK)
+	tInspector 1.0.7	优化InspectorView中的列表的渲染方式.
+	tInspector 1.0.9	修复bug
+	tInspector 1.1		代码优化、整理
+	
+	tInspector 1.1.*	实现属性面板中的方法可调用
+	
+	tInspector 1.2		
+	
+	//////////////////////////////////////////
+	tInspector 2.0		
