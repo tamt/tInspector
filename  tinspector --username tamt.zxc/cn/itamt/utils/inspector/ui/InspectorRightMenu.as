@@ -27,6 +27,8 @@ package cn.itamt.utils.inspector.ui {
 		private var _sView : ContextMenuItem;
 		//查看類型的設置面板
 		private var _fView : ContextMenuItem;
+		//适时查看的
+		private var _lView : ContextMenuItem;
 
 		override public function set outputerManager(value : InspectorOutPuterManager) : void {
 			trace('[InspectorRightMenu][outputerManager]PropertiesView没有设计信息输出的接口，忽略该属性设置。');
@@ -50,6 +52,8 @@ package cn.itamt.utils.inspector.ui {
 			_sView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
 			_fView = new ContextMenuItem(InspectorLanguageManager.getStr("InspectorFilterManager"));
 			_fView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
+			_lView = new ContextMenuItem(InspectorLanguageManager.getStr("LiveInspector"));
+			_lView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
 			
 			_on.enabled = on;
 			_off.enabled = !on;
@@ -69,6 +73,7 @@ package cn.itamt.utils.inspector.ui {
 
 		private var _pOn : Boolean;		private var _sOn : Boolean;
 		private var _fOn : Boolean;
+		private var _lOn : Boolean;
 
 		override public function onRegisterView(viewClassId : String) : void {
 			switch(viewClassId) {
@@ -83,6 +88,10 @@ package cn.itamt.utils.inspector.ui {
 				case "InspectorFilterManager":
 					_fOn = true;
 					_fView.caption = InspectorLanguageManager.getStr("InspectorFilterManager") + '\t√';
+					break;
+				case "LiveInspector":
+					_lOn = true;
+					_lView.caption = InspectorLanguageManager.getStr("LiveInspector") + '\t√';
 					break;
 			}
 		}
@@ -104,6 +113,10 @@ package cn.itamt.utils.inspector.ui {
 					_fOn = false;
 					_fView.caption = InspectorLanguageManager.getStr("InspectorFilterManager");
 					break;
+				case "LiveInspector":
+					_lOn = false;
+					_lView.caption = InspectorLanguageManager.getStr("LiveInspector");
+					break;
 			}
 		}
 
@@ -111,14 +124,14 @@ package cn.itamt.utils.inspector.ui {
 			_on.enabled = false;
 			_off.enabled = true;
 			
-			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = _fView.enabled = true;
+			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = _fView.enabled = _lView.enabled = true;
 		}
 
 		override public function onTurnOff() : void {
 			_on.enabled = true;
 			_off.enabled = false;
 			
-			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = _fView.enabled = false;
+			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = _fView.enabled = _lView.enabled = false;
 		}
 
 		/**
@@ -151,7 +164,7 @@ package cn.itamt.utils.inspector.ui {
 				menu.customItems.push(_on);
 				menu.customItems.push(_off);
 				//				menu.customItems.push(_dspMode);				//				menu.customItems.push(_intMode);
-				menu.customItems.push(_pView);				menu.customItems.push(_sView);				menu.customItems.push(_fView);
+				menu.customItems.push(_pView);				menu.customItems.push(_sView);				menu.customItems.push(_fView);				menu.customItems.push(_lView);
 				obj.contextMenu = menu;
 			}
 		}
@@ -192,6 +205,12 @@ package cn.itamt.utils.inspector.ui {
 						_inspector.registerViewById("InspectorFilterManager");
 					}
 					break;
+				case _lView:
+					if(_lOn) {
+						_inspector.unregisterViewById("LiveInspector");
+					} else {
+						_inspector.registerViewById("LiveInspector");
+					}
 			}
 		}
 	}

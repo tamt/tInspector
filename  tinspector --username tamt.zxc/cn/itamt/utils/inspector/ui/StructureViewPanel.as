@@ -33,7 +33,7 @@ package cn.itamt.utils.inspector.ui {
 			_statusInfo.height = 20;
 			
 			var styleSheet : StyleSheet = new StyleSheet();
-			styleSheet.setStyle('a:hover', {color:"#ff0000", textDecoration:"underline"});
+			styleSheet.setStyle('a:hover', {textDecoration:"underline"});			styleSheet.setStyle('a', {color:"#99cc00"});
 			_title.styleSheet = styleSheet;
 			addChild(_statusInfo);
 			

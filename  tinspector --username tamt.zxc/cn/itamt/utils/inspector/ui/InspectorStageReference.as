@@ -1,4 +1,6 @@
 package cn.itamt.utils.inspector.ui {
+	import flash.geom.Rectangle;
+	import flash.display.DisplayObject;
 	import flash.display.Stage;
 
 	/**
@@ -38,6 +40,17 @@ package cn.itamt.utils.inspector.ui {
 
 		public static function get offsetStageHeight() : Number {
 			return (_stage.stageHeight - _originalStageHeight) / 2;
+		}
+
+		/**
+		 * 把一个显示对象在舞台上居中
+		 */
+		public static function centerOnStage(obj : DisplayObject) : void {
+			if(obj.stage) {
+				var rect : Rectangle = obj.getRect(obj);
+				obj.x = stageWidth / 2 - obj.width / 2 - offsetStageWidth - rect.x;
+				obj.y = stageHeight / 2 - obj.height / 2 - offsetStageHeight - rect.y;
+			}
 		}
 	}
 }

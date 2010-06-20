@@ -31,7 +31,7 @@ package cn.itamt.utils.inspector.ui {
 			this.hitTestState = buildHitState();
 			
 			_timer = new Timer(1000);
-			addEventListener(MouseEvent.ROLL_OVER, onRollOver);
+			addEventListener(MouseEvent.ROLL_OVER, onRollOver);			addEventListener(MouseEvent.CLICK, onClick);
 			
 			this.tabEnabled = false;
 		}
@@ -63,6 +63,10 @@ package cn.itamt.utils.inspector.ui {
 
 		private function onRollOut(evt : MouseEvent) : void {
 			removeEventListener(MouseEvent.ROLL_OUT, onRollOut);
+			onTimerRemoveTip();
+		}
+
+		private function onClick(evt : MouseEvent) : void {
 			onTimerRemoveTip();
 		}
 

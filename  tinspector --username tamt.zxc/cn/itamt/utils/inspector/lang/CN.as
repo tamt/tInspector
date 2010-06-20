@@ -7,6 +7,7 @@ package cn.itamt.utils.inspector.lang {
 		public function CN() : void {
 			file = <lang>
 <![CDATA[
+LiveInspector	=	實時查看
 LiveRotate		=	拖動旋轉
 LiveScale		=	拖動縮放
 LiveMove		=	拖動(雙擊還原)

@@ -4,6 +4,7 @@
 	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
+	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -79,6 +80,14 @@
 			dispose();
 		}
 
+		override public function contains(child : DisplayObject) : Boolean {
+			if(viewContainer) {
+				return viewContainer == child || viewContainer.contains(child);
+			} else {
+				return false;
+			}
+		}
+
 		/**
 		 * 当Inspector查看某个目标显示对象时.
 		 */
@@ -107,7 +116,7 @@
 		 * 返回这个InspectorView的id, 在tInspector中, 通过id来管理各个InspectorView.
 		 */
 		override public function getInspectorViewClassID() : String {
-			return 'BaseInspectorView';
+			return LiveInspectView.ID;
 		}
 
 		private var rect : Rectangle;

@@ -7,6 +7,7 @@ package cn.itamt.utils.inspector.lang {
 		public function EN() {
 			file = <lang>
 <![CDATA[
+LiveInspector	=	live inspect
 LiveRotate		=	drag rotate
 LiveScale		=	drag scale
 LiveMove		=	drag move(dbclick reset)

@@ -110,7 +110,7 @@
 		 * @param showPropPanelAtFirst		在开启时显示属性面板？
 		 * @param showStructPanelAtFirst	在开启时显示列表结构面板？
 		 */
-		public function init(root : DisplayObjectContainer, withMenu : Boolean = true, withKeys : Boolean = true, showPropPanelAtFirst : Boolean = false, showStructPanelAtFirst : Boolean = false) : void {
+		public function init(root : DisplayObjectContainer, withMenu : Boolean = true, withKeys : Boolean = true, showPropPanelAtFirst : Boolean = false, showStructPanelAtFirst : Boolean = false, showFilterManagerAtFirst : Boolean = false) : void {
 			
 			this._root = root;
 			this._stage = root.stage;
@@ -147,12 +147,12 @@
 			this._keysManager.bindKey2View([17, 83], StructureView.ID);
 			this._keysManager.bindKey2View([17, 84], LiveInspectView.ID);
 			this._keysManager.bindKey2View([17, 80], PropertiesView.ID);
-			this._keysManager.bindKey2View([17, 70], InspectorFilterManager.ID);
+			this._keysManager.bindKey2View([17, 77], InspectorFilterManager.ID);
 			this._keysManager.bindKey2Fun([17, 73], this.toggleTurn);
 			if(withKeys)this.registerView(_keysManager, _keysManager.getInspectorViewClassID());
 			
 			//查看過濾器管理
-			this.registerView(_filterManager, _filterManager.getInspectorViewClassID());
+			if(showFilterManagerAtFirst)this.registerView(_filterManager, _filterManager.getInspectorViewClassID());
 		}
 
 		private var _views : Dictionary;
@@ -308,7 +308,11 @@
 				while(l--) {
 					var target : DisplayObject = objs[l];
 					if(isInspectView(target)) {
-						continue;
+						if(liveInspectView.contains(target)) {
+							continue;
+						} else {
+							return;
+						}
 					} 
 					while(target) {						if(_filterManager.checkInFilter(target)) {
 							liveInspect(target, false);
@@ -331,6 +335,7 @@
 		public function isInspectView(target : DisplayObject) : Boolean {
 			for each(var view:IInspectorView in _views) {
 				if(view.contains(target)) {
+					trace("[Inspector][isInspectView]" + view);
 					return true;
 				}
 			}
@@ -408,7 +413,7 @@
 				var target : InspectorViewOperationButton = evt.target as InspectorViewOperationButton;
 				if(_tip) {
 					_tip.graphics.clear();
-					DisplayObjectTool.removeAllChildAndChild(_tip);
+					DisplayObjectTool.removeAllChildren(_tip);
 					if(_tip.stage)this._tip.parent.removeChild(_tip);
 					_tip = null;
 				}
@@ -449,7 +454,7 @@
 		private function onRemoveTip(evt : Event) : void {
 			if(_tip) {
 				_tip.graphics.clear();
-				DisplayObjectTool.removeAllChildAndChild(_tip);
+				DisplayObjectTool.removeAllChildren(_tip);
 				if(_tip.stage)this._tip.parent.removeChild(_tip);
 				_tip = null;
 			}

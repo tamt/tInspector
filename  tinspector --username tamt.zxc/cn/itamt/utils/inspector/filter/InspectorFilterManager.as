@@ -1,4 +1,6 @@
 package cn.itamt.utils.inspector.filter {
+	import cn.itamt.utils.inspector.ui.InspectorStageReference;
+
 	import flash.display.SimpleButton;
 
 	import cn.itamt.utils.ClassTool;
@@ -179,8 +181,9 @@ package cn.itamt.utils.inspector.filter {
 			_view.setFilterList(this._history);
 			_view.setActivedList(this._activeFilters);
 			_view.addEventListener(Event.CLOSE, onClickClose);
-			
 			_inspector.stage.addChild(_view);
+			InspectorStageReference.centerOnStage(_view);
+			
 			_inspector.stage.addEventListener(InspectorFilterEvent.APPLY, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.KILL, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.CHANGE, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.RESTORE, toChangeFilter, false, 0, true);
 		}
 
