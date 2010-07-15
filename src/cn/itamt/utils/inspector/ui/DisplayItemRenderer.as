@@ -1,16 +1,13 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.ClassTool;	
+	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
-	import cn.itamt.utils.inspector.interfaces.IDisplayItemRenderer;
 
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
-	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
-	import flash.utils.getQualifiedClassName;		
 
 	/**
 	 * @author itamt@qq.com

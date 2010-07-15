@@ -2,11 +2,11 @@ package cn.itamt.utils.inspector.renders {
 	import cn.itamt.utils.inspector.events.PropertyEvent;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
 	import cn.itamt.utils.inspector.ui.InspectorViewFavoriteButton;
-	
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.text.TextField;	
+	import flash.text.TextField;
 
 	/**
 	 * 属性列表中的单元行渲染类.

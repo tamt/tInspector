@@ -3,7 +3,7 @@ package cn.itamt.utils {
 	import flash.net.registerClassAlias;
 	import flash.utils.ByteArray;
 	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;	
+	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * @author tamt

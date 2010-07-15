@@ -1,8 +1,8 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.interfaces.IDisplayItemRenderer;
-	
-	import flash.display.Sprite;	
+
+	import flash.display.Sprite;
 
 	/**
 	 * DisplayObjectTree节点的渲染类.

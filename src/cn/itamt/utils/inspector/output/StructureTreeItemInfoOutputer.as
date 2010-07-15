@@ -1,9 +1,8 @@
 package cn.itamt.utils.inspector.output {
 	import cn.itamt.utils.ClassTool;
-	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
 	import cn.itamt.utils.inspector.ui.InspectorColorStyle;
 
-	import flash.display.DisplayObject;	
+	import flash.display.DisplayObject;
 
 	/**
 	 * 显示树面板中节点项的信息输出类

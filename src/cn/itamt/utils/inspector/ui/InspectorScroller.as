@@ -1,9 +1,9 @@
-﻿package cn.itamt.utils.inspector.ui {
+package cn.itamt.utils.inspector.ui {
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.events.MouseEvent;	
+	import flash.events.MouseEvent;
 
 	/**
 	 * @author itamt@qq.com
@@ -17,7 +17,7 @@
 		//值
 		private var  _value : Number;
 		//
-		private var _ratio:Number = 1/3;
+		private var _ratio : Number = 1 / 3;
 
 		public function set value(val : Number) : void {
 			_value = val;
@@ -51,20 +51,20 @@
 			if(inited)return;
 			inited = true;
 			_block.addEventListener(MouseEvent.MOUSE_DOWN, onDownBlock);
-			this.stage.addEventListener(MouseEvent.MOUSE_UP, onUpBlock);
+			this.stage.addEventListener(MouseEvent.MOUSE_UP, onUpBlock);			this.addEventListener(MouseEvent.MOUSE_UP, onUpBlock);
 		}
 
 		private function onRemove(evt : Event) : void {
 			inited = false;
 			_block.removeEventListener(MouseEvent.MOUSE_DOWN, onDownBlock);
-			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onUpBlock);
-			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDrag);
+			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onUpBlock);			this.removeEventListener(MouseEvent.MOUSE_UP, onUpBlock);
+			this.stage.removeEventListener(Event.ENTER_FRAME, onDrag);
 		}
-		
+
 		/**
 		 * 设置滚动内容的比例
 		 */
-		public function setContenRatio(ratio:Number):void {
+		public function setContenRatio(ratio : Number) : void {
 			_ratio = ratio;
 			if(_ratio > 1)_ratio = 1;
 			this.relayout();
@@ -93,8 +93,8 @@
 			graphics.endFill();
 			
 			//绘制拖动按钮
-			var th:Number = _h * _ratio;
-			if(th<6)th = 10;
+			var th : Number = _h * _ratio;
+			if(th < 6)th = 10;
 			_block.upState = buildBlockShape(_w, th, 0x4D4D4D);
 			_block.downState = buildBlockShape(_w, th, 0xffffff);
 			_block.overState = buildBlockShape(_w, th, 0xffffff);
@@ -105,14 +105,14 @@
 
 		private function onDownBlock(evt : MouseEvent) : void {
 			_pMouseY = _block.mouseY;
-			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onDrag);
+			this.stage.addEventListener(Event.ENTER_FRAME, onDrag);
 		}
 
 		private function onUpBlock(evt : MouseEvent) : void {
-			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDrag);
+			this.stage.removeEventListener(Event.ENTER_FRAME, onDrag);
 		}
 
-		private function onDrag(evt : MouseEvent) : void {
+		private function onDrag(evt : Event) : void {
 			var ty : Number = this.mouseY - _pMouseY;
 			if(ty < 0)ty = 0;
 			if(ty > _h - _block.height)ty = _h - _block.height;

@@ -12,11 +12,11 @@ package cn.itamt.utils.inspector.output {
 		public function InspectorOutPuterManager(defaultOutputer : DisplayObjectInfoOutPuter = null) : void {
 			_defaultOutputer = defaultOutputer == null ? (new DisplayObjectInfoOutPuter()) : defaultOutputer;
 		}
-		
+
 		/**
 		 * 设置默认的信息输出器
 		 */
-		public function setDefaultOutputer(outputer:DisplayObjectInfoOutPuter):void {
+		public function setDefaultOutputer(outputer : DisplayObjectInfoOutPuter) : void {
 			_defaultOutputer = outputer;
 		}
 

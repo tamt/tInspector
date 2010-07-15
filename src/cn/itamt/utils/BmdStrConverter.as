@@ -1,6 +1,6 @@
 package cn.itamt.utils {
 	import flash.display.BitmapData;
-	import flash.utils.ByteArray;	
+	import flash.utils.ByteArray;
 
 	/**
 	 * 用于：位图数据与Base64字符串转换

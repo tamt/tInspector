@@ -1,10 +1,8 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.consts.InspectMode;
-	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
-	import flash.display.DisplayObject;
 	import flash.display.InteractiveObject;
 	import flash.events.ContextMenuEvent;
 	import flash.ui.ContextMenu;
@@ -14,109 +12,79 @@ package cn.itamt.utils.inspector.ui {
 	 * tInspector的右键菜单。
 	 */
 	public class InspectorRightMenu extends BaseInspectorView {
-		public static const ID : String = '右键菜单';
-
 		public static const ON : String = 'tInspector on';		public static const OFF : String = 'tInspector off';
 		//开关菜单项
 		private var _on : ContextMenuItem;		private var _off : ContextMenuItem;
-		private var _dspMode : ContextMenuItem;
-		private var _intMode : ContextMenuItem;
-		//属性面板视图
-		private var _pView : ContextMenuItem;
-		//显示列表树视图
-		private var _sView : ContextMenuItem;
-		//查看類型的設置面板
-		private var _fView : ContextMenuItem;
-		//适时查看的
-		private var _lView : ContextMenuItem;
+		//几个inspectorView的菜单项
+		private var _viewItems : Array;
 
 		override public function set outputerManager(value : InspectorOutPuterManager) : void {
 			trace('[InspectorRightMenu][outputerManager]PropertiesView没有设计信息输出的接口，忽略该属性设置。');
 		}
 
-		public function InspectorRightMenu(on : Boolean = true, mode : String = InspectMode.DISPLAY_OBJ) {
+		public function InspectorRightMenu(on : Boolean = true) {
 			_on = new ContextMenuItem(ON);
 			_on.separatorBefore = true;
 			_on.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
 			_off = new ContextMenuItem(OFF);
 			_off.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
 			
-			_dspMode = new ContextMenuItem(InspectMode.DISPLAY_OBJ);
-			_dspMode.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
-			_intMode = new ContextMenuItem(InspectMode.INTERACTIVE_OBJ);
-			_intMode.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
-			
-			_pView = new ContextMenuItem(InspectorLanguageManager.getStr("PropertyPanel"));
-			_pView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
-			_sView = new ContextMenuItem(InspectorLanguageManager.getStr("StructurePanel"));
-			_sView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
-			_fView = new ContextMenuItem(InspectorLanguageManager.getStr("InspectorFilterManager"));
-			_fView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
-			_lView = new ContextMenuItem(InspectorLanguageManager.getStr("LiveInspector"));
-			_lView.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
-			
 			_on.enabled = on;
 			_off.enabled = !on;
 			
-			_dspMode.caption = (mode == InspectMode.DISPLAY_OBJ) ? (InspectMode.DISPLAY_OBJ + '\t√') : (InspectMode.DISPLAY_OBJ);			_intMode.caption = (mode == InspectMode.INTERACTIVE_OBJ) ? (InspectMode.INTERACTIVE_OBJ + '\t√') : (InspectMode.INTERACTIVE_OBJ);
+			_viewItems = [];
 		}
 
 		/**
 		 * 注册到Inspector时.
 		 */
-		override public function onRegister(inspector : Inspector) : void {
+		override public function onRegister(inspector : IInspector) : void {
 			this._inspector = inspector;
-			this.apply(inspector.root);
 			
+			this.apply(inspector.root);
+
 			this.onTurnOff();
 		}
 
-		private var _pOn : Boolean;		private var _sOn : Boolean;
-		private var _fOn : Boolean;
-		private var _lOn : Boolean;
+		override public function onUnRegister(inspector : IInspector) : void {
+		}
 
-		override public function onRegisterView(viewClassId : String) : void {
-			switch(viewClassId) {
-				case "PropertyPanel":
-					_pOn = true;
-					_pView.caption = InspectorLanguageManager.getStr("PropertyPanel") + '\t√';
-					break;
-				case "StructurePanel":
-					_sOn = true;
-					_sView.caption = InspectorLanguageManager.getStr("StructurePanel") + '\t√';
-					break;
-				case "InspectorFilterManager":
-					_fOn = true;
-					_fView.caption = InspectorLanguageManager.getStr("InspectorFilterManager") + '\t√';
-					break;
-				case "LiveInspector":
-					_lOn = true;
-					_lView.caption = InspectorLanguageManager.getStr("LiveInspector") + '\t√';
-					break;
+		override public function onRegisterView(viewClassID : String) : void {
+			if(viewClassID == InspectorViewID.RIGHT_MENU)return;
+			
+			for each(var item:ViewMenuItem in _viewItems) {
+				if(item.id == viewClassID)return;
+			}
+			var menuItem : ViewMenuItem = new ViewMenuItem(viewClassID);
+			menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
+			_viewItems.push(menuItem);
+			
+			this.apply(_inspector.root);
+		}
+
+		override public function onUnRegisterView(viewClassID : String) : void {
+			for each(var item:ViewMenuItem in _viewItems) {
+				if(item.id == viewClassID) {
+					item.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
+					var t : int = _viewItems.indexOf(item);
+					if(t >= 0)_viewItems.splice(t, 1);
+				}
 			}
 		}
 
-		/**
-		 * 
-		 */
-		override public function onUnregisterView(viewClassId : String) : void {
-			switch(viewClassId) {
-				case "PropertyPanel":
-					_pOn = false;
-					_pView.caption = InspectorLanguageManager.getStr("PropertyPanel");
-					break;
-				case "StructurePanel":
-					_sOn = false;
-					_sView.caption = InspectorLanguageManager.getStr("StructurePanel");
-					break;
-				case "InspectorFilterManager":
-					_fOn = false;
-					_fView.caption = InspectorLanguageManager.getStr("InspectorFilterManager");
-					break;
-				case "LiveInspector":
-					_lOn = false;
-					_lView.caption = InspectorLanguageManager.getStr("LiveInspector");
-					break;
+		override public function onActiveView(viewClassId : String) : void {
+			for each(var menuItem:ViewMenuItem in _viewItems) {
+				if(menuItem.id == viewClassId) {
+					menuItem.on = true;
+				}
+			}
+		}
+
+		override public function onUnActiveView(viewClassId : String) : void {
+			for each(var menuItem:ViewMenuItem in _viewItems) {
+				if(menuItem.id == viewClassId) {
+					menuItem.on = false;
+				}
 			}
 		}
 
@@ -124,26 +92,19 @@ package cn.itamt.utils.inspector.ui {
 			_on.enabled = false;
 			_off.enabled = true;
 			
-			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = _fView.enabled = _lView.enabled = true;
+			for each(var menuItem:ViewMenuItem in _viewItems) {
+				menuItem.enabled = true;
+				if(menuItem.on)_inspector.activeView(menuItem.id);
+			}
 		}
 
 		override public function onTurnOff() : void {
 			_on.enabled = true;
 			_off.enabled = false;
 			
-			_dspMode.enabled = _intMode.enabled = _pView.enabled = _sView.enabled = _fView.enabled = _lView.enabled = false;
-		}
-
-		/**
-		 * 当设置Inspect的查看模式时.
-		 */
-		override public function onInspectMode(clazz : Class) : void {
-			if(clazz == DisplayObject) {
-				_dspMode.caption = InspectMode.DISPLAY_OBJ + '\t√';
-				_intMode.caption = InspectMode.INTERACTIVE_OBJ;
-			}else if(clazz == InteractiveObject) {
-				_dspMode.caption = InspectMode.DISPLAY_OBJ;
-				_intMode.caption = InspectMode.INTERACTIVE_OBJ + '\t√';
+			for each(var menuItem:ViewMenuItem in _viewItems) {
+				//				menuItem.on = false;
+				menuItem.enabled = false;
 			}
 		}
 
@@ -156,24 +117,20 @@ package cn.itamt.utils.inspector.ui {
 			if(_objs == null)_objs = [];
 			if(_objs.indexOf(obj) < 0) {
 				_objs.push(obj);
-				
-				var menu : ContextMenu = obj.contextMenu;
-				if(menu == null) {
-					menu = new ContextMenu();
-				}
-				menu.customItems.push(_on);
-				menu.customItems.push(_off);
-				//				menu.customItems.push(_dspMode);				//				menu.customItems.push(_intMode);
-				menu.customItems.push(_pView);				menu.customItems.push(_sView);				menu.customItems.push(_fView);				menu.customItems.push(_lView);
-				obj.contextMenu = menu;
 			}
-		}
-
-		/**
-		 * 返回这个InspectorView的id, 在tInspector中, 通过id来管理各个InspectorView.
-		 */
-		override public function getInspectorViewClassID() : String {
-			return InspectorRightMenu.ID;
+				
+			var menu : ContextMenu = obj.contextMenu;
+			if(menu == null) {
+				menu = new ContextMenu();
+			}
+			menu.customItems.push(_on);
+			menu.customItems.push(_off);
+				
+			for each(var item:ViewMenuItem in _viewItems) {
+				menu.customItems.push(item.target);
+			}
+				
+			obj.contextMenu = menu;
 		}
 
 		private function onMenuItemSelect(evt : ContextMenuEvent) : void {
@@ -184,34 +141,70 @@ package cn.itamt.utils.inspector.ui {
 				case _off:
 					_inspector.turnOff();
 					break;
-				case _pView:
-					if(_pOn) {
-						_inspector.unregisterViewById("PropertyPanel");
-					} else {
-						_inspector.registerViewById("PropertyPanel");
+				default:
+					for each(var menuItem:ViewMenuItem in _viewItems) {
+						if(menuItem.target == evt.target) {
+							if(menuItem.on) {
+								_inspector.unactiveView(menuItem.id);
+							} else {
+								_inspector.activeView(menuItem.id);
+							}
+							break;
+						}
 					}
 					break;
-				case _sView:
-					if(_sOn) {
-						_inspector.unregisterViewById("StructurePanel");
-					} else {
-						_inspector.registerViewById("StructurePanel");
-					}
-					break;
-				case _fView:
-					if(_fOn) {
-						_inspector.unregisterViewById("InspectorFilterManager");
-					} else {
-						_inspector.registerViewById("InspectorFilterManager");
-					}
-					break;
-				case _lView:
-					if(_lOn) {
-						_inspector.unregisterViewById("LiveInspector");
-					} else {
-						_inspector.registerViewById("LiveInspector");
-					}
 			}
 		}
+	}
+}
+
+import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+
+import flash.ui.ContextMenuItem;
+
+class ViewMenuItem {
+
+	private var _on : Boolean;
+
+	public function set on(value : Boolean) : void {
+		_on = value;
+		if(_on) {
+			target.caption = InspectorLanguageManager.getStr(id) + '\t√';
+		} else {
+			target.caption = InspectorLanguageManager.getStr(id);
+		}
+	}
+
+	public function get on() : Boolean {
+		return _on;
+	}
+
+	private var _id : String;
+
+	public function get id() : String {
+		return _id;
+	}
+
+	public var target : ContextMenuItem;
+
+	public function ViewMenuItem(id : String) : void {
+		this._id = id;
+		this.target = new ContextMenuItem(InspectorLanguageManager.getStr(this.id), false, false);
+	}
+
+	public function addEventListener(type : String, listener : Function) : void {
+		this.target.addEventListener(type, listener);
+	}
+
+	public function removeEventListener(type : String, listener : Function) : void {
+		this.target.removeEventListener(type, listener);
+	}
+
+	public function set enabled(val : Boolean) : void {
+		this.target.enabled = val;
+	}
+
+	public function get enabled() : Boolean {
+		return this.target.enabled;
 	}
 }

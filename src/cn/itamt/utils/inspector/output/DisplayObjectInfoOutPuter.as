@@ -1,8 +1,7 @@
 package cn.itamt.utils.inspector.output {
 	import cn.itamt.utils.ClassTool;
-	import cn.itamt.utils.inspector.output.OutPuter;
 
-	import flash.display.DisplayObject;	
+	import flash.display.DisplayObject;
 
 	/**
 	 * 显示对象信息输出类
@@ -16,7 +15,7 @@ package cn.itamt.utils.inspector.output {
 		}
 
 		public function output(source : DisplayObject) : String {
-			return '[' + ClassTool.getShortClassName(source) + ']' + '<font color="#990000">[x:' + source.x + ', y: ' + source.y + ']</font><font color="#0000FF">[w: ' + int(source.width) + ', h: ' + int(source.height) + ']</font><font color="#FF9900">[r: ' + int(source.rotation) + '°]</font>';
+			return '[' + ClassTool.getShortClassName(source) + ']' + '<font color="#990000">[x:' + source.x + ', y: ' + source.y + ']</font><font color="#0000FF">[w: ' + source.width + ', h: ' + source.height + ']</font><font color="#FF9900">[r: ' + int(source.rotation) + '°]</font>';
 		}
 	}
 }

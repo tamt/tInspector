@@ -1,5 +1,4 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.ui.InspectorLabelButton;	
 
 	/**
 	 * @author itamt@qq.com

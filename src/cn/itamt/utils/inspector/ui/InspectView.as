@@ -10,7 +10,7 @@ package cn.itamt.utils.inspector.ui {
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
-	import flash.utils.getQualifiedClassName;	
+	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * @author tamt

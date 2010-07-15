@@ -7,36 +7,36 @@ package cn.itamt.utils.inspector.lang {
 		public function CN() : void {
 			file = <lang>
 <![CDATA[
-LiveInspector	=	實時查看
-LiveRotate		=	拖動旋轉
-LiveScale		=	拖動縮放
-LiveMove		=	拖動(雙擊還原)
-SubmmitBug		=	反饋bug
-InspectChild	=	查看子顯示對象
-InspectParent	=	查看父顯示對象
-InspectBrother	=	查看下一個顯示對象
-InspectInfo		=	查看詳細信息
-ViewStructure	=	查看顯示列表結構
-SetFilterClass	=	只查看該類型
-unSetFilterClass	=	不查看該類型
+LiveInspector	=	鼠标查看
+LiveRotate		=	拖动旋转
+LiveScale		=	拖动缩放
+LiveMove		=	拖动(双击还原)
+SubmmitBug		=	反馈bug
+InspectChild	=	查看子显示对象
+InspectParent	=	查看父显示对象
+InspectBrother	=	查看下一个显示对象
+InspectInfo		=	查看详细信息
+ViewStructure	=	查看显示列表结构
+SetFilterClass	=	设置为查看类型
+unSetFilterClass	=	设置为非查看类型
 Refresh			=	刷新
-Property		=	屬性
+Property		=	属性
 Method			=	方法
-ViewProperties	=	查看對象的屬性
-ViewMethods		=	查看對象的方法
+ViewProperties	=	查看对象的属性
+ViewMethods		=	查看对象的方法
 MinimizePanel	=	最小化面板
-RestorePanel	=	還原面板
-SingletonMode	=	單面板模式
-MultipleMode	=	多面板模式
-ViewFullProperties	=	顯示所有屬性
-ViewMarkedProperties	=	顯示收藏屬性
-Close			=	關閉
+RestorePanel	=	还原面板
+SingletonMode	=	单击锁定面板
+MultipleMode	=	单击解锁面板
+ViewFullProperties	=	显示所有属性
+ViewMarkedProperties	=	显示收藏属性
+Close			=	关闭
 MarkProperty	=	收藏
-DelMark			=	刪除
-StructurePanel	=	顯示結構面板
-PropertyPanel	=	屬性面板
-InspectorFilterManager = 設置查看類型
-FilterAllDisplayObject	=	所有顯示對象
+DelMark			=	删除
+StructurePanel	=	结构面板
+PropertyPanel	=	属性面板
+InspectorFilterManager = 设置查看类型
+FilterAllDisplayObject	=	所有显示对象FullScreen	=	全屏StartMouseInspect	=	鼠标查看StopMouseInspect	=	关闭鼠标查看InspectorOnOff	=	开/关tInspector
 ]]>
 					</lang>;
 		}

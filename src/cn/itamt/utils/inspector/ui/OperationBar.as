@@ -6,7 +6,7 @@ package cn.itamt.utils.inspector.ui {
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
-	import flash.events.MouseEvent;	
+	import flash.events.MouseEvent;
 
 	/**
 	 * @author tamt

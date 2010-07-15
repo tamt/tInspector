@@ -1,11 +1,9 @@
 package cn.itamt.utils.inspector.renders {
-	import cn.itamt.utils.inspector.ui.InspectorTextField;	
+	import cn.itamt.utils.inspector.ui.InspectorTextField;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.text.TextField;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;	
 
 	/** 方法列表中的单元行渲染类.
 	 * @author pethan

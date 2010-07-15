@@ -1,6 +1,5 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;	
-	import cn.itamt.utils.inspector.ui.LiveTransformPointBtn;	
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 	/**
 	 * 拖动缩放变形的按钮

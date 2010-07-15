@@ -1,5 +1,5 @@
-﻿package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.Inspector;
+package cn.itamt.utils.inspector.ui {
+	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
@@ -18,8 +18,6 @@
 	 * @author itamt@qq.com
 	 */
 	public class StructureView extends BaseInspectorView {
-		public static const ID : String = 'StructurePanel';
-
 		private var treeView : DisplayObjectTree;
 		private var panel : StructureViewPanel;
 
@@ -45,7 +43,9 @@
 			}
 		}
 
-		override public function onTurnOn() : void {
+		override public function onActive() : void {
+			super.onActive();
+			
 			this.panel = new StructureViewPanel(200, 200);
 			this.treeView = new DisplayObjectTree(this._inspector.stage, StructureElementView);
 			this.treeView.addEventListener(DisplayItemEvent.OVER, onOverElement, false, 0, true);
@@ -61,14 +61,17 @@
 			this._inspector.stage.addChild(this.panel);
 		}
 
-		override public function onTurnOff() : void {
+		override public function onUnActive() : void {
+			super.onUnActive();
+			
+			if(this.panel.stage)this.panel.parent.removeChild(this.panel);
+			
 			this.treeView.removeEventListener(DisplayItemEvent.OVER, onOverElement);
 			this.treeView.removeEventListener(DisplayItemEvent.CLICK, onClickElement);
 			this.panel.removeEventListener(MouseEvent.ROLL_OUT, onRollOutPanel);
 			this.panel.removeEventListener(Event.CLOSE, onClickClose);
 			this.panel.removeEventListener(TextEvent.LINK, onClickLinkTarget);
 			this.panel.removeEventListener(InspectEvent.REFRESH, onRefresh);
-			this._inspector.stage.removeChild(this.panel);
 			
 			this.panel = null;
 			this.treeView = null;
@@ -198,22 +201,6 @@
 			this._inspector.inspect(object);
 		}
 
-		/**
-		 * 当取消在Inspector的注册时.
-		 */
-		override public function onUnRegister(inspector : Inspector) : void {
-			if(this.panel.stage)this.panel.parent.removeChild(this.panel);
-			
-			this.treeView.removeEventListener(DisplayItemEvent.OVER, onOverElement);
-			this.treeView.removeEventListener(DisplayItemEvent.CLICK, onClickElement);
-			this.panel.removeEventListener(MouseEvent.ROLL_OUT, onRollOutPanel);
-			this.panel.removeEventListener(Event.CLOSE, onClickClose);
-			this.panel.removeEventListener(TextEvent.LINK, onClickLinkTarget);
-			
-			this.panel = null;
-			this.treeView = null;
-		}
-
 		override public function onUpdate(target : InspectTarget = null) : void {
 			this.treeView.drawList();
 		}
@@ -222,7 +209,7 @@
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
-			this._inspector.unregisterViewById(StructureView.ID);
+			this._inspector.unactiveView(InspectorViewID.STRUCT_VIEW);
 		}
 
 		/**
@@ -230,13 +217,6 @@
 		 */
 		private function onRefresh(evt : Event) : void {
 			this.onInspect(this.target);
-		}
-
-		/**
-		 * 返回这个InspectorView的id, 在tInspector中, 通过id来管理各个InspectorView.
-		 */
-		override public function getInspectorViewClassID() : String {
-			return StructureView.ID;
 		}
 
 		/**

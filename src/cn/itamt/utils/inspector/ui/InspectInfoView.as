@@ -1,6 +1,6 @@
 package cn.itamt.utils.inspector.ui {
 	import flash.display.Sprite;
-	
+
 	/**
 	 * @author tamt
 	 */

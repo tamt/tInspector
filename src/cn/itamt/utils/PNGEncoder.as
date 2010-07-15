@@ -1,7 +1,7 @@
 package cn.itamt.utils {
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
-	import flash.utils.ByteArray;	
+	import flash.utils.ByteArray;
 
 	public class PNGEncoder {
 

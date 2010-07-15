@@ -1,4 +1,4 @@
-﻿package cn.itamt.utils.inspector.ui {
+package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.DisplayObjectTool;
 
 	import flash.display.CapsStyle;
@@ -92,7 +92,7 @@
 				if(inited)return;
 				inited = true;
 				bg.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-				this.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseup);
+				this.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseup);				this.addEventListener(MouseEvent.MOUSE_UP, onMouseup);
 				
 				this._resizer.addEventListener(MouseEvent.MOUSE_DOWN, onDownResizer);
 				
@@ -104,10 +104,10 @@
 			if(evt.target == this) {
 				inited = false;
 				bg.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);		
-				this.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseup);		
+				this.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseup);						this.removeEventListener(MouseEvent.MOUSE_UP, onMouseup);		
 				
 				this._resizer.removeEventListener(MouseEvent.MOUSE_DOWN, onDownResizer);
-				this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMoveResizer);
+				this.stage.removeEventListener(Event.ENTER_FRAME, onMoveResizer);
 				
 				this.removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
 				
@@ -120,13 +120,13 @@
 		private function onDownResizer(evt : MouseEvent) : void {
 			this._virtualResizer.x = this._resizer.x;//mouseX;
 			this._virtualResizer.y = this._resizer.y;//mouseY;
-			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMoveResizer);
+			this.stage.addEventListener(Event.ENTER_FRAME, onMoveResizer);
 			
 			var rect : Rectangle = this.getBounds(this.stage);
 			this._virtualResizer.startDrag(false, new Rectangle(_minW, _minH, this.stage.stageWidth - _minW - rect.x - 8 - InspectorStageReference.offsetStageWidth, this.stage.stageHeight - _minH - rect.y - 8 - InspectorStageReference.offsetStageHeight));
 		}
 
-		protected function onMoveResizer(evt : MouseEvent) : void {
+		protected function onMoveResizer(evt : Event) : void {
 			this.resize(this._virtualResizer.x, this._virtualResizer.y);
 		}
 
@@ -139,7 +139,7 @@
 
 		protected function onMouseup(evt : MouseEvent) : void {
 			this.cacheAsBitmap = false;
-			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMoveResizer);
+			this.stage.removeEventListener(Event.ENTER_FRAME, onMoveResizer);
 			this.stopDrag();
 			this._virtualResizer.stopDrag();
 		}

@@ -3,7 +3,7 @@ package cn.itamt.utils.inspector.ui {
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
-	import flash.events.MouseEvent;	
+	import flash.events.MouseEvent;
 
 	/**
 	 * 显示一个对象在舞台中的布局请况.

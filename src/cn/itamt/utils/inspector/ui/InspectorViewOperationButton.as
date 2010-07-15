@@ -4,7 +4,7 @@ package cn.itamt.utils.inspector.ui {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
-	import flash.utils.Timer;	
+	import flash.utils.Timer;
 
 	/**
 	 * @author itamt@qq.com
@@ -31,7 +31,7 @@ package cn.itamt.utils.inspector.ui {
 			this.hitTestState = buildHitState();
 			
 			_timer = new Timer(1000);
-			addEventListener(MouseEvent.ROLL_OVER, onRollOver);			addEventListener(MouseEvent.CLICK, onClick);
+			addEventListener(MouseEvent.ROLL_OVER, onRollOver);			addEventListener(MouseEvent.MOUSE_DOWN, removeTip);			addEventListener(MouseEvent.CLICK, removeTip);
 			
 			this.tabEnabled = false;
 		}
@@ -66,7 +66,7 @@ package cn.itamt.utils.inspector.ui {
 			onTimerRemoveTip();
 		}
 
-		private function onClick(evt : MouseEvent) : void {
+		private function removeTip(evt : MouseEvent) : void {
 			onTimerRemoveTip();
 		}
 

@@ -1,11 +1,9 @@
-﻿package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
-
+package cn.itamt.utils.inspector.ui {
 	import flash.display.Graphics;
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.geom.Point;	
+	import flash.geom.Point;
 
 	/**
 	 * 调整形状和大小的点按钮.
@@ -49,17 +47,17 @@
 			lastMousePt = new Point(evt.stageX, evt.stageY);
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			
-			if(this.downHandler!=null)this.downHandler.call(null, this);
+			if(this.downHandler != null)this.downHandler.call(null, this);
 		}
 
 		private function onMouseUp(evt : MouseEvent) : void {
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			
-			if(this.downHandler!=null)this.upHandler.call(null, this);
+			if(this.downHandler != null)this.upHandler.call(null, this);
 		}
 
 		private function onMouseMove(evt : MouseEvent) : void {
-			if(this.dragHandler!=null)this.dragHandler.call(null, this);
+			if(this.dragHandler != null)this.dragHandler.call(null, this);
 			
 			lastMousePt.x = evt.stageX;
 			lastMousePt.y = evt.stageY;

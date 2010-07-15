@@ -1,10 +1,9 @@
 package cn.itamt.utils.inspector.renders {
-	import cn.itamt.utils.inspector.renders.BasePropertyEditor;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
-	
+
 	import flash.events.FocusEvent;
 	import flash.text.TextField;
-	import flash.utils.getDefinitionByName;	
+	import flash.utils.getDefinitionByName;
 
 	/**
 	 * @author itamt@qq.com
@@ -16,7 +15,7 @@ package cn.itamt.utils.inspector.renders {
 		public function PropertyEditor() {
 			super();
 			
-			value_tf = InspectorTextField.create('', 0x0, 12);
+			value_tf = InspectorTextField.create('', 0xffffff, 12);
 			value_tf.multiline = false;
 			value_tf.mouseWheelEnabled = false;
 			value_tf.height = _height - 2;
@@ -36,7 +35,7 @@ package cn.itamt.utils.inspector.renders {
 		}
 
 		protected function onFocusOut(evt : FocusEvent) : void {
-			this.value_tf.textColor = 0;
+			this.value_tf.textColor = 0xffffff;
 			this.graphics.clear();
 			this.graphics.lineStyle(2, 0x333333);
 			this.graphics.drawRoundRect(0, 0, _width, _height, 5, 5);

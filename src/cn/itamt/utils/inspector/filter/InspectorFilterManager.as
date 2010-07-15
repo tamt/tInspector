@@ -1,17 +1,15 @@
 package cn.itamt.utils.inspector.filter {
-	import cn.itamt.utils.inspector.ui.InspectorStageReference;
-
-	import flash.display.SimpleButton;
-
 	import cn.itamt.utils.ClassTool;
-	import cn.itamt.utils.Inspector;
+	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
 	import cn.itamt.utils.inspector.interfaces.IInspectorView;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.BaseInspectorView;
+	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
+	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.events.Event;
 
@@ -20,7 +18,6 @@ package cn.itamt.utils.inspector.filter {
 	 * @author itamt@qq.com
 	 */
 	public class InspectorFilterManager extends BaseInspectorView implements IInspectorView {
-		public static const ID : String = 'InspectorFilterManager';
 
 		private var _history : Array = [DisplayObject, Sprite, Shape, SimpleButton];
 		//处于启用状态的过滤器
@@ -161,7 +158,7 @@ package cn.itamt.utils.inspector.filter {
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
-			this._inspector.unregisterViewById(InspectorFilterManager.ID);
+			this._inspector.unactiveView(InspectorViewID.FILTER_VIEW);
 		}
 
 		/////////////////////////
@@ -176,47 +173,40 @@ package cn.itamt.utils.inspector.filter {
 			}
 		}
 
-		override public function onTurnOn() : void {			
-			_view = new InspectorFileterManagerPanel(InspectorLanguageManager.getStr('InspectorFilterManager'));
-			_view.setFilterList(this._history);
-			_view.setActivedList(this._activeFilters);
-			_view.addEventListener(Event.CLOSE, onClickClose);
-			_inspector.stage.addChild(_view);
-			InspectorStageReference.centerOnStage(_view);
+		override public function onTurnOn() : void {
+			super.onTurnOn();
 			
 			_inspector.stage.addEventListener(InspectorFilterEvent.APPLY, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.KILL, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.CHANGE, toChangeFilter, false, 0, true);			_inspector.stage.addEventListener(InspectorFilterEvent.RESTORE, toChangeFilter, false, 0, true);
 		}
 
 		override public function onTurnOff() : void {
+			super.onTurnOff();
+						
+			_inspector.stage.removeEventListener(InspectorFilterEvent.APPLY, toChangeFilter);
+			_inspector.stage.removeEventListener(InspectorFilterEvent.KILL, toChangeFilter);
+			_inspector.stage.removeEventListener(InspectorFilterEvent.CHANGE, toChangeFilter);			_inspector.stage.removeEventListener(InspectorFilterEvent.RESTORE, toChangeFilter);
+		}
+
+		override public function onActive() : void {
+			super.onActive();
+					
+			_view = new InspectorFileterManagerPanel(InspectorLanguageManager.getStr(InspectorViewID.FILTER_VIEW));
+			_view.setFilterList(this._history);
+			_view.setActivedList(this._activeFilters);
+			_view.addEventListener(Event.CLOSE, onClickClose);
+			_inspector.stage.addChild(_view);
+			InspectorStageReference.centerOnStage(_view);
+		}
+
+		override public function onUnActive() : void {
+			super.onUnActive();
+			
 			if(_view != null) {
 				if(_view.stage)_view.parent.removeChild(_view);
 				_view.removeEventListener(Event.CLOSE, onClickClose);
 				_view.dispose();
 				_view = null;
 			}
-			
-			_inspector.stage.removeEventListener(InspectorFilterEvent.APPLY, toChangeFilter);
-			_inspector.stage.removeEventListener(InspectorFilterEvent.KILL, toChangeFilter);
-			_inspector.stage.removeEventListener(InspectorFilterEvent.CHANGE, toChangeFilter);			_inspector.stage.removeEventListener(InspectorFilterEvent.RESTORE, toChangeFilter);
-		}
-
-		override public function onUnRegister(inspector : Inspector) : void {
-			if(inspector == this._inspector) {
-				_inspector.stage.removeEventListener(InspectorFilterEvent.APPLY, toChangeFilter);
-				_inspector.stage.removeEventListener(InspectorFilterEvent.KILL, toChangeFilter);
-				_inspector.stage.removeEventListener(InspectorFilterEvent.CHANGE, toChangeFilter);
-			}
-			if(_view != null) {
-				_view.removeEventListener(Event.CLOSE, onClickClose);
-				if(_view.stage)_view.parent.removeChild(_view);
-			}
-		}
-
-		/**
-		 * 返回这个InspectorView的id, 在tInspector中, 通过id来管理各个InspectorView.
-		 */
-		override public function getInspectorViewClassID() : String {
-			return InspectorFilterManager.ID;
 		}
 	}
 }

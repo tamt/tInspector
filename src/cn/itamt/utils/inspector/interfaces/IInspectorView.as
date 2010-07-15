@@ -1,20 +1,41 @@
 package cn.itamt.utils.inspector.interfaces {
-	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 
-	import flash.display.DisplayObject;	
+	import flash.display.DisplayObject;
 
 	/**
 	 * @author itamt@qq.com
 	 */
 	public interface IInspectorView {
 
+		/**
+		 * 一個顯示對象是不是該view的子對象
+		 */
 		function contains(child : DisplayObject) : Boolean;
+
+		/**
+		 * 註冊到Inspector時
+		 */
+		function onRegister(inspector : IInspector) : void;
+
+		/**
+		 * 刪除在Inspector註冊時
+		 */
+		function onUnRegister(inspector : IInspector) : void;
+
+		function onRegisterView(viewClassId : String) : void;
+
+		function onUnRegisterView(viewClassId : String) : void;
 
 		/**
 		 * 注册到Inspector时.
 		 */
-		function onRegister(inspector : Inspector) : void;
+		function onActive() : void;
+
+		/**
+		 * 当取消在Inspector的注册时.
+		 */
+		function onUnActive() : void;
 
 		/**
 		 * 当Inspector开启时
@@ -52,28 +73,20 @@ package cn.itamt.utils.inspector.interfaces {
 		function onUpdate(target : InspectTarget = null) : void;
 
 		/**
-		 * 当取消在Inspector的注册时.
-		 */
-		function onUnRegister(inspector : Inspector) : void;
-
-		/**
 		 * 当设置Inspect的查看模式时.
 		 */
 		function onInspectMode(clazz : Class) : void;
 
 		/**
-		 * 
+		 * 当激活时
 		 */
-		function onRegisterView(viewClassId : String) : void;
+		function onActiveView(viewClassId : String) : void;
 
 		/**
-		 * 
+		 * 当不激活时
 		 */
-		function onUnregisterView(viewClassId : String) : void;
+		function onUnActiveView(viewClassId : String) : void;
 
-		/**
-		 * 返回这个InspectorView的id, 在tInspector中, 通过id来管理各个InspectorView.
-		 */
-		function getInspectorViewClassID() : String;
+		function get isActive() : Boolean;
 	}
 }

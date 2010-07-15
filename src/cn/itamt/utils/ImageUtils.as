@@ -3,7 +3,7 @@ package cn.itamt.utils {
 	import flash.display.DisplayObject;
 	import flash.display.IBitmapDrawable;
 	import flash.geom.Matrix;
-	import flash.geom.Rectangle;	
+	import flash.geom.Rectangle;
 
 	/**
 	 * Image utilities that help to resize images, take snapshots of display

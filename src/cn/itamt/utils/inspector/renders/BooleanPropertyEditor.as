@@ -1,9 +1,8 @@
 package cn.itamt.utils.inspector.renders {
 	import cn.itamt.utils.inspector.events.PropertyEvent;
-	import cn.itamt.utils.inspector.renders.PropertyEditor;
 	import cn.itamt.utils.inspector.ui.ToggleBooleanButton;
 
-	import flash.events.Event;	
+	import flash.events.Event;
 
 	/**
 	 * @author itamt@qq.com

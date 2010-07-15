@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.ui {
 	import flash.display.CapsStyle;
 	import flash.display.JointStyle;
 	import flash.display.Shape;
-	import flash.display.SimpleButton;		
+	import flash.display.SimpleButton;
 
 	/**
 	 * 调整面板大小的小按钮

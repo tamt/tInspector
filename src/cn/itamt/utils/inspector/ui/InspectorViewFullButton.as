@@ -1,9 +1,8 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
 
 	import flash.display.Shape;
-	import flash.events.MouseEvent;	
+	import flash.events.MouseEvent;
 
 	/**
 	 * 查看完整属性按钮

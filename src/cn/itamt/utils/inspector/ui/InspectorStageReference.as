@@ -1,7 +1,10 @@
-package cn.itamt.utils.inspector.ui {
-	import flash.geom.Rectangle;
+﻿package cn.itamt.utils.inspector.ui {
+	import flash.geom.Matrix;
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
+	import flash.geom.Rectangle;
 
 	/**
 	 * 对Stage的引用
@@ -42,6 +45,50 @@ package cn.itamt.utils.inspector.ui {
 			return (_stage.stageHeight - _originalStageHeight) / 2;
 		}
 
+		public static function addEventListener(type : String,  listener : Function, useCapture : Boolean = false, priority : uint = 0, useWeakReference : Boolean = false) : void {
+			_stage.addEventListener(type, listener, useCapture, priority, useWeakReference);
+		}
+
+		public static function removeEventListener(type : String,  listener : Function) : void {
+			_stage.removeEventListener(type, listener);
+		}
+
+		public static function getStageBounds() : Rectangle {
+			var rect : Rectangle;
+			if(_stage.scaleMode == StageScaleMode.NO_SCALE) {
+				switch(_stage.align) {
+					case StageAlign.TOP:
+						rect = new Rectangle(-offsetStageWidth, 0, stageWidth, stageHeight);
+						break;
+					case StageAlign.BOTTOM:
+						rect = new Rectangle(-offsetStageWidth, -(stageHeight - originalStageHeight), stageWidth, stageHeight);
+						break;
+					case StageAlign.LEFT:
+						rect = new Rectangle(0, -offsetStageHeight, stageWidth, stageHeight);
+						break;
+					case StageAlign.RIGHT:
+						rect = new Rectangle(-(stageWidth - originalStageWidth), -offsetStageHeight, stageWidth, stageHeight);
+						break;
+					case StageAlign.TOP_LEFT:
+						rect = new Rectangle(0, 0, stageWidth, stageHeight);
+						break;
+					case StageAlign.TOP_RIGHT:
+						rect = new Rectangle(-(stageWidth - originalStageWidth), 0, stageWidth, stageHeight);
+						break;
+					case StageAlign.BOTTOM_LEFT:
+						rect = new Rectangle(0, -(stageHeight - originalStageHeight), stageWidth, stageHeight);
+						break;
+					case StageAlign.BOTTOM_RIGHT:
+						rect = new Rectangle(-(stageWidth - originalStageWidth), -(stageHeight - originalStageHeight), stageWidth, stageHeight);
+						break;
+					case "":
+						rect = new Rectangle(offsetStageWidth, offsetStageHeight, stageWidth, stageHeight);
+						break;
+				}
+			}
+			return rect;
+		}
+
 		/**
 		 * 把一个显示对象在舞台上居中
 		 */
@@ -51,6 +98,12 @@ package cn.itamt.utils.inspector.ui {
 				obj.x = stageWidth / 2 - obj.width / 2 - offsetStageWidth - rect.x;
 				obj.y = stageHeight / 2 - obj.height / 2 - offsetStageHeight - rect.y;
 			}
+		}
+
+		public static function getConcatenatedMatrix() : Matrix {
+			var rect : Rectangle = getStageBounds();
+			var matrix : Matrix = new Matrix(1, 0, 0, 1, rect.left, rect.top);
+			return matrix;
 		}
 	}
 }

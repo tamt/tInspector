@@ -1,10 +1,9 @@
 package cn.itamt.utils.inspector.renders {
-	import cn.itamt.utils.inspector.events.PropertyEvent;	
-	import cn.itamt.utils.inspector.renders.BasePropertyEditor;
+	import cn.itamt.utils.inspector.events.PropertyEvent;
 
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
-	import flash.text.TextFieldType;		
+	import flash.text.TextFieldType;
 
 	/**
 	 * 字符串类型属性编辑器.

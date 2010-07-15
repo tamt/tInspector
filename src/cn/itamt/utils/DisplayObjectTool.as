@@ -1,4 +1,4 @@
-﻿package cn.itamt.utils {
+package cn.itamt.utils {
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;

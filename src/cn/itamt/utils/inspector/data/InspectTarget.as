@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.data {
-	import flash.display.DisplayObject;			
+	import flash.display.DisplayObject;
 
 	/**
 	 * 查看目标

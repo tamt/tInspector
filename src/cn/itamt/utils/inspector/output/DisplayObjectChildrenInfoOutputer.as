@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.output {
 	import cn.itamt.utils.DisplayObjectTool;
 
 	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;	
+	import flash.display.DisplayObjectContainer;
 
 	/**
 	 * 输出一个显示对象的子对象数目信息.(目前被用在StructurePanel上).

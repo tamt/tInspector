@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import flash.display.Shape;	
+
+	import flash.display.Shape;
 
 	/**
 	 * @author tamt

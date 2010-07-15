@@ -37,6 +37,10 @@ StructurePanel	=	structure panel
 PropertyPanel	=	property panel
 InspectorFilterManager = inspect filter panel
 FilterAllDisplayObject	=	all DisplayObject
+FullScreen	=	full screen
+StartMouseInspect	=	start mouse inspect
+StopMouseInspect	=	stop mouse inspect
+InspectorOnOff	=	turn tInspector on/off
 ]]>
 					</lang>;
 		}

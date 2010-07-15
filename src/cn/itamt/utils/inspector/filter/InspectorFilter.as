@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.filter {
-	import cn.itamt.utils.ClassTool;				
+	import cn.itamt.utils.ClassTool;
 
 	/**
 	 * 查看過濾器數據

@@ -67,8 +67,8 @@ package cn.itamt.utils.inspector.filter {
 					activeFilterItem(filter);
 				}
 			} else {
-				for each(var filter:Class in _data) {
-					inactiveFilterItem(filter);
+				for each(var tfilter:Class in _data) {
+					inactiveFilterItem(tfilter);
 				}
 			}
 		}

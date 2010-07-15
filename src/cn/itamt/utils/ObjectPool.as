@@ -27,7 +27,7 @@
 package cn.itamt.utils {
 	import flash.utils.Dictionary;
 	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedClassName;			
+	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * Manages objects by retaining disposed objects and returning them when a new object

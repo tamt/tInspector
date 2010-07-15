@@ -1,10 +1,9 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.consts.InspectorSymbolIcon;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 	import flash.display.Bitmap;
-	import flash.events.MouseEvent;	
+	import flash.events.MouseEvent;
 
 	/**
 	 * @author itamt@qq.com

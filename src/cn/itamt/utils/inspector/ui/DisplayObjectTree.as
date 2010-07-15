@@ -1,4 +1,4 @@
-﻿package cn.itamt.utils.inspector.ui {
+package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.ObjectPool;
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
@@ -7,7 +7,7 @@
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.utils.Dictionary;	
+	import flash.utils.Dictionary;
 
 	/**
 	 * 显示对象树

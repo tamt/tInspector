@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.events {
-	import flash.events.Event;		
+	import flash.events.Event;
 
 	/**
 	 * @author itamt@qq.com

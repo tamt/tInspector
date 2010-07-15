@@ -1,9 +1,9 @@
-﻿package cn.itamt.utils {
-	import flash.utils.getQualifiedSuperclassName;
-	import flash.utils.getDefinitionByName;
+package cn.itamt.utils {
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
-	import flash.utils.getQualifiedClassName;	
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
+	import flash.utils.getQualifiedSuperclassName;
 
 	/**
 	 * 操作类的一些方法.

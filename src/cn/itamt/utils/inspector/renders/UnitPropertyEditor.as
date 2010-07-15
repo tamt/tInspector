@@ -1,8 +1,7 @@
 package cn.itamt.utils.inspector.renders {
 	import cn.itamt.utils.inspector.events.PropertyEvent;
-	import cn.itamt.utils.inspector.renders.NumberPropertyEditor;
 
-	import flash.events.KeyboardEvent;	
+	import flash.events.KeyboardEvent;
 
 	/**
 	 * @author itamt@qq.com

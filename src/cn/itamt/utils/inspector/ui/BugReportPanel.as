@@ -1,12 +1,10 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.Inspector;	
-	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
+	import cn.itamt.utils.Inspector;
 
-	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.filters.GlowFilter;
 	import flash.text.StyleSheet;
-	import flash.text.TextField;	
+	import flash.text.TextField;
 
 	/**
 	 * @author itamt@qq.com

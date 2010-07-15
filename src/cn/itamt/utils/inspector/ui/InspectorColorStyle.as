@@ -5,7 +5,7 @@ package cn.itamt.utils.inspector.ui {
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.Stage;
-	import flash.utils.getQualifiedClassName;	
+	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * TODO:增加TextField, Loader, Video, AVM1Movie, StaticText, MorphShape(完整AS3显示对象类)类型.

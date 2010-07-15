@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.output {
-	import flash.utils.Dictionary;						
+	import flash.utils.Dictionary;
 
 	/**
 	 * @author itamt@qq.com

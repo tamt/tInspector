@@ -1,8 +1,7 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
 
-	import flash.display.Shape;	
+	import flash.display.Shape;
 
 	/**
 	 * 查看對象顯示結構的按鈕.

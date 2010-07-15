@@ -1,16 +1,15 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;	
 	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.inspector.events.PropertyEvent;
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.renders.BasePropertyEditor;
 	import cn.itamt.utils.inspector.renders.MethodRender;
 	import cn.itamt.utils.inspector.renders.PropertyAccessorRender;
-	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.utils.describeType;	
+	import flash.utils.describeType;
 
 	/**
 	 * 属性面板
@@ -28,7 +27,7 @@ package cn.itamt.utils.inspector.ui {
 
 		private var renders : Array;
 		//收藏的属性
-		private var favProps : Array = ["x", "y", "width", "height", "scaleX", "scaleY", "alpha", "rotation"];
+		private static var favProps : Array = ["x", "y", "width", "height", "scaleX", "scaleY", "alpha", "rotation"];
 
 		private var viewPropBtn : InspectorTabLabelButton;
 		private var viewMethodBtn : InspectorTabLabelButton;
@@ -155,7 +154,7 @@ package cn.itamt.utils.inspector.ui {
 				}
 				
 				//更新title
-				this._title.htmlText = curTarget.name + '<font color="#cccccc">(' + ClassTool.getShortClassName(curTarget) + ')</font>';
+				this._title.htmlText = '<font color="#99cc00">' + curTarget.name + '</font>' + '<font color="#cccccc">(' + ClassTool.getShortClassName(curTarget) + ')</font>';
 				this.drawTitle();
 			} else {
 				onUpdate(object);
@@ -221,8 +220,8 @@ package cn.itamt.utils.inspector.ui {
 		private function onFavProperty(evt : PropertyEvent) : void {
 			var render : PropertyAccessorRender = evt.target as PropertyAccessorRender;
 			var prop : String = String(render.xml.@name);
-			if(this.favProps.indexOf(prop) < 0) {
-				this.favProps.unshift(prop);
+			if(favProps.indexOf(prop) < 0) {
+				favProps.unshift(prop);
 				this.propList.sort(compateAccessorName);
 				
 				drawList();
@@ -235,9 +234,9 @@ package cn.itamt.utils.inspector.ui {
 		private function onDelFavProperty(evt : PropertyEvent) : void {
 			var render : PropertyAccessorRender = evt.target as PropertyAccessorRender;
 			var prop : String = String(render.xml.@name);
-			var t : int = this.favProps.indexOf(prop);
+			var t : int = favProps.indexOf(prop);
 			if(t >= 0) {
-				this.favProps.splice(t, 1);
+				favProps.splice(t, 1);
 				this.propList.sort(compateAccessorName);
 				drawList();
 			}
@@ -278,9 +277,9 @@ package cn.itamt.utils.inspector.ui {
 			}
 			
 			var l : int = propList.length;
-			for(var i : int = 0;i < l; i++) {				var render : PropertyAccessorRender;
+			for(var i : int = 0;i < l;i++) {				var render : PropertyAccessorRender;
 				if(i < favProps.length) {
-					if(this.favProps.indexOf(String(propList[i].@name)) > -1) {
+					if(favProps.indexOf(String(propList[i].@name)) > -1) {
 						render = new PropertyAccessorRender(250, 20, true);
 					} else {
 						if(fullBtn.normalMode) {
@@ -343,9 +342,7 @@ package cn.itamt.utils.inspector.ui {
 			if(evt)evt.stopImmediatePropagation();
 			this.drawList();
 			if(singletonBtn.normalMode) {
-				
 			} else {
-				
 			}
 		}
 

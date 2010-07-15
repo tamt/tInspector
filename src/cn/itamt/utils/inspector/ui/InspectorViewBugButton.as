@@ -1,12 +1,11 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;	
 	import cn.itamt.utils.inspector.consts.InspectorSymbolIcon;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 	import flash.display.BitmapData;
 	import flash.display.Graphics;
 	import flash.display.Shape;
-	import flash.geom.Matrix;		
+	import flash.geom.Matrix;
 
 	/**
 	 * @author itamt@qq.com
@@ -22,7 +21,7 @@ package cn.itamt.utils.inspector.ui {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			
-			g.beginFill(0xffffff, .8);
+			//			g.beginFill(0xffffff, .8);			g.beginFill(0xffffff, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
 			
@@ -53,7 +52,7 @@ package cn.itamt.utils.inspector.ui {
 		override protected function buildDownState() : Shape {
 			var sp : Shape = new Shape();
 			with(sp) {
-				graphics.beginFill(0xcccccc, 1);
+				//				graphics.beginFill(0xcccccc, 1);				graphics.beginFill(0xcccccc, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
 			}

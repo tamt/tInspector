@@ -1,6 +1,6 @@
 package cn.itamt.utils.inspector.interfaces {
-	import cn.itamt.utils.inspector.data.DisplayItemData;	
-	
+	import cn.itamt.utils.inspector.data.DisplayItemData;
+
 	/**
 	 * @author itamt@qq.com
 	 */

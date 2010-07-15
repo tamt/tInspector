@@ -1,11 +1,8 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
-	import flash.events.MouseEvent;	
-
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
-
-	import flash.display.Shape;	
+	import flash.display.Shape;
+	import flash.events.MouseEvent;
 
 	/**
 	 * 面板的‘最小化/还原’按钮。

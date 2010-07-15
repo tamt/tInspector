@@ -1,7 +1,7 @@
 package cn.itamt.keyboard {
 	import flash.display.Stage;
 	import flash.events.EventDispatcher;
-	import flash.events.KeyboardEvent;	
+	import flash.events.KeyboardEvent;
 
 	/**
 	 * 快捷键管理
@@ -32,7 +32,7 @@ package cn.itamt.keyboard {
 				if(_stage == null) {
 					_stage = stage;
 					_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);					_stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-				}else{
+				} else {
 					//TODO:一些清理工作.
 				}
 			}

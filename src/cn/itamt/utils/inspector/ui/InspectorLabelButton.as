@@ -1,7 +1,6 @@
 package cn.itamt.utils.inspector.ui {
-	import flash.display.SimpleButton;
 	import flash.display.Sprite;
-	import flash.text.TextField;	
+	import flash.text.TextField;
 
 	/**
 	 * @author itamt@qq.com

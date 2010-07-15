@@ -1,25 +1,24 @@
 ﻿package cn.itamt.utils {
+	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.filter.InspectorFilterManager;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.interfaces.IInspectorView;
 	import cn.itamt.utils.inspector.key.InspectorKeyManager;
+	import cn.itamt.utils.inspector.tip.InspectorTipsManager;
 	import cn.itamt.utils.inspector.ui.InspectorRightMenu;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
-	import cn.itamt.utils.inspector.ui.InspectorTextField;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
 	import cn.itamt.utils.inspector.ui.LiveInspectView;
 	import cn.itamt.utils.inspector.ui.PropertiesView;
 	import cn.itamt.utils.inspector.ui.StructureView;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
-	import flash.filters.GlowFilter;
+	import flash.events.EventDispatcher;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.text.TextField;
+	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
 
 	/**
@@ -31,10 +30,16 @@
 	 * 	</code>
 	 * @version 1.0 beta
 	 */
-	public class Inspector {
-		public static const VERSION : String = '1.0.6.5';
+	public class Inspector extends EventDispatcher implements IInspector {
+		public static const VERSION : String = '1.1';
 
 		private static var _instance : Inspector;
+
+		public static var APP_DOMAIN : ApplicationDomain;
+
+		//////////////////////////////////////
+		////////////setter, getter////////////
+		//////////////////////////////////////
 		private var _root : DisplayObjectContainer;
 
 		public function get root() : DisplayObjectContainer {
@@ -81,6 +86,11 @@
 		public function Inspector(sf : SingletonEnforcer) {
 			super();
 			
+			if(sf == null) {
+				throw new Error('use Inspector.getInstance() to play.');
+				return;
+			}
+			
 			_ctmenu = new InspectorRightMenu();
 			_inspectView = new LiveInspectView();
 			_structureView = new StructureView();
@@ -104,72 +114,54 @@
 		////////////////////////////////////////////////////////
 
 		/**
-		 * @param root						所在根对象
-		 * @param withMenu					是否在右键菜单中显示操作选项
-		 * @param withKeys					使用键盘快捷键？
-		 * @param showPropPanelAtFirst		在开启时显示属性面板？
-		 * @param showStructPanelAtFirst	在开启时显示列表结构面板？
+		 * 初始化tInspector，并注册要使用功能（只有注册过的功能才能开启，turnOn）。
+		 * @param root				所在根对象
+		 * @param menu				注册右键菜单
+		 * @param live				注册实时查看功能
+		 * @param structure			注册显示结构功能
+		 * @param property			注册显示对象信息功能
+		 * @param keys				注册快捷键
 		 */
-		public function init(root : DisplayObjectContainer, withMenu : Boolean = true, withKeys : Boolean = true, showPropPanelAtFirst : Boolean = false, showStructPanelAtFirst : Boolean = false, showFilterManagerAtFirst : Boolean = false) : void {
+		public function init(root : DisplayObjectContainer, menu : Boolean = true, live : Boolean = true, property : Boolean = true, structure : Boolean = true, keys : Boolean = false) : void {
 			
 			this._root = root;
 			this._stage = root.stage;
-			
-			InspectorStageReference.referenceTo(this._stage);
-			
-			this._stage.addEventListener(InspectorViewOperationButton.EVT_SHOW_TIP, onShowTip);
-			this._stage.addEventListener(InspectorViewOperationButton.EVT_REMOVE_TIP, onRemoveTip);
 
-			if(stage == null) {
+			if(this._stage == null) {
 				throw new Error("Set inspector's stage before you call inspector.init(); ");
 				return;
 			}
 			
-			//右键菜单视图
-			if(withMenu) {
-				registerView(_ctmenu, InspectorRightMenu.ID);
+			InspectorStageReference.referenceTo(this._stage);
+			
+			//注册各個功能模塊
+			if(menu) {
+				registerView(_ctmenu, InspectorViewID.RIGHT_MENU);
+				activeView(InspectorViewID.RIGHT_MENU);
 			}
-			
-			//实时查看的视图
-			registerView(_inspectView, LiveInspectView.ID);
-			
-			//显示对象结构树视图
-			if(showStructPanelAtFirst)registerView(_structureView, StructureView.ID);
-			
-			//属性面板
-			if(showPropPanelAtFirst)registerView(this._propertiesView, PropertiesView.ID);
-			
-			//快捷鍵
-			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.S], StructureView.ID);
-			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.T], LiveInspectView.ID);
-			//			this.keysManager.bindKey2View([KeyCode.CONTROL, KeyCode.P], PropertiesView.ID);
-			//			this.keysManager.bindKey2Fun([KeyCode.CONTROL, KeyCode.I], this.toggleTurn);			//			this.keysManager.bindKey2Fun([KeyCode.CONTROL, KeyCode.F], InspectorFilterManager.ID);
-			this._keysManager.bindKey2View([17, 83], StructureView.ID);
-			this._keysManager.bindKey2View([17, 84], LiveInspectView.ID);
-			this._keysManager.bindKey2View([17, 80], PropertiesView.ID);
-			this._keysManager.bindKey2View([17, 77], InspectorFilterManager.ID);
-			this._keysManager.bindKey2Fun([17, 73], this.toggleTurn);
-			if(withKeys)this.registerView(_keysManager, _keysManager.getInspectorViewClassID());
-			
-			//查看過濾器管理
-			if(showFilterManagerAtFirst)this.registerView(_filterManager, _filterManager.getInspectorViewClassID());
+			if(live)registerView(_inspectView, InspectorViewID.LIVE_VIEW);
+			if(structure)registerView(_structureView, InspectorViewID.STRUCT_VIEW);
+			if(property)registerView(_propertiesView, InspectorViewID.PROPER_VIEW);
+			if(keys)registerView(_keysManager, InspectorViewID.SHORT_CUT);
+			registerView(_filterManager, InspectorViewID.FILTER_VIEW);
 		}
 
 		private var _views : Dictionary;
 
 		/**
-		 * 注册Inspector的视图.
+		 * 往tInspector註冊一個功能模塊
 		 */
-		public function registerView(view : IInspectorView, id : String = null) : void {
-			if(_views == null) {
-				_views = new Dictionary();
-			}
-			if(id == null)id = view.getInspectorViewClassID();
+		public function registerView(view : IInspectorView, id : String) : void {
+			if(_views == null)_views = new Dictionary();
 			if(view != _views[id]) {
-				_views[id] = view;
 				view.onRegister(this);
+				
+				for(var t:String in _views) {
+					view.onRegisterView(t);
+				}
+				
+				_views[id] = view;
 			}
-			
 			
 			for each(var item:IInspectorView in _views) {
 				item.onRegisterView(id);
@@ -177,64 +169,92 @@
 		}
 
 		/**
-		 * 注册Inspector的视图.
+		 * 删除註冊一個功能模塊
 		 */
-		public function registerViewById(id : String) : void {
-			switch(id) {
-				case InspectorRightMenu.ID:
-					this.registerView(this._ctmenu, id);
-					break;
-				case LiveInspectView.ID:
-					this.registerView(this._inspectView, id);
-					break;
-				case StructureView.ID:
-					this.registerView(this._structureView, id);
-					break;
-				case PropertiesView.ID:
-					this.registerView(this._propertiesView, id);
-					break;
-				case InspectorFilterManager.ID:
-					this.registerView(this._filterManager, id);
-					break;
+		public function unregisterView(id : String) : void {
+			if(_views == null)_views = new Dictionary();
+			var view : IInspectorView = _views[id];
+			if(view != null) {		
+				view.onUnRegister(this);
+			
+				for each(var item:IInspectorView in _views) {
+					item.onUnRegisterView(id);
+				}
+			
+				delete	_views[id];
 			}
 		}
 
 		/**
-		 * 删除注册Inspector的视图.
+		 * 开启Inspector的视图.
 		 */
-		public function unregisterViewById(id : String) : void {
-			if(_views[id]) {
-				(_views[id] as IInspectorView).onUnRegister(this);
+		public function activeView(id : String) : void {
+			if(_views == null)return;
+			
+			var view : IInspectorView = _views[id];
+			if(view) {
+				if(!view.isActive)view.onActive();
+				if(_curInspectEle != null) {
+					if(!this.isLiveInspecting) {
+						view.onInspect(_curInspectEle);
+					} else {
+						view.onLiveInspect(_curInspectEle);
+					}
+				}
+				for each(var item:IInspectorView in _views) {
+					item.onActiveView(id);
+				}
+			} else {
+				trace(id + '没有注册，不能开启。使用Inspector.registerView来注册功能，然后再调用Inspector.activeView。');
 			}
-			_views[id] = null;
-			delete _views[id];
+		}
+
+		/**
+		 * 关闭Inspector的视图.
+		 */
+		public function unactiveView(id : String) : void {
+			if(_views[id] != null) {
+				(_views[id] as IInspectorView).onUnActive();
+			}
 			
 			for each(var view:IInspectorView in _views) {
-				view.onUnregisterView(id);
+				if(view.isActive)view.onUnActiveView(id);
 			}
 		}
 
-		public function toggleViewByID(viewID : String) : void {
-			if(_views[viewID]) {
-				this.unregisterViewById(viewID);
+		public function toggleViewByID(id : String) : void {
+			var view : IInspectorView = _views[id];
+			if(view.isActive) {
+				view.onUnActive();
 			} else {
-				this.registerViewById(viewID);
+				view.onActive();
 			}
+		}
+
+		public function getViewByID(viewId : String) : IInspectorView {
+			if(_views == null)return null;
+			return _views[viewId];
 		}
 
 		/**
-		 * 开启tInspector
+		 * 开启tInspector，开始指定的功能模块
 		 */
-		public function turnOn() : void {
+		public function turnOn(...paras) : void {
 			if(_isOn)return;
 			_isOn = true;
 			_curInspectEle = null;
 			
+			//鼠標tip
+			InspectorTipsManager.init();
+			
+			//调用各个模块的onTurnOn
 			for each(var view:IInspectorView in _views) {
 				view.onTurnOn();
 			}
 			
-			this.startLiveInspect();
+			for(var i : int = 0;i < paras.length;i++) {
+				this.activeView(String(paras[i]));
+			}
 		}
 
 		/**
@@ -243,11 +263,14 @@
 		public function turnOff() : void {
 			this.stopLiveInspect();
 			
+			InspectorTipsManager.dispose();
+			
 			if(!_isOn)return;
 			_isOn = false;
 			_curInspectEle = null;
 			
 			for each(var view:IInspectorView in _views) {
+				if(view.isActive)view.onUnActive();
 				view.onTurnOff();
 			}
 		}
@@ -285,7 +308,7 @@
 				this.stage.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
 				
 				for each(var view:IInspectorView in _views) {
-					view.onStartLiveInspect();
+					if(view.isActive)view.onStartLiveInspect();
 				}
 			}
 		}
@@ -295,7 +318,7 @@
 			this.stage.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
 			
 			for each(var view:IInspectorView in _views) {
-				view.onStopLiveInspect();
+				if(view.isActive)view.onStopLiveInspect();
 			}
 		}
 
@@ -335,7 +358,6 @@
 		public function isInspectView(target : DisplayObject) : Boolean {
 			for each(var view:IInspectorView in _views) {
 				if(view.contains(target)) {
-					trace("[Inspector][isInspectView]" + view);
 					return true;
 				}
 			}
@@ -354,6 +376,7 @@
 			_curInspectEle = getInspectTarget(ele);
 			
 			for each(var view:IInspectorView in _views) {
+				if(view.isActive)
 				view.onLiveInspect(_curInspectEle);
 			}
 		}
@@ -369,7 +392,7 @@
 			_curInspectEle = getInspectTarget(ele);
 			
 			for each(var view:IInspectorView in _views) {
-				view.onInspect(_curInspectEle);
+				if(view.isActive)view.onInspect(_curInspectEle);
 			}
 		}
 
@@ -379,7 +402,7 @@
 		public function updateInsectorView() : void {
 			if(_curInspectEle != null) {
 				for each(var view:IInspectorView in _views) {
-					view.onUpdate(_curInspectEle);
+					if(view.isActive)view.onUpdate(_curInspectEle);
 				}
 			}
 		}
@@ -400,90 +423,6 @@
 			
 			return _tMap[target];
 		}
-
-		
-		//tip
-		private var _tip : Sprite;
-
-		/**
-		 * 显示tip
-		 */
-		private function onShowTip(evt : Event) : void {
-			if(evt.target is InspectorViewOperationButton) {
-				var target : InspectorViewOperationButton = evt.target as InspectorViewOperationButton;
-				if(_tip) {
-					_tip.graphics.clear();
-					DisplayObjectTool.removeAllChildren(_tip);
-					if(_tip.stage)this._tip.parent.removeChild(_tip);
-					_tip = null;
-				}
-				_tip = new Sprite();
-				_tip.filters = [new GlowFilter(0x0, 1, 16, 16, 1)];
-				_tip.mouseEnabled = _tip.mouseChildren = false;
-				
-				var _tf : TextField = InspectorTextField.create(target.tip, 0xffffff, 15, 5, 0, 'left');
-				_tf.y = 26 - _tf.height;
-				_tip.addChild(_tf);
-				_tip.graphics.beginFill(0x000000);
-				_tip.graphics.drawRoundRect(0, 26 - _tf.height, _tf.width + 10, _tf.height, 10, 10);
-				_tip.graphics.endFill();
-				_tip.graphics.beginFill(0x000000);
-				_tip.graphics.moveTo(9, 25);
-				_tip.graphics.lineTo(15, 25);
-				_tip.graphics.lineTo(12, 30);
-				_tip.graphics.lineTo(9, 25);
-				_tip.graphics.endFill();
-				target.parent.addChild(_tip);
-				
-				//				var pt : Point = target.localToGlobal(new Point(0, 0));
-				var rect : Rectangle = target.getBounds(target.parent);
-				
-				_tip.x = rect.x - 5;
-				_tip.y = rect.y - 35;
-				
-				//
-				DisplayObjectTool.swapToTop(_tip);
-			}
-			
-			evt.stopImmediatePropagation();
-		}
-
-		/**
-		 * 移除tip
-		 */
-		private function onRemoveTip(evt : Event) : void {
-			if(_tip) {
-				_tip.graphics.clear();
-				DisplayObjectTool.removeAllChildren(_tip);
-				if(_tip.stage)this._tip.parent.removeChild(_tip);
-				_tip = null;
-			}
-			evt.stopImmediatePropagation();
-		}
-
-//		/**
-//		 * 有显示对象加入显示列表时
-//		 */
-//		private function onSthAdd(evt : Event) : void {
-//			if(isInspectView(evt.target as DisplayObject))return;
-//			if(this._isOn) {
-//				for each(var view:IInspectorView in _views) {
-//					view.onUpdate(_curInspectEle);
-//				}
-//			}
-//		}
-//
-//		/**
-//		 * 有显示对象移出显示列表时
-//		 */
-//		private function onSthRemove(evt : Event) : void {
-//			if(isInspectView(evt.target as DisplayObject))return;
-//			if(this._isOn) {
-//				for each(var view:IInspectorView in _views) {
-//					view.onUpdate(_curInspectEle);
-//				}
-//			}
-//		}
 	}
 }
 

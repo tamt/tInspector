@@ -1,6 +1,8 @@
-﻿package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.Inspector;
+package cn.itamt.utils.inspector.ui {
+	import cn.itamt.utils.Debug;
+	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.data.InspectTarget;
+	import cn.itamt.utils.inspector.events.PropertyEvent;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
 	import flash.display.DisplayObject;
@@ -11,8 +13,6 @@
 	 * @author itamt@qq.com
 	 */
 	public class PropertiesView extends BaseInspectorView {
-		public static const ID : String = 'PropertyPanel';
-
 		private var panels : Array;
 
 		public function PropertiesView() {
@@ -36,8 +36,11 @@
 			return false;
 		}
 
-		override public function onTurnOn() : void {
-			super.onTurnOn();
+		/**
+		 * 显示面板
+		 */
+		override public function onActive() : void {
+			super.onActive();
 			
 			if(this.panels == null)this.panels = [];
 			
@@ -47,14 +50,18 @@
 			
 			this._inspector.stage.addChild(panel);
 			panel.addEventListener(Event.CLOSE, onClickClose, false, 0, true);
+			panel.addEventListener(PropertyEvent.UPDATE, onPropertyUpdate);
 		}
 
-		override public function onTurnOff() : void {
-			super.onTurnOff();
+		/**
+		 * 当取消在Inspector的注册时.
+		 */
+		override public function onUnActive() : void {
+			super.onUnActive();
 			
 			if(panels) {
 				for each(var panel:PropertiesViewPanel in panels) {
-					this._inspector.stage.removeChild(panel);
+					if(panel.stage)panel.parent.removeChild(panel);
 				}
 			}
 			
@@ -80,6 +87,7 @@
 			
 			this._inspector.stage.addChild(panel);
 			panel.addEventListener(Event.CLOSE, onClickClose, false, 0, true);
+			panel.addEventListener(PropertyEvent.UPDATE, onPropertyUpdate);
 			panel.onInspect(target.displayObject);
 		}
 
@@ -102,24 +110,13 @@
 			}
 		}
 
-		/**
-		 * 当取消在Inspector的注册时.
-		 */
-		override public function onUnRegister(inspector : Inspector) : void {
-			if(panels) {
-				for each(var panel:PropertiesViewPanel in panels) {
-					this._inspector.stage.removeChild(panel);
-				}
-			}
-			
-			this.panels = null;
-		}
+		//////////////////////////////////////
+		//////////private functions///////////
+		//////////////////////////////////////
 
-		/**
-		 * 返回这个InspectorView的id, 在tInspector中, 通过id来管理各个InspectorView.
-		 */
-		override public function getInspectorViewClassID() : String {
-			return PropertiesView.ID;
+		private function onPropertyUpdate(event : PropertyEvent) : void {
+			trace('[PropertiesView][onPropertyUpdate]');
+			this._inspector.updateInsectorView();
 		}
 
 		/**
@@ -134,7 +131,7 @@
 			}
 			
 			if(this.panels.length == 0) {
-				this._inspector.unregisterViewById(PropertiesView.ID);
+				this._inspector.unactiveView(InspectorViewID.PROPER_VIEW);
 			}
 		}
 	}

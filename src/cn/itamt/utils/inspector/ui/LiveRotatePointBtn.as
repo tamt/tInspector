@@ -1,9 +1,8 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;	
-	import cn.itamt.utils.inspector.ui.LiveTransformPointBtn;
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 	import flash.display.Graphics;
-	import flash.display.Shape;	
+	import flash.display.Shape;
 
 	/**
 	 * 拖动旋转变形的按钮

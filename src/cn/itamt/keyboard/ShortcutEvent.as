@@ -1,5 +1,5 @@
 package cn.itamt.keyboard {
-	import flash.events.Event;									
+	import flash.events.Event;
 
 	/**
 	 * @author itamt@qq.com

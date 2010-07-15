@@ -7,18 +7,18 @@ package cn.itamt.utils.inspector.lang {
 	public class Lang {
 		/**
 		 * 语言xml格式:
-			<lang>
-				<![CDATA[
-					LiveRotate		=	拖動 旋轉
-					LiveScale		=	拖動縮放
-					SubmmitBug		=	提交bug
-					InspectChild	=	查看自顯示對象
-					Refresh			=	刷新
-					Property		=	屬性
-					ViewProperties	=	查看對象的屬性
-					ViewMethods		=	查看對象的方法
-				]]>
-			</lang>;
+		<lang>
+		<![CDATA[
+		LiveRotate		=	拖動 旋轉
+		LiveScale		=	拖動縮放
+		SubmmitBug		=	提交bug
+		InspectChild	=	查看自顯示對象
+		Refresh			=	刷新
+		Property		=	屬性
+		ViewProperties	=	查看對象的屬性
+		ViewMethods		=	查看對象的方法
+		]]>
+		</lang>;
 		 */
 		public var file : XML;
 
@@ -42,7 +42,8 @@ package cn.itamt.utils.inspector.lang {
 
 		public function getTipValueString(tipStr : String) : String {
 			if(!_builded)this.build();
-			return String(_data[tipStr]);
+			var ret : String = _data[tipStr];
+			return Boolean(ret) ? ret : tipStr;
 		}
 
 		private function trim(source : String, removeChars : String = ' \n\t\r') : String {

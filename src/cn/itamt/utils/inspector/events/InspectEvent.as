@@ -1,6 +1,6 @@
 package cn.itamt.utils.inspector.events {
 	import flash.display.DisplayObject;
-	import flash.events.Event;	
+	import flash.events.Event;
 
 	/**
 	 * @author tamt

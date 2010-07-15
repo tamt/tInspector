@@ -1,30 +1,28 @@
-﻿package cn.itamt.utils.inspector.key {
+package cn.itamt.utils.inspector.key {
 	import cn.itamt.keyboard.Shortcut;
 	import cn.itamt.keyboard.ShortcutEvent;
 	import cn.itamt.keyboard.ShortcutManager;
-	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.data.InspectTarget;
-	import cn.itamt.utils.inspector.interfaces.IInspectorView;
+	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
+	import cn.itamt.utils.inspector.ui.BaseInspectorView;
 
 	import flash.display.DisplayObject;
-	import flash.events.KeyboardEvent;
-	import flash.utils.Dictionary;	
+	import flash.utils.Dictionary;
 
 	/**
 	 * 管理inspector的快捷鍵
 	 * @author itamt@qq.com
 	 */
-	public class InspectorKeyManager extends ShortcutManager implements IInspectorView {
-		public static const ID : String = 'inspector_key_manager';
-
-		private var _inspector : Inspector;
+	public class InspectorKeyManager extends BaseInspectorView {
 		private var _keyViewMap : Dictionary;
 		private var _keyFunMap : Dictionary;
+		private var _stMgr : ShortcutManager;
 
 		public function InspectorKeyManager() : void {
 			super();
 			
-			this.addEventListener(ShortcutEvent.DOWN, onShortcutDown);
+			_stMgr = new ShortcutManager();
+			_stMgr.addEventListener(ShortcutEvent.DOWN, onShortcutDown);
 		}
 
 		/**
@@ -33,10 +31,10 @@
 		public function bindKey2View(keys : Array, viewID : String = null) : void {
 			if(_keyViewMap == null)_keyViewMap = new Dictionary(true);
 			
-			var shortcut : Shortcut = checkShortcutExist(keys);
+			var shortcut : Shortcut = _stMgr.checkShortcutExist(keys);
 			if(shortcut == null) {
 				shortcut = new Shortcut(keys);
-				this.registerShortcut(shortcut);
+				_stMgr.registerShortcut(shortcut);
 			}
 			_keyViewMap[shortcut] = viewID;
 		}
@@ -49,7 +47,7 @@
 			
 			var shortcut : Shortcut;
 			if(keys) {
-				shortcut = this.checkShortcutExist(keys);
+				shortcut = _stMgr.checkShortcutExist(keys);
 				if(shortcut) {
 					_keyViewMap[shortcut] = null;
 					delete _keyViewMap[shortcut];
@@ -73,10 +71,10 @@
 		public function bindKey2Fun(keys : Array, fun : Function) : void {
 			if(_keyFunMap == null)_keyFunMap = new Dictionary(true);
 			
-			var shortcut : Shortcut = checkShortcutExist(keys);
+			var shortcut : Shortcut = _stMgr.checkShortcutExist(keys);
 			if(shortcut == null) {
 				shortcut = new Shortcut(keys);
-				this.registerShortcut(shortcut);
+				_stMgr.registerShortcut(shortcut);
 			}
 			_keyFunMap[shortcut] = fun;
 		}
@@ -89,13 +87,13 @@
 			
 			var shortcut : Shortcut;
 			if(keys) {
-				shortcut = this.checkShortcutExist(keys);
+				shortcut = _stMgr.checkShortcutExist(keys);
 				if(shortcut) {
 					_keyFunMap[shortcut] = null;
 					delete _keyFunMap[shortcut];
 				}
 			} else {
-				if(fun!=null) {
+				if(fun != null) {
 					for(var i:* in _keyFunMap) {
 						if(_keyFunMap[i] == fun) {
 							_keyFunMap[i] = null;
@@ -114,7 +112,7 @@
 			}
 			
 			var fun : Function = _keyFunMap[evt.shortcut];
-			if(fun!=null) {
+			if(fun != null) {
 				fun.call();
 			}
 		}
@@ -123,70 +121,57 @@
 		///////////实现接口///////
 		///////////////////////
 
-		public function contains(child : DisplayObject) : Boolean {
+		override public function contains(child : DisplayObject) : Boolean {
 			return false;
 		}
 
-		public function onRegister(inspector : Inspector) : void {
-			_inspector = inspector;
+		override public function onRegister(inspector : IInspector) : void {
+			super.onRegister(inspector);
 			
-			this.setStage(_inspector.stage);
-		}
-
-		public function onTurnOn() : void {
-			_downKeys = new Array(255);
+			_stMgr.setStage(_inspector.stage);
 			
-			_inspector.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+			//			this.bindKey2Fun([KeyCode.CONTROL, KeyCode.I], this.toggleTurn);			
+			this.bindKey2Fun([17, 73], _inspector.toggleTurn);
 		}
 
-		public function onTurnOff() : void {
-			_inspector.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+		override public function onActive() : void {
+			super.onActive();
+
+			//			this.bindKey2View([KeyCode.CONTROL, KeyCode.S], StructureView.ID);
+			//			this.bindKey2View([KeyCode.CONTROL, KeyCode.T], LiveInspectView.ID);
+			//			this.bindKey2View([KeyCode.CONTROL, KeyCode.P], PropertiesView.ID);
+			//			this.bindKey2Fun([KeyCode.CONTROL, KeyCode.F], InspectorFilterManager.ID);
+			this.bindKey2View([17, 83], InspectorViewID.STRUCT_VIEW);
+			this.bindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
+			this.bindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
+			this.bindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
 		}
 
-		private function onKeyDown(evt : KeyboardEvent) : void {
-			_downKeys[evt.keyCode] = true;
+		override public function onUnActive() : void {
+			super.onUnActive();
+			
+			this.unbindKey2View([17, 83], InspectorViewID.STRUCT_VIEW);
+			this.unbindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
+			this.unbindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
+			this.unbindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
 		}
 
-		public function onInspect(target : InspectTarget) : void {
+		override public function onTurnOn() : void {
+			super.onTurnOn();
+			
+			this.bindKey2View([17, 83], InspectorViewID.STRUCT_VIEW);
+			this.bindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
+			this.bindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
+			this.bindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
 		}
 
-		public function onLiveInspect(target : InspectTarget) : void {
+		override public function onTurnOff() : void {
+			super.onTurnOff();
+			
+			this.unbindKey2View([17, 83], InspectorViewID.STRUCT_VIEW);
+			this.unbindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
+			this.unbindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
+			this.unbindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
 		}
-
-		public function onStopLiveInspect() : void {
-		}
-
-		public function onStartLiveInspect() : void {
-		}
-
-		public function onUpdate(target : InspectTarget = null) : void {
-		}
-
-		public function onUnRegister(inspector : Inspector) : void {
-			if(inspector == this._inspector) {
-				_inspector.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			}
-		}
-
-		public function onInspectMode(clazz : Class) : void {
-		}
-
-		public function onRegisterView(viewClassId : String) : void {
-		}
-
-		public function onUnregisterView(viewClassId : String) : void {
-		}
-
-		/**
-		 * 返回这个InspectorView的id, 在tInspector中, 通过id来管理各个InspectorView.
-		 */
-		public function getInspectorViewClassID() : String {
-			return InspectorKeyManager.ID;
-		}
-	}
-}
-
-class ShortCut {
-	public function ShortCut() : void {
 	}
 }

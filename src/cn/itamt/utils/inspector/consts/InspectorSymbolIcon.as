@@ -1,12 +1,23 @@
-﻿package cn.itamt.utils.inspector.consts {
+package cn.itamt.utils.inspector.consts {
 	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.inspector.ui.InspectorSymbolBmd;
 
+	import flash.display.AVM1Movie;
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
+	import flash.display.Loader;
+	import flash.display.MorphShape;
+	import flash.display.MovieClip;
+	import flash.display.Shape;
+	import flash.display.SimpleButton;
+	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.getDefinitionByName;
-	import flash.utils.getQualifiedSuperclassName;	
+	import flash.media.Video;
+	import flash.text.StaticText;
+	import flash.text.TextField;
 
 	/**
 	 * @author itamt@qq.com
@@ -30,8 +41,9 @@
 		public static const BUG : String = 'bug';
 		//收藏
 		public static const FAVORITE : String = 'favorite';
-		//
+		//删除
 		public static const DELETE : String = 'delete';
+		//inspector logo		public static const LOGO : String = 'inspector_logo';		public static const MOUSE_INSPECT : String = 'MOUSE_INSPECT';		public static const FULL_SCREEN : String = 'FULL_SCREEN';
 
 		private static var assetBmd : InspectorSymbolBmd;
 		private static var iconBmds : Array;
@@ -53,18 +65,56 @@
 									InspectorSymbolIcon.CLLOAPSE,
 									InspectorSymbolIcon.BUG,
 									InspectorSymbolIcon.FAVORITE,
-									InspectorSymbolIcon.DELETE];
+									InspectorSymbolIcon.DELETE,									InspectorSymbolIcon.LOGO,									InspectorSymbolIcon.MOUSE_INSPECT,									InspectorSymbolIcon.FULL_SCREEN];
 
-		
+		//['sprite', 'movie clip', 'bitmap', 'shape', 'textfield', 'loader', 'video', 'avm1movie', 'static text', 'morphshape', '+', '-'];
+		private static var types : Array; 
+
 		public static function getIconByClass(clazz : *) : BitmapData {
-			var bmd : BitmapData;
-			var className : String = ClassTool.getShortClassName(clazz);
-			if(icons.indexOf(className) < 0 && className != 'Object') {
-				bmd = getIconByClass(getDefinitionByName(getQualifiedSuperclassName(clazz)));
-			} else {
-				bmd = getIcon(className);
+			if(types == null) {
+				types = [Sprite, MovieClip, Bitmap, Shape, TextField, Loader, Video, AVM1Movie, StaticText, MorphShape, SimpleButton, Stage, DisplayObject];
+				types.sort(comapreClass);
 			}
+			
+			var bmd : BitmapData;
+			var className : String = ClassTool.getShortClassName(DisplayObject);
+			for(var i : int = 0;i < types.length;i++) {
+				if(clazz is types[i]) {
+					className = ClassTool.getShortClassName(types[i]);
+					break;
+				}
+			}
+			
+			//			if(icons.indexOf(className) < 0 && className != 'Object') {
+			//				//				bmd = getIconByClass(Inspector.APP_DOMAIN.getDefinition(getQualifiedSuperclassName(clazz)));			//				bmd = getIconByClass(getDefinitionByName(getQualifiedSuperclassName(clazz)));
+			//			} else {
+			bmd = getIcon(className);
+			//			}
 			return bmd;
+		}
+
+		private static function comapreClass(a : Class, b : Class) : int {
+			if(a == b)return 0;
+			
+			//判断a是否是b的基类
+			var c : Class = b;
+			while(c = ClassTool.getParentClassOf(c)) {
+				if(c == Object) {
+					//判断b是否是a的基类
+					c = a;
+					while(c = ClassTool.getParentClassOf(c)) {
+						if(c == Object) {
+							return 0;
+						}else if(b == c) {
+							return -1;
+						}
+					}
+				}else if(a == c) {
+					return 1;
+				}
+			}
+			
+			return 0;
 		}
 
 		/**

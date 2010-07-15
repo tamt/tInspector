@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.renders {
-	import flash.display.Sprite;				
+	import flash.display.Sprite;
 
 	/**
 	 * @author itamt@qq.com
