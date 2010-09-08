@@ -1,5 +1,6 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.Inspector;
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -98,10 +99,12 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		private function onDownMoveBtn(evt : MouseEvent) : void {
+			this.stage.addEventListener(MouseEvent.MOUSE_UP, onUpMoveBtn);
 			dispatchEvent(new Event(DOWN_MOVE));
 		}
 
 		private function onUpMoveBtn(evt : MouseEvent) : void {
+			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onUpMoveBtn);
 			dispatchEvent(new Event(UP_MOVE));
 		}
 
@@ -150,10 +153,6 @@ package cn.itamt.utils.inspector.ui {
 			}
 			
 			if(target.parent) {
-				if(target.parent is Stage) {
-					_pareBtn.enabled = false;
-				}
-				//TODO:注意：目标的下一个“兄弟”可能是InspectView。
 				if(target.parent.numChildren == 1) {
 					_broBtn.enabled = false;
 				}
@@ -167,7 +166,12 @@ package cn.itamt.utils.inspector.ui {
 				_childBtn.enabled = false;
 			}
 			
-			_filterBtn.active = !Inspector.getInstance().filterManager.isFilterActiving(target['constructor'] as Class);
+			_filterBtn.active = Inspector.getInstance().filterManager.isFilterActiving(target['constructor'] as Class);
+			if(_filterBtn.active) {
+				_filterBtn.tip = InspectorLanguageManager.getStr('SetFilterClass');
+			} else {
+				_filterBtn.tip = InspectorLanguageManager.getStr('unSetFilterClass');
+			}
 		}
 	}
 }

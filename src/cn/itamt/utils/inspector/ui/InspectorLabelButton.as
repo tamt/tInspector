@@ -7,7 +7,6 @@ package cn.itamt.utils.inspector.ui {
 	 */
 	public class InspectorLabelButton extends InspectorViewOperationButton {
 		protected var _label : String = '按钮';
-		protected var _active : Boolean;
 
 		protected var state : Sprite;
 
@@ -22,13 +21,13 @@ package cn.itamt.utils.inspector.ui {
 			update();
 		}
 
-		public function set active(value : Boolean) : void {
+		override public function set active(value : Boolean) : void {
 			_active = value;
 			
 			update();
 		}
 
-		public function get active() : Boolean {
+		override public function get active() : Boolean {
 			return _active;
 		}
 

@@ -12,24 +12,24 @@ package cn.itamt.utils.inspector.ui {
 	 * @author tamt
 	 */
 	public class InspectorColorStyle {
-		public static const MOVIE_CLIP:uint = 0x0098FF;
-		public static const SPRITE:uint = 0xff3300;
-		public static const SHAPE:uint = 0xff65ff;
-		public static const BITMAP:uint = 0x99cc00;
-		public static const STAGE:uint = 0x000000;
-		public static const DISPLAY_OBJECT:uint = 0xcccccc;
-		
-		public static const DEFAULT_BG:uint = 0x393939;
-		
-		public static const TYPE_ARR:Array = ['sprite', 'movie clip', 'bitmap', 'shape', 'textfield', 'loader', 'video', 'avm1movie', 'static text', 'morphshape'];
-		
-		public static function getObjectColor(src:DisplayObject):uint{
-			var mc:Array = [];
+		public static const MOVIE_CLIP : uint = 0x0098FF;
+		public static const SPRITE : uint = 0xff3300;
+		public static const SHAPE : uint = 0xff65ff;
+		public static const BITMAP : uint = 0x99cc00;
+		public static const STAGE : uint = 0x000000;
+		public static const DISPLAY_OBJECT : uint = 0xcccccc;
+
+		public static const DEFAULT_BG : uint = 0x393939;
+
+		public static const TYPE_ARR : Array = ['sprite', 'movie clip', 'bitmap', 'shape', 'textfield', 'loader', 'video', 'avm1movie', 'static text', 'morphshape'];
+
+		public static function getObjectColor(src : DisplayObject) : uint {
+			var mc : Array = [];
 			
 			var str : String = getQualifiedClassName(src);
-			var classNameStr:String = str.slice((str.lastIndexOf('::') >= 0) ? (str.lastIndexOf('::') + 2) : 0);
+			var classNameStr : String = str.slice((str.lastIndexOf('::') >= 0) ? (str.lastIndexOf('::') + 2) : 0);
 			
-			var lineColor:uint;
+			var lineColor : uint;
 			switch(classNameStr) {
 				case 'Shape':
 					lineColor = InspectorColorStyle.SHAPE;

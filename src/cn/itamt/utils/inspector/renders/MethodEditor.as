@@ -7,12 +7,9 @@ package cn.itamt.utils.inspector.renders {
 		public function MethodEditor() {
 			super();
 		}
-		
-		override public function setXML(target : *, xml : XML) : void {
-			_xml = xml;
-			
-			var type : String = _xml.@returnType;
-			value_tf.text=type;
+
+		override public function setValue(value : *) : void {
+//			value_tf.text=type;
 		}
 	}
 }

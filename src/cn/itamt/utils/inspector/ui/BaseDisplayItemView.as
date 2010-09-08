@@ -12,7 +12,8 @@ package cn.itamt.utils.inspector.ui {
 	public class BaseDisplayItemView extends Sprite  implements IDisplayItemRenderer {
 
 		protected var _data : DisplayItemData;
-		public function get data() : DisplayItemData{
+
+		public function get data() : DisplayItemData {
 			return _data;
 		}
 

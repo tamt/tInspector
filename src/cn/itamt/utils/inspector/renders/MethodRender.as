@@ -22,8 +22,12 @@ package cn.itamt.utils.inspector.renders {
 			return _xml;
 		}
 
+		public function get propName() : String {
+			return name_tf.text;
+		}
+
 		
-		public function MethodRender(w : Number = 200, h : Number = 20) : void {
+		public function MethodRender(w : Number = 180, h : Number = 20) : void {
 			this._width = w;
 			this._height = h;
 			
@@ -80,13 +84,13 @@ package cn.itamt.utils.inspector.renders {
 				this.valueEditor = new MethodEditor();
 				addChildAt(this.valueEditor, 0);
 			}
-			this.valueEditor.setXML(target, methodXML);
+			this.valueEditor.setValue(target);
 			
 			this.relayout();
 		}
 
 		public function update() : void {
-			this.valueEditor.setXML(_target, _xml);
+			this.valueEditor.setValue(_target);
 		}
 
 		public function resize() : void {

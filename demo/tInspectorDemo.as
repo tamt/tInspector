@@ -1,8 +1,9 @@
 package {
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.Inspector;
+	import cn.itamt.utils.inspector.consts.InspectorViewID;
 
 	import flash.display.Sprite;
+	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 
 	/**
@@ -10,7 +11,8 @@ package {
 	 */
 	public class tInspectorDemo extends Sprite {
 		public function tInspectorDemo() {
-			this.stage.scaleMode = StageScaleMode.NO_SCALE;
+			this.stage.scaleMode = StageScaleMode.EXACT_FIT;
+			this.stage.align = StageAlign.RIGHT;
 			
 			//使用tInspector只需初始化即可
 			Inspector.getInstance().init(this);

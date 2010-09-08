@@ -1,4 +1,6 @@
 package cn.itamt.utils.inspector.ui {
+	import cn.itamt.utils.inspector.tip.TipEvent;
+
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.events.Event;
@@ -10,8 +12,7 @@ package cn.itamt.utils.inspector.ui {
 	 * @author itamt@qq.com
 	 */
 	public class InspectorViewOperationButton extends SimpleButton {
-		public static const EVT_SHOW_TIP : String = 'show_tip';
-		public static const EVT_REMOVE_TIP : String = 'remove_tip';
+		protected var _active : Boolean = false;
 
 		private var _timer : Timer;
 		protected var _tip : String = '提示';
@@ -36,19 +37,38 @@ package cn.itamt.utils.inspector.ui {
 			this.tabEnabled = false;
 		}
 
+		public function set active(value : Boolean) : void {
+			_active = value;
+			if(!active) {
+				this.downState = buildDownState();
+				this.upState = buildUpState();
+				this.overState = buildOverState();
+				this.hitTestState = buildHitState();
+			} else {
+				this.downState = buildUpState();
+				this.upState = buildOverState();
+				this.overState = buildDownState();
+				this.hitTestState = buildHitState();
+			}
+		}
+
+		public function get active() : Boolean {
+			return _active;
+		}
+
 		private function onRollOver(evt : MouseEvent) : void {
 			//			_timer.start();
 			_timer.addEventListener(TimerEvent.TIMER, onTimerShowTip);
 			
 			addEventListener(MouseEvent.ROLL_OUT, onRollOut);
-			dispatchEvent(new Event(EVT_SHOW_TIP, true));
+			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
 		}
 
 		private function onTimerShowTip(evt : TimerEvent) : void {
 			_timer.removeEventListener(TimerEvent.TIMER, onTimerShowTip);			_timer.addEventListener(TimerEvent.TIMER, onTimerRemoveTip);
 			
 			//显示tip
-			dispatchEvent(new Event(EVT_SHOW_TIP, true));
+			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
 		}
 
 		private function onTimerRemoveTip(evt : TimerEvent = null) : void {
@@ -58,7 +78,7 @@ package cn.itamt.utils.inspector.ui {
 			_timer.stop();
 			
 			//删除tip
-			dispatchEvent(new Event(EVT_REMOVE_TIP, true));
+			dispatchEvent(new TipEvent(TipEvent.EVT_REMOVE_TIP, this.tip));
 		}
 
 		private function onRollOut(evt : MouseEvent) : void {

@@ -137,9 +137,8 @@ package cn.itamt.utils.inspector.ui {
 		private function onClickBug(evt : MouseEvent = null) : void {
 			if(this.stage) {
 				var panel : BugReportPanel = new BugReportPanel();
-				panel.x = this.stage.stageWidth / 2 - panel.width / 2;
-				panel.y = this.stage.stageHeight / 2 - panel.height / 2;
 				this.stage.addChild(panel);
+				InspectorStageReference.centerOnStage(panel);
 			}
 		}
 

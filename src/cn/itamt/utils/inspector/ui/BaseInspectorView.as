@@ -102,6 +102,8 @@ package cn.itamt.utils.inspector.ui {
 		 */
 		public function onTurnOff() : void {
 			_isOn = false;
+			
+			if(_actived)onUnActive();
 		}
 
 		/**

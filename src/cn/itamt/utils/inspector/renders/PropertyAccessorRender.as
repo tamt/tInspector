@@ -16,8 +16,22 @@ package cn.itamt.utils.inspector.renders {
 		protected var name_tf : TextField;
 		protected var valueEditor : BasePropertyEditor;
 
+		public function get editor() : BasePropertyEditor {
+			return valueEditor;
+		}
+
 		protected var _width : Number;
 		protected var _height : Number;
+
+		protected var _owner : PropertyAccessorRender;
+
+		public function get owner() : PropertyAccessorRender {
+			return _owner;
+		}
+
+		public function get target() : * {
+			return _target;
+		}
 
 		protected var _target : *;
 		protected var _xml : XML;
@@ -26,27 +40,33 @@ package cn.itamt.utils.inspector.renders {
 			return _xml;
 		}
 
-		private var _favIconBtn : InspectorViewFavoriteButton;
+		public function get propName() : String {
+			return name_tf.text;
+		}
 
-		public function PropertyAccessorRender(w : Number = 200, h : Number = 20, isFavorite : Boolean = false) : void {
+		protected var _favIconBtn : InspectorViewFavoriteButton;
+
+		public function PropertyAccessorRender(w : Number = 100, h : Number = 20, isFavorite : Boolean = false, owner : PropertyAccessorRender = null, favoritable : Boolean = true) : void {
 			this._width = w;
 			this._height = h;
 			
+			_owner = owner;
 			//			this.mouseEnabled = false;
 
 			name_tf = InspectorTextField.create('property name', 0xcccccc, 12, 0, 0, 'none', 'right');
 			name_tf.height = _height - 2;
-			name_tf.selectable = name_tf.mouseEnabled = name_tf.mouseWheelEnabled = false;
+			/*name_tf.selectable = name_tf.mouseEnabled = */
+			name_tf.mouseWheelEnabled = false;
 			addChild(name_tf);
 			
 			_favIconBtn = new InspectorViewFavoriteButton(!isFavorite);
 			_favIconBtn.visible = false;
 			_favIconBtn.y = 1;
-			addChild(_favIconBtn);
+			if(favoritable)addChild(_favIconBtn);
 
 			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
 			this.addEventListener(MouseEvent.ROLL_OVER, onRollOver);			this.addEventListener(MouseEvent.ROLL_OUT, onRollOut);
-			this._favIconBtn.addEventListener(MouseEvent.CLICK, onClickFavBtn);
+			if(favoritable)this._favIconBtn.addEventListener(MouseEvent.CLICK, onClickFavBtn);
 		}
 
 		/**
@@ -87,6 +107,7 @@ package cn.itamt.utils.inspector.renders {
 			name_tf.x = 12;
 			
 			if(valueEditor) {
+				if(valueEditor.height > this._height)this._height = valueEditor.height;
 				valueEditor.setSize(_width - name_tf.width - 15, this._height);
 				valueEditor.x = name_tf.x + name_tf.width + 8;
 			}
@@ -112,17 +133,49 @@ package cn.itamt.utils.inspector.renders {
 			
 			var type : String = accessorXML.@type;
 			
+			var enums : Array;
+			//标示了枚举元数据, 目前只支持基本数据类型:Number, String, uint, int, Boolean. 因为太复杂了就无法用String转化了.
+			if(accessorXML.metadata.(@name == "tinspector_enum").length()) {
+				for each(var xml:XML in accessorXML.metadata.(@name == "tinspector_enum")) {
+					var t : String = xml.arg.(@key == "type").@value;
+					var v : String = xml.arg.(@key == "value").@value;
+					var vs : Array = v.split(",");
+					if(enums == null)enums = [];
+					for(var i : int = 0;i < vs.length;i++) {
+						enums.push({type:t, value:vs[i]});
+					}
+				}
+			}
+			
 			if(valueEditor == null) {
-				this.valueEditor = this.createPropertyEditor(type);
+				if(enums == null) {
+					var tname : String = String(accessorXML.@name).toLowerCase();
+					if(type == "uint" && tname.indexOf("color") >= 0 ) {
+						if(tname.indexOf("color") == tname.length - 5) {
+							this.valueEditor = this.createPropertyEditor("Color");
+						}
+					} else {
+						this.valueEditor = this.createPropertyEditor(type);
+					}
+				} else {
+					var list : EnumValueListEditor = new EnumValueListEditor();
+					for each(var enum:Object in enums) {
+						var editor : BasePropertyEditor = this.createPropertyEditor(enum.type);
+						editor.setValue(enum.value);
+						list.addEnumValueEditor(editor);
+					}
+					this.valueEditor = list;
+				}
 				addChildAt(this.valueEditor, 0);
 			}
-			this.valueEditor.setXML(target, accessorXML);
+			this.valueEditor.setAccessType(_xml.@access, _xml.@exclude == "true");
+			if(this.valueEditor.readable)this.valueEditor.setValue(_target[_xml.@name]);
 			
 			this.relayout();
 		}
 
 		public function update() : void {
-			this.valueEditor.setXML(_target, _xml);
+			if(this.valueEditor.readable)this.valueEditor.setValue(_target[_xml.@name]);
 		}
 
 		public function resize() : void {
@@ -133,23 +186,38 @@ package cn.itamt.utils.inspector.renders {
 		 */
 		protected function createPropertyEditor(type : String) : BasePropertyEditor {
 			switch(type) {
-				case 'String':
-					return new StringPropertyEditor();
+				case 'Boolean':
+					return new BooleanPropertyEditor();
 					break;
-				case 'Number':
-					return new NumberPropertyEditor();
+				case 'Function':
+					return new FunctionPropertyEditor();
 					break;
 				case 'int':
 					return new NumberPropertyEditor();
 					break;
-				case 'uint':
-					return new UnitPropertyEditor();
+				case 'Number':
+					return new NumberPropertyEditor();
 					break;
-				case 'Boolean':
-					return new BooleanPropertyEditor();
+				case 'object':
+					return new ObjectPropertyEditor();
+					break;
+				case 'String':
+					return new StringPropertyEditor();
+					break;
+				case 'uint':
+					return new UintPropertyEditor();
+					break;
+				case 'XML':
+					return new XMLPropertyEditor();
+					break;
+				case 'XMLList':
+					return new XMLPropertyEditor();
+					break;
+				case 'Color':
+					return new ColorPropertyEditor();
 					break;
 				default:
-					return new PropertyEditor();
+					return new ObjectPropertyEditor();
 					break;
 			}
 		}

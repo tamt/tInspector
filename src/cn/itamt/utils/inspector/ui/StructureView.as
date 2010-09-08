@@ -1,4 +1,5 @@
 package cn.itamt.utils.inspector.ui {
+	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.data.InspectTarget;
@@ -209,6 +210,7 @@ package cn.itamt.utils.inspector.ui {
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
+			Debug.trace('[StructureView][onClickClose]');
 			this._inspector.unactiveView(InspectorViewID.STRUCT_VIEW);
 		}
 

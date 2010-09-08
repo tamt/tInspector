@@ -41,6 +41,18 @@ FullScreen	=	full screen
 StartMouseInspect	=	start mouse inspect
 StopMouseInspect	=	stop mouse inspect
 InspectorOnOff	=	turn tInspector on/off
+ResetTransform	=	restore transform
+SearchBtnHelp	=	use Tab/Enter to select and input
+AppStatsPanel	=	Flash Stats
+SwfInfoPanel	=	SWF info
+inspectProperty	=	inspect it
+ReloadSwf		=	reload this swf
+GlobalErrorKeeper =	global error handler
+GEK_Enabled 	=	global error handler(enabled)
+GEK_Disabled 	=	global error handler(disabled)
+GEK_Unsupported =	global error handler is desabeld, it need Debug Flas Player 10.1(+)
+GEK_History		=	global errors history
+GEK_ClearHistory=	clear errors history
 ]]>
 					</lang>;
 		}

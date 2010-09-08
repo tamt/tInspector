@@ -91,7 +91,7 @@ package cn.itamt.utils.inspector.ui {
 		//目标的注册点
 		private var reg : Point;
 		//目标父容器的注册点
-		private var upReg:Point;
+		private var upReg : Point;
 
 		public function update(isLiveMode : Boolean = false) : void {
 			if(!contains(_des))addChild(_des);
@@ -99,9 +99,9 @@ package cn.itamt.utils.inspector.ui {
 			
 			rect = target.getBounds(stage);
 			reg = target.localToGlobal(new Point(0, 0));
-			if(target.parent){
-				upReg = target.parent.localToGlobal(new Point(0,0));
-			}else{
+			if(target.parent) {
+				upReg = target.parent.localToGlobal(new Point(0, 0));
+			} else {
 				upReg = null;
 			}
 			
@@ -134,9 +134,9 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		private function onMouseDown(evt : MouseEvent) : void {
-//			if(this._mBtn.hitTestPoint(this.mouseX, this.mouseY)) {
-				dispatchEvent(new Event(InspectView.INSPECT, false, true));
-				this._mBtn.buttonMode = this._mBtn.mouseEnabled = false;
+			//			if(this._mBtn.hitTestPoint(this.mouseX, this.mouseY)) {
+			dispatchEvent(new Event(InspectView.INSPECT, false, true));
+			this._mBtn.buttonMode = this._mBtn.mouseEnabled = false;
 //			}
 		}
 
@@ -190,7 +190,7 @@ package cn.itamt.utils.inspector.ui {
 			_mBtn.graphics.endFill();
 			
 			//父容器注册点十字形
-			if(upReg){
+			if(upReg) {
 				_mBtn.graphics.lineStyle(2, 0x0000ff, 1, false, 'normal', 'square', 'miter');
 				_mBtn.graphics.moveTo(upReg.x - 4, upReg.y);
 				_mBtn.graphics.lineTo(upReg.x + 4, upReg.y);

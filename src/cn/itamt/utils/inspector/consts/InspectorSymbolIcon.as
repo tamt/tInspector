@@ -43,7 +43,7 @@ package cn.itamt.utils.inspector.consts {
 		public static const FAVORITE : String = 'favorite';
 		//删除
 		public static const DELETE : String = 'delete';
-		//inspector logo		public static const LOGO : String = 'inspector_logo';		public static const MOUSE_INSPECT : String = 'MOUSE_INSPECT';		public static const FULL_SCREEN : String = 'FULL_SCREEN';
+		//inspector logo		public static const LOGO : String = 'inspector_logo';		public static const INSPECT : String = 'inspector_inspect';
 
 		private static var assetBmd : InspectorSymbolBmd;
 		private static var iconBmds : Array;
@@ -65,7 +65,7 @@ package cn.itamt.utils.inspector.consts {
 									InspectorSymbolIcon.CLLOAPSE,
 									InspectorSymbolIcon.BUG,
 									InspectorSymbolIcon.FAVORITE,
-									InspectorSymbolIcon.DELETE,									InspectorSymbolIcon.LOGO,									InspectorSymbolIcon.MOUSE_INSPECT,									InspectorSymbolIcon.FULL_SCREEN];
+									InspectorSymbolIcon.DELETE,									InspectorSymbolIcon.LOGO,									InspectorSymbolIcon.INSPECT];
 
 		//['sprite', 'movie clip', 'bitmap', 'shape', 'textfield', 'loader', 'video', 'avm1movie', 'static text', 'morphshape', '+', '-'];
 		private static var types : Array; 

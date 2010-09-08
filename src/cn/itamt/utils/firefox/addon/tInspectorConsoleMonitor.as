@@ -1,4 +1,5 @@
 package cn.itamt.utils.firefox.addon {
+	import flash.events.Event;
 	import flash.system.Capabilities;
 
 	import cn.itamt.utils.Debug;
@@ -23,6 +24,7 @@ package cn.itamt.utils.firefox.addon {
 			
 			monitor = new mConsoleMonitor();
 			monitor.visible = false;
+			monitor.proxy = this;
 			addChild(monitor);
 			
 			this.visible = false;
@@ -30,7 +32,8 @@ package cn.itamt.utils.firefox.addon {
 			if(ExternalInterface.available) {
 				if(!Capabilities.isDebugger) {
 					try {
-						ExternalInterface.call("showNeedDebuggerFP");
+						Debug.trace('[tInspectorConsoleMonitor]fInspector.setEnable', 3);
+						ExternalInterface.call("fInspector.setEnable", false);
 					}catch(e : Error) {
 					}
 					return;
@@ -39,6 +42,18 @@ package cn.itamt.utils.firefox.addon {
 					ExternalInterface.addCallback('startInspector', startInspector);
 					ExternalInterface.addCallback('stopInspector', stopInspector);					ExternalInterface.addCallback('clearAllConnections', clearAllConnections);
 				}
+			}
+			
+			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
+		}
+
+		public function reloadSwf() : void {
+			ExternalInterface.call("fInspector.reloadSwf", false);
+		}
+
+		private function onAdded(evt : Event) : void {
+			for(var i : int = 0;i < this.stage.numChildren;i++) {
+				this.stage.getChildAt(i).visible = false;
 			}
 		}
 

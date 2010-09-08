@@ -18,10 +18,26 @@ package cn.itamt.utils.inspector.ui {
 	 */
 	public class InspectorViewPanel extends Sprite {
 		protected var _padding : Padding = new Padding(33, 10, 10, 10);
+
+		public function set padding(val : Padding) : void {
+			_padding = val;
+			
+			if(this.inited)this.relayout();
+		}
+
+		public function get padding() : Padding {
+			return _padding;
+		}
+
 		protected var bg : Sprite;
 		protected var _title : TextField;
 
 		protected var _width : Number;
+
+		override public function get width() : Number {
+			return _width;
+		}
+
 		protected var _height : Number;
 
 		protected var _contentContainer : Sprite;
@@ -36,10 +52,21 @@ package cn.itamt.utils.inspector.ui {
 
 		private var autoDispose : Boolean;
 
+		//		protected var _useEff : Boolean;
+		//		protected var _eff : WobbleEffect;
+
 		//最小尺寸
 		protected var _minW : Number = 180, _minH : Number = 160;
 
-		public function InspectorViewPanel(title : String = '面板', w : Number = 200, h : Number = 200, autoDisposeWhenRemove : Boolean = true) {
+		public function set minW(num : Number) : void {
+			_minW = num;
+		}
+
+		public function set minH(num : Number) : void {
+			_minH = num;
+		}
+
+		public function InspectorViewPanel(title : String = '面板', w : Number = 200, h : Number = 200, autoDisposeWhenRemove : Boolean = true, resizeable : Boolean = true, closeable : Boolean = true) {
 			autoDispose = autoDisposeWhenRemove;
 			
 			bg = new Sprite();
@@ -60,7 +87,7 @@ package cn.itamt.utils.inspector.ui {
 			
 			
 			_resizer = new ResizerButton(15, 15);
-			addChild(_resizer);
+			if(resizeable)addChild(_resizer);
 			
 			_title = InspectorTextField.create(title, 0x99cc00, 12);
 			_title.selectable = false;
@@ -72,11 +99,11 @@ package cn.itamt.utils.inspector.ui {
 			
 			closeBtn = new InspectorViewCloseButton();
 			closeBtn.addEventListener(MouseEvent.CLICK, onClickClose);
-			addChild(closeBtn);
+			if(closeable)addChild(closeBtn);
 			
 			resizeBtn = new InspectorViewResizeButton();
 			resizeBtn.addEventListener(MouseEvent.CLICK, onClickResize);
-			addChild(resizeBtn);
+			if(resizeable)addChild(resizeBtn);
 			
 			_width = w > _minW ? w : _minW;
 			_height = h > _minH ? h : _minH;
@@ -123,7 +150,7 @@ package cn.itamt.utils.inspector.ui {
 			this.stage.addEventListener(Event.ENTER_FRAME, onMoveResizer);
 			
 			var rect : Rectangle = this.getBounds(this.stage);
-			this._virtualResizer.startDrag(false, new Rectangle(_minW, _minH, this.stage.stageWidth - _minW - rect.x - 8 - InspectorStageReference.offsetStageWidth, this.stage.stageHeight - _minH - rect.y - 8 - InspectorStageReference.offsetStageHeight));
+			var stagetBounds : Rectangle = InspectorStageReference.getStageBounds();			this._virtualResizer.startDrag(false, new Rectangle(_minW, _minH, stagetBounds.right - _minW - rect.x - 8, stagetBounds.bottom - _minH - rect.y - 8));
 		}
 
 		protected function onMoveResizer(evt : Event) : void {
@@ -132,9 +159,23 @@ package cn.itamt.utils.inspector.ui {
 
 		protected function onMouseDown(evt : MouseEvent) : void {
 			this.cacheAsBitmap = true;
-			this.startDrag(false, new Rectangle(-InspectorStageReference.offsetStageWidth - mouseX, -InspectorStageReference.offsetStageHeight - mouseY, this.stage.stageWidth, this.stage.stageHeight));
+			var rect : Rectangle = InspectorStageReference.getStageBounds();
+			this.startDrag(false, new Rectangle(rect.left - mouseX, rect.top - mouseY, rect.width, rect.height));
 			
 			DisplayObjectTool.swapToTop(this);
+			
+//			if(_useEff) {
+//				this.visible = false;
+//				if(_eff) {
+//					_eff.dispose();
+//					_eff.removeEventListener(Event.COMPLETE, onEffComplete);
+//				}
+//				_eff = new WobbleEffect(this);
+//				_eff.apply();
+//				_eff.addEventListener(Event.COMPLETE, onEffComplete);
+//			
+//				_eff.onDown(evt);
+//			}
 		}
 
 		protected function onMouseup(evt : MouseEvent) : void {
@@ -142,6 +183,8 @@ package cn.itamt.utils.inspector.ui {
 			this.stage.removeEventListener(Event.ENTER_FRAME, onMoveResizer);
 			this.stopDrag();
 			this._virtualResizer.stopDrag();
+			
+//			if(_useEff)_eff.onUp(evt);
 		}
 
 		/**
@@ -164,6 +207,10 @@ package cn.itamt.utils.inspector.ui {
 				
 				if(inited)this.relayout();
 			}
+		}
+
+		public function getContent() : DisplayObject {
+			return _content;
 		}
 
 		public function resize(w : Number, h : Number) : void {
@@ -189,12 +236,25 @@ package cn.itamt.utils.inspector.ui {
 			this.drawTitle();
 		}
 
+		override public function get height() : Number {
+			return _height;
+		}
+
 		protected function drawTitle() : void {
 			_title.x = _padding.left;
 			_title.y = 7;
 			
 			_title.width = _title.textWidth + 4;
 			if(_title.width > resizeBtn.x - _padding.left)_title.width = resizeBtn.x - _padding.left;
+		}
+
+		public function set title(str : String) : void {
+			_title.text = str;
+			drawTitle();
+		}
+
+		public function get title() : String {
+			return _title.text;
 		}
 
 		/**
@@ -278,14 +338,14 @@ package cn.itamt.utils.inspector.ui {
 		/**
 		 * 显示内容是否需要水平滚动条
 		 */
-		private function needHScroller() : Boolean {
+		protected function needHScroller() : Boolean {
 			return _content.height - calculateContenAreaHeight() > 0;
 		}
 
 		/**
 		 * TODO:显示内容是否需要垂直滚动条
 		 */
-		private function needVScroller() : Boolean {
+		protected function needVScroller() : Boolean {
 			return false;
 		}
 
@@ -326,6 +386,12 @@ package cn.itamt.utils.inspector.ui {
 		protected function onClickClose(evt : Event) : void {
 			evt.stopImmediatePropagation();
 			
+			//			if(_useEff) {
+			//				_eff.visible = false;
+			//				_eff.removeEventListener(Event.COMPLETE, onEffComplete);
+			//				_eff.dispose();
+			//			}
+
 			dispatchEvent(new Event(Event.CLOSE));
 		}
 
@@ -339,6 +405,11 @@ package cn.itamt.utils.inspector.ui {
 				hide();
 				dispatchEvent(new Event(Event.OPEN));
 			}
+		}
+
+		private function onEffComplete(evt : Event) : void {
+//			this.visible = true;
+//			_eff.visible = false;
 		}
 
 		/**

@@ -109,7 +109,7 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		private function onUpBlock(evt : MouseEvent) : void {
-			this.stage.removeEventListener(Event.ENTER_FRAME, onDrag);
+			if(this.stage)this.stage.removeEventListener(Event.ENTER_FRAME, onDrag);
 		}
 
 		private function onDrag(evt : Event) : void {

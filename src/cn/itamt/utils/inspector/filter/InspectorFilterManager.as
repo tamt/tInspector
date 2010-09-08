@@ -1,25 +1,25 @@
 package cn.itamt.utils.inspector.filter {
 	import cn.itamt.utils.ClassTool;
+	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
-	import cn.itamt.utils.inspector.interfaces.IInspectorView;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.BaseInspectorView;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import flash.display.DisplayObject;
-	import flash.display.Shape;
-	import flash.display.SimpleButton;
-	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.utils.Dictionary;
 
 	/**
 	 * 管理tInspector的查看過濾器
 	 * @author itamt@qq.com
 	 */
-	public class InspectorFilterManager extends BaseInspectorView implements IInspectorView {
-
-		private var _history : Array = [DisplayObject, Sprite, Shape, SimpleButton];
+	public class InspectorFilterManager extends BaseInspectorView {
+		//过滤器库
+		private var _filtersDb : Dictionary;
+		//保存所有的过滤器
+		//		private var _history : Array = [/*DisplayObject, Sprite, Shape, SimpleButton*/];
 		//处于启用状态的过滤器
 		private var _activeFilters : Array;
 		//清除設置前，進行保存設置的
@@ -29,7 +29,9 @@ package cn.itamt.utils.inspector.filter {
 
 		private var _view : InspectorFileterManagerPanel;
 
-		public function InspectorFilterManager() {			
+		public function InspectorFilterManager() {
+			_filtersDb = new Dictionary(true);
+
 			this.applyFilter(_defaultFilter);
 		}
 
@@ -39,8 +41,8 @@ package cn.itamt.utils.inspector.filter {
 		public function applyFilter(filter : Class) : void {
 			if(filter == _defaultFilter) {
 				if(_activeFilters != null)_savedFilters = _activeFilters.slice();
-				_activeFilters = null;
-				if(_view)_view.setActivedList(_activeFilters);
+//				_activeFilters = null;
+//				if(_view)_view.setActivedList(_activeFilters);
 			} else {
 				if(_activeFilters != null) {
 					var t : int = _activeFilters.indexOf(_defaultFilter);
@@ -51,9 +53,8 @@ package cn.itamt.utils.inspector.filter {
 				}
 			}
 			
-			if(_history == null)_history = [];
-			if(_history.indexOf(filter) < 0) {
-				_history.push(filter);
+			if(this._filtersDb[filter] == undefined) {
+				this._filtersDb[filter] = true;
 				if(_view)_view.addFilterItem(filter);
 			}
 
@@ -126,7 +127,9 @@ package cn.itamt.utils.inspector.filter {
 			
 			var l : int = _activeFilters.length;
 			for(var i : int = 0;i < l;i++) {
-				if(target is _activeFilters[i])return true;
+				if(target is _activeFilters[i]) {
+					return true;
+				}
 			}
 
 			return false;
@@ -189,15 +192,33 @@ package cn.itamt.utils.inspector.filter {
 
 		override public function onActive() : void {
 			super.onActive();
-					
+			
+			buildFilterDataBase();
+			var arr : Array = [];
+			for(var filter:* in _filtersDb) {
+				arr.push(filter);
+			}
+			
 			_view = new InspectorFileterManagerPanel(InspectorLanguageManager.getStr(InspectorViewID.FILTER_VIEW));
-			_view.setFilterList(this._history);
+			_view.setFilterList(arr);
 			_view.setActivedList(this._activeFilters);
 			_view.addEventListener(Event.CLOSE, onClickClose);
 			_inspector.stage.addChild(_view);
 			InspectorStageReference.centerOnStage(_view);
 		}
 
+		private function buildFilterDataBase() : void {
+			DisplayObjectTool.everyDisplayObject(_inspector.stage, checkInDb);
+		}
+
+		private function checkInDb(dp : DisplayObject) : void {
+			if(_inspector.isInspectView(dp))return;
+			if(this._filtersDb[dp["constructor"]] == undefined) {
+				this._filtersDb[dp["constructor"]] = true;
+			}
+		}
+
+		
 		override public function onUnActive() : void {
 			super.onUnActive();
 			

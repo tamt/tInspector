@@ -10,5 +10,7 @@ package cn.itamt.utils.inspector.consts {
 		public static const LIVE_VIEW : String = 'LiveInspector';
 		public static const SHORT_CUT : String = 'KeyShortcut';
 		public static const FILTER_VIEW : String = 'InspectorFilterManager';
+		public static const APPSTATS_VIEW : String = 'AppStatsPanel';		public static const SWFINFO_VIEW : String = 'SwfInfoPanel';		public static const GLOBAL_ERROR_KEEPER : String = 'GlobalErrorKeeper';
+		public static const GLOBAL_ERROR_HISTORY : String = 'GlobalErrorHistory';
 	}
 }

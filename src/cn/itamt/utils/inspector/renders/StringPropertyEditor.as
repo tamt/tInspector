@@ -33,33 +33,20 @@ package cn.itamt.utils.inspector.renders {
 			}
 		}
 
-		override public function setXML(target : *, xml : XML) : void {
-			_xml = xml;
+		override protected function onReadWrite() : void {
+			super.onReadWrite();
+			value_tf.type = TextFieldType.INPUT;
+		}
+
+		override public function setValue(value : *) : void {
+			super.setValue(value);
 			
-			if(_xml.@access == 'writeonly') {
-				value_tf.textColor = 0xff0000;
-				value_tf.text = 'write only';
-				value_tf.mouseEnabled = false;
-				return;
-			}else if(_xml.@access == 'readonly') {
-				value_tf.textColor = 0x999999;
-				value_tf.mouseEnabled = false;
-			}else if(_xml.@access == 'readwrite') {
-				value_tf.type = TextFieldType.INPUT;
-			}
-			
-			var value : *;
-			value = target[_xml.@name];
 			if(value == null) {
 				value_tf.textColor = 0xff0000;
 				value_tf.text = 'null';	
 			} else {
 				value_tf.text = value;
 			}
-		}
-
-		override public function getValue() : * {
-			return value_tf.text;
 		}
 	}
 }

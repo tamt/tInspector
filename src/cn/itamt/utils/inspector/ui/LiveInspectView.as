@@ -1,11 +1,11 @@
-﻿package cn.itamt.utils.inspector.ui {
+package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
 	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
-	import cn.itamt.utils.inspector.transform.InspectorTransformTool;
+	import cn.itamt.utils.inspector.transform.ResetTransofrmControl;
 
 	import com.senocular.display.TransformTool;
 
@@ -15,6 +15,7 @@
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
@@ -32,7 +33,7 @@
 		//操作菜单条
 		private var _bar : OperationBar;
 		//用于变形
-		private var _tfm : InspectorTransformTool;
+		private var _tfm : TransformTool;
 
 		public function LiveInspectView() : void {
 			super();
@@ -73,12 +74,14 @@
 			_mFrame = new Shape();
 			
 			//变形器
-			_tfm = new InspectorTransformTool();
-			_tfm.addEventListener(TransformTool.TRANSFORM_TARGET, function(evt : Event) {
+			_tfm = new TransformTool();
+			_tfm.addEventListener(TransformTool.TRANSFORM_TARGET, function(evt : Event):void {
 				update();
 			});
+			_tfm.addControl(new ResetTransofrmControl());
 			_tfm.raiseNewTargets = false;
 			_tfm.moveEnabled = false;
+			//			_tfm.moveNewTargets = true;
 			_tfm.outlineEnabled = false;
 			//			_tfm.cursorsEnabled = false;
 			_tfm.setSkin(TransformTool.SCALE_TOP_LEFT, new Sprite());
@@ -97,7 +100,6 @@
 			
 			//------操作条------
 			_bar = new OperationBar();
-			//			_tfm.addControl(_bar);
 			_bar.init();
 			//------------------
 
@@ -166,11 +168,15 @@
 		 */
 		override public function onInspect(ele : InspectTarget) : void {
 			target = ele;
+			_tfm.target = null;
 			_tfm.target = target.displayObject;
 			update();
-			
+
 			if(_bar.stage == null)this.viewContainer.addChild(_bar);
 			_bar.validate(target.displayObject);
+			
+			//
+			//			DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
 		/**
@@ -215,7 +221,7 @@
 		//目标的注册点
 		private var reg : Point;
 		//目标父容器的注册点
-		private var upReg : Point;
+		private var parentReg : Point;
 
 		/**
 		 * 更新显示
@@ -227,9 +233,9 @@
 			rect = target.displayObject.getBounds(this.viewContainer.stage);
 			reg = target.displayObject.localToGlobal(new Point(0, 0));
 			if(target.displayObject.parent) {
-				upReg = target.displayObject.parent.localToGlobal(new Point(0, 0));
+				parentReg = target.displayObject.parent.localToGlobal(new Point(0, 0));
 			} else {
-				upReg = null;
+				parentReg = null;
 			}
 			
 			var outputer : DisplayObjectInfoOutPuter = outputerManager.getOutputerByInstance(target.displayObject);
@@ -253,38 +259,28 @@
 			this._inspector.inspect(target.displayObject);
 		}
 
-		private var drager : Sprite = new Sprite();
-		private var dist : Point;
+		private var lp : Point;
 
 		private function onStartMove(evt : Event) : void {
 			this.viewContainer.stage.addEventListener(Event.ENTER_FRAME, onMouseMove);
-			
-			dist = target.displayObject.localToGlobal(new Point(0, 0));
-			
-			drager.x = viewContainer.mouseX;
-			drager.y = viewContainer.mouseY;
-			drager.startDrag(true/*, new Rectangle(-InspectorStageReference.offsetStageWidth, -InspectorStageReference.offsetStageHeight, InspectorStageReference.stageWidth, InspectorStageReference.stageHeight)*/);
-			
-			dist.x = drager.x - dist.x;
-			dist.y = drager.y - dist.y;
+			lp = new Point(_tfm.mouseX, _tfm.mouseY);
 			
 			if(this.viewContainer.parent)DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
 		private function onStopMove(evt : Event = null) : void {
 			this.viewContainer.stage.removeEventListener(Event.ENTER_FRAME, onMouseMove);
-			drager.stopDrag();
 		}
 
 		private function onMouseMove(evt : Event = null) : void {
-			var pt : Point = new Point(drager.x - dist.x, drager.y - dist.y);
-			pt = target.displayObject.parent.globalToLocal(pt);
-			target.displayObject.x = pt.x;
-			target.displayObject.y = pt.y;
+			var toolMatrix : Matrix = _tfm.toolMatrix;
+			toolMatrix.tx += _tfm.mouseX - lp.x;
+			toolMatrix.ty += _tfm.mouseY - lp.y;
+			_tfm.toolMatrix = toolMatrix;
+			_tfm.apply();
 			
-			//强制tfm更新
-			_tfm.target = null;
-			_tfm.target = target.displayObject;
+			lp.x = _tfm.mouseX;
+			lp.y = _tfm.mouseY;
 			
 			this.update();
 		}
@@ -329,6 +325,10 @@
 		private function onClickReset(evt : Event) : void {
 			if(target) {
 				target.resetTarget();
+				if(_tfm) {
+					_tfm.target = null;
+					_tfm.target = target.displayObject;
+				}
 				this.update();
 			}
 		}
@@ -364,12 +364,12 @@
 			_mBtn.graphics.endFill();
 			
 			//父容器注册点十字形
-			if(upReg) {
+			if(parentReg) {
 				_mBtn.graphics.lineStyle(2, 0x0000ff, 1, false, 'normal', 'square', 'miter');
-				_mBtn.graphics.moveTo(upReg.x - 4, upReg.y);
-				_mBtn.graphics.lineTo(upReg.x + 4, upReg.y);
-				_mBtn.graphics.moveTo(upReg.x, upReg.y - 4);
-				_mBtn.graphics.lineTo(upReg.x, upReg.y + 4);
+				_mBtn.graphics.moveTo(parentReg.x - 4, parentReg.y);
+				_mBtn.graphics.lineTo(parentReg.x + 4, parentReg.y);
+				_mBtn.graphics.moveTo(parentReg.x, parentReg.y - 4);
+				_mBtn.graphics.lineTo(parentReg.x, parentReg.y + 4);
 			}
 			
 			//

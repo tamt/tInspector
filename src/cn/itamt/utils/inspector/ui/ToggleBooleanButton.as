@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.ui {
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.events.Event;
-	import flash.events.MouseEvent;	
+	import flash.events.MouseEvent;
 
 	/**
 	 * @author itamt@qq.com

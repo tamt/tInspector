@@ -1,8 +1,11 @@
 package cn.itamt.utils {
+	import cn.itamt.utils.inspector.ui.InspectorStageReference;
+
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.geom.Matrix;
 
 	/**
 	 * @author itamt@qq.com
@@ -37,6 +40,20 @@ package cn.itamt.utils {
 					removeAllChildren(container.getChildAt(0) as DisplayObjectContainer);
 				}
 				container.removeChildAt(0);
+			}
+		}
+
+		/**
+		 * 遍历某个容器下上的每个显示对象
+		 * @param fun		针对第个显示对象要执行的方法
+		 */
+		public static function everyDisplayObject(container : DisplayObjectContainer, fun : Function) : void {
+			var num : int = container.numChildren;
+			for(var i : int = 0;i < num;i++) {
+				if(container.getChildAt(i) is DisplayObjectContainer) {
+					everyDisplayObject(container.getChildAt(i) as DisplayObjectContainer, fun);
+				}
+				fun.call(null, container.getChildAt(i));
 			}
 		}
 
@@ -88,6 +105,41 @@ package cn.itamt.utils {
 				num *= global2LocalMath(child.parent, num, mathFun);
 			}
 			return num;
+		}
+
+		public static function getConcatenatedMatrix(source : DisplayObject) : Matrix {
+			var m : Matrix = new Matrix();
+			var scope : DisplayObject = source;
+			while (scope) {
+				if(scope is Stage) {
+					m.concat(InspectorStageReference.getTransformMatrix());
+				} else {
+					m.concat(scope.transform.matrix.clone());
+				}
+				scope = scope.parent as DisplayObject;
+			}
+			return m;
+		}
+
+		public static function getChildByNameFrom(scope : DisplayObjectContainer, val : String) : DisplayObject {
+			var trigger : * = scope;
+			var names : Array = val.split(".");
+			while(trigger) {
+				var n : String = names.shift();
+				if(n) {
+					var t : * = trigger.getChildByName(n);
+					if(t) {
+						trigger = t;
+					} else {
+						break;
+					}
+				} else {
+					break;
+				}
+			}
+			
+			if(trigger == scope)trigger = null;
+			return trigger;
 		}
 	}
 }

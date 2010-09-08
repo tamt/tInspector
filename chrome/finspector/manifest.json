@@ -1,0 +1,12 @@
+{
+  "name": "Flash Inspector",
+  "version": "1.0",
+  "description": "inspect the Flash(swf)'s DisplayObject in the web.",
+  "browser_action": {
+    "default_icon": "icon.png",
+    "popup":"popup.html"
+  },
+  "permissions": [
+    "http://api.flickr.com/"
+  ]
+}

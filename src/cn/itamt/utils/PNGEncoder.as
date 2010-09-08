@@ -159,9 +159,9 @@ package cn.itamt.utils {
 			if (!crcTableComputed) {
 				crcTableComputed = true;
 				crcTable = [];
-				for (var n : uint = 0;n < 256; n++) {
+				for (var n : uint = 0;n < 256;n++) {
 					var c : uint = n;
-					for (var k : uint = 0;k < 8; k++) {
+					for (var k : uint = 0;k < 8;k++) {
 						if (c & 1) {
 							c = uint(uint(0xedb88320) ^ uint(c >>> 1));
 						} else {
@@ -184,7 +184,7 @@ package cn.itamt.utils {
 			var e : uint = png.position;
 			png.position = p;
 			var c : uint = 0xffffffff;
-			for (var i : int = 0;i < (e - p); i++) {
+			for (var i : int = 0;i < (e - p);i++) {
 				c = uint(crcTable[
 	                (c ^ png.readUnsignedByte()) & 0xff] ^ (c >>> 8));
 			}

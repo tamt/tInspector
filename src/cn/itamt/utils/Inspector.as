@@ -5,8 +5,8 @@
 	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.interfaces.IInspectorView;
 	import cn.itamt.utils.inspector.key.InspectorKeyManager;
+	import cn.itamt.utils.inspector.tip.InspectorPopupManager;
 	import cn.itamt.utils.inspector.tip.InspectorTipsManager;
-	import cn.itamt.utils.inspector.ui.InspectorRightMenu;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 	import cn.itamt.utils.inspector.ui.LiveInspectView;
 	import cn.itamt.utils.inspector.ui.PropertiesView;
@@ -17,6 +17,7 @@
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
 	import flash.utils.Dictionary;
@@ -75,7 +76,7 @@
 		}
 
 		private var _propertiesView : PropertiesView;
-		private var _ctmenu : InspectorRightMenu;
+		//		private var _ctmenu : InspectorRightMenu;
 
 		private var _curInspectEle : InspectTarget;
 
@@ -91,7 +92,7 @@
 				return;
 			}
 			
-			_ctmenu = new InspectorRightMenu();
+			//			_ctmenu = new InspectorRightMenu();
 			_inspectView = new LiveInspectView();
 			_structureView = new StructureView();
 			_propertiesView = new PropertiesView();
@@ -122,7 +123,7 @@
 		 * @param property			注册显示对象信息功能
 		 * @param keys				注册快捷键
 		 */
-		public function init(root : DisplayObjectContainer, menu : Boolean = true, live : Boolean = true, property : Boolean = true, structure : Boolean = true, keys : Boolean = false) : void {
+		public function init(root : DisplayObjectContainer, /*menu : Boolean = true, */live : Boolean = true, property : Boolean = true, structure : Boolean = true, keys : Boolean = false) : void {
 			
 			this._root = root;
 			this._stage = root.stage;
@@ -135,10 +136,10 @@
 			InspectorStageReference.referenceTo(this._stage);
 			
 			//注册各個功能模塊
-			if(menu) {
-				registerView(_ctmenu, InspectorViewID.RIGHT_MENU);
-				activeView(InspectorViewID.RIGHT_MENU);
-			}
+			//			if(menu) {
+			//				registerView(_ctmenu, InspectorViewID.RIGHT_MENU);
+			//				activeView(InspectorViewID.RIGHT_MENU);
+			//			}
 			if(live)registerView(_inspectView, InspectorViewID.LIVE_VIEW);
 			if(structure)registerView(_structureView, InspectorViewID.STRUCT_VIEW);
 			if(property)registerView(_propertiesView, InspectorViewID.PROPER_VIEW);
@@ -213,6 +214,7 @@
 		 * 关闭Inspector的视图.
 		 */
 		public function unactiveView(id : String) : void {
+			Debug.trace('[Inspector][unactiveView]');
 			if(_views[id] != null) {
 				(_views[id] as IInspectorView).onUnActive();
 			}
@@ -244,8 +246,8 @@
 			_isOn = true;
 			_curInspectEle = null;
 			
-			//鼠標tip
-			InspectorTipsManager.init();
+			//鼠標tip相关
+			InspectorTipsManager.init();			InspectorPopupManager.init();
 			
 			//调用各个模块的onTurnOn
 			for each(var view:IInspectorView in _views) {
@@ -263,14 +265,14 @@
 		public function turnOff() : void {
 			this.stopLiveInspect();
 			
-			InspectorTipsManager.dispose();
+			InspectorTipsManager.dispose();			InspectorPopupManager.dispose();
 			
 			if(!_isOn)return;
 			_isOn = false;
 			_curInspectEle = null;
 			
 			for each(var view:IInspectorView in _views) {
-				if(view.isActive)view.onUnActive();
+				//				if(view.isActive)view.onUnActive();
 				view.onTurnOff();
 			}
 		}
@@ -305,7 +307,7 @@
 				_curInspectEle = null;
 			
 				_isLiveInspecting = true;
-				this.stage.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
+				this.stage.addEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
 				
 				for each(var view:IInspectorView in _views) {
 					if(view.isActive)view.onStartLiveInspect();
@@ -315,7 +317,7 @@
 
 		public function stopLiveInspect() : void {
 			_isLiveInspecting = false;
-			this.stage.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
+			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
 			
 			for each(var view:IInspectorView in _views) {
 				if(view.isActive)view.onStopLiveInspect();

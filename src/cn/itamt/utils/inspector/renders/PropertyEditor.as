@@ -3,7 +3,6 @@ package cn.itamt.utils.inspector.renders {
 
 	import flash.events.FocusEvent;
 	import flash.text.TextField;
-	import flash.utils.getDefinitionByName;
 
 	/**
 	 * @author itamt@qq.com
@@ -46,45 +45,43 @@ package cn.itamt.utils.inspector.renders {
 			value_tf.x = 2;
 			value_tf.width = _width - 4;
 			value_tf.height = _height - 2;
+			
+			if(autoSize) {
+				if(value_tf.textWidth + 4 > value_tf.width) {
+					//					value_tf.width = value_tf.textWidth;
+					_width = value_tf.textWidth + 10;
+					relayOut();
+				}
+			}
 		}
 
-		override public function setXML(target : *, xml : XML) : void {
-			_xml = xml;
+		override protected function onWriteOnly() : void {
+			super.onWriteOnly();
 			
-			var type : String = _xml.@type;
+			value_tf.textColor = 0xff0000;
+			value_tf.text = 'write only';
+			//			value_tf.mouseEnabled = false;
+		}
+
+		override protected function onReadOnly() : void {
+			super.onReadOnly();
 			
-			if(_xml.@access == 'writeonly') {
-				value_tf.textColor = 0xff0000;
-				value_tf.text = 'write only';
-				value_tf.mouseEnabled = false;
-				return;
-			}else if(_xml.@access == 'readonly') {
-				value_tf.textColor = 0x999999;
-				value_tf.mouseEnabled = false;
-			}else if(_xml.@access == 'readwrite') {
-				//				value_tf.type = TextFieldType.INPUT;
-			}
-			
-			var value : *;
-			value = target[_xml.@name];
+			value_tf.textColor = 0x999999;
+			//			value_tf.mouseEnabled = false;
+
+			value_tf.removeEventListener(FocusEvent.FOCUS_IN, onFocusIn);
+			value_tf.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
+		}
+
+		override public function setValue(value : *) : void {
+			super.setValue(value);
 			//Boolean、int、Null、Number、String、uint 和 void
 			if(value == null || value == undefined) {
 				value_tf.textColor = 0xff0000;
 				value_tf.text = String(value);
-				
 				return;
 			}
-			
-			if(type == 'Boolean' || type == 'Number' || type == 'String' || type == 'int' || type == 'uint' || type == 'void') {
-				value_tf.text = value;
-			} else {
-				value_tf.text = value.toString();
-			}
-		}
-
-		override public function getValue() : * {
-			var classRef : Class = getDefinitionByName(this._xml.@type) as Class;
-			return classRef(value_tf.text);
+			value_tf.text = value.toString();
 		}
 	}
 }

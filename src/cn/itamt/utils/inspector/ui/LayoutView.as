@@ -105,7 +105,7 @@ package cn.itamt.utils.inspector.ui {
 			if(level == 0) {
 				w = _width - _margin;
 				h = _height - _margin;
-			}else {
+			} else {
 				w = _width - _margin - level * (_width - 20) / totalLevel;				h = _height - _margin - level * (_height - 20) / totalLevel;
 			}
 			
@@ -117,7 +117,6 @@ package cn.itamt.utils.inspector.ui {
 			
 			return sp;
 		}
-
 	}
 }
 

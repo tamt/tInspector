@@ -17,7 +17,7 @@ InspectParent	=	查看父显示对象
 InspectBrother	=	查看下一个显示对象
 InspectInfo		=	查看详细信息
 ViewStructure	=	查看显示列表结构
-SetFilterClass	=	设置为查看类型
+SetFilterClass	=	设置查看类型
 unSetFilterClass	=	设置为非查看类型
 Refresh			=	刷新
 Property		=	属性
@@ -37,6 +37,18 @@ StructurePanel	=	结构面板
 PropertyPanel	=	属性面板
 InspectorFilterManager = 设置查看类型
 FilterAllDisplayObject	=	所有显示对象FullScreen	=	全屏StartMouseInspect	=	鼠标查看StopMouseInspect	=	关闭鼠标查看InspectorOnOff	=	开/关tInspector
+ResetTransform	=	还原变形
+SearchBtnHelp	=	按Tab/Enter键
+AppStatsPanel	=	Flash Stats面板
+SwfInfoPanel	=	SWF信息
+inspectProperty	=	查看属性
+ReloadSwf		=	重新加载swf
+GlobalErrorKeeper =	全局处理错误
+GEK_Enabled 	=	全局处理错误(已开启)
+GEK_Disabled 	=	全局处理错误(已禁用)
+GEK_Unsupported =	该swf不支持全局错误处理, 该功能需要Debug Flash Player 10.1(+)
+GEK_History		=	错误历史
+GEK_ClearHistory=	清空
 ]]>
 					</lang>;
 		}

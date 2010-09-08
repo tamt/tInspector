@@ -1,18 +1,23 @@
 package cn.itamt.utils.firefox.addon {
-	import flash.external.ExternalInterface;
-
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
+	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.events.InspectEvent;
+	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
+	import cn.itamt.utils.inspector.ui.AppStatsView;
+	import cn.itamt.utils.inspector.ui.SwfInfoView;
 
 	import msc.console.mConsole;
 	import msc.console.mIConsoleDelegate;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.LoaderInfo;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.external.ExternalInterface;
 	import flash.system.Security;
 	import flash.text.TextField;
 
@@ -26,15 +31,25 @@ package cn.itamt.utils.firefox.addon {
 		private var controlBar : tInspectorControlBar;
 		public var tf : TextField;
 		private var tInspector : Inspector;
+		private var statsView : AppStatsView;		private var swfInfoView : SwfInfoView;
+		private var gErrorKeeper : GlobalErrorKeeper;
 
-		
+		//由finspector.js分配给的id, 用于与fInspector通信.
+		//		private var swfId : String = '';
+
 		public function tInspectorPreloader() {
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 
 			controlBar = new tInspectorControlBar();
+			controlBar.addEventListener(InspectEvent.RELOAD, onClickReload);
 			addChild(controlBar);
-			
+
+			statsView = new AppStatsView();
+			swfInfoView = new SwfInfoView();
+			gErrorKeeper = new GlobalErrorKeeper();
+			gErrorKeeper.watch(this.loaderInfo);
+
 			if(stage) {
 				init();
 			} else {
@@ -55,10 +70,9 @@ package cn.itamt.utils.firefox.addon {
 			mainStage.addEventListener(Event.ADDED_TO_STAGE, onSthAdded, true);
 			
 			if(ExternalInterface.available && FlashPlayerEnvironment.isInFirefox()) {
-				Debug.trace('[tInspectorPreloader][init] add ConnectConroller to ExternalInterface');
-				ExternalInterface.addCallback("connectController", connectController);				ExternalInterface.addCallback("disconnectController", disconnectController);
+				log('[tInspectorPreloader][init] add ConnectConroller to ExternalInterface');
+				ExternalInterface.addCallback("connectController", connectController);				ExternalInterface.addCallback("disconnectController", disconnectController);				ExternalInterface.addCallback("setSwfId", setSwfId);				ExternalInterface.addCallback("startInspector", this.startInspector);				ExternalInterface.addCallback("stopInspector", this.stopInspector);
 			} else {
-//				Debug.trace('[tInspectorPreloader][init]' + ExternalInterface.available);//				Debug.trace('[tInspectorPreloader][init]' + FlashPlayerEnvironment.isInFirefox());
 			}
 		}
 
@@ -69,17 +83,22 @@ package cn.itamt.utils.firefox.addon {
 			if(mainRoot != (evt.target as DisplayObject).root) {
 				mainRoot = (evt.target as DisplayObject).root;
 			}
-			showControlBar();
+			setupControlBar();
 		}
 
 		private function allCompleteHandler(evt : Event) : void {
 			//			mainRoot.removeEventListener("allComplete", this.allCompleteHandler);
-
 			log('[tInspectorPreloader][allCompleteHandler]');
-
-			showControlBar();
 			
-			//			callLater(initInspector, null, 5);			initInspector();
+			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
+			if(loaderInfo) {
+				if(loaderInfo.url) {
+					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
+						log(loaderInfo.url);
+						setupControlBar();						initInspector();
+					}
+				}
+			}
 		}
 
 		private function initInspector() : void {
@@ -92,11 +111,12 @@ package cn.itamt.utils.firefox.addon {
 			}
 
 			tInspector = Inspector.getInstance();
-			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer, false);
-			tInspector.registerView(this.controlBar, this.controlBar.id);
+			tInspector.registerView(this.controlBar, this.controlBar.id);			tInspector.registerView(statsView, InspectorViewID.APPSTATS_VIEW);			tInspector.registerView(swfInfoView, InspectorViewID.SWFINFO_VIEW);			tInspector.registerView(gErrorKeeper, InspectorViewID.GLOBAL_ERROR_KEEPER);
+			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
+			tInspector.activeView(this.controlBar.id);			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))tInspector.activeView(InspectorViewID.GLOBAL_ERROR_KEEPER);
 		}
 
-		private function showControlBar() : void {
+		private function setupControlBar() : void {
 			if(this.controlBar.stage == null) {
 				mainStage.addChild(this.controlBar);
 			} else {
@@ -104,6 +124,14 @@ package cn.itamt.utils.firefox.addon {
 			}
 		}
 
+		private function onClickReload(event : InspectEvent) : void {
+			Debug.trace('[tInspectorPreloader][onClickReload]ExternalInterface.available: ' + ExternalInterface.available + ", " + FlashPlayerEnvironment.swfId);
+			if(ExternalInterface.available) {
+				ExternalInterface.call("fInspectorReloadSwf", FlashPlayerEnvironment.swfId);
+			}
+		}
+
+		
 		//////////////////////////////////////
 		/////////public functions/////////////
 		//////////////////////////////////////
@@ -116,6 +144,11 @@ package cn.itamt.utils.firefox.addon {
 		public function disconnectController() : void {
 			Debug.trace('[tInspectorPreloader][disconnectController]');
 			mConsole.disconnectMonitor();
+		}
+
+		public function setSwfId(swfId : String) : void {
+			Debug.trace('[tInspectorPreloader][setSwfId]' + swfId);
+			FlashPlayerEnvironment.swfId = swfId;
 		}
 
 		/**
@@ -139,8 +172,9 @@ package cn.itamt.utils.firefox.addon {
 		}
 
 		public function dump(str : String) : void {
+			log("[client-->monitor]" + str);
 			if(ExternalInterface.available) {
-				ExternalInterface.call("dump", "\n" + str);
+				ExternalInterface.call("alert", "\n" + str);
 			}
 		}
 

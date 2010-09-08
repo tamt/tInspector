@@ -168,7 +168,7 @@ package cn.itamt.utils.inspector.ui {
 			for(var i : int = 0;i < _data.length;i++) {
 				item = _data[i];
 				if(item.displayObject.stage == null)continue;
-				if(filterFun!=null) {
+				if(filterFun != null) {
 					if(filterFun.apply(null, [item.displayObject])) {
 						continue;
 					}

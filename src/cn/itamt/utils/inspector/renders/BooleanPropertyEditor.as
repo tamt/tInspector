@@ -1,4 +1,5 @@
 package cn.itamt.utils.inspector.renders {
+	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.inspector.events.PropertyEvent;
 	import cn.itamt.utils.inspector.ui.ToggleBooleanButton;
 
@@ -28,27 +29,31 @@ package cn.itamt.utils.inspector.renders {
 		}
 
 		private function onValueBtnChange(evt : Event) : void {
+			this._value = this.valueBtn.value;
 			this.value_tf.text = String(this.valueBtn.value);
 			dispatchEvent(new PropertyEvent(PropertyEvent.UPDATE, true, true));
 		}
 
-		override public function setXML(target : *, xml : XML) : void {
-			_xml = xml;
+		override protected function onWriteOnly() : void {
+			super.onWriteOnly();
 			
-			value_tf.mouseEnabled = this.valueBtn.enabled = false;
-			if(_xml.@access == 'writeonly') {
-				value_tf.textColor = 0xff0000;
-				value_tf.text = 'write only';
-				return;
-			}else if(_xml.@access == 'readonly') {
-				value_tf.textColor = 0x999999;
-				this.valueBtn.mouseEnabled = false;
-			}else if(_xml.@access == 'readwrite') {
-				this.valueBtn.enabled = true;
-			}
+			value_tf.textColor = 0xff0000;
+			value_tf.text = 'write only';
+			value_tf.mouseEnabled = false;
+		}
+
+		override protected function onReadOnly() : void {
+			super.onReadOnly();
 			
-			var value : *;
-			value = target[_xml.@name];
+			value_tf.textColor = 0x999999;
+			value_tf.mouseEnabled = false;
+			this.valueBtn.mouseEnabled = false;
+			this.valueBtn.removeEventListener(Event.CHANGE, onValueBtnChange);
+		}
+
+		override public function setValue(value : *) : void {
+			super.setValue(value);
+			
 			if(value == null) {
 				value_tf.textColor = 0xff0000;
 				value_tf.text = 'null';	
@@ -56,10 +61,6 @@ package cn.itamt.utils.inspector.renders {
 				value_tf.text = value;
 				this.valueBtn.value = value;
 			}
-		}
-
-		override public function getValue() : * {
-			return this.valueBtn.value;
 		}
 	}
 }

@@ -1,15 +1,19 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.ClassTool;
+	import cn.itamt.utils.inspector.controls.InspectSearchBar;
 	import cn.itamt.utils.inspector.events.PropertyEvent;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.renders.BasePropertyEditor;
 	import cn.itamt.utils.inspector.renders.MethodRender;
 	import cn.itamt.utils.inspector.renders.PropertyAccessorRender;
 
+	import msc.events.mTextEvent;
+
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.events.MouseEvent;
-	import flash.utils.describeType;
+	import flash.geom.Point;
 
 	/**
 	 * 属性面板
@@ -24,13 +28,17 @@ package cn.itamt.utils.inspector.ui {
 
 		private var singletonBtn : InspectorViewSingletonButton;
 		private var fullBtn : InspectorViewFullButton;
+		private var search : InspectSearchBar;
 
 		private var renders : Array;
+
 		//收藏的属性
 		private static var favProps : Array = ["x", "y", "width", "height", "scaleX", "scaleY", "alpha", "rotation"];
 
 		private var viewPropBtn : InspectorTabLabelButton;
 		private var viewMethodBtn : InspectorTabLabelButton;
+		protected var propDict : String = "";
+		protected var methDict : String = "";
 
 		//当前状态为属性
 		public static const PROP_STATE : int = 1;
@@ -38,6 +46,9 @@ package cn.itamt.utils.inspector.ui {
 		public static const METHOD_STATE : int = 2;
 		//当前状态
 		private var state : int = PROP_STATE;
+
+		//刷新按钮
+		private var refreshBtn : InspectorViewRefreshButton;
 
 		public function PropertiesViewPanel(w : Number = 240, h : Number = 170) {
 			super('Property', w, h);
@@ -77,6 +88,62 @@ package cn.itamt.utils.inspector.ui {
 			
 			this.addEventListener(PropertyEvent.UPDATE, onPropertyUpdate);
 			this.addEventListener(PropertyEvent.FAV, onFavProperty);			this.addEventListener(PropertyEvent.DEL_FAV, onDelFavProperty);
+			
+			//刷新按钮
+			refreshBtn = new InspectorViewRefreshButton();
+			refreshBtn.addEventListener(MouseEvent.CLICK, onClickRefresh);
+			addChild(refreshBtn);
+			
+			//搜索
+			search = new InspectSearchBar();
+			search.addEventListener(mTextEvent.ENTER, onSearch);
+			search.addEventListener(mTextEvent.SELECT, onSearch);
+		}
+
+		private var lrender : *;
+
+		private function onSearch(evt : mTextEvent) : void {
+			
+			if(lrender) {
+				lrender.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
+				lrender = null;
+			}
+			
+			var i : int = 0;		
+			var render : *;
+			if(evt.type == mTextEvent.SELECT) {
+				if(state == PROP_STATE) {
+				}else if(state == METHOD_STATE) {
+				}
+			}else if(evt.type == mTextEvent.ENTER) {
+				if(state == PROP_STATE) {
+					while(i < list.numChildren) {
+						render = list.getChildAt(i++) as PropertyAccessorRender;
+						if(render.propName == evt.text) {
+							this.showContentArea(render.getBounds(render.parent));
+							lrender = render;
+							render.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER));
+							break;
+						}
+					}
+				}else if(state == METHOD_STATE) {
+					while(i < listMethod.numChildren) {
+						render = listMethod.getChildAt(i++) as MethodRender;
+						if(render.propName == evt.text) {
+							this.showContentArea(render.getBounds(render.parent));
+							lrender = render;
+							render.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER));
+							break;
+						}
+					}
+				}
+			}
+		}
+
+		private function onClickRefresh(event : MouseEvent) : void {
+			if(this.curTarget) {
+				this.onUpdate(this.curTarget);
+			}
 		}
 
 		//查看对象的方法
@@ -110,6 +177,9 @@ package cn.itamt.utils.inspector.ui {
 			singletonBtn.x = this.fullBtn.x - this.singletonBtn.width - 2;
 			singletonBtn.y = 5;
 			
+			refreshBtn.x = this.singletonBtn.x - this.singletonBtn.width - 2;
+			refreshBtn.y = 5;
+			
 			//			this.viewPropBtn.x = this._padding.left;
 			//			this.viewMethodBtn.x = this.viewPropBtn.x + this.viewPropBtn.width + 10;
 			this.viewMethodBtn.x = _width - this._padding.right - this.viewMethodBtn.width;
@@ -122,17 +192,46 @@ package cn.itamt.utils.inspector.ui {
 			} else {
 				this.fullBtn.enabled = this.fullBtn.mouseEnabled = false;
 			}
+			
+			search.x = _padding.left;
+			search.y = _height - 29;
+			search.setSize(viewPropBtn.x - _padding.left - 10);
 		}
 
 		/*
 		 * 查看某个对象的属性
 		 */
 		public function onInspectProp(object : DisplayObject) : void {
-			var xml : XML = describeType(object);
+			var xml : XML = ClassTool.getDescribe(object["constructor"]).factory[0];
 			var tmp : XMLList = xml.accessor;
 			propList = [];
+			
+			var excludeList : XMLList = xml..metadata.(@name == "Exclude");
+			var excludeArr : Array = [];
+			for each(var exclude:XML in excludeList) {
+				excludeArr.push(exclude.arg.(@key == "name").@value.toString());
+			}
+			
+			this.propDict = "";
 			for each(var item:XML in tmp) {
+				if(excludeArr.indexOf(item.@name.toString()) >= 0) {
+					item.@exclude = true;
+				}
+				
+				//-----------------------
+				if(object is Stage) {
+					//Flash Player的bug:Stage没有实现textSnapshot属性
+					if(item.@name == "textSnapshot")continue;
+					//Flash Player的bug:Stage的width/height属性应该是Exclude的
+					if(item.@name == "width" || item.@name == "height") {
+						item.@exclude = true;
+					}
+				}
+				//-----------------------
+
 				propList.push(item);
+				
+				this.propDict += (item.@name + " ");
 			}
 			//			favProps.reverse();
 			propList.sort(compateAccessorName);
@@ -167,7 +266,8 @@ package cn.itamt.utils.inspector.ui {
 			_title.y = 7;
 			
 			_title.width = _title.textWidth + 4;
-			if(_title.width > singletonBtn.x - _padding.left)_title.width = singletonBtn.x - _padding.left;
+			
+			if(_title.width > refreshBtn.x - _padding.left - 3)_title.width = refreshBtn.x - _padding.left - 3;
 		}
 
 		/*
@@ -177,11 +277,13 @@ package cn.itamt.utils.inspector.ui {
 				if(curTarget != object) {
 					curTarget = object;
 				}
-				var xml : XML = describeType(curTarget);
+				var xml : XML = ClassTool.getDescribe(curTarget["constructor"]).factory[0];
 				var methods : XMLList = xml.method;
 				methodArray = [];
+				this.methDict = "";
 				for each(var method:XML in methods) {
 					methodArray.push(method);
+					this.methDict += (method.@name + " ");
 				}
 				methodArray.sort(compateAccessorName);
 				this.drawList();
@@ -260,9 +362,11 @@ package cn.itamt.utils.inspector.ui {
 			switch(this.state) {
 				case PROP_STATE:
 					this.drawPropList();
+					this.search.setWordDict(this.propDict);
 					break;
 				case METHOD_STATE:
 					this.drawMethodList();
+					this.search.setWordDict(this.methDict);
 					break;
 			}
 			this.relayout();
@@ -280,19 +384,19 @@ package cn.itamt.utils.inspector.ui {
 			for(var i : int = 0;i < l;i++) {				var render : PropertyAccessorRender;
 				if(i < favProps.length) {
 					if(favProps.indexOf(String(propList[i].@name)) > -1) {
-						render = new PropertyAccessorRender(250, 20, true);
+						render = new PropertyAccessorRender(200, 20, true);
 					} else {
 						if(fullBtn.normalMode) {
 							break;
 						} else {
-							render = new PropertyAccessorRender(250, 20);
+							render = new PropertyAccessorRender(200, 20);
 						}
 					}
 				} else {
 					if(fullBtn.normalMode) {
 						break;
 					} else {
-						render = new PropertyAccessorRender(250, 20);
+						render = new PropertyAccessorRender(200, 20);
 					}
 				}
 				render.setXML(this.curTarget, propList[i]);
@@ -300,7 +404,7 @@ package cn.itamt.utils.inspector.ui {
 				
 				list.addChild(render);
 			}
-		}
+		}	
 
 		//对象的方法重绘
 		private function drawMethodList() : void {
@@ -318,16 +422,37 @@ package cn.itamt.utils.inspector.ui {
 			}
 		}
 
+		private var _mSavedSize : Point;
+		private var _fSavedSize : Point;
+
 		/**
 		 * 当单击"查看完整属性按钮时".
 		 */
 		private function onClickFull(evt : MouseEvent = null) : void {
 			if(evt)evt.stopImmediatePropagation();
 			this.drawList();
-			if(fullBtn.normalMode) {
-				if(this.resizeBtn.normalMode)this.resize(this._width, 270);
+			if(!fullBtn.normalMode) {
+				if(this.resizeBtn.normalMode) {
+					if(_mSavedSize == null) {
+						_mSavedSize = new Point(this._width, 270);
+					} else {
+						_mSavedSize = new Point(this._width, this.height);
+					}
+					if(_fSavedSize == null)_fSavedSize = new Point(this._width, 400);
+					this.addChild(this.search);
+					if(this.resizeBtn.normalMode)this.resize(_fSavedSize.x, _fSavedSize.y);
+				}
 			} else {
-				if(this.resizeBtn.normalMode)this.resize(this._width, 400);
+				if(this.resizeBtn.normalMode) {
+					if(_fSavedSize == null) {
+						_fSavedSize = new Point(this._width, 400);
+					} else {
+						_fSavedSize = new Point(this._width, this.height);
+					}
+					if(_mSavedSize == null)_mSavedSize = new Point(this._width, 270);
+					if(this.search.parent)this.search.parent.removeChild(this.search);
+					if(this.resizeBtn.normalMode)this.resize(_mSavedSize.x, _mSavedSize.y);
+				}
 			}
 		}
 
@@ -352,12 +477,12 @@ package cn.itamt.utils.inspector.ui {
 
 		override public function open() : void {
 			super.open();
-			this.viewMethodBtn.visible = this.viewPropBtn.visible = true;
+			this.viewMethodBtn.visible = this.viewPropBtn.visible = this.search.visible = true;
 		}
 
 		override public function hide() : void {
 			super.hide();
-			this.viewMethodBtn.visible = this.viewPropBtn.visible = false;
+			this.viewMethodBtn.visible = this.viewPropBtn.visible = this.search.visible = false;
 		}
 	}
 }

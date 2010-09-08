@@ -139,6 +139,12 @@ package cn.itamt.utils.inspector.ui {
 			return _normalMode;
 		}
 
+		public function set normalMode(bool : Boolean) : void {
+			_normalMode = bool;
+			
+			updateStates();
+		}
+
 		//切换按钮状态
 		private function onToggleMode(evt : MouseEvent) : void {
 			_normalMode = !_normalMode;

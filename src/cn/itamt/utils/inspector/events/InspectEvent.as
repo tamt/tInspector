@@ -9,6 +9,8 @@ package cn.itamt.utils.inspector.events {
 		public static const TURN_ON : String = 'turn on';
 		public static const TURN_OFF : String = 'turn off';
 
+		public static const RELOAD : String = 'reload_swf';
+
 		public static const LIVE_INSPECT : String = 'live_inspect';
 		public static const INSPECT : String = 'inspect';		public static const REFRESH : String = 'refresh';
 

@@ -4,7 +4,6 @@ package cn.itamt.utils.inspector.filter {
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
 	import cn.itamt.utils.inspector.ui.ToggleBooleanButton;
 
-	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
@@ -62,16 +61,16 @@ package cn.itamt.utils.inspector.filter {
 		protected function relayout() : void {
 			valueBtn.x = 5;			valueBtn.y = 3;
 			
-			name_tf.x = valueBtn.x + valueBtn.width + 5;
-			name_tf.textColor = (_filter == DisplayObject ? 0xff6666 : 0xcccccc);
-			
+			name_tf.x = valueBtn.x + valueBtn.width + 3;
+			//			name_tf.textColor = (_filter == DisplayObject ? 0xff6666 : 0xcccccc);
+
 			drawBg();
 		}
 
 		public function set data(value : Object) : void {
 			_filter = value as Class;
 			
-			this.label = ClassTool.getClassName(value).replace("::", ".");
+			//			this.label = ClassTool.getClassName(value).replace("::", ".");			this.label = ClassTool.getShortClassName(value);
 		}
 
 		public function set label(val : String) : void {
@@ -94,6 +93,14 @@ package cn.itamt.utils.inspector.filter {
 
 		public function get enable() : Boolean {
 			return valueBtn.value;
+		}
+
+		public function set color(value : uint) : void {
+			name_tf.textColor = value;
+		}
+
+		public function get color() : uint {
+			return name_tf.textColor;
 		}
 	}
 }

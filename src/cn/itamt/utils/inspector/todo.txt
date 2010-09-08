@@ -126,10 +126,23 @@ TODO LIST:
 	tInspector 1.0.7	优化InspectorView中的列表的渲染方式.
 	tInspector 1.0.9	修复bug
 	tInspector 1.1		代码优化、整理
+						修正查看Stage时出现的错误(OK)
+						修正全屏后TipsManager的tip位置错误(OK)
+	tInspector 1.1.1	查看类型面板实现:自动列出当前swf中的所有基于显示对象的类.(OK)	
+						属性面板添加刷新按钮(OK)
+						属性面板添加自动完成输入框(OK)
+							//呃无语……啊一个显示对象使用了3d特性后……其transform.matrix变成null了…
+						
+	tInspector 1.1.2	添加Flash Stats面板(OK)
+						添加SWFInfo面板(Firefox扩展FlashInspector专用)
+							//使用了自定义metadata:enum, 例如:[enum(type="String", value="best")].使用时注意:
+								1.如果使用的是mxmlc编译器, 添加编译参数: -keep-as3-metadata+=enum
+								2.如果使用的是Flash IDE编译, 勾选"发布设置"面板中的"导出swc"选项.
+	tInspector 1.1.3	实现结构数面板中addChild,removeChild,setChildIndex...(*)
 	
-	tInspector 1.1.*	实现属性面板中的方法可调用
 	
-	tInspector 1.2		
+	
+	tInspector 1.2		实现属性面板中的方法可调用
 	
 	//////////////////////////////////////////
 	tInspector 2.0		
