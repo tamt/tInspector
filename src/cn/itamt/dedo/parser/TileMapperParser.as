@@ -76,6 +76,12 @@ package cn.itamt.dedo.parser {
 		public function getMaps() : DMapsCollection {
 			if(pMaps == null) {
 				pMaps = new DMapsCollection();
+				var mapList : XMLList = xml.maps.map;
+				var i : int = 0;
+				var map : XML;
+				for each(map in mapList) {
+					
+				}
 			}
 			
 			return pMaps;

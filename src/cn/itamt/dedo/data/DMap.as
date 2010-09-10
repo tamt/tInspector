@@ -12,6 +12,7 @@ package cn.itamt.dedo.data {
 		public var cellwidth : uint;
 		public var cellheight : uint;
 		public var layers : DMapLayersCollection;
+		public var jumps : DMapJumpsCollection;
 
 		public function DMap() : void {
 		}
