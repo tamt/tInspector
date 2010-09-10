@@ -1,0 +1,1 @@
+E:\firefox\gecko\xulrunner-sdk\bin\xpidl -m typelib -w -v -I E:\firefox\gecko\xulrunner-sdk\idl -e E:\flash\tamt2010\tInspector\firefox\finspector\components\FlashInspector.xpt E:\flash\tamt2010\tInspector\firefox\finspector\components\FlashInspector.idl

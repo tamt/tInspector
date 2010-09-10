@@ -1,0 +1,4 @@
+﻿<!-- TODO -->
+<!ENTITY fInspector "FlashInspector">
+<!ENTITY finspectorBtn.tooltip "turn on/off FlashInspector">
+<!ENTITY needDebuggerFlashPlayer "FlashInspector need Flash Player 9+(Debugger Version) plugin, please install it.">

@@ -964,5 +964,9 @@ package test {
 		public function testParseNameWithSampleXML() : void {
 			assertEqualsArrays(["Dedo", "4.0", 32, 32], [parser.getProjectName(), parser.getProjectVersion(), parser.getProjectCellWidth(), parser.getProjectCellHeight()]);
 		}
+
+		public function testTilesWithSampleXML() : void {
+			assertEqualsArrays(["dedo.png", 9], [parser.getTiles().fileName, parser.getTiles().getValue(9)]);
+		}
 	}
 }

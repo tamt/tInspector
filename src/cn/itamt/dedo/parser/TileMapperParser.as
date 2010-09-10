@@ -54,13 +54,15 @@ package cn.itamt.dedo.parser {
 		}
 
 		public function getTiles() : DTilesCollection {
-			if(pTiles == null)
-			pTiles = new DTilesCollection();
-			var imgList : XMLList = xml.tiles.images.image;
-			var img : XML;
-			var i : int = 0;
-			for each(img in imgList) {
-				pTiles.setValue(i++, parseInt(img.@index));
+			if(pTiles == null) {
+				pTiles = new DTilesCollection();
+				pTiles.fileName = xml.tiles.images.@filename;
+				var imgList : XMLList = xml.tiles.images.image;
+				var img : XML;
+				var i : int = 0;
+				for each(img in imgList) {
+					pTiles.setValue(i++, parseInt(img.@index));
+				}
 			}
 			
 			return pTiles;
@@ -72,9 +74,11 @@ package cn.itamt.dedo.parser {
 		}
 
 		public function getMaps() : DMapsCollection {
-			var collection : DMapsCollection;
+			if(pMaps == null) {
+				pMaps = new DMapsCollection();
+			}
 			
-			return collection;
+			return pMaps;
 		}
 
 		public function getBrushes() : DBrushesCollection {

@@ -1,0 +1,33 @@
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/tree.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://finspector/locale/settings.dtd">
+
+<dialog
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	title="&dialog.title;"
+	id="finspectorSettingWindow"
+	onload="init()"
+	onunload="cleanUp()"
+	ondialogaccept="applyChanges(); return true;"
+	buttons="accept,cancel"
+	persist="screenX screenY width height sizemode">
+<script type="text/javascript">
+<![CDATA[
+	function cleanUp(){
+		
+	}
+	
+	function applyChanges(){
+		
+	}
+]]>
+</script>
+	<checkbox label="enable GlobalErrorHandler By default"></checkbox>
+	<label />
+	<label value="Will you only use FlashInspector in Firefox?"></label>
+	<radiogroup>
+		<radio label="only in Firefox"></radio>
+		<radio label="in all Flash Player. like Adobe AIR, desktop Flash Player."></radio>
+	</radiogroup>
+</dialog>
