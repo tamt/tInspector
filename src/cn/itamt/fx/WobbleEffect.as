@@ -82,7 +82,7 @@ package cn.itamt.fx {
 		}
 
 		/**
-		 * start use the effect
+		 * 开始使用效果.
 		 */
 		override public function apply() : void {
 
@@ -105,9 +105,12 @@ package cn.itamt.fx {
 			tVertexs = [];
 			
 			sprite = new Sprite();
+			//			sprite.mouseChildren = sprite.mouseEnabled = false;
+			//			sprite.addEventListener(MouseEvent.MOUSE_DOWN, onDown);			//			sprite.addEventListener(MouseEvent.MOUSE_UP, onUp);
 			sprite.visible = _visible;
 			sprite.filters = _filters;
 			_target.parent.addChildAt(sprite, _target.parent.getChildIndex(_target) + 1);
+			//			stage.addChild(sprite);
 			sprite.transform.matrix = this.matrix;
 						var pt : Point = _target.getBounds(_target).topLeft;
 						
@@ -128,6 +131,7 @@ package cn.itamt.fx {
 				}
 			}
 			
+			//			draw();
 			invalidate();
 		}
 
@@ -199,9 +203,7 @@ package cn.itamt.fx {
 		}
 
 		private var needValidate : Boolean = false;
-		/**
-		 * invalidate, so that effect will be draw for one time in on Frame.
-		 */
+
 		private function invalidate() : void {
 			if(!needValidate) {
 				needValidate = true;
@@ -217,9 +219,7 @@ package cn.itamt.fx {
 			}
 		}
 
-		/**
-		 * draw effect use drawTriangles with vertices.
-		 */
+		
 		private function draw(e : Event = null) : void {
 			if(vertexs == null)return;
 			vertices = new Vector.<Number>();
@@ -236,16 +236,14 @@ package cn.itamt.fx {
 			g.drawTriangles(vertices, indices, uvtData);
 			g.endFill();
 		}
-		
-		/**
-		 * take a snapshot of a DisplayObject.
-		 */
+
 		protected function snap(dp : DisplayObject) : BitmapData {
 			var bmd : BitmapData;
 			var bounds : Rectangle = dp.getBounds(dp);
 			bmd = new BitmapData(bounds.width, bounds.height, true, 0x00ff0000);
 			bmd.draw(dp, new Matrix(1, 0, 0, 1, -bounds.x, -bounds.y));
 			
+			//			this.matrix = _target.transform.concatenatedMatrix;
 			this.matrix = DisplayObjectTool.getConcatenatedMatrix(_target);
 			var t : Matrix = DisplayObjectTool.getConcatenatedMatrix(_target.parent);
 			t.invert();
@@ -281,7 +279,6 @@ package cn.itamt.fx {
 		//////////////////////////////////////
 		////////////setter, getter////////////
 		//////////////////////////////////////
-		
 		private var _segmentv : int = 5;
 
 		public function set segmentsv(val : uint) : void {
@@ -291,10 +288,7 @@ package cn.itamt.fx {
 		public function get segmentsv() : uint {
 			return _segmentv;
 		}
-		
-		/**
-		 * how many segment 
-		 */
+
 		private var _segmenth : int = 5;
 
 		public function set segmentsh(val : uint) : void {
@@ -304,10 +298,7 @@ package cn.itamt.fx {
 		public function get segmentsh() : uint {
 			return _segmenth;
 		}
-		
-		/**
-		 * the ease type the effect will use.
-		 */
+
 		protected var _ease : IEasing;
 
 		public function set ease(fun : IEasing) : void {
@@ -323,10 +314,7 @@ package cn.itamt.fx {
 		public function get ease() : IEasing {
 			return _ease;
 		}
-		
-		/**
-		 * how long the effect will keep. (in seconds)
-		 */
+
 		protected var _duration : Number = 1;
 
 		public function set duration(val : Number) : void {
@@ -342,12 +330,12 @@ package cn.itamt.fx {
 		//////////////////////////////////////
 		
 		/**
-		 * resize the target to area.
-		 * @param trect		target areat Rectangle. base on the Stage coordinates.
+		 * 调整尺寸
+		 * @param rect		要resize到的区域, 注意是相对于target的rect.
 		 */
 		public function resize(trect : Rectangle) : void {
 			var rect : Rectangle = new Rectangle();
-			var mx : Matrix = DisplayObjectTool.getConcatenatedMatrix(sprite);
+			//			var mx : Matrix = this.matrix.clone();			var mx : Matrix = DisplayObjectTool.getConcatenatedMatrix(sprite);
 			mx.invert();
 			rect.topLeft = mx.transformPoint(trect.topLeft);			rect.bottomRight = mx.transformPoint(trect.bottomRight);
 			

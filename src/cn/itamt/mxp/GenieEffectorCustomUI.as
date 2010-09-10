@@ -34,7 +34,8 @@ package cn.itamt.mxp {
 		public function GenieEffectorCustomUI() {
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
 			this.stage.align = StageAlign.TOP_LEFT;
-			var easeStr : String = "Back,Cubic,Elastic,Expo,Linear,Quad,Quart,Quint,Sine";
+
+			//			var easeStr : String = "Back.easeIn,Back.easeOut,Back.easeInOut,Cubic.easeIn,Cubic.easeOut,Cubic.easeInOut,Elastic.easeIn,Elastic.easeOut,Elastic.easeInOut,Expo.easeIn,Expo.easeOut,Expo.easeInOut,Linear.easeNone,Quad.easeIn,Quad.easeOut,Quad.easeInOut,Quart.easeIn,Quart.easeOut,Quart.easeInOut,Quint.easeIn,Quint.easeOut,Quint.easeInOut,Sine.easeIn,Sine.easeOut,Sine.easeInOut";			var easeStr : String = "Back,Cubic,Elastic,Expo,Linear,Quad,Quart,Quint,Sine";
 			var items : Array = easeStr.split(",");
 			items.map(function(element : *, index : int, arr : Array):void {
 				arr[index] = {data:element, label:element};

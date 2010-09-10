@@ -49,6 +49,15 @@ package cn.itamt.utils.firefox.addon {
 			swfInfoView = new SwfInfoView();
 			gErrorKeeper = new GlobalErrorKeeper();
 			gErrorKeeper.watch(this.loaderInfo);
+			
+			if(ExternalInterface.available) {
+				ExternalInterface.addCallback("connectController", connectController);
+				ExternalInterface.addCallback("disconnectController", disconnectController);
+				ExternalInterface.addCallback("setSwfId", setSwfId);
+				ExternalInterface.addCallback("startInspector", this.startInspector);
+				ExternalInterface.addCallback("stopInspector", this.stopInspector);
+			} else {
+			}
 
 			if(stage) {
 				init();
@@ -68,12 +77,6 @@ package cn.itamt.utils.firefox.addon {
 			
 			this.root.addEventListener("allComplete", this.allCompleteHandler);
 			mainStage.addEventListener(Event.ADDED_TO_STAGE, onSthAdded, true);
-			
-			if(ExternalInterface.available && FlashPlayerEnvironment.isInFirefox()) {
-				log('[tInspectorPreloader][init] add ConnectConroller to ExternalInterface');
-				ExternalInterface.addCallback("connectController", connectController);				ExternalInterface.addCallback("disconnectController", disconnectController);				ExternalInterface.addCallback("setSwfId", setSwfId);				ExternalInterface.addCallback("startInspector", this.startInspector);				ExternalInterface.addCallback("stopInspector", this.stopInspector);
-			} else {
-			}
 		}
 
 		private function onSthAdded(evt : Event) : void {
@@ -98,6 +101,8 @@ package cn.itamt.utils.firefox.addon {
 						setupControlBar();						initInspector();
 					}
 				}
+				
+				gErrorKeeper.watch(loaderInfo);
 			}
 		}
 
