@@ -1,14 +1,14 @@
 package cn.itamt.dedo.parser {
-	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DBrushesCollection;
 	import cn.itamt.dedo.data.DMapsCollection;
+	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DTilesCollection;
 
 	/**
 	 * @author itamt[at]qq.com
 	 */
 	public interface IDedoParser {
-		function parse(xml : XML) : Boolean;
+		function parse(xml : XML, onComplete : Function = null) : Boolean;
 
 		function getProjectName() : String;
 

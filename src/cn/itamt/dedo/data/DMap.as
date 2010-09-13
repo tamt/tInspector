@@ -15,6 +15,7 @@ package cn.itamt.dedo.data {
 		public var jumps : DMapJumpsCollection;
 
 		public function DMap() : void {
+			
 		}
 	}
 }

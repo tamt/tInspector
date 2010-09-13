@@ -1,6 +1,7 @@
 package test {
 	import asunit.framework.TestCase;
 
+	import cn.itamt.dedo.data.DMap;
 	import cn.itamt.dedo.parser.TileMapperParser;
 
 	/**
@@ -967,6 +968,11 @@ package test {
 
 		public function testTilesWithSampleXML() : void {
 			assertEqualsArrays(["dedo.png", 9], [parser.getTiles().fileName, parser.getTiles().getValue(9)]);
+		}
+
+		public function testMapsWithSampleXML() : void {
+			var map : DMap = parser.getMaps().getMap(0);
+			assertEqualsArrays([0, "Dedo", 20, 20, 32, 32], [map.index, map.name, map.cellsx, map.cellsy, map.cellwidth, map.cellheight]);
 		}
 	}
 }

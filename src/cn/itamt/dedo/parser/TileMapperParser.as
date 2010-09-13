@@ -1,5 +1,6 @@
 package cn.itamt.dedo.parser {
 	import cn.itamt.dedo.data.DBrushesCollection;
+	import cn.itamt.dedo.data.DMap;
 	import cn.itamt.dedo.data.DMapsCollection;
 	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DTilesCollection;
@@ -18,7 +19,6 @@ package cn.itamt.dedo.parser {
 		private var pMaps : DMapsCollection;
 		private var pBrushes : DBrushesCollection;
 
-		
 		public function TileMapperParser() : void {
 		}
 
@@ -26,7 +26,7 @@ package cn.itamt.dedo.parser {
 		//////////实现接口：IMapParser/////////
 		//////////////////////////////////////
 
-		public function parse(xml : XML) : Boolean {
+		public function parse(xml : XML, onComplete : Function = null) : Boolean {
 			this.xml = xml;
 			
 			pName = this.xml.@name;
@@ -78,9 +78,14 @@ package cn.itamt.dedo.parser {
 				pMaps = new DMapsCollection();
 				var mapList : XMLList = xml.maps.map;
 				var i : int = 0;
-				var map : XML;
-				for each(map in mapList) {
-					
+				var mXML : XML;
+				for each(mXML in mapList) {
+					var map : DMap = new DMap();
+					map.index = parseInt(mXML.@index);
+					map.name = mXML.@name;
+					map.cellsx = parseInt(mXML.@cellsx);					map.cellsy = parseInt(mXML.@cellsy);
+					map.cellheight = parseInt(mXML.@cellheight);					map.cellwidth = parseInt(mXML.@cellwidth);
+					pMaps.setValue(i++, map);
 				}
 			}
 			
