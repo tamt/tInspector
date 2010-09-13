@@ -2,6 +2,7 @@ package test {
 	import asunit.framework.TestCase;
 
 	import cn.itamt.dedo.data.DMap;
+	import cn.itamt.dedo.data.DMapLayer;
 	import cn.itamt.dedo.parser.TileMapperParser;
 
 	/**
@@ -973,6 +974,18 @@ package test {
 		public function testMapsWithSampleXML() : void {
 			var map : DMap = parser.getMaps().getMap(0);
 			assertEqualsArrays([0, "Dedo", 20, 20, 32, 32], [map.index, map.name, map.cellsx, map.cellsy, map.cellwidth, map.cellheight]);
+		}
+
+		public function testMapLayersWithSampleXML() : void {
+			var layer : DMapLayer = parser.getMaps().getMap(0).layers.getMapLayer(0);
+			//			<layer index="0" name="tree2" visible="1">
+			assertEqualsArrays([0, "tree2", true], [layer.index, layer.name, layer.visible]);
+		}
+
+		public function testMapCellsWithSampleXML() : void {
+			var layer : DMapLayer = parser.getMaps().getMap(0).layers.getMapLayer(0);
+			//			<layer index="0" name="tree2" visible="1">
+			assertEqualsArrays([0, "tree2", true], [layer.index, layer.name, layer.visible]);
 		}
 	}
 }

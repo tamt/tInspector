@@ -5,22 +5,22 @@ package cn.itamt.dedo.data {
 	 */
 	public class DMapCellsCollection extends DCollection {
 
-		private var cells : Vector.<DMapCell>;
+		private var cellsX : Vector.<uint>;		private var cellsY : Vector.<uint>;		private var cellsImg : Vector.<uint>;		private var cellsValue : Vector.<uint>;
 
 		public function DMapCellsCollection() {
 			super();
 			
-			cells = new Vector.<DMapCell>();
+			cellsX = new Vector.<uint>();
+			cellsY = new Vector.<uint>();
+			cellsImg = new Vector.<uint>();
+			cellsValue = new Vector.<uint>();
 		}
 
-		public function getMapCell(index : uint) : DMapCell {
-			var cell : DMapCell;
-			cell = cells[index];
-			return cell;
-		}
-
-		public function setMapCell(index : uint, cell : DMapCell) : void {
-			cells[index] = cell;			
+		public function setMapCell(index : uint, x : uint, y : uint, img : uint, value : uint) : void {
+			cellsX[index] = x;
+			cellsY[index] = y;
+			cellsImg[index] = img;
+			cellsValue[index] = value;			
 		}
 	}
 }

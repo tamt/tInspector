@@ -4,6 +4,7 @@ path : "kiddingme?",
 isOn : false,
 enable : true,
 preTab : null,
+firefoxLoaded : false,
 setEnable : function(v) {
 	fInspector.enable = (String(v) == "true");
 	if (!fInspector.enable) {
@@ -12,6 +13,7 @@ setEnable : function(v) {
 },
 onFirefoxLoad : function(evt) {
 	fInspector.trace('onFirefoxLoad...');
+	fInspector.firefoxLoaded = true;
 
 	var fpVersion = fInspectorUtil.getFlashPluginVersion();
 	if (fpVersion.major > 9) {
@@ -35,7 +37,7 @@ onFirefoxLoad : function(evt) {
 		}, true);
 
 		gBrowser.addEventListener("DOMNodeInserted", function(event) {
-			fInspector.injectSwf(evt.originalTarget);
+			fInspector.injectSwf(event.originalTarget);
 		}, false);
 
 		gBrowser.addEventListener("load", function(event) {
@@ -168,7 +170,7 @@ setupSwfsInDoc : function(doc) {
 			 * fInspectorUtil.convertURLtoURI(fInspector.getAddonFilePath("/skin/finspector_16.png")) +
 			 * "\">"; doc.body.appendChild(anchor);
 			 */
-			fInspector.reloadSwfElement(swf);
+//			fInspector.reloadSwfElement(swf);
 		}
 	}
 },
@@ -269,7 +271,7 @@ injectSwf : function(element) {
 			swf.setAttribute("allowfullscreen", "true");
 		}
 
-		fInspector.reloadSwfElement(swf);
+//		fInspector.reloadSwfElement(swf);
 	} else {
 	}
 },
@@ -428,12 +430,36 @@ onSecurityChange : function(aWebProgress, aRequest, aState) {
 }
 };
 
-fInspector.path = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager).getInstallLocation(fInspector.id).getItemFile(fInspector.id, "install.rdf").parent.path;
-fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
-fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
+if (Components.classes["@mozilla.org/extensions/manager;1"]) {
+	fInspector.path = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager).getInstallLocation(fInspector.id).getItemFile(fInspector.id, "install.rdf").parent.path;
 
-window.addEventListener('load', fInspector.onFirefoxLoad, false);
-window.addEventListener('unload', fInspector.onFirefoxUnLoad, false);
+	fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+	fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
+
+	window.addEventListener('load', fInspector.onFirefoxLoad, false);
+	window.addEventListener('unload', fInspector.onFirefoxUnLoad, false);
+} else {
+	try {
+		Components.utils.import("resource://gre/modules/AddonManager.jsm");
+		AddonManager.getAddonByID("finspector@itamt.org", function(addon) {
+			var addonLocation = addon.getResourceURI("").QueryInterface(Components.interfaces.nsIFileURL).file;
+			fInspector.path = addonLocation.path;
+
+			fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+			fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
+
+			if (fInspector.firefoxLoaded) {
+				fInspector.onFirefoxLoad(null);
+			} else {
+				window.addEventListener('load', fInspector.onFirefoxLoad, false);
+			}
+			window.addEventListener('unload', fInspector.onFirefoxUnLoad, false);
+
+		});
+	} catch (error) {
+		dump("can not get the addon install location.");
+	}
+}
 
 // window.addEventListener("load", function(e) {
 // httpresponsetweak.windowEvent(e);

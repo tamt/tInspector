@@ -1,6 +1,9 @@
 package cn.itamt.dedo.parser {
 	import cn.itamt.dedo.data.DBrushesCollection;
 	import cn.itamt.dedo.data.DMap;
+	import cn.itamt.dedo.data.DMapCellsCollection;
+	import cn.itamt.dedo.data.DMapLayer;
+	import cn.itamt.dedo.data.DMapLayersCollection;
 	import cn.itamt.dedo.data.DMapsCollection;
 	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DTilesCollection;
@@ -85,6 +88,28 @@ package cn.itamt.dedo.parser {
 					map.name = mXML.@name;
 					map.cellsx = parseInt(mXML.@cellsx);					map.cellsy = parseInt(mXML.@cellsy);
 					map.cellheight = parseInt(mXML.@cellheight);					map.cellwidth = parseInt(mXML.@cellwidth);
+					
+					map.layers = new DMapLayersCollection();
+					var layerList : XMLList = mXML.layers.layer;
+					var layerXML : XML;
+					var j : int = 0;
+					for each(layerXML in layerList) {
+						var layer : DMapLayer = new DMapLayer();
+						layer.index = parseInt(layerXML.@index);
+						layer.name = layerXML.@name;
+						layer.visible = Boolean(parseInt(layerXML.@visible));
+						
+						layer.cells = new DMapCellsCollection();
+						var cellList : XMLList = layerXML.cell;
+						var cellXML : XML;
+						var k : int = 0;
+						for each(cellXML in cellList) {
+							layer.cells.setMapCell(k++, parseInt(cellXML.@x), parseInt(cellXML.@y), parseInt(cellXML.@img), parseInt(cellXML.@value));
+						}
+						
+						map.layers.setMapLayer(j++, layer);
+					}
+					
 					pMaps.setValue(i++, map);
 				}
 			}

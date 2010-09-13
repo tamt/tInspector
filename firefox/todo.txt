@@ -11,5 +11,9 @@ v0.1		基本的功能
  	0.1.1b	
  	0.1.1c	
  	0.1.2	更新使用tInspector1.1，侦听网页内的iframe加载事件。
+ 	
+ 	0.1.7	支持Firefox 4
+ 	
+ 	
 v0.2		将Debugger Flash Player打包到.xpi中,完善界面。
 v0.3	

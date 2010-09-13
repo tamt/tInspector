@@ -5,7 +5,7 @@
 
 	<Description about="urn:mozilla:install-manifest">
 		<em:name>FlashInspector</em:name>
-		<em:version>0.1.5</em:version>
+		<em:version>0.1.7</em:version>
 		<em:description>Inspect flash(swf)'s DisplayObject with mouse. Overview the swf's DisplayObject list. Set the inspect filter class when use mouse inspect.</em:description>
 		<em:creator>tamt</em:creator>
 		<em:id>finspector@itamt.org</em:id>
@@ -15,7 +15,7 @@
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>3.5</em:minVersion>
-				<em:maxVersion>3.6.*</em:maxVersion>
+				<em:maxVersion>4.0b5</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
