@@ -8,7 +8,7 @@ package test {
 		public function DedoTest() {
 			super();
 			
-			addTest(new DPointCollectionTest("testUseMemory"));			addTest(new TileMapperParserTest("testTilesWithSampleXML"));			addTest(new TileMapperParserTest("testParseNameWithSampleXML"));			addTest(new TileMapperParserTest("testMapsWithSampleXML"));			addTest(new TileMapperParserTest("testMapLayersWithSampleXML"));
+			addTest(new DPointCollectionTest("testUseMemory"));			addTest(new TileMapperParserTest("testTilesWithSampleXML"));			addTest(new TileMapperParserTest("testParseNameWithSampleXML"));			addTest(new TileMapperParserTest("testMapsWithSampleXML"));			addTest(new TileMapperParserTest("testMapLayersWithSampleXML"));			addTest(new DedoProjectFactoryTest("testCreateProject"));
 		}
 	}
 }

@@ -21,8 +21,5 @@ package cn.itamt.dedo {
 
 		public function DedoProject() : void {
 		}
-		
-		
-		
 	}
 }

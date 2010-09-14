@@ -8,7 +8,7 @@ package cn.itamt.dedo.parser {
 	 * @author itamt[at]qq.com
 	 */
 	public interface IDedoParser {
-		function parse(xml : XML, onComplete : Function = null) : Boolean;
+		function parse(data : *, onComplete : Function = null) : Boolean;
 
 		function getProjectName() : String;
 

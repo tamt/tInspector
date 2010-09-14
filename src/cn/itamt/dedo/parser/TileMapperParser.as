@@ -29,8 +29,8 @@ package cn.itamt.dedo.parser {
 		//////////实现接口：IMapParser/////////
 		//////////////////////////////////////
 
-		public function parse(xml : XML, onComplete : Function = null) : Boolean {
-			this.xml = xml;
+		public function parse(xml : *, onComplete : Function = null) : Boolean {
+			this.xml = xml as XML;
 			
 			pName = this.xml.@name;
 			pVersion = this.xml.@version;
