@@ -7,8 +7,8 @@ package cn.itamt.utils.inspector.ui {
 	 * 查看對象顯示結構的按鈕.
 	 * @author itamt@qq.com
 	 */
-	public class InspectorViewStructureButton extends InspectorViewOperationButton {
-		public function InspectorViewStructureButton() {
+	public class StructureViewButton extends InspectorButton {
+		public function StructureViewButton() {
 			super();
 			
 			_tip = InspectorLanguageManager.getStr('ViewStructure');

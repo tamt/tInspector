@@ -1,7 +1,7 @@
 package cn.itamt.utils.inspector.plugins.gerrorkeeper {
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
 
 	import flash.display.Graphics;
 	import flash.display.Shape;
@@ -9,11 +9,11 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class GlobalErrorKeeperButton extends InspectorViewOperationButton {
+	public class GlobalErrorKeeperButton extends InspectorButton {
 		public function GlobalErrorKeeperButton() {
 			super();
 			
-			_tip = InspectorLanguageManager.getStr(InspectorViewID.GLOBAL_ERROR_KEEPER);
+			_tip = InspectorLanguageManager.getStr(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 		}
 
 		override public function set active(value : Boolean) : void {

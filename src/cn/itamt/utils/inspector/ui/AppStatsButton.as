@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 	import flash.display.Graphics;
@@ -8,11 +8,11 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorAppStatsButton extends InspectorViewOperationButton {
-		public function InspectorAppStatsButton() {
+	public class AppStatsButton extends InspectorButton {
+		public function AppStatsButton() {
 			super();
 			
-			_tip = InspectorLanguageManager.getStr(InspectorViewID.APPSTATS_VIEW);
+			_tip = InspectorLanguageManager.getStr(InspectorPluginId.APPSTATS_VIEW);
 		}
 
 		override protected function buildDownState() : Shape {

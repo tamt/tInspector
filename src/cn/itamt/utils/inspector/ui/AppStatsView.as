@@ -1,5 +1,6 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -15,12 +16,22 @@ package cn.itamt.utils.inspector.ui {
 			super();
 		}
 
+		override public function getPluginId() : String {
+			return InspectorPluginId.APPSTATS_VIEW;
+		}
+
 		override public function contains(child : DisplayObject) : Boolean {
 			if(panel) {
 				return panel == child || panel.contains(child);
 			} else {
 				return false;
 			}
+		}
+
+		override public function onRegister(inspector : IInspector) : void {
+			super.onRegister(inspector);
+			
+			_icon = new AppStatsButton();
 		}
 
 		override public function onActive() : void {
@@ -47,7 +58,7 @@ package cn.itamt.utils.inspector.ui {
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
-			this._inspector.unactivePlugin(InspectorViewID.APPSTATS_VIEW);
+			this._inspector.unactivePlugin(InspectorPluginId.APPSTATS_VIEW);
 		}
 	}
 }

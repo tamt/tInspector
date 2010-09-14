@@ -1,8 +1,9 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.DisplayObjectTool;
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 	import cn.itamt.utils.inspector.transform.ResetTransofrmControl;
@@ -47,7 +48,13 @@ package cn.itamt.utils.inspector.ui {
 		//////////override interfaces/////////
 		//////////////////////////////////////
 		override public function getPluginId() : String {
-			return InspectorViewID.LIVE_VIEW;
+			return InspectorPluginId.LIVE_VIEW;
+		}
+
+		override public function onRegister(inspector : IInspector) : void {
+			super.onRegister(inspector);
+			
+			_icon = new LiveInspectButton();
 		}
 
 		/**
@@ -397,14 +404,14 @@ package cn.itamt.utils.inspector.ui {
 		 * 單擊查看顯示對象結構
 		 */
 		private function onPressStructure(evt : Event) : void {
-			_inspector.activePlugin(InspectorViewID.STRUCT_VIEW);
+			_inspector.activePlugin(InspectorPluginId.STRUCT_VIEW);
 		}
 
 		/**
 		 * 單擊查看詳細信息
 		 */
 		private function onPressInfo(evt : Event) : void {
-			_inspector.activePlugin(InspectorViewID.PROPER_VIEW);
+			_inspector.activePlugin(InspectorPluginId.PROPER_VIEW);
 		}
 
 		/**

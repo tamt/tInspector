@@ -1,7 +1,8 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.PropertyEvent;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 	import cn.itamt.utils.inspector.renders.ObjectPropertyEditor;
 	import cn.itamt.utils.inspector.renders.PropertyAccessorRender;
@@ -22,6 +23,16 @@ package cn.itamt.utils.inspector.ui {
 
 		override public function set outputerManager(value : InspectorOutPuterManager) : void {
 			trace('[PropertiesView][outputerManager]PropertiesView没有设计信息输出的接口，忽略该属性设置。');
+		}
+
+		override public function getPluginId() : String {
+			return InspectorPluginId.PROPER_VIEW;
+		}
+
+		override public function onRegister(inspector : IInspector) : void {
+			super.onRegister(inspector);
+			
+			_icon = new PropertiesViewButton();
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
@@ -163,7 +174,7 @@ package cn.itamt.utils.inspector.ui {
 			}
 			
 			if(this.panels.length == 0) {
-				this._inspector.unactivePlugin(InspectorViewID.PROPER_VIEW);
+				this._inspector.unactivePlugin(InspectorPluginId.PROPER_VIEW);
 			}
 		}
 	}

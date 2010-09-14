@@ -35,6 +35,8 @@ package cn.itamt.utils.inspector.ui {
 			return _outputerManager;
 		}
 
+		protected var _icon : InspectorButton;
+
 		public function BaseInspectorPlugin() {
 		}
 
@@ -69,6 +71,7 @@ package cn.itamt.utils.inspector.ui {
 		 * 刪除在Inspector註冊時
 		 */
 		public function onUnRegister(inspector : IInspector) : void {
+			
 		}
 
 		public function onRegisterPlugin(pluginId : String) : void {
@@ -166,6 +169,10 @@ package cn.itamt.utils.inspector.ui {
 		 */
 		public function getPluginVersion() : String {
 			return "1.0";
+		}
+
+		public function getPluginIcon() : DisplayObject {
+			return _icon;
 		}
 	}
 }

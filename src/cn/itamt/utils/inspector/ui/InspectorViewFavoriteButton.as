@@ -8,7 +8,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorViewFavoriteButton extends InspectorViewOperationButton {
+	public class InspectorViewFavoriteButton extends InspectorButton {
 		public function InspectorViewFavoriteButton(normal : Boolean = true) {
 			super();
 			

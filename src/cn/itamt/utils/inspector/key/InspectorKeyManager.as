@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.key {
 	import cn.itamt.keyboard.Shortcut;
 	import cn.itamt.keyboard.ShortcutEvent;
 	import cn.itamt.keyboard.ShortcutManager;
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
 
@@ -141,44 +141,44 @@ package cn.itamt.utils.inspector.key {
 			//			this.bindKey2View([KeyCode.CONTROL, KeyCode.T], LiveInspectView.ID);
 			//			this.bindKey2View([KeyCode.CONTROL, KeyCode.P], PropertiesView.ID);
 			//			this.bindKey2Fun([KeyCode.CONTROL, KeyCode.F], InspectorFilterManager.ID);
-			this.bindKey2View([17, 83], InspectorViewID.STRUCT_VIEW);
-			this.bindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
-			this.bindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
-			this.bindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
+			this.bindKey2View([17, 83], InspectorPluginId.STRUCT_VIEW);
+			this.bindKey2View([17, 84], InspectorPluginId.LIVE_VIEW);
+			this.bindKey2View([17, 80], InspectorPluginId.PROPER_VIEW);
+			this.bindKey2View([17, 77], InspectorPluginId.FILTER_VIEW);
 		}
 
 		override public function onUnActive() : void {
 			super.onUnActive();
 			
-			this.unbindKey2View([17, 83], InspectorViewID.STRUCT_VIEW);
-			this.unbindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
-			this.unbindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
-			this.unbindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
+			this.unbindKey2View([17, 83], InspectorPluginId.STRUCT_VIEW);
+			this.unbindKey2View([17, 84], InspectorPluginId.LIVE_VIEW);
+			this.unbindKey2View([17, 80], InspectorPluginId.PROPER_VIEW);
+			this.unbindKey2View([17, 77], InspectorPluginId.FILTER_VIEW);
 		}
 
 		override public function onTurnOn() : void {
 			super.onTurnOn();
 			
-			this.bindKey2View([17, 83], InspectorViewID.STRUCT_VIEW);
-			this.bindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
-			this.bindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
-			this.bindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
+			this.bindKey2View([17, 83], InspectorPluginId.STRUCT_VIEW);
+			this.bindKey2View([17, 84], InspectorPluginId.LIVE_VIEW);
+			this.bindKey2View([17, 80], InspectorPluginId.PROPER_VIEW);
+			this.bindKey2View([17, 77], InspectorPluginId.FILTER_VIEW);
 		}
 
 		override public function onTurnOff() : void {
 			super.onTurnOff();
 			
-			this.unbindKey2View([17, 83], InspectorViewID.STRUCT_VIEW);
-			this.unbindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
-			this.unbindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
-			this.unbindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
+			this.unbindKey2View([17, 83], InspectorPluginId.STRUCT_VIEW);
+			this.unbindKey2View([17, 84], InspectorPluginId.LIVE_VIEW);
+			this.unbindKey2View([17, 80], InspectorPluginId.PROPER_VIEW);
+			this.unbindKey2View([17, 77], InspectorPluginId.FILTER_VIEW);
 		}
 
 		/**
 		 * get this plugin's id
 		 */
 		override public function getPluginId() : String {
-			return InspectorViewID.SHORT_CUT;
+			return InspectorPluginId.SHORT_CUT;
 		}
 	}
 }

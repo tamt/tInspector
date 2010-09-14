@@ -1,10 +1,12 @@
 package cn.itamt.utils.inspector.filter {
 	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.DisplayObjectTool;
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.ui.FilterManagerButton;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import flash.display.DisplayObject;
@@ -161,12 +163,21 @@ package cn.itamt.utils.inspector.filter {
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
-			this._inspector.unactivePlugin(InspectorViewID.FILTER_VIEW);
+			this._inspector.unactivePlugin(InspectorPluginId.FILTER_VIEW);
 		}
 
 		/////////////////////////
 		///////////实现接口/////////
 		/////////////////////////
+		override public function getPluginId() : String {
+			return InspectorPluginId.FILTER_VIEW;
+		}
+
+		override public function onRegister(inspector : IInspector) : void {
+			super.onRegister(inspector);
+			
+			_icon = new FilterManagerButton();
+		}
 
 		override public function contains(child : DisplayObject) : Boolean {
 			if(_view) {
@@ -199,7 +210,7 @@ package cn.itamt.utils.inspector.filter {
 				arr.push(filter);
 			}
 			
-			_view = new InspectorFileterManagerPanel(InspectorLanguageManager.getStr(InspectorViewID.FILTER_VIEW));
+			_view = new InspectorFileterManagerPanel(InspectorLanguageManager.getStr(InspectorPluginId.FILTER_VIEW));
 			_view.setFilterList(arr);
 			_view.setActivedList(this._activeFilters);
 			_view.addEventListener(Event.CLOSE, onClickClose);

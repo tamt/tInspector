@@ -6,8 +6,8 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author tamt
 	 */
-	public class InspectorViewInfoButton extends InspectorViewOperationButton {
-		public function InspectorViewInfoButton() : void {
+	public class PropertiesViewButton extends InspectorButton {
+		public function PropertiesViewButton() : void {
 			super();
 			
 			_tip = InspectorLanguageManager.getStr('InspectInfo');

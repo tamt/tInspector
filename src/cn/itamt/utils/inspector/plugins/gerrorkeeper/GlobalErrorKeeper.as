@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.tip.InspectorPopupManager;
 	import cn.itamt.utils.inspector.tip.PopupAlignMode;
@@ -28,6 +29,16 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			super();
 		}
 
+		override public function getPluginId() : String {
+			return InspectorPluginId.GLOBAL_ERROR_KEEPER;
+		}
+
+		override public function onRegister(inspector : IInspector) : void {
+			super.onRegister(inspector);
+			
+			_icon = new GlobalErrorKeeperButton();
+		}
+
 		override public function contains(child : DisplayObject) : Boolean {
 			if(errorPanels) {
 				for each(var ep:ErrorInfoPanel in errorPanels) {
@@ -49,7 +60,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			super.onTurnOn();
 			
 			if(this.enabled) {
-				_inspector.activePlugin(InspectorViewID.GLOBAL_ERROR_KEEPER);
+				_inspector.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 			}
 		}
 

@@ -7,7 +7,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorViewRefreshButton extends InspectorViewOperationButton {
+	public class InspectorViewRefreshButton extends InspectorButton {
 		public function InspectorViewRefreshButton() {
 			super();
 			

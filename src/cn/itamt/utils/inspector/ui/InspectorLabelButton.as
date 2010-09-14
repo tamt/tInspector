@@ -5,7 +5,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorLabelButton extends InspectorViewOperationButton {
+	public class InspectorLabelButton extends InspectorButton {
 		protected var _label : String = '按钮';
 
 		protected var state : Sprite;

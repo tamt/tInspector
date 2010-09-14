@@ -1,22 +1,22 @@
 package cn.itamt.utils.firefox.addon {
 	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.interfaces.IInspectorPlugin;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeperButton;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorsHistoryButton;
-	import cn.itamt.utils.inspector.ui.InspectorAppStatsButton;
-	import cn.itamt.utils.inspector.ui.InspectorFilterClassButton;
+	import cn.itamt.utils.inspector.ui.AppStatsButton;
+	import cn.itamt.utils.inspector.ui.FilterManagerButton;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
 	import cn.itamt.utils.inspector.ui.InspectorFullScreenButton;
-	import cn.itamt.utils.inspector.ui.InspectorMouseInspectButton;
 	import cn.itamt.utils.inspector.ui.InspectorOnOffButton;
 	import cn.itamt.utils.inspector.ui.InspectorReloadButton;
-	import cn.itamt.utils.inspector.ui.InspectorSwfInfoButton;
-	import cn.itamt.utils.inspector.ui.InspectorViewInfoButton;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
-	import cn.itamt.utils.inspector.ui.InspectorViewStructureButton;
+	import cn.itamt.utils.inspector.ui.LiveInspectButton;
+	import cn.itamt.utils.inspector.ui.PropertiesViewButton;
+	import cn.itamt.utils.inspector.ui.StructureViewButton;
+	import cn.itamt.utils.inspector.ui.SwfInfoButton;
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -29,18 +29,18 @@ package cn.itamt.utils.firefox.addon {
 	 */
 	public class tInspectorControlBar extends Sprite implements IInspectorPlugin {
 		private var _onOffBtn : InspectorOnOffButton;
-		private var _liveBtn : InspectorMouseInspectButton;
-		private var _structBtn : InspectorViewStructureButton;
-		private var _propBtn : InspectorViewInfoButton;
-		private var _filterBtn : InspectorFilterClassButton;
+		private var _liveBtn : LiveInspectButton;
+		private var _structBtn : StructureViewButton;
+		private var _propBtn : PropertiesViewButton;
+		private var _filterBtn : FilterManagerButton;
 		//控制全屏切换的按钮
 		private var _screenBtn : InspectorFullScreenButton;
 		//重载swf
 		private var _reloadBtn : InspectorReloadButton;
 		//控制显示AppStats的按钮
-		private var _statsBtn : InspectorAppStatsButton;
+		private var _statsBtn : AppStatsButton;
 		//显示swf信息的按钮
-		private var _swfInfoBtn : InspectorSwfInfoButton;
+		private var _swfInfoBtn : SwfInfoButton;
 		//全局处理错误
 		private var _gerrorBtn : GlobalErrorKeeperButton;
 		//错误历史按钮
@@ -66,31 +66,31 @@ package cn.itamt.utils.firefox.addon {
 		private function onClickBtn(evt : MouseEvent) : void {
 			switch(evt.target) {
 				case _liveBtn:
-					if(_inspector.getPluginById(InspectorViewID.LIVE_VIEW).isActive) {
-						_inspector.unactivePlugin(InspectorViewID.LIVE_VIEW);
+					if(_inspector.getPluginById(InspectorPluginId.LIVE_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorPluginId.LIVE_VIEW);
 					} else {
-						_inspector.activePlugin(InspectorViewID.LIVE_VIEW);
+						_inspector.activePlugin(InspectorPluginId.LIVE_VIEW);
 					}
 					break;
 				case _propBtn:
-					if(_inspector.getPluginById(InspectorViewID.PROPER_VIEW).isActive) {
-						_inspector.unactivePlugin(InspectorViewID.PROPER_VIEW);
+					if(_inspector.getPluginById(InspectorPluginId.PROPER_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorPluginId.PROPER_VIEW);
 					} else {
-						_inspector.activePlugin(InspectorViewID.PROPER_VIEW);
+						_inspector.activePlugin(InspectorPluginId.PROPER_VIEW);
 					}
 					break;
 				case _structBtn:
-					if(_inspector.getPluginById(InspectorViewID.STRUCT_VIEW).isActive) {
-						_inspector.unactivePlugin(InspectorViewID.STRUCT_VIEW);
+					if(_inspector.getPluginById(InspectorPluginId.STRUCT_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorPluginId.STRUCT_VIEW);
 					} else {
-						_inspector.activePlugin(InspectorViewID.STRUCT_VIEW);
+						_inspector.activePlugin(InspectorPluginId.STRUCT_VIEW);
 					}
 					break;
 				case _filterBtn:
-					if(_inspector.getPluginById(InspectorViewID.FILTER_VIEW).isActive) {
-						_inspector.unactivePlugin(InspectorViewID.FILTER_VIEW);
+					if(_inspector.getPluginById(InspectorPluginId.FILTER_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorPluginId.FILTER_VIEW);
 					} else {
-						_inspector.activePlugin(InspectorViewID.FILTER_VIEW);
+						_inspector.activePlugin(InspectorPluginId.FILTER_VIEW);
 					}
 					break;
 				case _screenBtn:
@@ -106,30 +106,30 @@ package cn.itamt.utils.firefox.addon {
 					this.dispatchEvent(new InspectEvent(InspectEvent.RELOAD, _inspector.root));
 					break;
 				case _statsBtn:
-					if(_inspector.getPluginById(InspectorViewID.APPSTATS_VIEW).isActive) {
-						_inspector.unactivePlugin(InspectorViewID.APPSTATS_VIEW);
+					if(_inspector.getPluginById(InspectorPluginId.APPSTATS_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorPluginId.APPSTATS_VIEW);
 					} else {
-						_inspector.activePlugin(InspectorViewID.APPSTATS_VIEW);
+						_inspector.activePlugin(InspectorPluginId.APPSTATS_VIEW);
 					}
 					break;
 				case _swfInfoBtn:
-					if(_inspector.getPluginById(InspectorViewID.SWFINFO_VIEW).isActive) {
-						_inspector.unactivePlugin(InspectorViewID.SWFINFO_VIEW);
+					if(_inspector.getPluginById(InspectorPluginId.SWFINFO_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorPluginId.SWFINFO_VIEW);
 					} else {
-						_inspector.activePlugin(InspectorViewID.SWFINFO_VIEW);
+						_inspector.activePlugin(InspectorPluginId.SWFINFO_VIEW);
 					}
 					break;
 				case _gerrorBtn:
-					Debug.trace('[tInspectorControlBar][onClickBtn]' + _inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive);
-					if(_inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive) {
-						_inspector.unactivePlugin(InspectorViewID.GLOBAL_ERROR_KEEPER);
+					Debug.trace('[tInspectorControlBar][onClickBtn]' + _inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER).isActive);
+					if(_inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER).isActive) {
+						_inspector.unactivePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 					} else {
-						_inspector.activePlugin(InspectorViewID.GLOBAL_ERROR_KEEPER);
+						_inspector.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 					}
 					break;
 				case _gerrorHistoryBtn:
-					if(_inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive) {
-						_inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER)['toggleHistoryPanel']();
+					if(_inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER).isActive) {
+						_inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER)['toggleHistoryPanel']();
 					}
 					break;
 				case _onOffBtn:
@@ -143,30 +143,30 @@ package cn.itamt.utils.firefox.addon {
 			}
 		}
 
-		private function getBtnById(pluginId : String) : InspectorViewOperationButton {
+		private function getBtnById(pluginId : String) : InspectorButton {
 			switch(pluginId) {
-				case InspectorViewID.FILTER_VIEW:
-					return (_filterBtn == null) ? (_filterBtn = new InspectorFilterClassButton()) : _filterBtn;
+				case InspectorPluginId.FILTER_VIEW:
+					return (_filterBtn == null) ? (_filterBtn = new FilterManagerButton()) : _filterBtn;
 					break;
-				case InspectorViewID.STRUCT_VIEW:
-					return (_structBtn == null) ? (_structBtn = new InspectorViewStructureButton()) : _structBtn;
+				case InspectorPluginId.STRUCT_VIEW:
+					return (_structBtn == null) ? (_structBtn = new StructureViewButton()) : _structBtn;
 					break;
-				case InspectorViewID.PROPER_VIEW:
-					return (_propBtn == null) ? (_propBtn = new InspectorViewInfoButton()) : _propBtn;
+				case InspectorPluginId.PROPER_VIEW:
+					return (_propBtn == null) ? (_propBtn = new PropertiesViewButton()) : _propBtn;
 					break;
-				case InspectorViewID.LIVE_VIEW:
-					return (_liveBtn == null) ? (_liveBtn = new InspectorMouseInspectButton()) : _liveBtn;
+				case InspectorPluginId.LIVE_VIEW:
+					return (_liveBtn == null) ? (_liveBtn = new LiveInspectButton()) : _liveBtn;
 					break;
-				case InspectorViewID.APPSTATS_VIEW:
-					return (_statsBtn == null) ? (_statsBtn = new InspectorAppStatsButton()) : _statsBtn;
+				case InspectorPluginId.APPSTATS_VIEW:
+					return (_statsBtn == null) ? (_statsBtn = new AppStatsButton()) : _statsBtn;
 					break;
-				case InspectorViewID.SWFINFO_VIEW:
-					return (_swfInfoBtn == null) ? (_swfInfoBtn = new InspectorSwfInfoButton()) : _swfInfoBtn;
+				case InspectorPluginId.SWFINFO_VIEW:
+					return (_swfInfoBtn == null) ? (_swfInfoBtn = new SwfInfoButton()) : _swfInfoBtn;
 					break;
-				case InspectorViewID.GLOBAL_ERROR_KEEPER:
+				case InspectorPluginId.GLOBAL_ERROR_KEEPER:
 					return (_gerrorBtn == null) ? (_gerrorBtn = new GlobalErrorKeeperButton()) : _gerrorBtn;
 					break;
-				case InspectorViewID.GLOBAL_ERROR_HISTORY:
+				case InspectorPluginId.GLOBAL_ERROR_HISTORY:
 					return (_gerrorHistoryBtn == null) ? (_gerrorHistoryBtn = new GlobalErrorsHistoryButton()) : _gerrorHistoryBtn;
 					break;
 				case 'tInspector':
@@ -191,6 +191,10 @@ package cn.itamt.utils.firefox.addon {
 		 */
 		public function getPluginId() : String {
 			return _id;
+		}
+
+		public function getPluginIcon() : DisplayObject {
+			return null;
 		}
 
 		/**
@@ -218,8 +222,7 @@ package cn.itamt.utils.firefox.addon {
 		}
 
 		private function onFullScreen(evt : FullScreenEvent) : void {
-			this.getBtnById("fullScreen").active = evt.fullScreen;
-//			this._screenBtn.active = 
+			this.getBtnById("fullScreen").active = evt.fullScreen; 
 		}
 
 		public function onRegisterPlugin(pluginId : String) : void {
@@ -241,39 +244,24 @@ package cn.itamt.utils.firefox.addon {
 		}
 
 		public function onTurnOn() : void {
-			this.addChild(getBtnById(InspectorViewID.STRUCT_VIEW));			this.addChild(getBtnById(InspectorViewID.PROPER_VIEW));			this.addChild(getBtnById(InspectorViewID.LIVE_VIEW));			this.addChild(getBtnById(InspectorViewID.FILTER_VIEW));			this.addChild(getBtnById(InspectorViewID.APPSTATS_VIEW));			this.addChild(getBtnById(InspectorViewID.SWFINFO_VIEW));			this.addChild(getBtnById(InspectorViewID.GLOBAL_ERROR_KEEPER));			this.addChild(getBtnById(InspectorViewID.GLOBAL_ERROR_HISTORY));
-			//检测是否允许设置全屏
-			/*if(FlashPlayerEnvironment.getAllowFullScreen())*/
+			this.addChild(getBtnById(InspectorPluginId.STRUCT_VIEW));			this.addChild(getBtnById(InspectorPluginId.PROPER_VIEW));			this.addChild(getBtnById(InspectorPluginId.LIVE_VIEW));			this.addChild(getBtnById(InspectorPluginId.FILTER_VIEW));			this.addChild(getBtnById(InspectorPluginId.APPSTATS_VIEW));			this.addChild(getBtnById(InspectorPluginId.SWFINFO_VIEW));			this.addChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER));			this.addChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_HISTORY));
 
 			this.addChild(getBtnById('fullScreen'));			this.addChild(getBtnById('ReloadSwf'));
 			
-			getBtnById(InspectorViewID.STRUCT_VIEW).active = _inspector.getPluginById(InspectorViewID.STRUCT_VIEW) && _inspector.getPluginById(InspectorViewID.STRUCT_VIEW).isActive;         
-			getBtnById(InspectorViewID.PROPER_VIEW).active = _inspector.getPluginById(InspectorViewID.PROPER_VIEW) && _inspector.getPluginById(InspectorViewID.PROPER_VIEW).isActive;
-			getBtnById(InspectorViewID.LIVE_VIEW).active = _inspector.getPluginById(InspectorViewID.LIVE_VIEW) && _inspector.getPluginById(InspectorViewID.LIVE_VIEW).isActive;
-			getBtnById(InspectorViewID.FILTER_VIEW).active = _inspector.getPluginById(InspectorViewID.FILTER_VIEW) && _inspector.getPluginById(InspectorViewID.FILTER_VIEW).isActive;    
-			getBtnById(InspectorViewID.APPSTATS_VIEW).active = _inspector.getPluginById(InspectorViewID.APPSTATS_VIEW) && _inspector.getPluginById(InspectorViewID.APPSTATS_VIEW).isActive;  
-			getBtnById(InspectorViewID.SWFINFO_VIEW).active = _inspector.getPluginById(InspectorViewID.SWFINFO_VIEW) && _inspector.getPluginById(InspectorViewID.SWFINFO_VIEW).isActive;
-			getBtnById(InspectorViewID.GLOBAL_ERROR_KEEPER).active = _inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER) && _inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive; 
+			getBtnById(InspectorPluginId.STRUCT_VIEW).active = _inspector.getPluginById(InspectorPluginId.STRUCT_VIEW) && _inspector.getPluginById(InspectorPluginId.STRUCT_VIEW).isActive;         
+			getBtnById(InspectorPluginId.PROPER_VIEW).active = _inspector.getPluginById(InspectorPluginId.PROPER_VIEW) && _inspector.getPluginById(InspectorPluginId.PROPER_VIEW).isActive;
+			getBtnById(InspectorPluginId.LIVE_VIEW).active = _inspector.getPluginById(InspectorPluginId.LIVE_VIEW) && _inspector.getPluginById(InspectorPluginId.LIVE_VIEW).isActive;
+			getBtnById(InspectorPluginId.FILTER_VIEW).active = _inspector.getPluginById(InspectorPluginId.FILTER_VIEW) && _inspector.getPluginById(InspectorPluginId.FILTER_VIEW).isActive;    
+			getBtnById(InspectorPluginId.APPSTATS_VIEW).active = _inspector.getPluginById(InspectorPluginId.APPSTATS_VIEW) && _inspector.getPluginById(InspectorPluginId.APPSTATS_VIEW).isActive;  
+			getBtnById(InspectorPluginId.SWFINFO_VIEW).active = _inspector.getPluginById(InspectorPluginId.SWFINFO_VIEW) && _inspector.getPluginById(InspectorPluginId.SWFINFO_VIEW).isActive;
+			getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER).active = _inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER) && _inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER).isActive; 
 		}
 
 		public function onTurnOff() : void {
-			this.removeChild(getBtnById(InspectorViewID.STRUCT_VIEW));			this.removeChild(getBtnById(InspectorViewID.PROPER_VIEW));			this.removeChild(getBtnById(InspectorViewID.LIVE_VIEW));			this.removeChild(getBtnById(InspectorViewID.FILTER_VIEW));			this.removeChild(getBtnById(InspectorViewID.APPSTATS_VIEW));			this.removeChild(getBtnById(InspectorViewID.SWFINFO_VIEW));			this.removeChild(getBtnById(InspectorViewID.GLOBAL_ERROR_KEEPER));			this.removeChild(getBtnById(InspectorViewID.GLOBAL_ERROR_HISTORY));
-			//
-			/*if(FlashPlayerEnvironment.getAllowFullScreen())*/
+			this.removeChild(getBtnById(InspectorPluginId.STRUCT_VIEW));			this.removeChild(getBtnById(InspectorPluginId.PROPER_VIEW));			this.removeChild(getBtnById(InspectorPluginId.LIVE_VIEW));			this.removeChild(getBtnById(InspectorPluginId.FILTER_VIEW));			this.removeChild(getBtnById(InspectorPluginId.APPSTATS_VIEW));			this.removeChild(getBtnById(InspectorPluginId.SWFINFO_VIEW));			this.removeChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER));			this.removeChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_HISTORY));
 
 			this.removeChild(getBtnById('fullScreen'));
 			this.removeChild(getBtnById('ReloadSwf'));
-			
-//			this._onOffBtn.active = false;
-//			this._filterBtn.active = false;
-//			this._liveBtn.active = false;
-//			this._propBtn.active = false;
-//			this._reloadBtn.active = false;
-//			this._screenBtn.active = false;
-//			this._statsBtn.active = false;
-//			this._structBtn.active = false;
-//			this._swfInfoBtn.active = false;
-//			this._gerrorBtn.active = false;
 		}
 
 		public function onInspect(target : InspectTarget) : void {
@@ -296,7 +284,7 @@ package cn.itamt.utils.firefox.addon {
 
 		public function onActivePlugin(pluginId : String) : void {
 			Debug.trace('[tInspectorControlBar][onActiveView]' + pluginId);
-			var btn : InspectorViewOperationButton = this.getBtnById(pluginId) as InspectorViewOperationButton;
+			var btn : InspectorButton = this.getBtnById(pluginId) as InspectorButton;
 			if(btn) {
 				btn.active = true;
 			}
@@ -305,7 +293,7 @@ package cn.itamt.utils.firefox.addon {
 
 		public function onUnActivePlugin(pluginId : String) : void {
 			Debug.trace('[tInspectorControlBar][onUnActiveView]' + pluginId);
-			var btn : InspectorViewOperationButton = this.getBtnById(pluginId) as InspectorViewOperationButton;
+			var btn : InspectorButton = this.getBtnById(pluginId) as InspectorButton;
 			if(btn) {
 				btn.active = false;
 			}

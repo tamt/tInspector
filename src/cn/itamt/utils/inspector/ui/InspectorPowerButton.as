@@ -6,7 +6,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author tamt
 	 */
-	public class InspectorPowerButton extends InspectorViewOperationButton {
+	public class InspectorPowerButton extends InspectorButton {
 		public function InspectorPowerButton() : void {
 			super();
 			

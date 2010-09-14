@@ -8,7 +8,7 @@ package cn.itamt.utils.inspector.ui {
 	 * 查看完整属性按钮
 	 * @author itamt@qq.com
 	 */
-	public class InspectorViewFullButton extends InspectorViewOperationButton {
+	public class InspectorViewFullButton extends InspectorButton {
 
 		public function InspectorViewFullButton() {
 			super();

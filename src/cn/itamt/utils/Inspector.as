@@ -1,5 +1,5 @@
 ﻿package cn.itamt.utils {
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.filter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
@@ -140,11 +140,11 @@
 			//				registerView(_ctmenu, InspectorViewID.RIGHT_MENU);
 			//				activeView(InspectorViewID.RIGHT_MENU);
 			//			}
-			if(live)registerPlugin(_inspectView, InspectorViewID.LIVE_VIEW);
-			if(structure)registerPlugin(_structureView, InspectorViewID.STRUCT_VIEW);
-			if(property)registerPlugin(_propertiesView, InspectorViewID.PROPER_VIEW);
-			if(keys)registerPlugin(_keysManager, InspectorViewID.SHORT_CUT);
-			registerPlugin(_filterManager, InspectorViewID.FILTER_VIEW);
+			if(live)registerPlugin(_inspectView, InspectorPluginId.LIVE_VIEW);
+			if(structure)registerPlugin(_structureView, InspectorPluginId.STRUCT_VIEW);
+			if(property)registerPlugin(_propertiesView, InspectorPluginId.PROPER_VIEW);
+			if(keys)registerPlugin(_keysManager, InspectorPluginId.SHORT_CUT);
+			registerPlugin(_filterManager, InspectorPluginId.FILTER_VIEW);
 		}
 
 		private var _views : Dictionary;

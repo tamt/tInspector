@@ -8,8 +8,8 @@ package cn.itamt.utils.inspector.ui {
 	 * 鼠标查看
 	 * @author itamt@qq.com
 	 */
-	public class InspectorMouseInspectButton extends InspectorViewFullButton {
-		public function InspectorMouseInspectButton() {
+	public class LiveInspectButton extends InspectorViewFullButton {
+		public function LiveInspectButton() {
 			super();
 		}
 

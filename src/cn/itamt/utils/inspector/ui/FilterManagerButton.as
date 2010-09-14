@@ -6,9 +6,9 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorFilterClassButton extends InspectorViewOperationButton {
+	public class FilterManagerButton extends InspectorButton {
 
-		public function InspectorFilterClassButton() {
+		public function FilterManagerButton() {
 			super();
 			
 			_tip = InspectorLanguageManager.getStr('SetFilterClass');

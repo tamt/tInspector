@@ -6,7 +6,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author tamt
 	 */
-	public class InspectorViewCloseButton extends InspectorViewOperationButton {
+	public class InspectorViewCloseButton extends InspectorButton {
 		public function InspectorViewCloseButton() : void {
 			super();
 			

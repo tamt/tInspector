@@ -27,9 +27,9 @@ package cn.itamt.utils.inspector.ui {
 		private var _pareBtn : InspectorViewParentButton;
 		private var _childBtn : InspectorViewChildButton;
 		private var _broBtn : InspectorViewBrotherButton;
-		private var _infoBtn : InspectorViewInfoButton;
-		private var _filterBtn : InspectorFilterClassButton;
-		private var _struBtn : InspectorViewStructureButton;
+		private var _infoBtn : PropertiesViewButton;
+		private var _filterBtn : FilterManagerButton;
+		private var _struBtn : StructureViewButton;
 		private var _closeBtn : InspectorViewCloseButton;
 		//布局
 		private var _paddings : Array = [10, 5, 10];
@@ -51,17 +51,17 @@ package cn.itamt.utils.inspector.ui {
 									_pareBtn = new InspectorViewParentButton, 
 									_childBtn = new InspectorViewChildButton, 
 									_broBtn = new InspectorViewBrotherButton,
-									_infoBtn = new InspectorViewInfoButton,
-									_struBtn = new InspectorViewStructureButton,
-									_filterBtn = new InspectorFilterClassButton];
-			var btn : InspectorViewOperationButton;
+									_infoBtn = new PropertiesViewButton,
+									_struBtn = new StructureViewButton,
+									_filterBtn = new FilterManagerButton];
+			var btn : InspectorButton;
 			for(var i : int = 0;i < btns.length;i++) {
-				btn = btns[i] as InspectorViewOperationButton;
+				btn = btns[i] as InspectorButton;
 				addChild(btn);
 				if(i == 0) {
 					btn.x = _paddings[0] + i * _btnGap;
 				} else {
-					btn.x = _paddings[0] + i * (_btnGap + (btns[i - 1] as InspectorViewOperationButton).width);
+					btn.x = _paddings[0] + i * (_btnGap + (btns[i - 1] as InspectorButton).width);
 				}
 				btn.y = _paddings[1]; 
 			}

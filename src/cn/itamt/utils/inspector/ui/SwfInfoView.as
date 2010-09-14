@@ -1,7 +1,8 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.data.SWFInfo;
 	import cn.itamt.utils.inspector.events.PropertyEvent;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.renders.ObjectPropertyEditor;
 	import cn.itamt.utils.inspector.renders.PropertyAccessorRender;
@@ -19,6 +20,16 @@ package cn.itamt.utils.inspector.ui {
 
 		public function SwfInfoView() {
 			super();
+		}
+
+		override public function getPluginId() : String {
+			return InspectorPluginId.SWFINFO_VIEW;
+		}
+
+		override public function onRegister(inspector : IInspector) : void {
+			super.onRegister(inspector);
+			
+			_icon = new SwfInfoButton();
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
@@ -43,7 +54,7 @@ package cn.itamt.utils.inspector.ui {
 			
 			if(this.panels == null)this.panels = [];
 			
-			this.panel = new SwfInfoViewPanel(InspectorLanguageManager.getStr(InspectorViewID.SWFINFO_VIEW));
+			this.panel = new SwfInfoViewPanel(InspectorLanguageManager.getStr(InspectorPluginId.SWFINFO_VIEW));
 			this.panel.addEventListener(Event.CLOSE, onClickClose, false, 0, true);
 			this.panel.addEventListener(PropertyEvent.UPDATE, onPropertyUpdate);
 			this._inspector.stage.addChild(this.panel);
@@ -111,7 +122,7 @@ package cn.itamt.utils.inspector.ui {
 			}
 			
 			if(this.panels.length == 0) {
-				this._inspector.unactivePlugin(InspectorViewID.SWFINFO_VIEW);
+				this._inspector.unactivePlugin(InspectorPluginId.SWFINFO_VIEW);
 			}
 		}
 	}

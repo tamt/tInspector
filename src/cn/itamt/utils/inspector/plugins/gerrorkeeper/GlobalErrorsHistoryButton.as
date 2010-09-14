@@ -1,6 +1,6 @@
 package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
 
 	import flash.display.Graphics;
 	import flash.display.Shape;
@@ -8,7 +8,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class GlobalErrorsHistoryButton extends InspectorViewOperationButton {
+	public class GlobalErrorsHistoryButton extends InspectorButton {
 		public function GlobalErrorsHistoryButton() {
 			super();
 			

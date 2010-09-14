@@ -3,7 +3,6 @@ package cn.itamt.utils.inspector.ui {
 
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -11,7 +10,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorViewOperationButton extends SimpleButton {
+	public class InspectorButton extends SimpleButton {
 		protected var _active : Boolean = false;
 
 		private var _timer : Timer;
@@ -25,7 +24,7 @@ package cn.itamt.utils.inspector.ui {
 			_tip = value;
 		}
 
-		public function InspectorViewOperationButton() : void {
+		public function InspectorButton() : void {
 			this.downState = buildDownState();
 			this.upState = buildUpState();
 			this.overState = buildOverState();

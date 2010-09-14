@@ -3,7 +3,7 @@ package cn.itamt.utils.inspector.consts {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorViewID {
+	public class InspectorPluginId {
 		public static const RIGHT_MENU : String = 'tinspector-right-menu';
 		public static const STRUCT_VIEW : String = 'StructurePanel';
 		public static const PROPER_VIEW : String = 'PropertyPanel';

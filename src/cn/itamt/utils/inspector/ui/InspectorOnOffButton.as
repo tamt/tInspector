@@ -10,7 +10,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorOnOffButton extends InspectorViewOperationButton {
+	public class InspectorOnOffButton extends InspectorButton {
 		public function InspectorOnOffButton() {
 			super();
 			

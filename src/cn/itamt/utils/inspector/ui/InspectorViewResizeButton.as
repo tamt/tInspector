@@ -8,7 +8,7 @@ package cn.itamt.utils.inspector.ui {
 	 * 面板的‘最小化/还原’按钮。
 	 * @author itamt@qq.com
 	 */
-	public class InspectorViewResizeButton extends InspectorViewOperationButton {
+	public class InspectorViewResizeButton extends InspectorButton {
 		public function InspectorViewResizeButton() {
 			super();
 			

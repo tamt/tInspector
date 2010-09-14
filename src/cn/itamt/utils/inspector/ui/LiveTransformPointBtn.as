@@ -9,7 +9,7 @@ package cn.itamt.utils.inspector.ui {
 	 * 调整形状和大小的点按钮.
 	 * @author itamt@qq.com
 	 */
-	public class LiveTransformPointBtn extends InspectorViewOperationButton {
+	public class LiveTransformPointBtn extends InspectorButton {
 		private var downHandler : Function;
 		private var upHandler : Function;
 		private var dragHandler : Function;

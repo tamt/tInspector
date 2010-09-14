@@ -11,7 +11,13 @@ package cn.itamt.utils.inspector.interfaces {
 		/**
 		 * get this plugin's id
 		 */
-		function getPluginId() : String;
+		function getPluginId() : String;
+
+		/**
+		 * the icon will be display on tInspectorControlBar. if your plugin doesn't have an icon, just return null.
+		 */
+		function getPluginIcon() : DisplayObject;
+
 		/**
 		 * get this plugin's version
 		 */

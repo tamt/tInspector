@@ -1,10 +1,11 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.data.DisplayItemData;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
 	import cn.itamt.utils.inspector.events.InspectEvent;
+	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 	import cn.itamt.utils.inspector.output.StructureTreeItemInfoOutputer;
 
@@ -38,6 +39,15 @@ package cn.itamt.utils.inspector.ui {
 		//////////////////////////////////////
 		////////实现接口：IInspectorPlugin/////
 		//////////////////////////////////////
+		override public function getPluginId() : String {
+			return InspectorPluginId.STRUCT_VIEW;
+		}
+
+		override public function onRegister(inspector : IInspector) : void {
+			super.onRegister(inspector);
+			
+			_icon = new StructureViewButton();
+		}
 
 		override public function contains(child : DisplayObject) : Boolean {
 			if(panel) {
@@ -218,7 +228,7 @@ package cn.itamt.utils.inspector.ui {
 		 */
 		private function onClickClose(evt : Event) : void {
 			Debug.trace('[StructureView][onClickClose]');
-			this._inspector.unactivePlugin(InspectorViewID.STRUCT_VIEW);
+			this._inspector.unactivePlugin(InspectorPluginId.STRUCT_VIEW);
 		}
 
 		/**

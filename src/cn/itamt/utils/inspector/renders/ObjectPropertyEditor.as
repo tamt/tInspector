@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.renders {
 	import cn.itamt.utils.inspector.consts.InspectorSymbolIcon;
 	import cn.itamt.utils.inspector.events.PropertyEvent;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.ui.InspectorViewOperationButton;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
 
 	import flash.display.Bitmap;
 	import flash.events.FocusEvent;
@@ -12,12 +12,12 @@ package cn.itamt.utils.inspector.renders {
 	 * @author itamt[at]qq.com
 	 */
 	public class ObjectPropertyEditor extends PropertyEditor {
-		protected var inspectBtn : InspectorViewOperationButton;
+		protected var inspectBtn : InspectorButton;
 
 		public function ObjectPropertyEditor() {
 			super();
 			
-			inspectBtn = new InspectorViewOperationButton();
+			inspectBtn = new InspectorButton();
 			inspectBtn.upState = inspectBtn.overState = inspectBtn.downState = inspectBtn.hitTestState = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.INSPECT));
 			inspectBtn.tip = InspectorLanguageManager.getStr("InspectInfo");
 			inspectBtn.visible = false;
