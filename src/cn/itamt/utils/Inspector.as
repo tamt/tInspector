@@ -38,6 +38,14 @@
 
 		public static var APP_DOMAIN : ApplicationDomain;
 
+		/**
+		 * store all plugins.
+		 */
+		private var _plugins : Dictionary;
+		/**
+		 * store the order of each plugin in id.
+		 */
+		private var _pluginOrders : Array;
 		//////////////////////////////////////
 		////////////setter, getter////////////
 		//////////////////////////////////////
@@ -140,13 +148,21 @@
 			registerPlugin(_filterManager, InspectorPluginId.FILTER_VIEW);
 		}
 
-		private var _plugins : Dictionary;
-
 		/**
 		 * 往tInspector註冊一個功能模塊
 		 */
 		public function registerPlugin(plugin : IInspectorPlugin, id : String) : void {
 			if(_plugins == null)_plugins = new Dictionary();
+			
+			//sort order of plugin.
+			if(_pluginOrders == null)_pluginOrders = [];
+			var t : int = _pluginOrders.indexOf(id);
+			if(t >= 0) {
+				_pluginOrders.splice(t, 1);
+			}
+			_pluginOrders.push(id);
+			
+			//store the plugin to _plugins.
 			if(plugin != _plugins[id]) {
 				plugin.onRegister(this);
 				
