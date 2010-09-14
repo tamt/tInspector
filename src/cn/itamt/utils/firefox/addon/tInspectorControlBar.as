@@ -4,7 +4,7 @@ package cn.itamt.utils.firefox.addon {
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
-	import cn.itamt.utils.inspector.interfaces.IInspectorView;
+	import cn.itamt.utils.inspector.interfaces.IInspectorPlugin;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeperButton;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorsHistoryButton;
 	import cn.itamt.utils.inspector.ui.InspectorAppStatsButton;
@@ -27,7 +27,7 @@ package cn.itamt.utils.firefox.addon {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class tInspectorControlBar extends Sprite implements IInspectorView {
+	public class tInspectorControlBar extends Sprite implements IInspectorPlugin {
 		private var _onOffBtn : InspectorOnOffButton;
 		private var _liveBtn : InspectorMouseInspectButton;
 		private var _structBtn : InspectorViewStructureButton;
@@ -66,31 +66,31 @@ package cn.itamt.utils.firefox.addon {
 		private function onClickBtn(evt : MouseEvent) : void {
 			switch(evt.target) {
 				case _liveBtn:
-					if(_inspector.getViewByID(InspectorViewID.LIVE_VIEW).isActive) {
-						_inspector.unactiveView(InspectorViewID.LIVE_VIEW);
+					if(_inspector.getPluginById(InspectorViewID.LIVE_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorViewID.LIVE_VIEW);
 					} else {
-						_inspector.activeView(InspectorViewID.LIVE_VIEW);
+						_inspector.activePlugin(InspectorViewID.LIVE_VIEW);
 					}
 					break;
 				case _propBtn:
-					if(_inspector.getViewByID(InspectorViewID.PROPER_VIEW).isActive) {
-						_inspector.unactiveView(InspectorViewID.PROPER_VIEW);
+					if(_inspector.getPluginById(InspectorViewID.PROPER_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorViewID.PROPER_VIEW);
 					} else {
-						_inspector.activeView(InspectorViewID.PROPER_VIEW);
+						_inspector.activePlugin(InspectorViewID.PROPER_VIEW);
 					}
 					break;
 				case _structBtn:
-					if(_inspector.getViewByID(InspectorViewID.STRUCT_VIEW).isActive) {
-						_inspector.unactiveView(InspectorViewID.STRUCT_VIEW);
+					if(_inspector.getPluginById(InspectorViewID.STRUCT_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorViewID.STRUCT_VIEW);
 					} else {
-						_inspector.activeView(InspectorViewID.STRUCT_VIEW);
+						_inspector.activePlugin(InspectorViewID.STRUCT_VIEW);
 					}
 					break;
 				case _filterBtn:
-					if(_inspector.getViewByID(InspectorViewID.FILTER_VIEW).isActive) {
-						_inspector.unactiveView(InspectorViewID.FILTER_VIEW);
+					if(_inspector.getPluginById(InspectorViewID.FILTER_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorViewID.FILTER_VIEW);
 					} else {
-						_inspector.activeView(InspectorViewID.FILTER_VIEW);
+						_inspector.activePlugin(InspectorViewID.FILTER_VIEW);
 					}
 					break;
 				case _screenBtn:
@@ -106,30 +106,30 @@ package cn.itamt.utils.firefox.addon {
 					this.dispatchEvent(new InspectEvent(InspectEvent.RELOAD, _inspector.root));
 					break;
 				case _statsBtn:
-					if(_inspector.getViewByID(InspectorViewID.APPSTATS_VIEW).isActive) {
-						_inspector.unactiveView(InspectorViewID.APPSTATS_VIEW);
+					if(_inspector.getPluginById(InspectorViewID.APPSTATS_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorViewID.APPSTATS_VIEW);
 					} else {
-						_inspector.activeView(InspectorViewID.APPSTATS_VIEW);
+						_inspector.activePlugin(InspectorViewID.APPSTATS_VIEW);
 					}
 					break;
 				case _swfInfoBtn:
-					if(_inspector.getViewByID(InspectorViewID.SWFINFO_VIEW).isActive) {
-						_inspector.unactiveView(InspectorViewID.SWFINFO_VIEW);
+					if(_inspector.getPluginById(InspectorViewID.SWFINFO_VIEW).isActive) {
+						_inspector.unactivePlugin(InspectorViewID.SWFINFO_VIEW);
 					} else {
-						_inspector.activeView(InspectorViewID.SWFINFO_VIEW);
+						_inspector.activePlugin(InspectorViewID.SWFINFO_VIEW);
 					}
 					break;
 				case _gerrorBtn:
-					Debug.trace('[tInspectorControlBar][onClickBtn]' + _inspector.getViewByID(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive);
-					if(_inspector.getViewByID(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive) {
-						_inspector.unactiveView(InspectorViewID.GLOBAL_ERROR_KEEPER);
+					Debug.trace('[tInspectorControlBar][onClickBtn]' + _inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive);
+					if(_inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive) {
+						_inspector.unactivePlugin(InspectorViewID.GLOBAL_ERROR_KEEPER);
 					} else {
-						_inspector.activeView(InspectorViewID.GLOBAL_ERROR_KEEPER);
+						_inspector.activePlugin(InspectorViewID.GLOBAL_ERROR_KEEPER);
 					}
 					break;
 				case _gerrorHistoryBtn:
-					if(_inspector.getViewByID(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive) {
-						_inspector.getViewByID(InspectorViewID.GLOBAL_ERROR_KEEPER)['toggleHistoryPanel']();
+					if(_inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive) {
+						_inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER)['toggleHistoryPanel']();
 					}
 					break;
 				case _onOffBtn:
@@ -137,14 +137,14 @@ package cn.itamt.utils.firefox.addon {
 						this._inspector.turnOff();
 					} else {
 						this._inspector.turnOn();
-						if(!this._active)this._inspector.activeView(this.id);
+						if(!this._active)this._inspector.activePlugin(this.id);
 					}
 					break;
 			}
 		}
 
-		private function getBtnById(viewClassId : String) : InspectorViewOperationButton {
-			switch(viewClassId) {
+		private function getBtnById(pluginId : String) : InspectorViewOperationButton {
+			switch(pluginId) {
 				case InspectorViewID.FILTER_VIEW:
 					return (_filterBtn == null) ? (_filterBtn = new InspectorFilterClassButton()) : _filterBtn;
 					break;
@@ -184,8 +184,21 @@ package cn.itamt.utils.firefox.addon {
 		}
 
 		//////////////////////////////////////
-		//////////实现接口：IInspectorView////////
+		////////实现接口：IInspectorPlugin/////
 		//////////////////////////////////////
+		/**
+		 * get this plugin's id
+		 */
+		public function getPluginId() : String {
+			return _id;
+		}
+
+		/**
+		 * get this plugin's version
+		 */
+		public function getPluginVersion() : String {
+			return "1.0";
+		}
 
 		override public function contains(child : DisplayObject) : Boolean {
 			return this == child || super.contains(child);
@@ -209,12 +222,12 @@ package cn.itamt.utils.firefox.addon {
 //			this._screenBtn.active = 
 		}
 
-		public function onRegisterView(viewClassId : String) : void {
-//			Debug.trace('[tInspectorControlBar][onRegisterView]' + viewClassId);
-//			this.addChild(getBtnById(viewClassId));
+		public function onRegisterPlugin(pluginId : String) : void {
+//			Debug.trace('[tInspectorControlBar][onRegisterView]' + pluginId);
+//			this.addChild(getBtnById(pluginId));
 		}
 
-		public function onUnRegisterView(viewClassId : String) : void {
+		public function onUnRegisterPlugin(pluginId : String) : void {
 		}
 
 		public function onActive() : void {
@@ -234,13 +247,13 @@ package cn.itamt.utils.firefox.addon {
 
 			this.addChild(getBtnById('fullScreen'));			this.addChild(getBtnById('ReloadSwf'));
 			
-			getBtnById(InspectorViewID.STRUCT_VIEW).active = _inspector.getViewByID(InspectorViewID.STRUCT_VIEW) && _inspector.getViewByID(InspectorViewID.STRUCT_VIEW).isActive;         
-			getBtnById(InspectorViewID.PROPER_VIEW).active = _inspector.getViewByID(InspectorViewID.PROPER_VIEW) && _inspector.getViewByID(InspectorViewID.PROPER_VIEW).isActive;
-			getBtnById(InspectorViewID.LIVE_VIEW).active = _inspector.getViewByID(InspectorViewID.LIVE_VIEW) && _inspector.getViewByID(InspectorViewID.LIVE_VIEW).isActive;
-			getBtnById(InspectorViewID.FILTER_VIEW).active = _inspector.getViewByID(InspectorViewID.FILTER_VIEW) && _inspector.getViewByID(InspectorViewID.FILTER_VIEW).isActive;    
-			getBtnById(InspectorViewID.APPSTATS_VIEW).active = _inspector.getViewByID(InspectorViewID.APPSTATS_VIEW) && _inspector.getViewByID(InspectorViewID.APPSTATS_VIEW).isActive;  
-			getBtnById(InspectorViewID.SWFINFO_VIEW).active = _inspector.getViewByID(InspectorViewID.SWFINFO_VIEW) && _inspector.getViewByID(InspectorViewID.SWFINFO_VIEW).isActive;
-			getBtnById(InspectorViewID.GLOBAL_ERROR_KEEPER).active = _inspector.getViewByID(InspectorViewID.GLOBAL_ERROR_KEEPER) && _inspector.getViewByID(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive; 
+			getBtnById(InspectorViewID.STRUCT_VIEW).active = _inspector.getPluginById(InspectorViewID.STRUCT_VIEW) && _inspector.getPluginById(InspectorViewID.STRUCT_VIEW).isActive;         
+			getBtnById(InspectorViewID.PROPER_VIEW).active = _inspector.getPluginById(InspectorViewID.PROPER_VIEW) && _inspector.getPluginById(InspectorViewID.PROPER_VIEW).isActive;
+			getBtnById(InspectorViewID.LIVE_VIEW).active = _inspector.getPluginById(InspectorViewID.LIVE_VIEW) && _inspector.getPluginById(InspectorViewID.LIVE_VIEW).isActive;
+			getBtnById(InspectorViewID.FILTER_VIEW).active = _inspector.getPluginById(InspectorViewID.FILTER_VIEW) && _inspector.getPluginById(InspectorViewID.FILTER_VIEW).isActive;    
+			getBtnById(InspectorViewID.APPSTATS_VIEW).active = _inspector.getPluginById(InspectorViewID.APPSTATS_VIEW) && _inspector.getPluginById(InspectorViewID.APPSTATS_VIEW).isActive;  
+			getBtnById(InspectorViewID.SWFINFO_VIEW).active = _inspector.getPluginById(InspectorViewID.SWFINFO_VIEW) && _inspector.getPluginById(InspectorViewID.SWFINFO_VIEW).isActive;
+			getBtnById(InspectorViewID.GLOBAL_ERROR_KEEPER).active = _inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER) && _inspector.getPluginById(InspectorViewID.GLOBAL_ERROR_KEEPER).isActive; 
 		}
 
 		public function onTurnOff() : void {
@@ -281,18 +294,18 @@ package cn.itamt.utils.firefox.addon {
 		public function onInspectMode(clazz : Class) : void {
 		}
 
-		public function onActiveView(viewClassId : String) : void {
-			Debug.trace('[tInspectorControlBar][onActiveView]' + viewClassId);
-			var btn : InspectorViewOperationButton = this.getBtnById(viewClassId) as InspectorViewOperationButton;
+		public function onActivePlugin(pluginId : String) : void {
+			Debug.trace('[tInspectorControlBar][onActiveView]' + pluginId);
+			var btn : InspectorViewOperationButton = this.getBtnById(pluginId) as InspectorViewOperationButton;
 			if(btn) {
 				btn.active = true;
 			}
 			_inspector.stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
 		}
 
-		public function onUnActiveView(viewClassId : String) : void {
-			Debug.trace('[tInspectorControlBar][onUnActiveView]' + viewClassId);
-			var btn : InspectorViewOperationButton = this.getBtnById(viewClassId) as InspectorViewOperationButton;
+		public function onUnActivePlugin(pluginId : String) : void {
+			Debug.trace('[tInspectorControlBar][onUnActiveView]' + pluginId);
+			var btn : InspectorViewOperationButton = this.getBtnById(pluginId) as InspectorViewOperationButton;
 			if(btn) {
 				btn.active = false;
 			}

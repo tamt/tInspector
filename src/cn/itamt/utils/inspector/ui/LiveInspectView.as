@@ -23,7 +23,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author tamt
 	 */
-	public class LiveInspectView extends BaseInspectorView {
+	public class LiveInspectView extends BaseInspectorPlugin {
 		//显示信息文本
 		private var _des : TextField;
 		//覆盖在查看对象之上的矩形按钮
@@ -34,6 +34,8 @@ package cn.itamt.utils.inspector.ui {
 		private var _bar : OperationBar;
 		//用于变形
 		private var _tfm : TransformTool;
+		//
+		private var inited : Boolean;
 
 		public function LiveInspectView() : void {
 			super();
@@ -41,7 +43,12 @@ package cn.itamt.utils.inspector.ui {
 			outputerManager = new InspectorOutPuterManager();
 		}
 
-		private var inited : Boolean;
+		//////////////////////////////////////
+		//////////override interfaces/////////
+		//////////////////////////////////////
+		override public function getPluginId() : String {
+			return InspectorViewID.LIVE_VIEW;
+		}
 
 		/**
 		 * 当Inspector开启时
@@ -390,14 +397,14 @@ package cn.itamt.utils.inspector.ui {
 		 * 單擊查看顯示對象結構
 		 */
 		private function onPressStructure(evt : Event) : void {
-			_inspector.activeView(InspectorViewID.STRUCT_VIEW);
+			_inspector.activePlugin(InspectorViewID.STRUCT_VIEW);
 		}
 
 		/**
 		 * 單擊查看詳細信息
 		 */
 		private function onPressInfo(evt : Event) : void {
-			_inspector.activeView(InspectorViewID.PROPER_VIEW);
+			_inspector.activePlugin(InspectorViewID.PROPER_VIEW);
 		}
 
 		/**

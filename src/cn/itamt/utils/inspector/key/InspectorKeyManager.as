@@ -4,7 +4,7 @@ package cn.itamt.utils.inspector.key {
 	import cn.itamt.keyboard.ShortcutManager;
 	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
-	import cn.itamt.utils.inspector.ui.BaseInspectorView;
+	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
 
 	import flash.display.DisplayObject;
 	import flash.utils.Dictionary;
@@ -13,7 +13,7 @@ package cn.itamt.utils.inspector.key {
 	 * 管理inspector的快捷鍵
 	 * @author itamt@qq.com
 	 */
-	public class InspectorKeyManager extends BaseInspectorView {
+	public class InspectorKeyManager extends BaseInspectorPlugin {
 		private var _keyViewMap : Dictionary;
 		private var _keyFunMap : Dictionary;
 		private var _stMgr : ShortcutManager;
@@ -108,7 +108,7 @@ package cn.itamt.utils.inspector.key {
 		private function onShortcutDown(evt : ShortcutEvent) : void {
 			var viewID : String = _keyViewMap[evt.shortcut];
 			if(viewID) {
-				this._inspector.toggleViewByID(viewID);
+				this._inspector.togglePluginById(viewID);
 			}
 			
 			var fun : Function = _keyFunMap[evt.shortcut];
@@ -172,6 +172,13 @@ package cn.itamt.utils.inspector.key {
 			this.unbindKey2View([17, 84], InspectorViewID.LIVE_VIEW);
 			this.unbindKey2View([17, 80], InspectorViewID.PROPER_VIEW);
 			this.unbindKey2View([17, 77], InspectorViewID.FILTER_VIEW);
+		}
+
+		/**
+		 * get this plugin's id
+		 */
+		override public function getPluginId() : String {
+			return InspectorViewID.SHORT_CUT;
 		}
 	}
 }

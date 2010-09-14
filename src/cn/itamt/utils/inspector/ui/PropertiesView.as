@@ -13,7 +13,7 @@ package cn.itamt.utils.inspector.ui {
 	 * tInspector的属性视图
 	 * @author itamt@qq.com
 	 */
-	public class PropertiesView extends BaseInspectorView {
+	public class PropertiesView extends BaseInspectorPlugin {
 		private var panels : Array;
 
 		public function PropertiesView() {
@@ -163,7 +163,7 @@ package cn.itamt.utils.inspector.ui {
 			}
 			
 			if(this.panels.length == 0) {
-				this._inspector.unactiveView(InspectorViewID.PROPER_VIEW);
+				this._inspector.unactivePlugin(InspectorViewID.PROPER_VIEW);
 			}
 		}
 	}

@@ -3,7 +3,7 @@
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.filter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
-	import cn.itamt.utils.inspector.interfaces.IInspectorView;
+	import cn.itamt.utils.inspector.interfaces.IInspectorPlugin;
 	import cn.itamt.utils.inspector.key.InspectorKeyManager;
 	import cn.itamt.utils.inspector.tip.InspectorPopupManager;
 	import cn.itamt.utils.inspector.tip.InspectorTipsManager;
@@ -140,11 +140,11 @@
 			//				registerView(_ctmenu, InspectorViewID.RIGHT_MENU);
 			//				activeView(InspectorViewID.RIGHT_MENU);
 			//			}
-			if(live)registerView(_inspectView, InspectorViewID.LIVE_VIEW);
-			if(structure)registerView(_structureView, InspectorViewID.STRUCT_VIEW);
-			if(property)registerView(_propertiesView, InspectorViewID.PROPER_VIEW);
-			if(keys)registerView(_keysManager, InspectorViewID.SHORT_CUT);
-			registerView(_filterManager, InspectorViewID.FILTER_VIEW);
+			if(live)registerPlugin(_inspectView, InspectorViewID.LIVE_VIEW);
+			if(structure)registerPlugin(_structureView, InspectorViewID.STRUCT_VIEW);
+			if(property)registerPlugin(_propertiesView, InspectorViewID.PROPER_VIEW);
+			if(keys)registerPlugin(_keysManager, InspectorViewID.SHORT_CUT);
+			registerPlugin(_filterManager, InspectorViewID.FILTER_VIEW);
 		}
 
 		private var _views : Dictionary;
@@ -152,34 +152,34 @@
 		/**
 		 * 往tInspector註冊一個功能模塊
 		 */
-		public function registerView(view : IInspectorView, id : String) : void {
+		public function registerPlugin(plugin : IInspectorPlugin, id : String) : void {
 			if(_views == null)_views = new Dictionary();
-			if(view != _views[id]) {
-				view.onRegister(this);
+			if(plugin != _views[id]) {
+				plugin.onRegister(this);
 				
 				for(var t:String in _views) {
-					view.onRegisterView(t);
+					plugin.onRegisterPlugin(t);
 				}
 				
-				_views[id] = view;
+				_views[id] = plugin;
 			}
 			
-			for each(var item:IInspectorView in _views) {
-				item.onRegisterView(id);
+			for each(var item:IInspectorPlugin in _views) {
+				item.onRegisterPlugin(id);
 			}
 		}
 
 		/**
 		 * 删除註冊一個功能模塊
 		 */
-		public function unregisterView(id : String) : void {
+		public function unregisterPlugin(id : String) : void {
 			if(_views == null)_views = new Dictionary();
-			var view : IInspectorView = _views[id];
+			var view : IInspectorPlugin = _views[id];
 			if(view != null) {		
 				view.onUnRegister(this);
 			
-				for each(var item:IInspectorView in _views) {
-					item.onUnRegisterView(id);
+				for each(var item:IInspectorPlugin in _views) {
+					item.onUnRegisterPlugin(id);
 				}
 			
 				delete	_views[id];
@@ -189,10 +189,10 @@
 		/**
 		 * 开启Inspector的视图.
 		 */
-		public function activeView(id : String) : void {
+		public function activePlugin(id : String) : void {
 			if(_views == null)return;
 			
-			var view : IInspectorView = _views[id];
+			var view : IInspectorPlugin = _views[id];
 			if(view) {
 				if(!view.isActive)view.onActive();
 				if(_curInspectEle != null) {
@@ -202,8 +202,8 @@
 						view.onLiveInspect(_curInspectEle);
 					}
 				}
-				for each(var item:IInspectorView in _views) {
-					item.onActiveView(id);
+				for each(var item:IInspectorPlugin in _views) {
+					item.onActivePlugin(id);
 				}
 			} else {
 				trace(id + '没有注册，不能开启。使用Inspector.registerView来注册功能，然后再调用Inspector.activeView。');
@@ -213,19 +213,19 @@
 		/**
 		 * 关闭Inspector的视图.
 		 */
-		public function unactiveView(id : String) : void {
+		public function unactivePlugin(id : String) : void {
 			Debug.trace('[Inspector][unactiveView]');
 			if(_views[id] != null) {
-				(_views[id] as IInspectorView).onUnActive();
+				(_views[id] as IInspectorPlugin).onUnActive();
 			}
 			
-			for each(var view:IInspectorView in _views) {
-				if(view.isActive)view.onUnActiveView(id);
+			for each(var view:IInspectorPlugin in _views) {
+				if(view.isActive)view.onUnActivePlugin(id);
 			}
 		}
 
-		public function toggleViewByID(id : String) : void {
-			var view : IInspectorView = _views[id];
+		public function togglePluginById(id : String) : void {
+			var view : IInspectorPlugin = _views[id];
 			if(view.isActive) {
 				view.onUnActive();
 			} else {
@@ -233,7 +233,7 @@
 			}
 		}
 
-		public function getViewByID(viewId : String) : IInspectorView {
+		public function getPluginById(viewId : String) : IInspectorPlugin {
 			if(_views == null)return null;
 			return _views[viewId];
 		}
@@ -250,12 +250,12 @@
 			InspectorTipsManager.init();			InspectorPopupManager.init();
 			
 			//调用各个模块的onTurnOn
-			for each(var view:IInspectorView in _views) {
+			for each(var view:IInspectorPlugin in _views) {
 				view.onTurnOn();
 			}
 			
 			for(var i : int = 0;i < paras.length;i++) {
-				this.activeView(String(paras[i]));
+				this.activePlugin(String(paras[i]));
 			}
 		}
 
@@ -271,7 +271,7 @@
 			_isOn = false;
 			_curInspectEle = null;
 			
-			for each(var view:IInspectorView in _views) {
+			for each(var view:IInspectorPlugin in _views) {
 				//				if(view.isActive)view.onUnActive();
 				view.onTurnOff();
 			}
@@ -309,7 +309,7 @@
 				_isLiveInspecting = true;
 				this.stage.addEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
 				
-				for each(var view:IInspectorView in _views) {
+				for each(var view:IInspectorPlugin in _views) {
 					if(view.isActive)view.onStartLiveInspect();
 				}
 			}
@@ -319,7 +319,7 @@
 			_isLiveInspecting = false;
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
 			
-			for each(var view:IInspectorView in _views) {
+			for each(var view:IInspectorPlugin in _views) {
 				if(view.isActive)view.onStopLiveInspect();
 			}
 		}
@@ -358,7 +358,7 @@
 		 * 要查看的对像是否是InspectView
 		 */
 		public function isInspectView(target : DisplayObject) : Boolean {
-			for each(var view:IInspectorView in _views) {
+			for each(var view:IInspectorPlugin in _views) {
 				if(view.contains(target)) {
 					return true;
 				}
@@ -377,7 +377,7 @@
 			
 			_curInspectEle = getInspectTarget(ele);
 			
-			for each(var view:IInspectorView in _views) {
+			for each(var view:IInspectorPlugin in _views) {
 				if(view.isActive)
 				view.onLiveInspect(_curInspectEle);
 			}
@@ -393,7 +393,7 @@
 			
 			_curInspectEle = getInspectTarget(ele);
 			
-			for each(var view:IInspectorView in _views) {
+			for each(var view:IInspectorPlugin in _views) {
 				if(view.isActive)view.onInspect(_curInspectEle);
 			}
 		}
@@ -403,7 +403,7 @@
 		 */
 		public function updateInsectorView() : void {
 			if(_curInspectEle != null) {
-				for each(var view:IInspectorView in _views) {
+				for each(var view:IInspectorPlugin in _views) {
 					if(view.isActive)view.onUpdate(_curInspectEle);
 				}
 			}

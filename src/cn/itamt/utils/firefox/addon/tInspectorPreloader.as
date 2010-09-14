@@ -116,9 +116,9 @@ package cn.itamt.utils.firefox.addon {
 			}
 
 			tInspector = Inspector.getInstance();
-			tInspector.registerView(this.controlBar, this.controlBar.id);			tInspector.registerView(statsView, InspectorViewID.APPSTATS_VIEW);			tInspector.registerView(swfInfoView, InspectorViewID.SWFINFO_VIEW);			tInspector.registerView(gErrorKeeper, InspectorViewID.GLOBAL_ERROR_KEEPER);
+			tInspector.registerPlugin(this.controlBar, this.controlBar.id);			tInspector.registerPlugin(statsView, InspectorViewID.APPSTATS_VIEW);			tInspector.registerPlugin(swfInfoView, InspectorViewID.SWFINFO_VIEW);			tInspector.registerPlugin(gErrorKeeper, InspectorViewID.GLOBAL_ERROR_KEEPER);
 			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
-			tInspector.activeView(this.controlBar.id);			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))tInspector.activeView(InspectorViewID.GLOBAL_ERROR_KEEPER);
+			tInspector.activePlugin(this.controlBar.id);			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))tInspector.activePlugin(InspectorViewID.GLOBAL_ERROR_KEEPER);
 		}
 
 		private function setupControlBar() : void {

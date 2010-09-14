@@ -4,7 +4,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.tip.InspectorPopupManager;
 	import cn.itamt.utils.inspector.tip.PopupAlignMode;
-	import cn.itamt.utils.inspector.ui.BaseInspectorView;
+	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
 
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;
@@ -17,7 +17,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	 * 在Flash Player 10.1(+)中全局处理错误. 确保Flash Player稳定性.
 	 * @author itamt[at]qq.com
 	 */
-	public class GlobalErrorKeeper extends BaseInspectorView {
+	public class GlobalErrorKeeper extends BaseInspectorPlugin {
 		protected var enabled : Boolean = false;
 
 		protected var historyPanel : ErrorListPanel;
@@ -49,7 +49,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			super.onTurnOn();
 			
 			if(this.enabled) {
-				_inspector.activeView(InspectorViewID.GLOBAL_ERROR_KEEPER);
+				_inspector.activePlugin(InspectorViewID.GLOBAL_ERROR_KEEPER);
 			}
 		}
 

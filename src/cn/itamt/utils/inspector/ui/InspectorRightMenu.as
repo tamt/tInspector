@@ -11,7 +11,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * tInspector的右键菜单。
 	 */
-	public class InspectorRightMenu extends BaseInspectorView {
+	public class InspectorRightMenu extends BaseInspectorPlugin {
 		public static const ON : String = 'tInspector on';		public static const OFF : String = 'tInspector off';
 		//开关菜单项
 		private var _on : ContextMenuItem;		private var _off : ContextMenuItem;
@@ -49,22 +49,22 @@ package cn.itamt.utils.inspector.ui {
 		override public function onUnRegister(inspector : IInspector) : void {
 		}
 
-		override public function onRegisterView(viewClassID : String) : void {
-			if(viewClassID == InspectorViewID.RIGHT_MENU)return;
+		override public function onRegisterPlugin(pluginId : String) : void {
+			if(pluginId == InspectorViewID.RIGHT_MENU)return;
 			
 			for each(var item:ViewMenuItem in _viewItems) {
-				if(item.id == viewClassID)return;
+				if(item.id == pluginId)return;
 			}
-			var menuItem : ViewMenuItem = new ViewMenuItem(viewClassID);
+			var menuItem : ViewMenuItem = new ViewMenuItem(pluginId);
 			menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
 			_viewItems.push(menuItem);
 			
 			this.apply(_inspector.root);
 		}
 
-		override public function onUnRegisterView(viewClassID : String) : void {
+		override public function onUnRegisterPlugin(pluginId : String) : void {
 			for each(var item:ViewMenuItem in _viewItems) {
-				if(item.id == viewClassID) {
+				if(item.id == pluginId) {
 					item.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
 					var t : int = _viewItems.indexOf(item);
 					if(t >= 0)_viewItems.splice(t, 1);
@@ -72,17 +72,17 @@ package cn.itamt.utils.inspector.ui {
 			}
 		}
 
-		override public function onActiveView(viewClassId : String) : void {
+		override public functioonActivePluginew(pluginId : String) : void {
 			for each(var menuItem:ViewMenuItem in _viewItems) {
-				if(menuItem.id == viewClassId) {
+				if(menuItem.id == pluginId) {
 					menuItem.on = true;
 				}
 			}
 		}
 
-		override public function onUnActiveView(viewClassId : String) : void {
+		override public functonUnActivePluginView(pluginId : String) : void {
 			for each(var menuItem:ViewMenuItem in _viewItems) {
-				if(menuItem.id == viewClassId) {
+				if(menuItem.id == pluginId) {
 					menuItem.on = false;
 				}
 			}

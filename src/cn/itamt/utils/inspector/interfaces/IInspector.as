@@ -33,20 +33,20 @@ package cn.itamt.utils.inspector.interfaces {
 		function get isLiveInspecting() : Boolean;
 
 		/**
-		 * 关于/开启
+		 * 关闭/开启
 		 */
 		function toggleTurn() : void;
 
 		/**
 		 * 开启/关闭某一个功能
 		 */
-		function toggleViewByID(viewId : String) : void;
+		function togglePluginById(pluginId : String) : void;
 
-		function activeView(viewId : String) : void;
+		function activePlugin(pluginId : String) : void;
 
-		function getViewByID(viewId : String) : IInspectorView;
+		function getPluginById(pluginId : String) : IInspectorPlugin;
 
-		function unactiveView(viewId : String) : void;
+		function unactivePlugin(pluginId : String) : void;
 
 		function startLiveInspect() : void;
 

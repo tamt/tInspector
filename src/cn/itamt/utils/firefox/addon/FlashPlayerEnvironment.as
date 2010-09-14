@@ -10,7 +10,7 @@ package cn.itamt.utils.firefox.addon {
 	 */
 	public class FlashPlayerEnvironment {
 
-		public static var _swfId : String;
+		private static var _swfId : String;
 
 		public static function get swfId() : String {
 			if(_swfId == null) {

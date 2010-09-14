@@ -15,10 +15,9 @@ package cn.itamt.utils.inspector.ui {
 
 	/**
 	 * 显示对象结构树显示
-	 * TODO:关于对treeView的操作似乎应该封装在panel(StructureViewPanel)中...
 	 * @author itamt@qq.com
 	 */
-	public class StructureView extends BaseInspectorView {
+	public class StructureView extends BaseInspectorPlugin {
 		private var treeView : DisplayObjectTree;
 		private var panel : StructureViewPanel;
 
@@ -35,6 +34,10 @@ package cn.itamt.utils.inspector.ui {
 			this._outputerManager = value;
 			StructureElementView.outputerManager = this._outputerManager;
 		}
+
+		//////////////////////////////////////
+		////////实现接口：IInspectorPlugin/////
+		//////////////////////////////////////
 
 		override public function contains(child : DisplayObject) : Boolean {
 			if(panel) {
@@ -153,6 +156,10 @@ package cn.itamt.utils.inspector.ui {
 			}
 		}
 
+		//////////////////////////////////////
+		//////////private functions///////////
+		//////////////////////////////////////
+
 		/**
 		 * 经过一个树元素时.
 		 */
@@ -211,7 +218,7 @@ package cn.itamt.utils.inspector.ui {
 		 */
 		private function onClickClose(evt : Event) : void {
 			Debug.trace('[StructureView][onClickClose]');
-			this._inspector.unactiveView(InspectorViewID.STRUCT_VIEW);
+			this._inspector.unactivePlugin(InspectorViewID.STRUCT_VIEW);
 		}
 
 		/**

@@ -4,7 +4,7 @@ package cn.itamt.utils.inspector.filter {
 	import cn.itamt.utils.inspector.consts.InspectorViewID;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.ui.BaseInspectorView;
+	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import flash.display.DisplayObject;
@@ -15,7 +15,7 @@ package cn.itamt.utils.inspector.filter {
 	 * 管理tInspector的查看過濾器
 	 * @author itamt@qq.com
 	 */
-	public class InspectorFilterManager extends BaseInspectorView {
+	public class InspectorFilterManager extends BaseInspectorPlugin {
 		//过滤器库
 		private var _filtersDb : Dictionary;
 		//保存所有的过滤器
@@ -161,7 +161,7 @@ package cn.itamt.utils.inspector.filter {
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
-			this._inspector.unactiveView(InspectorViewID.FILTER_VIEW);
+			this._inspector.unactivePlugin(InspectorViewID.FILTER_VIEW);
 		}
 
 		/////////////////////////

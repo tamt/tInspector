@@ -8,7 +8,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt[at]qq.com
 	 */
-	public class AppStatsView extends BaseInspectorView {
+	public class AppStatsView extends BaseInspectorPlugin {
 		private var panel : AppStatsViewPanel;
 
 		public function AppStatsView() {
@@ -47,7 +47,7 @@ package cn.itamt.utils.inspector.ui {
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
-			this._inspector.unactiveView(InspectorViewID.APPSTATS_VIEW);
+			this._inspector.unactivePlugin(InspectorViewID.APPSTATS_VIEW);
 		}
 	}
 }

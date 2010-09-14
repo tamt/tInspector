@@ -12,7 +12,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt[at]qq.com
 	 */
-	public class SwfInfoView extends BaseInspectorView {
+	public class SwfInfoView extends BaseInspectorPlugin {
 		private var panels : Array;
 		protected var panel : SwfInfoViewPanel;
 		protected var swf : SWFInfo;
@@ -111,7 +111,7 @@ package cn.itamt.utils.inspector.ui {
 			}
 			
 			if(this.panels.length == 0) {
-				this._inspector.unactiveView(InspectorViewID.SWFINFO_VIEW);
+				this._inspector.unactivePlugin(InspectorViewID.SWFINFO_VIEW);
 			}
 		}
 	}

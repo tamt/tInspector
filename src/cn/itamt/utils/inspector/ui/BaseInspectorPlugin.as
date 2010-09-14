@@ -1,24 +1,24 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
-	import cn.itamt.utils.inspector.interfaces.IInspectorView;
+	import cn.itamt.utils.inspector.interfaces.IInspectorPlugin;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 
 	/**
-	 * tInspector所有plugin的基类，该类不应该被直接实例化，请扩展后使用。
+	 * base class of all plugins of tInspector, this is an Abstract class, should be extended and custom for use.
 	 * @author itamt@qq.com
 	 */
-	public class BaseInspectorView implements IInspectorView {
+	public class BaseInspectorPlugin implements IInspectorPlugin {
 		protected var viewContainer : Sprite;
 		protected var _inspector : IInspector;
-		//查看对对象
+		//current inspect target.
 		protected var target : InspectTarget;
-		//信息输出器管理
+		//
 		protected var _outputerManager : InspectorOutPuterManager;
-		//处理激活状态
+		//is this plugin actived?
 		protected var _actived : Boolean;
 
 		public function get isActive() : Boolean {
@@ -35,7 +35,7 @@ package cn.itamt.utils.inspector.ui {
 			return _outputerManager;
 		}
 
-		public function BaseInspectorView() {
+		public function BaseInspectorPlugin() {
 		}
 
 		public function contains(child : DisplayObject) : Boolean {
@@ -71,10 +71,10 @@ package cn.itamt.utils.inspector.ui {
 		public function onUnRegister(inspector : IInspector) : void {
 		}
 
-		public function onRegisterView(viewClassId : String) : void {
+		public function onRegisterPlugin(pluginId : String) : void {
 		}
 
-		public function onUnRegisterView(viewClassId : String) : void {
+		public function onUnRegisterPlugin(pluginId : String) : void {
 		}
 
 		public function onActive() : void {
@@ -133,13 +133,13 @@ package cn.itamt.utils.inspector.ui {
 		/**
 		 * 当该InspectorView注册到Inspector时.
 		 */
-		public function onActiveView(viewClassId : String) : void {
+		public function onActivePlugin(pluginId : String) : void {
 		}
 
 		/**
 		 * 当该InspectorView从Inspector删除注册时
 		 */
-		public function onUnActiveView(viewClassId : String) : void {
+		public function onUnActivePlugin(pluginId : String) : void {
 		}
 
 		/**
@@ -152,6 +152,20 @@ package cn.itamt.utils.inspector.ui {
 		 * 当开始实时查看
 		 */
 		public function onStartLiveInspect() : void {
+		}
+
+		/**
+		 * get this plugin's id
+		 */
+		public function getPluginId() : String {
+			return "baseInspectorView";
+		}
+
+		/**
+		 * get this plugin's version
+		 */
+		public function getPluginVersion() : String {
+			return "1.0";
 		}
 	}
 }
