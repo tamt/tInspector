@@ -6,6 +6,7 @@ package cn.itamt.utils.inspector.ui {
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 
 	/**
 	 * base class of all plugins of tInspector, this is an Abstract class, should be extended and custom for use.
@@ -71,7 +72,6 @@ package cn.itamt.utils.inspector.ui {
 		 * 刪除在Inspector註冊時
 		 */
 		public function onUnRegister(inspector : IInspector) : void {
-			
 		}
 
 		public function onRegisterPlugin(pluginId : String) : void {
@@ -83,6 +83,7 @@ package cn.itamt.utils.inspector.ui {
 		public function onActive() : void {
 			if(_actived)return;
 			_actived = true;
+			if(_icon)_icon.active = true;
 		}
 
 		/**
@@ -90,6 +91,7 @@ package cn.itamt.utils.inspector.ui {
 		 */
 		public function onUnActive() : void {
 			_actived = false;
+			if(_icon)_icon.active = false;
 		}
 
 		/**
@@ -98,6 +100,10 @@ package cn.itamt.utils.inspector.ui {
 		public function onTurnOn() : void {
 			if(_isOn)return;
 			_isOn = true;
+			
+			if(_icon) {
+				_icon.addEventListener(MouseEvent.CLICK, onClickPluginIcon);
+			}
 		}
 
 		/**
@@ -105,6 +111,10 @@ package cn.itamt.utils.inspector.ui {
 		 */
 		public function onTurnOff() : void {
 			_isOn = false;
+			
+			if(_icon) {
+				_icon.removeEventListener(MouseEvent.CLICK, onClickPluginIcon);
+			}
 			
 			if(_actived)onUnActive();
 		}
@@ -173,6 +183,17 @@ package cn.itamt.utils.inspector.ui {
 
 		public function getPluginIcon() : DisplayObject {
 			return _icon;
+		}
+
+		//////////////////////////////////////
+		//////////private functions///////////
+		//////////////////////////////////////
+		private function onClickPluginIcon(event : MouseEvent) : void {
+			if(!isActive) {
+				_inspector.activePlugin(this.getPluginId());
+			} else {
+				_inspector.unactivePlugin(this.getPluginId());
+			}
 		}
 	}
 }

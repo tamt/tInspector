@@ -9,12 +9,12 @@ package cn.itamt.utils.firefox.addon {
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorsHistoryButton;
 	import cn.itamt.utils.inspector.ui.AppStatsButton;
 	import cn.itamt.utils.inspector.ui.FilterManagerButton;
+	import cn.itamt.utils.inspector.ui.FullScreenButton;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
-	import cn.itamt.utils.inspector.ui.InspectorFullScreenButton;
 	import cn.itamt.utils.inspector.ui.InspectorOnOffButton;
-	import cn.itamt.utils.inspector.ui.InspectorReloadButton;
 	import cn.itamt.utils.inspector.ui.LiveInspectButton;
 	import cn.itamt.utils.inspector.ui.PropertiesViewButton;
+	import cn.itamt.utils.inspector.ui.ReloadButton;
 	import cn.itamt.utils.inspector.ui.StructureViewButton;
 	import cn.itamt.utils.inspector.ui.SwfInfoButton;
 
@@ -34,9 +34,9 @@ package cn.itamt.utils.firefox.addon {
 		private var _propBtn : PropertiesViewButton;
 		private var _filterBtn : FilterManagerButton;
 		//控制全屏切换的按钮
-		private var _screenBtn : InspectorFullScreenButton;
+		private var _screenBtn : FullScreenButton;
 		//重载swf
-		private var _reloadBtn : InspectorReloadButton;
+		private var _reloadBtn : ReloadButton;
 		//控制显示AppStats的按钮
 		private var _statsBtn : AppStatsButton;
 		//显示swf信息的按钮
@@ -173,10 +173,10 @@ package cn.itamt.utils.firefox.addon {
 					return (_onOffBtn == null) ? (_onOffBtn = new InspectorOnOffButton()) : _onOffBtn;
 					break;
 				case 'fullScreen':
-					return (_screenBtn == null) ? (_screenBtn = new InspectorFullScreenButton()) : _screenBtn;
+					return (_screenBtn == null) ? (_screenBtn = new FullScreenButton()) : _screenBtn;
 					break;
 				case 'ReloadSwf':
-					return (_reloadBtn == null) ? (_reloadBtn = new InspectorReloadButton()) : _reloadBtn;
+					return (_reloadBtn == null) ? (_reloadBtn = new ReloadButton()) : _reloadBtn;
 					break;
 			}
 			
@@ -244,21 +244,36 @@ package cn.itamt.utils.firefox.addon {
 		}
 
 		public function onTurnOn() : void {
-			this.addChild(getBtnById(InspectorPluginId.STRUCT_VIEW));			this.addChild(getBtnById(InspectorPluginId.PROPER_VIEW));			this.addChild(getBtnById(InspectorPluginId.LIVE_VIEW));			this.addChild(getBtnById(InspectorPluginId.FILTER_VIEW));			this.addChild(getBtnById(InspectorPluginId.APPSTATS_VIEW));			this.addChild(getBtnById(InspectorPluginId.SWFINFO_VIEW));			this.addChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER));			this.addChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_HISTORY));
+			
+			var arr : Array = this._inspector.getPlugins();
+			for(var i : int = 0;i < arr.length;i++) {
+				this.addChild(arr[i].getPluginIcon());	
+			}
+			//			for each (var plugin : IInspectorPlugin in arr) {
+			//				this.addChild(plugin.getPluginIcon());
+			//			}
+			
+			//			this.addChild(getBtnById(InspectorPluginId.STRUCT_VIEW));			//			this.addChild(getBtnById(InspectorPluginId.PROPER_VIEW));			//			this.addChild(getBtnById(InspectorPluginId.LIVE_VIEW));			//			this.addChild(getBtnById(InspectorPluginId.FILTER_VIEW));			//			this.addChild(getBtnById(InspectorPluginId.APPSTATS_VIEW));			//			this.addChild(getBtnById(InspectorPluginId.SWFINFO_VIEW));			//			this.addChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER));			//			this.addChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_HISTORY));
 
 			this.addChild(getBtnById('fullScreen'));			this.addChild(getBtnById('ReloadSwf'));
 			
-			getBtnById(InspectorPluginId.STRUCT_VIEW).active = _inspector.getPluginById(InspectorPluginId.STRUCT_VIEW) && _inspector.getPluginById(InspectorPluginId.STRUCT_VIEW).isActive;         
-			getBtnById(InspectorPluginId.PROPER_VIEW).active = _inspector.getPluginById(InspectorPluginId.PROPER_VIEW) && _inspector.getPluginById(InspectorPluginId.PROPER_VIEW).isActive;
-			getBtnById(InspectorPluginId.LIVE_VIEW).active = _inspector.getPluginById(InspectorPluginId.LIVE_VIEW) && _inspector.getPluginById(InspectorPluginId.LIVE_VIEW).isActive;
-			getBtnById(InspectorPluginId.FILTER_VIEW).active = _inspector.getPluginById(InspectorPluginId.FILTER_VIEW) && _inspector.getPluginById(InspectorPluginId.FILTER_VIEW).isActive;    
-			getBtnById(InspectorPluginId.APPSTATS_VIEW).active = _inspector.getPluginById(InspectorPluginId.APPSTATS_VIEW) && _inspector.getPluginById(InspectorPluginId.APPSTATS_VIEW).isActive;  
-			getBtnById(InspectorPluginId.SWFINFO_VIEW).active = _inspector.getPluginById(InspectorPluginId.SWFINFO_VIEW) && _inspector.getPluginById(InspectorPluginId.SWFINFO_VIEW).isActive;
-			getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER).active = _inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER) && _inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER).isActive; 
+//			getBtnById(InspectorPluginId.STRUCT_VIEW).active = _inspector.getPluginById(InspectorPluginId.STRUCT_VIEW) && _inspector.getPluginById(InspectorPluginId.STRUCT_VIEW).isActive;         
+//			getBtnById(InspectorPluginId.PROPER_VIEW).active = _inspector.getPluginById(InspectorPluginId.PROPER_VIEW) && _inspector.getPluginById(InspectorPluginId.PROPER_VIEW).isActive;
+//			getBtnById(InspectorPluginId.LIVE_VIEW).active = _inspector.getPluginById(InspectorPluginId.LIVE_VIEW) && _inspector.getPluginById(InspectorPluginId.LIVE_VIEW).isActive;
+//			getBtnById(InspectorPluginId.FILTER_VIEW).active = _inspector.getPluginById(InspectorPluginId.FILTER_VIEW) && _inspector.getPluginById(InspectorPluginId.FILTER_VIEW).isActive;    
+//			getBtnById(InspectorPluginId.APPSTATS_VIEW).active = _inspector.getPluginById(InspectorPluginId.APPSTATS_VIEW) && _inspector.getPluginById(InspectorPluginId.APPSTATS_VIEW).isActive;  
+//			getBtnById(InspectorPluginId.SWFINFO_VIEW).active = _inspector.getPluginById(InspectorPluginId.SWFINFO_VIEW) && _inspector.getPluginById(InspectorPluginId.SWFINFO_VIEW).isActive;
+//			getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER).active = _inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER) && _inspector.getPluginById(InspectorPluginId.GLOBAL_ERROR_KEEPER).isActive; 
 		}
 
 		public function onTurnOff() : void {
-			this.removeChild(getBtnById(InspectorPluginId.STRUCT_VIEW));			this.removeChild(getBtnById(InspectorPluginId.PROPER_VIEW));			this.removeChild(getBtnById(InspectorPluginId.LIVE_VIEW));			this.removeChild(getBtnById(InspectorPluginId.FILTER_VIEW));			this.removeChild(getBtnById(InspectorPluginId.APPSTATS_VIEW));			this.removeChild(getBtnById(InspectorPluginId.SWFINFO_VIEW));			this.removeChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER));			this.removeChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_HISTORY));
+			
+			var arr : Array = this._inspector.getPlugins();
+			for each (var plugin : IInspectorPlugin in arr) {
+				this.removeChild(plugin.getPluginIcon());
+			}
+			
+			//			this.removeChild(getBtnById(InspectorPluginId.STRUCT_VIEW));			//			this.removeChild(getBtnById(InspectorPluginId.PROPER_VIEW));			//			this.removeChild(getBtnById(InspectorPluginId.LIVE_VIEW));			//			this.removeChild(getBtnById(InspectorPluginId.FILTER_VIEW));			//			this.removeChild(getBtnById(InspectorPluginId.APPSTATS_VIEW));			//			this.removeChild(getBtnById(InspectorPluginId.SWFINFO_VIEW));			//			this.removeChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_KEEPER));			//			this.removeChild(getBtnById(InspectorPluginId.GLOBAL_ERROR_HISTORY));
 
 			this.removeChild(getBtnById('fullScreen'));
 			this.removeChild(getBtnById('ReloadSwf'));

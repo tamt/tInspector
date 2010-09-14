@@ -6,8 +6,8 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author tamt
 	 */
-	public class InspectorFullScreenButton extends InspectorButton {
-		public function InspectorFullScreenButton() : void {
+	public class FullScreenButton extends InspectorButton {
+		public function FullScreenButton() : void {
 			super();
 			
 			_tip = InspectorLanguageManager.getStr('FullScreen');

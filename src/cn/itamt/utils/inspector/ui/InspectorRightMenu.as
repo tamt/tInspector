@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 
@@ -50,7 +50,7 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		override public function onRegisterPlugin(pluginId : String) : void {
-			if(pluginId == InspectorViewID.RIGHT_MENU)return;
+			if(pluginId == InspectorPluginId.RIGHT_MENU)return;
 			
 			for each(var item:ViewMenuItem in _viewItems) {
 				if(item.id == pluginId)return;
@@ -72,7 +72,7 @@ package cn.itamt.utils.inspector.ui {
 			}
 		}
 
-		override public functioonActivePluginew(pluginId : String) : void {
+		override public function onActivePlugin(pluginId : String) : void {
 			for each(var menuItem:ViewMenuItem in _viewItems) {
 				if(menuItem.id == pluginId) {
 					menuItem.on = true;
@@ -80,7 +80,7 @@ package cn.itamt.utils.inspector.ui {
 			}
 		}
 
-		override public functonUnActivePluginView(pluginId : String) : void {
+		override public function onUnActivePlugin(pluginId : String) : void {
 			for each(var menuItem:ViewMenuItem in _viewItems) {
 				if(menuItem.id == pluginId) {
 					menuItem.on = false;
@@ -94,7 +94,7 @@ package cn.itamt.utils.inspector.ui {
 			
 			for each(var menuItem:ViewMenuItem in _viewItems) {
 				menuItem.enabled = true;
-				if(menuItem.on)_inspector.activeView(menuItem.id);
+				if(menuItem.on)_inspector.activePlugin(menuItem.id);
 			}
 		}
 
@@ -145,9 +145,9 @@ package cn.itamt.utils.inspector.ui {
 					for each(var menuItem:ViewMenuItem in _viewItems) {
 						if(menuItem.target == evt.target) {
 							if(menuItem.on) {
-								_inspector.unactiveView(menuItem.id);
+								_inspector.unactivePlugin(menuItem.id);
 							} else {
-								_inspector.activeView(menuItem.id);
+								_inspector.activePlugin(menuItem.id);
 							}
 							break;
 						}

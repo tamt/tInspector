@@ -44,8 +44,6 @@ package cn.itamt.utils.inspector.interfaces {
 
 		function activePlugin(pluginId : String) : void;
 
-		function getPluginById(pluginId : String) : IInspectorPlugin;
-
 		function unactivePlugin(pluginId : String) : void;
 
 		function startLiveInspect() : void;
@@ -59,5 +57,17 @@ package cn.itamt.utils.inspector.interfaces {
 		function updateInsectorView() : void;
 
 		function isInspectView(target : DisplayObject) : Boolean;
+
+		function getPluginById(pluginId : String) : IInspectorPlugin;
+
+		/**
+		 * get all the plugins registered to Inspector.
+		 */
+		function getPlugins() : Array;
+
+		/**
+		 * get all the plugin's id registered to Inspector.
+		 */
+		function getPluginIds() : Array;
 	}
 }

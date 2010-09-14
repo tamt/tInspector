@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	import cn.itamt.utils.ObjectPool;
 	import cn.itamt.utils.inspector.filter.InspectorFilterItemRenderer;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.ui.InspectorReloadButton;
+	import cn.itamt.utils.inspector.ui.ReloadButton;
 	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
 
 	import flash.display.Sprite;
@@ -18,7 +18,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 		private var _data : Array;
 		private var _itemRenderer : Class = InspectorFilterItemRenderer;
 
-		private var _clearBtn : InspectorReloadButton;
+		private var _clearBtn : ReloadButton;
 
 		public function ErrorListPanel(title : String = '错误列表', w : Number = 200, h : Number = 200, autoDisposeWhenRemove : Boolean = true, resizeable : Boolean = true, closeable : Boolean = true) {
 			super(title, w, h, autoDisposeWhenRemove, resizeable, closeable);
@@ -26,7 +26,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			_listContainer = new Sprite();
 			this.setContent(_listContainer);
 			
-			_clearBtn = new InspectorReloadButton();
+			_clearBtn = new ReloadButton();
 			_clearBtn.tip = InspectorLanguageManager.getStr("GEK_ClearHistory");
 			_clearBtn.addEventListener(MouseEvent.CLICK, onClickClear);
 			this.addChild(this._clearBtn);

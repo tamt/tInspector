@@ -6,8 +6,8 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author tamt
 	 */
-	public class InspectorReloadButton extends InspectorButton {
-		public function InspectorReloadButton() : void {
+	public class ReloadButton extends InspectorButton {
+		public function ReloadButton() : void {
 			super();
 			
 			_tip = InspectorLanguageManager.getStr('ReloadSwf');
