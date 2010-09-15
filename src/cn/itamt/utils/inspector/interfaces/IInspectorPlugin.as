@@ -1,6 +1,5 @@
 package cn.itamt.utils.inspector.interfaces {
 	import cn.itamt.utils.inspector.data.InspectTarget;
-
 	import flash.display.DisplayObject;
 
 	/**

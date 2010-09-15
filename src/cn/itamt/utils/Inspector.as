@@ -1,5 +1,4 @@
 ﻿package cn.itamt.utils {
-	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.data.InspectTarget;
 	import cn.itamt.utils.inspector.filter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
@@ -32,7 +31,7 @@
 	 * @version 1.0 beta
 	 */
 	public class Inspector extends EventDispatcher implements IInspector {
-		public static const VERSION : String = '1.1';
+		public static const VERSION : String = '1.2';
 
 		private static var _instance : Inspector;
 
@@ -141,24 +140,34 @@
 			
 			InspectorStageReference.referenceTo(this._stage);
 			
-			if(live)registerPlugin(_inspectView, InspectorPluginId.LIVE_VIEW);
-			if(structure)registerPlugin(_structureView, InspectorPluginId.STRUCT_VIEW);
-			if(property)registerPlugin(_propertiesView, InspectorPluginId.PROPER_VIEW);
-			if(keys)registerPlugin(_keysManager, InspectorPluginId.SHORT_CUT);
-			registerPlugin(_filterManager, InspectorPluginId.FILTER_VIEW);
+			if(structure)registerPlugin(_structureView);
+			if(property)registerPlugin(_propertiesView);
+			if(live)registerPlugin(_inspectView);
+			registerPlugin(_filterManager);
+			if(keys)registerPlugin(_keysManager);
 		}
 
 		/**
 		 * 往tInspector註冊一個功能模塊
 		 */
-		public function registerPlugin(plugin : IInspectorPlugin, id : String) : void {
+		public function registerPlugin(plugin : IInspectorPlugin) : void {
 			if(_plugins == null)_plugins = new Dictionary();
+			
+			if(plugin == null) {
+				throw new Error("registerPlugin with a null plugin.");
+				return;
+			}
+			var id : String = plugin.getPluginId();
+			if(id == null) {
+				throw new Error("registerPlugin:getPluginId() return null");
+				return;
+			}
 			
 			//sort order of plugin.
 			if(_pluginOrders == null)_pluginOrders = [];
-			var t : int = _pluginOrders.indexOf(id);
-			if(t >= 0) {
-				_pluginOrders.splice(t, 1);
+			var i : int = _pluginOrders.indexOf(id);
+			if(i >= 0) {
+				_pluginOrders.splice(i, 1);
 			}
 			_pluginOrders.push(id);
 			
@@ -215,7 +224,7 @@
 					item.onActivePlugin(id);
 				}
 			} else {
-				trace(id + '没有注册，不能开启。使用Inspector.registerView来注册功能，然后再调用Inspector.activeView。');
+				trace(id + '没有注册，不能开启。使用Inspector.registerView来注册功能，然后再调用Inspector.activePlugin');
 			}
 		}
 
@@ -252,8 +261,9 @@
 		 */
 		public function getPlugins() : Array {
 			var arr : Array = [];
-			for each(var plugin:IInspectorPlugin in _plugins) {
-				arr.push(plugin);
+			var ids : Array = getPluginIds();
+			for(var i : int = 0;i < ids.length;i++) {
+				arr.push(getPluginById(ids[i]));
 			}
 			
 			return arr;
@@ -263,12 +273,7 @@
 		 * get all the plugin's id registered to Inspector.
 		 */
 		public function getPluginIds() : Array {
-			var arr : Array = [];
-			for (var pluginId:String in _plugins) {
-				arr.push(pluginId);
-			}
-			
-			return arr;	
+			return this._pluginOrders.slice();	
 		}
 
 		/**

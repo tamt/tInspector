@@ -12,5 +12,7 @@ package cn.itamt.utils.inspector.consts {
 		public static const FILTER_VIEW : String = 'InspectorFilterManager';
 		public static const APPSTATS_VIEW : String = 'AppStatsPanel';		public static const SWFINFO_VIEW : String = 'SwfInfoPanel';		public static const GLOBAL_ERROR_KEEPER : String = 'GlobalErrorKeeper';
 		public static const GLOBAL_ERROR_HISTORY : String = 'GlobalErrorHistory';
+		public static const FULL_SCREEN : String = 'full_screen';
+		public static const RELOAD_APP:String = 'reload_app';
 	}
 }

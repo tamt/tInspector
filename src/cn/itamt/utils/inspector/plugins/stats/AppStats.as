@@ -1,6 +1,8 @@
-package cn.itamt.utils.inspector.ui {
+package cn.itamt.utils.inspector.plugins.stats {
 	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
+	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -9,10 +11,10 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt[at]qq.com
 	 */
-	public class AppStatsView extends BaseInspectorPlugin {
+	public class AppStats extends BaseInspectorPlugin {
 		private var panel : AppStatsViewPanel;
 
-		public function AppStatsView() {
+		public function AppStats() {
 			super();
 		}
 

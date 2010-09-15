@@ -1,7 +1,9 @@
-package cn.itamt.utils.inspector.ui {
+package cn.itamt.utils.inspector.plugins.contextmenu {
+	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.interfaces.IInspector;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
+	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
 
 	import flash.display.InteractiveObject;
 	import flash.events.ContextMenuEvent;
@@ -15,8 +17,8 @@ package cn.itamt.utils.inspector.ui {
 		public static const ON : String = 'tInspector on';		public static const OFF : String = 'tInspector off';
 		//开关菜单项
 		private var _on : ContextMenuItem;		private var _off : ContextMenuItem;
-		//几个inspectorView的菜单项
-		private var _viewItems : Array;
+		//几个plugin的菜单项
+		private var _pluginItems : Array;
 
 		override public function set outputerManager(value : InspectorOutPuterManager) : void {
 			trace('[InspectorRightMenu][outputerManager]PropertiesView没有设计信息输出的接口，忽略该属性设置。');
@@ -32,7 +34,17 @@ package cn.itamt.utils.inspector.ui {
 			_on.enabled = on;
 			_off.enabled = !on;
 			
-			_viewItems = [];
+			_pluginItems = [];
+		}
+
+		//////////////////////////////////////
+		////////////override funcions/////////
+		//////////////////////////////////////
+		/**
+		 * get this plugin's id
+		 */
+		override public function getPluginId() : String {
+			return InspectorPluginId.RIGHT_MENU;
 		}
 
 		/**
@@ -52,28 +64,29 @@ package cn.itamt.utils.inspector.ui {
 		override public function onRegisterPlugin(pluginId : String) : void {
 			if(pluginId == InspectorPluginId.RIGHT_MENU)return;
 			
-			for each(var item:ViewMenuItem in _viewItems) {
+			for each(var item:PluginMenuItem in _pluginItems) {
 				if(item.id == pluginId)return;
 			}
-			var menuItem : ViewMenuItem = new ViewMenuItem(pluginId);
+			var menuItem : PluginMenuItem = new PluginMenuItem(pluginId);
 			menuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
-			_viewItems.push(menuItem);
+			_pluginItems.push(menuItem);
 			
 			this.apply(_inspector.root);
 		}
 
 		override public function onUnRegisterPlugin(pluginId : String) : void {
-			for each(var item:ViewMenuItem in _viewItems) {
+			for each(var item:PluginMenuItem in _pluginItems) {
 				if(item.id == pluginId) {
 					item.removeEventListener(ContextMenuEvent.MENU_ITEM_SELECT, onMenuItemSelect);
-					var t : int = _viewItems.indexOf(item);
-					if(t >= 0)_viewItems.splice(t, 1);
+					var t : int = _pluginItems.indexOf(item);
+					if(t >= 0)_pluginItems.splice(t, 1);
 				}
 			}
 		}
 
 		override public function onActivePlugin(pluginId : String) : void {
-			for each(var menuItem:ViewMenuItem in _viewItems) {
+			Debug.trace('[InspectorRightMenu][onActivePlugin]' + pluginId);
+			for each(var menuItem:PluginMenuItem in _pluginItems) {
 				if(menuItem.id == pluginId) {
 					menuItem.on = true;
 				}
@@ -81,7 +94,8 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		override public function onUnActivePlugin(pluginId : String) : void {
-			for each(var menuItem:ViewMenuItem in _viewItems) {
+			Debug.trace('[InspectorRightMenu][onUnActivePlugin]' + pluginId);
+			for each(var menuItem:PluginMenuItem in _pluginItems) {
 				if(menuItem.id == pluginId) {
 					menuItem.on = false;
 				}
@@ -92,7 +106,7 @@ package cn.itamt.utils.inspector.ui {
 			_on.enabled = false;
 			_off.enabled = true;
 			
-			for each(var menuItem:ViewMenuItem in _viewItems) {
+			for each(var menuItem:PluginMenuItem in _pluginItems) {
 				menuItem.enabled = true;
 				if(menuItem.on)_inspector.activePlugin(menuItem.id);
 			}
@@ -102,7 +116,7 @@ package cn.itamt.utils.inspector.ui {
 			_on.enabled = true;
 			_off.enabled = false;
 			
-			for each(var menuItem:ViewMenuItem in _viewItems) {
+			for each(var menuItem:PluginMenuItem in _pluginItems) {
 				//				menuItem.on = false;
 				menuItem.enabled = false;
 			}
@@ -126,7 +140,7 @@ package cn.itamt.utils.inspector.ui {
 			menu.customItems.push(_on);
 			menu.customItems.push(_off);
 				
-			for each(var item:ViewMenuItem in _viewItems) {
+			for each(var item:PluginMenuItem in _pluginItems) {
 				menu.customItems.push(item.target);
 			}
 				
@@ -142,7 +156,7 @@ package cn.itamt.utils.inspector.ui {
 					_inspector.turnOff();
 					break;
 				default:
-					for each(var menuItem:ViewMenuItem in _viewItems) {
+					for each(var menuItem:PluginMenuItem in _pluginItems) {
 						if(menuItem.target == evt.target) {
 							if(menuItem.on) {
 								_inspector.unactivePlugin(menuItem.id);
@@ -162,7 +176,7 @@ import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 import flash.ui.ContextMenuItem;
 
-class ViewMenuItem {
+class PluginMenuItem {
 
 	private var _on : Boolean;
 
@@ -187,7 +201,7 @@ class ViewMenuItem {
 
 	public var target : ContextMenuItem;
 
-	public function ViewMenuItem(id : String) : void {
+	public function PluginMenuItem(id : String) : void {
 		this._id = id;
 		this.target = new ContextMenuItem(InspectorLanguageManager.getStr(this.id), false, false);
 	}

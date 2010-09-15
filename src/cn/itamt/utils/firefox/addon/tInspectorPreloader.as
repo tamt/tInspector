@@ -4,7 +4,7 @@ package cn.itamt.utils.firefox.addon {
 	import cn.itamt.utils.inspector.consts.InspectorPluginId;
 	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
-	import cn.itamt.utils.inspector.ui.AppStatsView;
+	import cn.itamt.utils.inspector.plugins.stats.AppStats;
 	import cn.itamt.utils.inspector.ui.SwfInfoView;
 
 	import msc.console.mConsole;
@@ -31,7 +31,7 @@ package cn.itamt.utils.firefox.addon {
 		private var controlBar : tInspectorControlBar;
 		public var tf : TextField;
 		private var tInspector : Inspector;
-		private var statsView : AppStatsView;		private var swfInfoView : SwfInfoView;
+		private var statsView : AppStats;		private var swfInfoView : SwfInfoView;
 		private var gErrorKeeper : GlobalErrorKeeper;
 
 		//由finspector.js分配给的id, 用于与fInspector通信.
@@ -45,7 +45,7 @@ package cn.itamt.utils.firefox.addon {
 			controlBar.addEventListener(InspectEvent.RELOAD, onClickReload);
 			addChild(controlBar);
 
-			statsView = new AppStatsView();
+			statsView = new AppStats();
 			swfInfoView = new SwfInfoView();
 			gErrorKeeper = new GlobalErrorKeeper();
 			gErrorKeeper.watch(this.loaderInfo);
@@ -116,9 +116,9 @@ package cn.itamt.utils.firefox.addon {
 			}
 
 			tInspector = Inspector.getInstance();
-			tInspector.registerPlugin(this.controlBar, this.controlBar.id);			tInspector.registerPlugin(statsView, InspectorPluginId.APPSTATS_VIEW);			tInspector.registerPlugin(swfInfoView, InspectorPluginId.SWFINFO_VIEW);			tInspector.registerPlugin(gErrorKeeper, InspectorPluginId.GLOBAL_ERROR_KEEPER);
+			tInspector.registerPlugin(this.controlBar);			tInspector.registerPlugin(statsView);			tInspector.registerPlugin(swfInfoView);			tInspector.registerPlugin(gErrorKeeper);
 			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
-			tInspector.activePlugin(this.controlBar.id);			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))tInspector.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
+			tInspector.activePlugin(this.controlBar.getPluginId());			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))tInspector.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 		}
 
 		private function setupControlBar() : void {

@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.mxp {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.firefox.addon.tInspectorControlBar;
 	import cn.itamt.utils.inspector.events.InspectEvent;
-	import cn.itamt.utils.inspector.ui.AppStatsView;
+	import cn.itamt.utils.inspector.ui.AppStats;
 	import cn.itamt.utils.inspector.ui.SwfInfoView;
 
 	import flash.display.Sprite;
@@ -14,7 +14,7 @@ package cn.itamt.utils.inspector.mxp {
 
 		private var controlBar : tInspectorControlBar;
 		private var tInspector : Inspector;
-		private var statsView : AppStatsView;
+		private var statsView : AppStats;
 		private var swfInfoView : SwfInfoView;
 
 		public function tInspectorMXP() {
@@ -22,7 +22,7 @@ package cn.itamt.utils.inspector.mxp {
 			controlBar.addEventListener(InspectEvent.RELOAD, onClickReload);
 			addChild(controlBar);
 			
-			statsView = new AppStatsView();
+			statsView = new AppStats();
 			swfInfoView = new SwfInfoView();
 		}
 	}

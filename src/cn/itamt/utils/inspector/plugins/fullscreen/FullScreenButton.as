@@ -1,5 +1,6 @@
-package cn.itamt.utils.inspector.ui {
+package cn.itamt.utils.inspector.plugins.fullscreen {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
 
 	import flash.display.Shape;
 

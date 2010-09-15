@@ -1,4 +1,6 @@
-package cn.itamt.utils.inspector.ui {
+package cn.itamt.utils.inspector.plugins.stats {
+	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
+	import cn.itamt.utils.inspector.ui.Padding;
 
 	/**
 	 * @author itamt[at]qq.com

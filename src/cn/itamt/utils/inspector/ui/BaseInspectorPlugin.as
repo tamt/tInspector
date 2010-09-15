@@ -72,6 +72,8 @@ package cn.itamt.utils.inspector.ui {
 		 * 刪除在Inspector註冊時
 		 */
 		public function onUnRegister(inspector : IInspector) : void {
+			this.onTurnOff();
+			if(_icon)_icon = null;
 		}
 
 		public function onRegisterPlugin(pluginId : String) : void {
@@ -171,7 +173,7 @@ package cn.itamt.utils.inspector.ui {
 		 * get this plugin's id
 		 */
 		public function getPluginId() : String {
-			return "baseInspectorView";
+			return null;
 		}
 
 		/**
