@@ -1,12 +1,12 @@
 package cn.itamt.utils.firefox.addon {
-	import cn.itamt.utils.inspector.plugins.controlbar.tInspectorControlBar;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.events.InspectEvent;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
 	import cn.itamt.utils.inspector.plugins.stats.AppStats;
-	import cn.itamt.utils.inspector.ui.SwfInfoView;
+	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
 
 	import msc.console.mConsole;
 	import msc.console.mIConsoleDelegate;
@@ -29,7 +29,7 @@ package cn.itamt.utils.firefox.addon {
 		public static var mainStage : Stage;
 		public static var mainRoot : DisplayObject;
 
-		private var controlBar : tInspectorControlBar;
+		private var controlBar : ControlBar;
 		public var tf : TextField;
 		private var tInspector : Inspector;
 		private var statsView : AppStats;		private var swfInfoView : SwfInfoView;
@@ -42,9 +42,8 @@ package cn.itamt.utils.firefox.addon {
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 
-			controlBar = new tInspectorControlBar();
+			controlBar = new ControlBar();
 			controlBar.addEventListener(InspectEvent.RELOAD, onClickReload);
-			addChild(controlBar);
 
 			statsView = new AppStats();
 			swfInfoView = new SwfInfoView();

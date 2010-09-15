@@ -1,7 +1,7 @@
 package cn.itamt.utils.inspector.plugins.controlbar {
-	import cn.itamt.utils.inspector.core.InspectTarget;
-	import cn.itamt.utils.inspector.core.IInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.core.IInspectorPlugin;
+	import cn.itamt.utils.inspector.core.InspectTarget;
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.PopupAlignMode;
 	import cn.itamt.utils.inspector.ui.InspectorButton;

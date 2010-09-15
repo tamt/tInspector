@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	import cn.itamt.utils.ObjectPool;
 	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterItemRenderer;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.plugins.reload.ReloadButton;
+	import cn.itamt.utils.firefox.addon.ReloadButton;
 	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
 
 	import flash.display.Sprite;

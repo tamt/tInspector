@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.plugins.reload {
+package cn.itamt.utils.firefox.addon {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
