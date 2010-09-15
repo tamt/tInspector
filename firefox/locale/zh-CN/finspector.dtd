@@ -1,0 +1,4 @@
+﻿<!-- TODO -->
+<!ENTITY fInspector "FlashInspector">
+<!ENTITY finspectorBtn.tooltip "开/关 FlashInspector">
+<!ENTITY needDebuggerFlashPlayer "FlashInspector需要Flash Player 9+(Debugger Version)插件，请先安装。">

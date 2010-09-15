@@ -121,6 +121,10 @@ package cn.itamt.utils.inspector.ui {
 			return rect;
 		}
 
+		public static function getBounds(dp : DisplayObject) : Rectangle {
+			return dp.getBounds(_stage);
+		}
+
 		/**
 		 * 把一个显示对象在舞台上居中
 		 */
@@ -144,6 +148,10 @@ package cn.itamt.utils.inspector.ui {
 
 		private static function onStageResize(evt : Event) : void {
 //			trace(_stage.stageWidth, _stage.stageHeight);
+		}
+
+		public static function addChild(dp : DisplayObject) : DisplayObject {
+			return _stage.addChild(dp);
 		}
 	}
 }

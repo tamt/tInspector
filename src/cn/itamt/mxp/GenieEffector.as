@@ -1,4 +1,4 @@
-﻿package cn.itamt.mxp {
+package cn.itamt.mxp {
 	import cn.itamt.fx.WobbleEffect;
 	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
@@ -22,8 +22,10 @@
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.utils.getQualifiedClassName;
+	
+	use namespace tamt_mxp_internal;
 
-	//component icon
+	//组件图标
 	[IconFile("genieeffector.png")]
 
 	/**
@@ -31,10 +33,11 @@
 	 */
 	public class GenieEffector extends MovieClip {
 
-		private static const STATS_NORMAL : String = "stats_normal";
-		private static const STATS_MINIZIE : String = "stats_minizie";
+		private static const STATS_NORMAL : String = "stats_normal";		private static const STATS_MINIZIE : String = "stats_minizie";
 
-		//component bounds 
+		//组件定义相关
+		
+		//组件显示框
 		public var boundingBox_mc : MovieClip;
 
 		protected var _targetName : String;
@@ -43,7 +46,7 @@
 		[Inspectable(type="String")]
 
 		/**
-		 * the target's name the effect will apply on.
+		 * 添加这个属性, 这样在ide中组件拖动到一个元件上时, 会自动为这个组件的_targetInstanceName进行设置.
 		 */
 		public function get _targetInstanceName() : String {
 			return _targetName;
@@ -62,7 +65,6 @@
 		}
 
 		
-		//the segments numbers(vertical).
 		protected var _segmentsv : uint = 6;
 
 		[Inspectable(defaultValue=6,type="Number")]
@@ -82,7 +84,7 @@
 			return _segmentsv;
 		}
 
-		//the segments numbers(horytical).
+		
 		protected var _segmentsh : uint = 6;
 
 		[Inspectable(defaultValue=6,type="Number")]
@@ -101,19 +103,16 @@
 		public function get segmentsh() : uint {
 			return _segmentsh;
 		}
-		
-		
-		//the ease tye the effect will use.
-		protected var _ease : String = "Back";
 
-		[Inspectable(defaultValue="Back",type="String", enumeration="Back,Cubic,Elastic,Expo,Linear,Quad,Quart,Quint,Sine")]
+		protected var _ease : String = "Back.easeOut";
+
+		[Inspectable(defaultValue="Back.easeOut",type="String", enumeration="Back,Cubic,Elastic,Expo,Linear,Quad,Quart,Quint,Sine")]
 
 		public function set ease(val : String) : void {
 			_ease = val;
 			
 			var arr : Array = [Back.easeOut,Cubic.easeOut,Elastic.easeOut,Expo.easeOut,Linear.easeNone,Quad.easeOut,Quart.easeOut,Quint.easeOut,Sine.easeOut];
-			var t:int = "Back,Cubic,Elastic,Expo,Linear,Quad,Quart,Quint,Sine".split(",").indexOf(val);
-			var fun : IEasing = arr[t];
+			var fun : IEasing = arr["Back,Cubic,Elastic,Expo,Linear,Quad,Quart,Quint,Sine".split(",").indexOf(val)];
 			if(_eff) {
 				_eff.ease = fun;
 			}
@@ -122,8 +121,7 @@
 		public function get ease() : String {
 			return _ease;
 		}
-		
-		//how long the effect will keep (in seconds).
+
 		protected var _duration : Number = .6;
 
 		[Inspectable(defaultValue=.6, type="Number")]
@@ -138,8 +136,7 @@
 		public function get duration() : Number {
 			return _duration;
 		}
-	
-		//use smooth when "beginFillBitmap..."
+
 		[Inspectable(defaultValue=true, type="Boolean")]
 
 		public function get smooth() : Boolean {
@@ -152,12 +149,14 @@
 				_eff.smooth = smooth;
 			}
 		}
-		
-		//show grid line. for debug purpose.
+
 		protected var _grid : Boolean;
 
 		[Inspectable(defaultValue=false, type="Boolean")]
 
+		/**
+		 * 是否显示格线
+		 */
 		public function set grid(val : Boolean) : void {
 			_grid = val;
 			if(_eff)_eff.grid = _grid;
@@ -166,12 +165,12 @@
 		public function get grid() : Boolean {
 			return _grid;
 		}
-		
-		//the trigger's name when mouse drag it, the target will move. 
+
 		protected var _dragTriggerName : String;
 
 		[Inspectable(type="String")]
 
+		//触发窗口拖动的对象名称
 		public function set dragTriggerName(val : String) : void {
 			if(val == "")val = null;
 			_dragTriggerName = val;
@@ -191,7 +190,7 @@
 		}
 
 		/**
-		 * the trigger's name who will minimize the target when mouse click on it.
+		 * 触发最小化的对象
 		 */
 		protected var _minimizeTriggerName : String;
 
@@ -216,7 +215,7 @@
 		}
 
 		/**
-		 * the trigger's name who will maximize the target when mouse click on it.
+		 * 触发最大化的对象
 		 */
 		protected var _maximizeTriggerName : String;
 
@@ -240,11 +239,12 @@
 		}
 
 		/**
-		 * this is for init purpose.
+		 * 用于初始化的一个参数
 		 */
 		[Inspectable(defaultValue="true", verbose=1,type="String", category="Other", enumeration="true")]
 
 		public function set init(val : String) : void {
+			//调用初初始化
 			if(_target == null) {
 			} else {
 				if(_target.stage) {
@@ -255,9 +255,22 @@
 			}
 		}
 
-		/////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////
-		/////////////////////////////////////////////////////
+		/*
+		protected var _autoSeg : Boolean;
+
+		[Inspectable(defaultValue=false, type="Boolean")]
+
+		public function get autoSeg() : Boolean {
+		return _autoSeg;
+		}
+
+		public function set autoSeg(autoSeg : Boolean) : void {
+		_autoSeg = autoSeg;
+		}
+		 * 
+		 */
+
+		/////////////////////////////////////////////////////		/////////////////////////////////////////////////////		/////////////////////////////////////////////////////
 
 		protected var _target : InteractiveObject;
 
@@ -270,7 +283,7 @@
 		}
 
 		/**
-		 * the drag trigger.
+		 * 拖动的触发源.
 		 */
 		protected var _dragTrigger : InteractiveObject;
 
@@ -289,7 +302,7 @@
 		}
 
 		/**
-		 * the minimize trigger.
+		 * 最小化的触发源.
 		 */
 		protected var _miniTrigger : InteractiveObject;
 
@@ -302,7 +315,7 @@
 		}
 
 		/**
-		 * the maximize trigger.
+		 * 最大化的触发源.
 		 */
 		protected var _maxiTrigger : InteractiveObject;
 
@@ -316,6 +329,9 @@
 
 		protected var _eff : WobbleEffect;
 
+		/**
+		 * 存储target位置/大小的rect
+		 */
 		protected var _targetRect : Rectangle;
 
 		protected var _stats : String = STATS_NORMAL;
@@ -379,6 +395,7 @@
 		}
 
 		private function mouseUpHandler(evt : MouseEvent) : void {
+			//			_target.stopDrag();
 			if(_eff) {
 				_eff.onUp(evt);
 				onDraging();
@@ -398,6 +415,7 @@
 			_target.visible = false;
 
 			var rect : Rectangle = InspectorStageReference.getStageBounds();
+			//			_target.startDrag(false/*, new Rectangle(rect.left - evt.stageX, rect.top - evt.stageY, rect.width, rect.height)*/);
 			_dragProxy.x = _target.x;
 			_dragProxy.y = _target.y;
 			_dragProxy.startDrag(false);
@@ -412,8 +430,7 @@
 			
 			this.duration = this.duration;
 			this.ease = this.ease;
-			this.segmentsv = this.segmentsv;
-			this.segmentsh = this.segmentsh;
+			this.segmentsv = this.segmentsv;			this.segmentsh = this.segmentsh;
 			this.grid = this.grid;
 			this.smooth = this.smooth;
 			
@@ -430,6 +447,9 @@
 				_target.visible = false;
 			}
 			_eff.visible = false;
+//			_eff.dispose();
+//			_eff.removeEventListener(Event.COMPLETE, onEffComplete);
+//			_eff = null;
 		}
 
 		public function setSize(w : Number, h : Number) : void {
@@ -458,8 +478,7 @@
 			
 				this.duration = this.duration;
 				this.ease = this.ease;
-				this.segmentsv = this.segmentsv;
-				this.segmentsh = this.segmentsh;
+				this.segmentsv = this.segmentsv;				this.segmentsh = this.segmentsh;
 				this.grid = this.grid;
 			
 				_eff.apply();
@@ -483,8 +502,7 @@
 			
 				this.duration = this.duration;
 				this.ease = this.ease;
-				this.segmentsh = this.segmentsh;
-				this.segmentsv = this.segmentsv;
+				this.segmentsh = this.segmentsh;				this.segmentsv = this.segmentsv;
 				this.grid = this.grid;
 			
 				_eff.apply();

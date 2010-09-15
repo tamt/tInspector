@@ -1,0 +1,5 @@
+content finspector content/
+locale	finspector	en-US		locale/en-US/
+locale  finspector zh-CN       locale/zh-CN/
+skin finspector classic/1.0 skin/
+overlay chrome://browser/content/browser.xul chrome://finspector/content/finspector.xul

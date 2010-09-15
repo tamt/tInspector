@@ -16,19 +16,19 @@ package cn.itamt.fx.core {
 		}
 
 		/**
-		 * start use the effect
+		 * 开始使用效果.
 		 */
 		public function apply() : void {
 		}
 
 		/**
-		 * clear use the effect
+		 * 清除效果.
 		 */
 		public function clear() : void {
 		}
 
 		/**
-		 * dispose the effect, clear reference, memory.
+		 * 销毁.
 		 */
 		public function dispose() : void {
 		}

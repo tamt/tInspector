@@ -1,0 +1,43 @@
+↓↓↓↓↓>>>>>2010.01.07<<<<<↓↓↓↓↓
+1.(OK)Dopin的两个实现方法(目前采用a方案):
+	a.用位图数据来构建显示列表模型.
+	b.利用Flash Player原有的显示对象结构, 但不加入显示列表, 而对显示容器进行拍照(Dopin), 再在这张图片上实现可交互性.
+	
+2.Dopin的属性更新方案(目前采用b方案):
+	a.利用Proxy + 事件机制.
+	b.利用setter/getter + 事件机制.
+	c.利用oldState与update.
+3.(OK)不支持有镂空的图片??????
+
+↓↓↓↓↓>>>>>2010.01.11<<<<<↓↓↓↓↓
+4.Dopin的内存使用及释放情况.
+5.(OK)支持AnimatedDopin.
+
+↓↓↓↓↓>>>>>2010.01.11<<<<<↓↓↓↓↓
+6.Dopin采用自身的广播机制????
+7.(OK)Dopin本身是lock的. 只有需要更新的地方才unlock;
+
+↓↓↓↓↓>>>>>2010.01.13<<<<<↓↓↓↓↓
+8.(OK)这么看来Dopin的所有渲染只需要由DopinStage执行一次就行. 那么每次Dopin的属性改变时, 并不马上clear()与update().这些改变会在DopinStage上的EVENT.RENDER事件渲染, Dopin渲染时有三个步骤:
+	a.lock();
+	b.首先是按照oldState进行clear();
+	c.其次是update();
+	d.把Dopin的目前状态存进oldState.
+	e.unlock();
+9.(OK)Dopin的属性更新方案改用c方案:利用oldState与update.
+
+↓↓↓↓↓>>>>>2010.01.13<<<<<↓↓↓↓↓
+10.(OK)所有的需要new Rectangle的地方, 考虑方案:定义为成员属性, 或者使用ObjectPool.
+11.是否对动画进行统一缓存, 如果动画资源需要重复调用, 缓存才有意义, 否则没有太大的意义.
+12.(OK)针对于MovieClipDopin这种情况...或许可以考虑在BaseDopin添加needClear属性, 用来标示是否需要完全清除之前的绘制. 因为向MovieClipDopin如果没有进行位移的话, 并不需要清除之前的绘制, 可以使用快速清除方案.
+13.Dopin提供三种渲染模式:
+	a.(OK)只擦除/重绘有更新的区域, 方法没错, 但在有大量Dopin时效率底下. [tamt:添加了needClearWhenRender判断后, 情况有很打改善, 但在大量Dopin的情况下仍然建议使用b渲染模式.]
+	b.(OK)只要某个dopin有更新,即重绘整张位图. 在Dopin比较少时它的效率会低于a.
+	c.a与b方案的结合.
+14.添加鼠标响应的透明像素判断.
+
+↓↓↓↓↓>>>>>2010.01.19<<<<<↓↓↓↓↓
+15.太厉害了!!!!可以利用BitmapData的getPixel来实现鼠标检测. 方法可以见ManyButtons.as
+
+↓↓↓↓↓>>>>>2010.02.26<<<<<↓↓↓↓↓
+16.Dopin增加BitmapData Drawing API

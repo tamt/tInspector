@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
+<?xml-stylesheet href="chrome://finspector/skin/finspector.css" type="text/css"?>
+<!DOCTYPE window [
+<!ENTITY % finspectorDTD SYSTEM "chrome://finspector/locale/finspector.dtd">
+%finspectorDTD;
+]>
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml" class="windowDialog"
+	id="finspector-customize-keyboard" buttons="accept,cancel"
+	persist="screenX screenY width height" title="&fInspector;">
+	<script type="application/x-javascript" src="chrome://finspector/content/flashversion.js" />
+	<script type="application/x-javascript" src="chrome://finspector/content/needDebuggerFP.js" />
+	<html:div style="width:96px; height:96px;">
+		<html:img src="chrome://finspector/skin/finspector_96.png"></html:img>
+	</html:div>
+	<description width="100%" value="&needDebuggerFlashPlayer;"></description>
+</dialog>
