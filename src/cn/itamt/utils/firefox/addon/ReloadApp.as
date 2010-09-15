@@ -2,7 +2,6 @@ package cn.itamt.utils.firefox.addon {
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
-	import cn.itamt.utils.inspector.plugins.reload.ReloadButton;
 
 	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;

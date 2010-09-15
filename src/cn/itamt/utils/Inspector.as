@@ -1,11 +1,12 @@
 ﻿package cn.itamt.utils {
+	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.core.IInspectorPlugin;
 	import cn.itamt.utils.inspector.core.InspectTarget;
 	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesView;
 	import cn.itamt.utils.inspector.core.structureview.StructureView;
-	import cn.itamt.utils.inspector.core.IInspector;
-	import cn.itamt.utils.inspector.core.IInspectorPlugin;
+	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.InspectorTipsManager;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
@@ -89,6 +90,8 @@
 			return _curInspectEle;
 		}
 
+		private var _inited : Boolean;
+
 		public function Inspector(sf : SingletonEnforcer) {
 			super();
 			
@@ -126,7 +129,9 @@
 		 * @param property			注册显示对象信息功能
 		 * @param keys				注册快捷键
 		 */
-		public function init(root : DisplayObjectContainer, live : Boolean = true, property : Boolean = true, structure : Boolean = true, keys : Boolean = false) : void {
+		public function init(root : DisplayObjectContainer, controlBar : Boolean = true) : void {
+			if(_inited)return;
+			_inited = true;
 			
 			this._root = root;
 			this._stage = root.stage;
@@ -138,10 +143,11 @@
 			
 			InspectorStageReference.referenceTo(this._stage);
 			
-			if(structure)registerPlugin(_structureView);
-			if(property)registerPlugin(_propertiesView);
-			if(live)registerPlugin(_inspectView);
+			registerPlugin(_structureView);
+			registerPlugin(_propertiesView);
+			registerPlugin(_inspectView);
 			registerPlugin(_filterManager);
+			if(controlBar)registerPlugin(new ControlBar());
 		}
 
 		/**

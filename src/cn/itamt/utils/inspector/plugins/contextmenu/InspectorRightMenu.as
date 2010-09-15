@@ -1,9 +1,9 @@
 package cn.itamt.utils.inspector.plugins.contextmenu {
 	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
-	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 
 	import flash.display.InteractiveObject;
 	import flash.events.ContextMenuEvent;
