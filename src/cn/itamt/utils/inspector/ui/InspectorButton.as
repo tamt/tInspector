@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.tip.TipEvent;
+	import cn.itamt.utils.inspector.events.TipEvent;
 
 	import flash.display.Shape;
 	import flash.display.SimpleButton;

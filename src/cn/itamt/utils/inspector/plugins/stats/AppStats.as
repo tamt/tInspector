@@ -1,7 +1,7 @@
 package cn.itamt.utils.inspector.plugins.stats {
-	import cn.itamt.utils.inspector.consts.InspectorPluginId;
-	import cn.itamt.utils.inspector.interfaces.IInspector;
-	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import flash.display.DisplayObject;

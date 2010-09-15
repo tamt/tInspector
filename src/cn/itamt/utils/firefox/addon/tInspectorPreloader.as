@@ -1,7 +1,8 @@
 package cn.itamt.utils.firefox.addon {
+	import cn.itamt.utils.inspector.plugins.controlbar.tInspectorControlBar;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.consts.InspectorPluginId;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
 	import cn.itamt.utils.inspector.plugins.stats.AppStats;

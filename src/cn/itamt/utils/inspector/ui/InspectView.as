@@ -1,5 +1,6 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.Debug;
+	import cn.itamt.utils.inspector.core.liveinspect.OperationBar;
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;

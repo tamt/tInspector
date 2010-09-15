@@ -1,11 +1,11 @@
 package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.inspector.consts.InspectorPluginId;
-	import cn.itamt.utils.inspector.interfaces.IInspector;
+	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.tip.InspectorPopupManager;
-	import cn.itamt.utils.inspector.tip.PopupAlignMode;
-	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
+	import cn.itamt.utils.inspector.popup.PopupAlignMode;
 
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;

@@ -1,15 +1,14 @@
 ﻿package cn.itamt.utils {
-	import cn.itamt.utils.inspector.data.InspectTarget;
-	import cn.itamt.utils.inspector.filter.InspectorFilterManager;
-	import cn.itamt.utils.inspector.interfaces.IInspector;
-	import cn.itamt.utils.inspector.interfaces.IInspectorPlugin;
-	import cn.itamt.utils.inspector.key.InspectorKeyManager;
-	import cn.itamt.utils.inspector.tip.InspectorPopupManager;
-	import cn.itamt.utils.inspector.tip.InspectorTipsManager;
+	import cn.itamt.utils.inspector.core.InspectTarget;
+	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterManager;
+	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
+	import cn.itamt.utils.inspector.core.propertyview.PropertiesView;
+	import cn.itamt.utils.inspector.core.structureview.StructureView;
+	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.core.IInspectorPlugin;
+	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
+	import cn.itamt.utils.inspector.popup.InspectorTipsManager;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
-	import cn.itamt.utils.inspector.ui.LiveInspectView;
-	import cn.itamt.utils.inspector.ui.PropertiesView;
-	import cn.itamt.utils.inspector.ui.StructureView;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -41,8 +40,9 @@
 		 * store all plugins.
 		 */
 		private var _plugins : Dictionary;
+
 		/**
-		 * store the order of each plugin in id.
+		 * store the register order of each plugin in id.
 		 */
 		private var _pluginOrders : Array;
 		//////////////////////////////////////
@@ -66,7 +66,6 @@
 			return _filterManager;
 		}
 
-		private var _keysManager : InspectorKeyManager;
 		private var _inspectView : LiveInspectView;
 
 		/**
@@ -101,7 +100,6 @@
 			_inspectView = new LiveInspectView();
 			_structureView = new StructureView();
 			_propertiesView = new PropertiesView();
-			_keysManager = new InspectorKeyManager();
 			_filterManager = new InspectorFilterManager();
 		}
 
@@ -144,11 +142,10 @@
 			if(property)registerPlugin(_propertiesView);
 			if(live)registerPlugin(_inspectView);
 			registerPlugin(_filterManager);
-			if(keys)registerPlugin(_keysManager);
 		}
 
 		/**
-		 * 往tInspector註冊一個功能模塊
+		 * 往tInspector註冊一個插件
 		 */
 		public function registerPlugin(plugin : IInspectorPlugin) : void {
 			if(_plugins == null)_plugins = new Dictionary();

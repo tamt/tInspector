@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.consts.InspectorSymbolIcon;
+	
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 	import flash.display.BitmapData;

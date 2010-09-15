@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.plugins.stats {
-	import cn.itamt.utils.inspector.consts.InspectorPluginId;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 

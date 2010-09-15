@@ -1,9 +1,9 @@
 package cn.itamt.utils.inspector.plugins.contextmenu {
 	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.inspector.consts.InspectorPluginId;
-	import cn.itamt.utils.inspector.interfaces.IInspector;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
-	import cn.itamt.utils.inspector.ui.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 
 	import flash.display.InteractiveObject;
 	import flash.events.ContextMenuEvent;
@@ -105,6 +105,8 @@ package cn.itamt.utils.inspector.plugins.contextmenu {
 		override public function onTurnOn() : void {
 			_on.enabled = false;
 			_off.enabled = true;
+			
+			_inspector.activePlugin(this.getPluginId());
 			
 			for each(var menuItem:PluginMenuItem in _pluginItems) {
 				menuItem.enabled = true;

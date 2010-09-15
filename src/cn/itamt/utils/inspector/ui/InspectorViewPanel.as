@@ -1,4 +1,5 @@
 package cn.itamt.utils.inspector.ui {
+	import cn.itamt.utils.inspector.core.liveinspect.InspectorViewCloseButton;
 	import cn.itamt.utils.DisplayObjectTool;
 
 	import flash.display.CapsStyle;
