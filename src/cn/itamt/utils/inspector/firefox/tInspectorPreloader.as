@@ -1,4 +1,4 @@
-package cn.itamt.utils.firefox.addon {
+package cn.itamt.utils.inspector.firefox {
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.events.InspectEvent;
@@ -19,6 +19,7 @@ package cn.itamt.utils.firefox.addon {
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.external.ExternalInterface;
+	import flash.net.URLRequest;
 	import flash.system.Security;
 	import flash.text.TextField;
 
@@ -75,8 +76,19 @@ package cn.itamt.utils.firefox.addon {
 			//			mainRoot = this.root;
 			mainStage = stage;
 			
-			this.root.addEventListener("allComplete", this.allCompleteHandler);
+			this.root.addEventListener("allComplete", this.allCompleteHandler);			this.root.addEventListener("allComplete", this.watchGlobalError);
 			mainStage.addEventListener(Event.ADDED_TO_STAGE, onSthAdded, true);
+		}
+
+		private function watchGlobalError(evt : Event) : void {
+			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
+			if(loaderInfo) {
+				if(loaderInfo.url) {
+					if(loaderInfo.contentType == "application/x-shockwave-flash") {
+						gErrorKeeper.watch(loaderInfo);
+					}
+				}
+			}
 		}
 
 		private function onSthAdded(evt : Event) : void {
@@ -90,7 +102,6 @@ package cn.itamt.utils.firefox.addon {
 		}
 
 		private function allCompleteHandler(evt : Event) : void {
-			//			mainRoot.removeEventListener("allComplete", this.allCompleteHandler);
 			log('[tInspectorPreloader][allCompleteHandler]');
 			
 			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
@@ -99,10 +110,9 @@ package cn.itamt.utils.firefox.addon {
 					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
 						log(loaderInfo.url);
 						setupControlBar();						initInspector();
+						mainRoot.removeEventListener("allComplete", this.allCompleteHandler);
 					}
 				}
-				
-				gErrorKeeper.watch(loaderInfo);
 			}
 		}
 
@@ -116,9 +126,7 @@ package cn.itamt.utils.firefox.addon {
 			}
 
 			tInspector = Inspector.getInstance();
-			tInspector.registerPlugin(this.controlBar);			tInspector.registerPlugin(statsView);			tInspector.registerPlugin(swfInfoView);			tInspector.registerPlugin(gErrorKeeper);
-			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
-			tInspector.activePlugin(this.controlBar.getPluginId());			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))tInspector.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
+			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);			tInspector.pluginManager.registerPlugin(statsView);			tInspector.pluginManager.registerPlugin(swfInfoView);			tInspector.pluginManager.registerPlugin(gErrorKeeper);			tInspector.pluginManager.loadPlugin(new URLRequest("http://www.itamt.cn/tinspector_plugins/DownloadAll.swf"));			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))tInspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 		}
 
 		private function setupControlBar() : void {

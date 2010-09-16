@@ -1,4 +1,4 @@
-package cn.itamt.utils.firefox.addon {
+package cn.itamt.utils.inspector.firefox {
 	import flash.events.Event;
 	import flash.system.Capabilities;
 

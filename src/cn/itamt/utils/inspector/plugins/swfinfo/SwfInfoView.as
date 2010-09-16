@@ -125,7 +125,7 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			}
 			
 			if(this.panels.length == 0) {
-				this._inspector.unactivePlugin(InspectorPluginId.SWFINFO_VIEW);
+				this._inspector.pluginManager.unactivePlugin(InspectorPluginId.SWFINFO_VIEW);
 			}
 		}
 	}

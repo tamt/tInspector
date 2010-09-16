@@ -59,7 +59,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			// find change in positioning based on registration
 			// Note: registration location is based within
 			// the coordinate space of the tool (not global)
-			var regDiff = origReg.subtract(transformTool.registration);
+			var regDiff : Point = origReg.subtract(transformTool.registration);
 			
 			// update the tool matrix with the change in position
 			// offsetting movement from the new matrix to have

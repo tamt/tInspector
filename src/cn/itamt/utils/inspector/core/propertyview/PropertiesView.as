@@ -176,7 +176,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 			}
 			
 			if(this.panels.length == 0) {
-				this._inspector.unactivePlugin(InspectorPluginId.PROPER_VIEW);
+				this._inspector.pluginManager.unactivePlugin(InspectorPluginId.PROPER_VIEW);
 			}
 		}
 	}

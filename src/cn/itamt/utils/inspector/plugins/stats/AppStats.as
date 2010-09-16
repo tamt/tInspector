@@ -1,7 +1,7 @@
 package cn.itamt.utils.inspector.plugins.stats {
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
-	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import flash.display.DisplayObject;
@@ -60,7 +60,7 @@ package cn.itamt.utils.inspector.plugins.stats {
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
-			this._inspector.unactivePlugin(InspectorPluginId.APPSTATS_VIEW);
+			this._inspector.pluginManager.unactivePlugin(InspectorPluginId.APPSTATS_VIEW);
 		}
 	}
 }

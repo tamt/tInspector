@@ -106,11 +106,11 @@ package cn.itamt.utils.inspector.plugins.contextmenu {
 			_on.enabled = false;
 			_off.enabled = true;
 			
-			_inspector.activePlugin(this.getPluginId());
+			_inspector.pluginManager.activePlugin(this.getPluginId());
 			
 			for each(var menuItem:PluginMenuItem in _pluginItems) {
 				menuItem.enabled = true;
-				if(menuItem.on)_inspector.activePlugin(menuItem.id);
+				if(menuItem.on)_inspector.pluginManager.activePlugin(menuItem.id);
 			}
 		}
 
@@ -161,9 +161,9 @@ package cn.itamt.utils.inspector.plugins.contextmenu {
 					for each(var menuItem:PluginMenuItem in _pluginItems) {
 						if(menuItem.target == evt.target) {
 							if(menuItem.on) {
-								_inspector.unactivePlugin(menuItem.id);
+								_inspector.pluginManager.unactivePlugin(menuItem.id);
 							} else {
-								_inspector.activePlugin(menuItem.id);
+								_inspector.pluginManager.activePlugin(menuItem.id);
 							}
 							break;
 						}

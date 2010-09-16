@@ -36,7 +36,7 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 						this._inspector.turnOff();
 					} else {
 						this._inspector.turnOn();
-						if(!this._active)this._inspector.activePlugin(this.getPluginId());
+						if(!this._active)this._inspector.pluginManager.activePlugin(this.getPluginId());
 					}
 					break;
 			}
@@ -105,14 +105,14 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		}
 
 		public function onTurnOn() : void {			
-			var arr : Array = this._inspector.getPlugins();
+			var arr : Array = this._inspector.pluginManager.getPlugins();
 			for(var i : int = 0;i < arr.length;i++) {
 				this.addChild(arr[i].getPluginIcon());	
 			}
 		}
 
 		public function onTurnOff() : void {
-			var arr : Array = this._inspector.getPlugins();
+			var arr : Array = this._inspector.pluginManager.getPlugins();
 			for each (var plugin : IInspectorPlugin in arr) {
 				this.removeChild(plugin.getPluginIcon());
 			}
@@ -137,14 +137,14 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		}
 
 		public function onActivePlugin(pluginId : String) : void {
-			var btn : InspectorButton = this._inspector.getPluginById(pluginId) as InspectorButton;
+			var btn : InspectorButton = this._inspector.pluginManager.getPluginById(pluginId) as InspectorButton;
 			if(btn) {
 				btn.active = true;
 			}
 		}
 
 		public function onUnActivePlugin(pluginId : String) : void {
-			var btn : InspectorButton = this._inspector.getPluginById(pluginId) as InspectorButton;
+			var btn : InspectorButton = this._inspector.pluginManager.getPluginById(pluginId) as InspectorButton;
 			if(btn) {
 				btn.active = false;
 			}

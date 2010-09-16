@@ -1,12 +1,12 @@
 package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.DisplayObjectTool;
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.InspectTarget;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
-	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
 
 	import com.senocular.display.TransformTool;
@@ -405,14 +405,14 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		 * 單擊查看顯示對象結構
 		 */
 		private function onPressStructure(evt : Event) : void {
-			_inspector.activePlugin(InspectorPluginId.STRUCT_VIEW);
+			_inspector.pluginManager.activePlugin(InspectorPluginId.STRUCT_VIEW);
 		}
 
 		/**
 		 * 單擊查看詳細信息
 		 */
 		private function onPressInfo(evt : Event) : void {
-			_inspector.activePlugin(InspectorPluginId.PROPER_VIEW);
+			_inspector.pluginManager.activePlugin(InspectorPluginId.PROPER_VIEW);
 		}
 
 		/**

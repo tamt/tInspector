@@ -1,6 +1,4 @@
 package cn.itamt.utils.inspector.core {
-	
-
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
@@ -37,15 +35,6 @@ package cn.itamt.utils.inspector.core {
 		 */
 		function toggleTurn() : void;
 
-		/**
-		 * 开启/关闭某一个功能
-		 */
-		function togglePluginById(pluginId : String) : void;
-
-		function activePlugin(pluginId : String) : void;
-
-		function unactivePlugin(pluginId : String) : void;
-
 		function startLiveInspect() : void;
 
 		function stopLiveInspect() : void;
@@ -58,16 +47,6 @@ package cn.itamt.utils.inspector.core {
 
 		function isInspectView(target : DisplayObject) : Boolean;
 
-		function getPluginById(pluginId : String) : IInspectorPlugin;
-
-		/**
-		 * get all the plugins registered to Inspector.
-		 */
-		function getPlugins() : Array;
-
-		/**
-		 * get all the plugin's id registered to Inspector.
-		 */
-		function getPluginIds() : Array;
+		function get pluginManager() : IInspectorPluginManager;
 	}
 }

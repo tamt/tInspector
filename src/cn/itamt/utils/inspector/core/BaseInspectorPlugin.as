@@ -1,9 +1,6 @@
 package cn.itamt.utils.inspector.core {
-	import cn.itamt.utils.inspector.ui.InspectorButton;
-	
-	
-	
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
 
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
@@ -193,9 +190,9 @@ package cn.itamt.utils.inspector.core {
 		//////////////////////////////////////
 		private function onClickPluginIcon(event : MouseEvent) : void {
 			if(!isActive) {
-				_inspector.activePlugin(this.getPluginId());
+				_inspector.pluginManager.activePlugin(this.getPluginId());
 			} else {
-				_inspector.unactivePlugin(this.getPluginId());
+				_inspector.pluginManager.unactivePlugin(this.getPluginId());
 			}
 		}
 	}

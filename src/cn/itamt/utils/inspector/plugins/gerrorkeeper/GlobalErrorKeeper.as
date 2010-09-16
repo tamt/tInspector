@@ -60,7 +60,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			super.onTurnOn();
 			
 			if(this.enabled) {
-				_inspector.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
+				_inspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 			}
 		}
 

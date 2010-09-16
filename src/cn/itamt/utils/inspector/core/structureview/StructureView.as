@@ -229,7 +229,7 @@ package cn.itamt.utils.inspector.core.structureview {
 		 */
 		private function onClickClose(evt : Event) : void {
 			Debug.trace('[StructureView][onClickClose]');
-			this._inspector.unactivePlugin(InspectorPluginId.STRUCT_VIEW);
+			this._inspector.pluginManager.unactivePlugin(InspectorPluginId.STRUCT_VIEW);
 		}
 
 		/**

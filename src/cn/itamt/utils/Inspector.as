@@ -1,7 +1,9 @@
 ﻿package cn.itamt.utils {
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.IInspectorPlugin;
+	import cn.itamt.utils.inspector.core.IInspectorPluginManager;
 	import cn.itamt.utils.inspector.core.InspectTarget;
+	import cn.itamt.utils.inspector.core.InspectorPluginManager;
 	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesView;
@@ -13,6 +15,7 @@
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.LoaderInfo;
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -37,15 +40,6 @@
 
 		public static var APP_DOMAIN : ApplicationDomain;
 
-		/**
-		 * store all plugins.
-		 */
-		private var _plugins : Dictionary;
-
-		/**
-		 * store the register order of each plugin in id.
-		 */
-		private var _pluginOrders : Array;
 		//////////////////////////////////////
 		////////////setter, getter////////////
 		//////////////////////////////////////
@@ -65,6 +59,12 @@
 
 		public function get filterManager() : InspectorFilterManager {
 			return _filterManager;
+		}
+
+		private var _pluginMgr : IInspectorPluginManager;
+
+		public function get pluginManager() : IInspectorPluginManager {
+			return _pluginMgr;
 		}
 
 		private var _inspectView : LiveInspectView;
@@ -104,6 +104,8 @@
 			_structureView = new StructureView();
 			_propertiesView = new PropertiesView();
 			_filterManager = new InspectorFilterManager();
+			
+			_pluginMgr = new InspectorPluginManager(this);
 		}
 
 		public static function getInstance() : Inspector {
@@ -143,140 +145,13 @@
 			
 			InspectorStageReference.referenceTo(this._stage);
 			
-			registerPlugin(_structureView);
-			registerPlugin(_propertiesView);
-			registerPlugin(_inspectView);
-			registerPlugin(_filterManager);
-			if(controlBar)registerPlugin(new ControlBar());
-		}
-
-		/**
-		 * 往tInspector註冊一個插件
-		 */
-		public function registerPlugin(plugin : IInspectorPlugin) : void {
-			if(_plugins == null)_plugins = new Dictionary();
+			this.pluginManager.registerPlugin(_structureView);
+			this.pluginManager.registerPlugin(_propertiesView);
+			this.pluginManager.registerPlugin(_inspectView);
+			this.pluginManager.registerPlugin(_filterManager);
+			if(controlBar)this.pluginManager.registerPlugin(new ControlBar());
 			
-			if(plugin == null) {
-				throw new Error("registerPlugin with a null plugin.");
-				return;
-			}
-			var id : String = plugin.getPluginId();
-			if(id == null) {
-				throw new Error("registerPlugin:getPluginId() return null");
-				return;
-			}
-			
-			//sort order of plugin.
-			if(_pluginOrders == null)_pluginOrders = [];
-			var i : int = _pluginOrders.indexOf(id);
-			if(i >= 0) {
-				_pluginOrders.splice(i, 1);
-			}
-			_pluginOrders.push(id);
-			
-			//store the plugin to _plugins.
-			if(plugin != _plugins[id]) {
-				plugin.onRegister(this);
-				
-				for(var t:String in _plugins) {
-					plugin.onRegisterPlugin(t);
-				}
-				
-				_plugins[id] = plugin;
-			}
-			
-			for each(var item:IInspectorPlugin in _plugins) {
-				item.onRegisterPlugin(id);
-			}
-		}
-
-		/**
-		 * 删除註冊一個功能模塊
-		 */
-		public function unregisterPlugin(id : String) : void {
-			if(_plugins == null)_plugins = new Dictionary();
-			var view : IInspectorPlugin = _plugins[id];
-			if(view != null) {		
-				view.onUnRegister(this);
-			
-				for each(var item:IInspectorPlugin in _plugins) {
-					item.onUnRegisterPlugin(id);
-				}
-			
-				delete	_plugins[id];
-			}
-		}
-
-		/**
-		 * 开启Inspector的视图.
-		 */
-		public function activePlugin(id : String) : void {
-			if(_plugins == null)return;
-			
-			var view : IInspectorPlugin = _plugins[id];
-			if(view) {
-				if(!view.isActive)view.onActive();
-				if(_curInspectEle != null) {
-					if(!this.isLiveInspecting) {
-						view.onInspect(_curInspectEle);
-					} else {
-						view.onLiveInspect(_curInspectEle);
-					}
-				}
-				for each(var item:IInspectorPlugin in _plugins) {
-					item.onActivePlugin(id);
-				}
-			} else {
-				trace(id + '没有注册，不能开启。使用Inspector.registerView来注册功能，然后再调用Inspector.activePlugin');
-			}
-		}
-
-		/**
-		 * 关闭Inspector的视图.
-		 */
-		public function unactivePlugin(id : String) : void {
-			Debug.trace('[Inspector][unactiveView]');
-			if(_plugins[id] != null) {
-				(_plugins[id] as IInspectorPlugin).onUnActive();
-			}
-			
-			for each(var view:IInspectorPlugin in _plugins) {
-				if(view.isActive)view.onUnActivePlugin(id);
-			}
-		}
-
-		public function togglePluginById(id : String) : void {
-			var view : IInspectorPlugin = _plugins[id];
-			if(view.isActive) {
-				view.onUnActive();
-			} else {
-				view.onActive();
-			}
-		}
-
-		public function getPluginById(viewId : String) : IInspectorPlugin {
-			if(_plugins == null)return null;
-			return _plugins[viewId];
-		}
-
-		/**
-		 * get all the plugins registered to Inspector.
-		 */
-		public function getPlugins() : Array {
-			var arr : Array = [];
-			var ids : Array = getPluginIds();
-			for(var i : int = 0;i < ids.length;i++) {
-				arr.push(getPluginById(ids[i]));
-			}
-			
-			return arr;
-		}
-
-		/**
-		 * get all the plugin's id registered to Inspector.
-		 */
-		public function getPluginIds() : Array {
-			return this._pluginOrders.slice();	
+			this._root.addEventListener("allComplete", allCompleteHandler);
 		}
 
 		/**
@@ -291,12 +166,13 @@
 			InspectorTipsManager.init();			InspectorPopupManager.init();
 			
 			//调用各个模块的onTurnOn
-			for each(var view:IInspectorPlugin in _plugins) {
-				view.onTurnOn();
+			var plugins : Array = this.pluginManager.getPlugins();
+			for each(var plugin:IInspectorPlugin in plugins) {
+				plugin.onTurnOn();
 			}
 			
 			for(var i : int = 0;i < paras.length;i++) {
-				this.activePlugin(String(paras[i]));
+				this.pluginManager.activePlugin(String(paras[i]));
 			}
 		}
 
@@ -311,8 +187,9 @@
 			if(!_isOn)return;
 			_isOn = false;
 			_curInspectEle = null;
-			
-			for each(var view:IInspectorPlugin in _plugins) {
+		
+			var plugins : Array = this.pluginManager.getPlugins();	
+			for each(var view:IInspectorPlugin in plugins) {
 				//				if(view.isActive)view.onUnActive();
 				view.onTurnOff();
 			}
@@ -349,8 +226,9 @@
 			
 				_isLiveInspecting = true;
 				this.stage.addEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
-				
-				for each(var view:IInspectorPlugin in _plugins) {
+		
+				var plugins : Array = this.pluginManager.getPlugins();		
+				for each(var view:IInspectorPlugin in plugins) {
 					if(view.isActive)view.onStartLiveInspect();
 				}
 			}
@@ -360,7 +238,8 @@
 			_isLiveInspecting = false;
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
 			
-			for each(var view:IInspectorPlugin in _plugins) {
+			var plugins : Array = this.pluginManager.getPlugins();
+			for each(var view:IInspectorPlugin in plugins) {
 				if(view.isActive)view.onStopLiveInspect();
 			}
 		}
@@ -399,7 +278,8 @@
 		 * 要查看的对像是否是InspectView
 		 */
 		public function isInspectView(target : DisplayObject) : Boolean {
-			for each(var view:IInspectorPlugin in _plugins) {
+			var plugins : Array = this.pluginManager.getPlugins();
+			for each(var view:IInspectorPlugin in plugins) {
 				if(view.contains(target)) {
 					return true;
 				}
@@ -417,8 +297,9 @@
 			if(checkIsInspectorView)if(isInspectView(ele))return;
 			
 			_curInspectEle = getInspectTarget(ele);
-			
-			for each(var view:IInspectorPlugin in _plugins) {
+
+			var plugins : Array = this.pluginManager.getPlugins();			
+			for each(var view:IInspectorPlugin in plugins) {
 				if(view.isActive)
 				view.onLiveInspect(_curInspectEle);
 			}
@@ -433,8 +314,9 @@
 			stopLiveInspect();
 			
 			_curInspectEle = getInspectTarget(ele);
-			
-			for each(var view:IInspectorPlugin in _plugins) {
+		
+			var plugins : Array = this.pluginManager.getPlugins();	
+			for each(var view:IInspectorPlugin in plugins) {
 				if(view.isActive)view.onInspect(_curInspectEle);
 			}
 		}
@@ -444,11 +326,16 @@
 		 */
 		public function updateInsectorView() : void {
 			if(_curInspectEle != null) {
-				for each(var view:IInspectorPlugin in _plugins) {
+				var plugins : Array = this.pluginManager.getPlugins();
+				for each(var view:IInspectorPlugin in plugins) {
 					if(view.isActive)view.onUpdate(_curInspectEle);
 				}
 			}
 		}
+
+		//////////////////////////////////////
+		//////////private functions///////////
+		//////////////////////////////////////
 
 		private var _tMap : Dictionary;
 
@@ -465,6 +352,17 @@
 			}
 			
 			return _tMap[target];
+		}
+
+		private function allCompleteHandler(evt : Event) : void {
+			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
+			if(loaderInfo) {
+				if(loaderInfo.url) {
+					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
+						Debug.trace('[Inspector][allCompleteHandler]' + loaderInfo.url);
+					}
+				}
+			}
 		}
 	}
 }

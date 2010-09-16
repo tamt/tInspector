@@ -1,6 +1,6 @@
 package cn.itamt.utils.inspector.plugins.swfinfo {
 	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.firefox.addon.FlashPlayerEnvironment;
+	import cn.itamt.utils.inspector.firefox.FlashPlayerEnvironment;
 
 	import com.codeazur.as3swf.SWF;
 	import com.codeazur.as3swf.data.SWFRectangle;

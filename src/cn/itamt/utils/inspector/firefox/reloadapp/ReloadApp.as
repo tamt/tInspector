@@ -1,6 +1,7 @@
-package cn.itamt.utils.firefox.addon {
+package cn.itamt.utils.inspector.firefox.reloadapp {
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.firefox.FlashPlayerEnvironment;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 
 	import flash.events.MouseEvent;
