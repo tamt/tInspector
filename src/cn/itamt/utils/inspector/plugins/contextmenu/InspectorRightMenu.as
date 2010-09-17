@@ -174,6 +174,8 @@ package cn.itamt.utils.inspector.plugins.contextmenu {
 	}
 }
 
+import cn.itamt.utils.Inspector;
+import cn.itamt.utils.inspector.core.IInspectorPlugin;
 import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 import flash.ui.ContextMenuItem;
@@ -184,10 +186,12 @@ class PluginMenuItem {
 
 	public function set on(value : Boolean) : void {
 		_on = value;
+		
+		var plugin : IInspectorPlugin = Inspector.getInstance().pluginManager.getPluginById(id);
 		if(_on) {
-			target.caption = InspectorLanguageManager.getStr(id) + '\t√';
+			target.caption = plugin.getPluginName(InspectorLanguageManager.getLanguage()) + '\t√';
 		} else {
-			target.caption = InspectorLanguageManager.getStr(id);
+			target.caption = plugin.getPluginName(InspectorLanguageManager.getLanguage());
 		}
 	}
 
@@ -205,7 +209,8 @@ class PluginMenuItem {
 
 	public function PluginMenuItem(id : String) : void {
 		this._id = id;
-		this.target = new ContextMenuItem(InspectorLanguageManager.getStr(this.id), false, false);
+		var plugin : IInspectorPlugin = Inspector.getInstance().pluginManager.getPluginById(id);
+		this.target = new ContextMenuItem(plugin.getPluginName(InspectorLanguageManager.getLanguage()), false, false);
 	}
 
 	public function addEventListener(type : String, listener : Function) : void {

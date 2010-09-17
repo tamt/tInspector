@@ -53,6 +53,7 @@ GEK_Disabled 	=	global error handler(disabled)
 GEK_Unsupported =	global error handler is desabeld, it need Debug Flas Player 10.1(+)
 GEK_History		=	global errors history
 GEK_ClearHistory=	clear errors history
+ControlBar		=	control bar
 ]]>
 					</lang>;
 		}

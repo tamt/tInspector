@@ -31,5 +31,20 @@ package cn.itamt.utils.inspector.lang {
 			
 			return lang.getTipValueString(str);
 		}
+
+		public static function getLanguage() : String {
+			var ret : String = "en";
+			switch(Capabilities.language) {
+				case 'zh-CN':
+				case 'zh-TW':
+					ret = "cn";
+					break;
+				default:
+					ret = "en";
+					break;
+			}
+			
+			return ret;
+		}
 	}
 }

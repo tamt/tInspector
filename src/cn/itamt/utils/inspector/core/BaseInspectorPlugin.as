@@ -1,4 +1,5 @@
 package cn.itamt.utils.inspector.core {
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
@@ -78,6 +79,13 @@ package cn.itamt.utils.inspector.core {
 		}
 
 		public function onUnRegisterPlugin(pluginId : String) : void {
+		}
+
+		/**
+		 * get this plugin's version
+		 */
+		public function getPluginName(lang : String) : String {
+			return InspectorLanguageManager.getStr(this.getPluginId());
 		}
 
 		public function onActive() : void {

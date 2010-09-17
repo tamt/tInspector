@@ -39,6 +39,14 @@ package cn.itamt.utils.inspector.firefox.download {
 			return "1.0";
 		}
 
+		public function getPluginName(lang : String) : String {
+			if(lang == "cn") {
+				return "下载";
+			} else {
+				return "down load";
+			}
+		}
+
 		override public function contains(child : DisplayObject) : Boolean {
 			return super.contains(child);
 		}

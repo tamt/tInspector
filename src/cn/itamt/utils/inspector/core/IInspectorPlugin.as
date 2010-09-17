@@ -1,5 +1,4 @@
 package cn.itamt.utils.inspector.core {
-	
 	import flash.display.DisplayObject;
 
 	/**
@@ -21,6 +20,12 @@ package cn.itamt.utils.inspector.core {
 		 * get this plugin's version
 		 */
 		function getPluginVersion() : String;
+
+		/**
+		 * get plugin's name in spectified language. cn or en.
+		 * @param lang		cn, en.
+		 */
+		function getPluginName(lang : String) : String;
 
 		/**
 		 * 一個顯示對象是不是該view的子對象

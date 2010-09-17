@@ -1,12 +1,12 @@
 package cn.itamt.utils.inspector.core {
 	import cn.itamt.utils.Debug;
 
-	import com.wispagency.display.Loader;
-	import com.wispagency.display.LoaderInfo;
-
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.system.ApplicationDomain;
 	import flash.system.LoaderContext;
@@ -169,12 +169,10 @@ package cn.itamt.utils.inspector.core {
 		 */
 		public function loadPlugin(req : URLRequest) : void {
 			Debug.trace('[InspectorPluginManager][loadPlugin]' + req.url);
-			//			var loader : URLLoader = new URLLoader();
-			//			loader.load(req);
-			//			loader.addEventListener(Event.COMPLETE, onPluginBytesLoad);
-			var loader : Loader = new Loader();
-			loader.load(req, new LoaderContext(false, ApplicationDomain.currentDomain));
-			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onPluginLoad);
+			var loader : URLLoader = new URLLoader();
+			loader.dataFormat = URLLoaderDataFormat.BINARY;
+			loader.load(req);
+			loader.addEventListener(Event.COMPLETE, onPluginBytesLoad);
 		}
 
 		//////////////////////////////////////
@@ -183,7 +181,7 @@ package cn.itamt.utils.inspector.core {
 
 		private function onPluginBytesLoad(event : Event) : void {
 			var loader : Loader = new Loader();
-			loader.loadBytes((event.target as URLLoader).data, new LoaderContext(false, ApplicationDomain.currentDomain));
+			loader.loadBytes((event.target as URLLoader).data, new LoaderContext(false, new ApplicationDomain(ApplicationDomain.currentDomain)));
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onPluginLoad);
 		}
 

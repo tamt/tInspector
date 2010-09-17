@@ -2,6 +2,7 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.IInspectorPlugin;
 	import cn.itamt.utils.inspector.core.InspectTarget;
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.PopupAlignMode;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
@@ -20,7 +21,7 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		private var _inspector : IInspector;
 		private var _active : Boolean;
 
-		private var _id : String = 'inspector_control_bar';
+		private var _id : String = 'ControlBar';
 
 		public function ControlBar() {
 		}
@@ -71,6 +72,17 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 			return "1.0";
 		}
 
+		/**
+		 * get this plugin's version
+		 */
+		public function getPluginName(lang : String) : String {
+			if(lang == "cn") {
+				return "操作栏";
+			} else {
+				return "tInspector control bar";
+			}
+		}
+
 		override public function contains(child : DisplayObject) : Boolean {
 			return this == child || super.contains(child);
 		}
@@ -107,6 +119,11 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		public function onTurnOn() : void {			
 			var arr : Array = this._inspector.pluginManager.getPlugins();
 			for(var i : int = 0;i < arr.length;i++) {
+				var plugin : IInspectorPlugin = arr[i] as IInspectorPlugin;
+				var icon : DisplayObject = plugin.getPluginIcon();
+				if(icon is InspectorButton) {
+					(icon as InspectorButton).tip = plugin.getPluginName(InspectorLanguageManager.getLanguage());
+				}
 				this.addChild(arr[i].getPluginIcon());	
 			}
 		}
