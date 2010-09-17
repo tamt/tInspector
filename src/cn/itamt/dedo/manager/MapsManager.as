@@ -1,11 +1,19 @@
 package cn.itamt.dedo.manager {
+	import cn.itamt.dedo.data.DMap;
+	import cn.itamt.dedo.data.DMapsCollection;
 
 	/**
 	 * @author itamt[at]qq.com
 	 */
 	public class MapsManager {
-		public function MapsManager() : void {
-			
+		private var maps : DMapsCollection;
+
+		public function MapsManager(maps : DMapsCollection) : void {
+			this.maps = maps;
+		}
+
+		public function getMap() : DMap {
+			return this.maps.getMap(0);
 		}
 	}
 }

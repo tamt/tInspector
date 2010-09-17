@@ -1,6 +1,5 @@
 package cn.itamt.dedo.factory {
 	import cn.itamt.dedo.DedoProject;
-	import cn.itamt.dedo.manager.AnimationsManager;
 	import cn.itamt.dedo.manager.BrushesManager;
 	import cn.itamt.dedo.manager.MapsManager;
 	import cn.itamt.dedo.manager.TilesManager;
@@ -10,7 +9,6 @@ package cn.itamt.dedo.factory {
 	 * @author itamt[at]qq.com
 	 */
 	public class DedoProjectFactory {
-
 		public function DedoProjectFactory() : void {
 		}
 
@@ -21,17 +19,18 @@ package cn.itamt.dedo.factory {
 
 		public function createProjectUseParser(data : *, parser : IDedoParser) : DedoProject {
 			var project : DedoProject = new DedoProject();
-			
+
 			parser.parse(data);
-			
+
 			project.name = parser.getProjectName();
 			project.version = parser.getProjectVersion();
-			project.cellwidth = parser.getProjectCellWidth();			project.cellheight = parser.getProjectCellHeight();
-			project.tilesMgr = new TilesManager();
-			project.mapsMgr = new MapsManager();
-			project.brushesMgr = new BrushesManager();
-			project.animationsMgr = new AnimationsManager();
-			
+			project.cellwidth = parser.getProjectCellWidth();
+			project.cellheight = parser.getProjectCellHeight();
+			project.tilesMgr = new TilesManager(parser.getTiles(), parser.getTileCategories());
+			project.mapsMgr = new MapsManager(parser.getMaps());
+			project.brushesMgr = new BrushesManager(parser.getBrushes());
+			// project.animationsMgr = new AnimationsManager(parser.getAnimations());
+
 			return project;
 		}
 	}
