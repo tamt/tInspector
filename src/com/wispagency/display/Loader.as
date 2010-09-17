@@ -1,17 +1,17 @@
 ﻿package com.wispagency.display {
+	import flash.display.DisplayObject;
+	import flash.display.Loader;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.HTTPStatusEvent;
+	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
+	import flash.net.URLRequest;
 	import flash.system.LoaderContext;
-	import flash.display.DisplayObject;
-	import  flash.utils.ByteArray
-	import flash.net.URLRequest
-	import flash.events.IOErrorEvent
-	import flash.display.Loader;
+	import flash.utils.ByteArray;
 
 	/**
 	 * ...

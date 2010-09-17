@@ -1,14 +1,12 @@
-﻿package com.wispagency.display
-{
+﻿package com.wispagency.display {
+	import flash.display.DisplayObject;
+	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.net.URLLoader;
-	import flash.utils.ByteArray;
-	import com.wispagency.display.Loader;
-	import flash.display.Loader
 	import flash.system.ApplicationDomain;
-	import flash.display.DisplayObject;
+	import flash.utils.ByteArray;
 	
 	
 	/**
