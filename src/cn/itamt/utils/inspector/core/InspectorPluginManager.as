@@ -27,6 +27,8 @@ package cn.itamt.utils.inspector.core {
 		 */
 		private var _pluginOrders : Array;
 
+		private var _pluginList : XML;
+
 		private var _inspector : IInspector;
 
 		public function InspectorPluginManager(inspector : IInspector) {
@@ -175,9 +177,20 @@ package cn.itamt.utils.inspector.core {
 			loader.addEventListener(Event.COMPLETE, onPluginBytesLoad);
 		}
 
+		public function loadPluginList(req : URLRequest) : void {
+			Debug.trace('[InspectorPluginManager][loadPlugin]' + req.url);
+			var loader : URLLoader = new URLLoader();
+			loader.load(req);
+			loader.addEventListener(Event.COMPLETE, onPluginListLoad);
+		}
+
 		//////////////////////////////////////
 		//////////private functions///////////
 		//////////////////////////////////////
+
+		private function onPluginListLoad(event : Event) : void {
+			_pluginList = new XML((event.target as URLLoader).data); 
+		}
 
 		private function onPluginBytesLoad(event : Event) : void {
 			var loader : Loader = new Loader();

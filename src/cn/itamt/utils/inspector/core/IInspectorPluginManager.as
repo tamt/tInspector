@@ -35,5 +35,10 @@ package cn.itamt.utils.inspector.core {
 		 * load an plugin, register it to tInspector after load.
 		 */
 		function loadPlugin(req : URLRequest) : void;
+
+		/**
+		 * 加载组件列表文件.
+		 */
+		function loadPluginList(req : URLRequest) : void;
 	}
 }
