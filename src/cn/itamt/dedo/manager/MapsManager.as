@@ -12,8 +12,8 @@ package cn.itamt.dedo.manager {
 			this.maps = maps;
 		}
 
-		public function getMap() : DMap {
-			return this.maps.getMap(0);
+		public function getMap(index : uint) : DMap {
+			return this.maps.getMap(index);
 		}
 	}
 }

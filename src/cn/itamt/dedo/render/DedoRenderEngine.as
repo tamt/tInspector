@@ -27,6 +27,21 @@ package cn.itamt.dedo.render {
 		 **********public functions***********
 		 *************************************/
 		/**
+		 * 卷轴滚动.
+		 * 			N
+		 * 			
+		 * 		0	1	2
+		 * 	W	3	4	5	E
+		 * 		6	7	8
+		 * 		
+		 * 			S
+		 * 	@param direction		方向.
+		 */
+		public function scroll(x : int, y : int):void {
+			this.canvas.scroll(x, y);
+		}
+
+		/**
 		 * render an DedoProject on canvas.
 		 * @param canvas		
 		 * @param project
@@ -49,7 +64,7 @@ package cn.itamt.dedo.render {
 		 *************************************/
 		private function renderMap():void {
 			var layers : DMapLayersCollection = map.layers;
-			for(var i : int = layers.length - 1; i > 0; i--) {
+			for(var i : int = layers.length - 1; i >= 0; i--) {
 				this.renderLayer(layers.getMapLayer(i));
 			}
 		}
