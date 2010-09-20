@@ -1,5 +1,6 @@
 package cn.itamt.dedo.render {
 	import cn.itamt.dedo.manager.TilesManager;
+	import cn.itamt.utils.DisplayObjectTool;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -28,7 +29,8 @@ package cn.itamt.dedo.render {
 				loader.load(new URLRequest(tiles.images.fileName));
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(evt : Event):void {
 					if(listeners[tiles.images.fileName]) {
-						(listeners[tiles.images.fileName] as Function).call();
+						DisplayObjectTool.callLater(listeners[tiles.images.fileName]);
+						delete listeners[tiles.images.fileName];
 					}
 					resources[tiles.images.fileName] = ((evt.target as LoaderInfo).content as Bitmap).bitmapData;
 				});
@@ -42,7 +44,9 @@ package cn.itamt.dedo.render {
 		 * listen one resource's load event.
 		 */
 		public function listenLoad(fileName : String, callback : Function) : void {
-			listeners[fileName] = callback;
+			if(listeners[fileName] != callback) {
+				listeners[fileName] = callback;
+			}
 		}
 	}
 }

@@ -1,14 +1,12 @@
 package msc.util {
-
 	/**
 	 * 编码识别器，用于识别字符串或文件的编码
 	 * @author itamt@qq.com
 	 */
 	public class EncodingIdentifier {
-
 		public function getEncoding(str : String) : String {
 			var encoding : String = 'utf-8';
-			
+
 			return encoding;
 		}
 
