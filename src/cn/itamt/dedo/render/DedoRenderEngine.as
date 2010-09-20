@@ -29,6 +29,7 @@ package cn.itamt.dedo.render {
 		private var horizPastePoint : Point;
 		private var vertPastePoint : Point;
 		private var cornerPastePoint : Point;
+		private var viewContainer : Sprite;
 
 		public function DedoRenderEngine():void {
 		}
@@ -37,10 +38,12 @@ package cn.itamt.dedo.render {
 		 **********public functions***********
 		 *************************************/
 		public function setViewPort(viewContainer : Sprite, w : uint, h : uint):void {
+			this.viewContainer = viewContainer;
+
 			this.viewW = w;
 			this.viewH = h;
 
-			outputRect = new Rectangle(100, 100, w, h);
+			outputRect = new Rectangle(0, 0, w, h);
 			horizCutRect = new Rectangle();
 			vertCutRect = new Rectangle();
 			cornerCutRect = new Rectangle();
@@ -51,7 +54,7 @@ package cn.itamt.dedo.render {
 			if(this.outputBmd) {
 				this.outputBmd.dispose();
 			}
-			this.outputBmd = new BitmapData(this.viewW, this.viewH, false, 0xff0000);
+			this.outputBmd = new BitmapData(this.viewW, this.viewH, false, 0xffff0000);
 			viewContainer.addChild(new Bitmap(this.outputBmd));
 		}
 
@@ -104,19 +107,6 @@ package cn.itamt.dedo.render {
 			this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
 
 			this.outputRect.offset(-scrollAmountX, -scrollAmountY);
-
-			// 绘制超过边缘的黑色区域
-
-			if(this.outputRect.left < 0) {
-				this.outputBmd.fillRect(new Rectangle(0, 0, -this.outputRect.left, this.outputBmd.height), 0xff000000);
-			} else if(this.outputRect.right > this.canvas.rect.right) {
-				this.outputBmd.fillRect(new Rectangle(this.outputBmd.rect.right - (this.outputRect.right - this.canvas.rect.right), 0, this.outputRect.right - this.canvas.rect.right, this.outputBmd.height), 0xff000000);
-			}
-			if(this.outputRect.top < 0) {
-				this.outputBmd.fillRect(new Rectangle(0, 0, this.outputBmd.width, -this.outputRect.top), 0xff000000);
-			} else if(this.outputRect.bottom > this.canvas.rect.bottom) {
-				this.outputBmd.fillRect(new Rectangle(0, this.outputBmd.rect.bottom - (this.outputRect.bottom - this.canvas.rect.bottom), this.outputBmd.width, this.outputRect.bottom - this.canvas.rect.bottom), 0xff000000);
-			}
 		}
 
 		/**
@@ -147,6 +137,7 @@ package cn.itamt.dedo.render {
 			// render to output view
 			if(this.outputBmd) {
 				this.outputBmd.copyPixels(this.canvas, this.outputRect, new Point(), null, null, true);
+				renderOffsetArea();
 			}
 		}
 
@@ -168,6 +159,21 @@ package cn.itamt.dedo.render {
 					destPoint.y = cells.getMapCellY(i) * map.cellheight;
 					this.canvas.copyPixels(resBmd, sourceRect, destPoint, null, null, true);
 				}
+			}
+		}
+
+		private function renderOffsetArea():void {
+			// 绘制超过边缘的黑色区域
+
+			if(this.outputRect.left < 0) {
+				this.outputBmd.fillRect(new Rectangle(0, 0, -this.outputRect.left, this.outputBmd.height), 0xff000000);
+			} else if(this.outputRect.right > this.canvas.rect.right) {
+				this.outputBmd.fillRect(new Rectangle(this.outputBmd.rect.right - (this.outputRect.right - this.canvas.rect.right), 0, this.outputRect.right - this.canvas.rect.right, this.outputBmd.height), 0xff000000);
+			}
+			if(this.outputRect.top < 0) {
+				this.outputBmd.fillRect(new Rectangle(0, 0, this.outputBmd.width, -this.outputRect.top), 0xff000000);
+			} else if(this.outputRect.bottom > this.canvas.rect.bottom) {
+				this.outputBmd.fillRect(new Rectangle(0, this.outputBmd.rect.bottom - (this.outputRect.bottom - this.canvas.rect.bottom), this.outputBmd.width, this.outputRect.bottom - this.canvas.rect.bottom), 0xff000000);
 			}
 		}
 	}
