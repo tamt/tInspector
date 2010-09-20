@@ -1,6 +1,4 @@
 package cn.itamt.keyboard {
-	import cn.itamt.utils.Debug;
-
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -10,7 +8,8 @@ package cn.itamt.keyboard {
 	 * 快捷键管理
 	 * TODO:添加ShortCut的UP事件的派发.
 	 * @author 	itamt@qq.com
-	 * @version	v0.1	2010.03.09
+	 * @version	v0.1	2010.03.09	
+	 * 			v0.2	2010.09.20 	事件更改为检查按键痛每帧触发.
 	 */
 	public class ShortcutManager extends EventDispatcher {
 		protected var _stage : Stage;
@@ -19,6 +18,7 @@ package cn.itamt.keyboard {
 		// 所有处于按下的键值
 		protected var _typeKeys : Array;
 		protected var _shortcuts : Array;
+		private var running : Boolean;
 
 		public function ShortcutManager() : void {
 			_downKeys = new Array(255);
@@ -39,8 +39,18 @@ package cn.itamt.keyboard {
 					// TODO:一些清理工作.
 				}
 			}
+		}
 
-			_stage.addEventListener(Event.ENTER_FRAME, this.checkShortcutTyped);
+		public function start():void {
+			if(!running) {
+				running = true;
+				_stage.addEventListener(Event.ENTER_FRAME, this.checkShortcutTyped);
+			}
+		}
+
+		public function stop():void {
+			running = false;
+			_stage.removeEventListener(Event.ENTER_FRAME, this.checkShortcutTyped);
 		}
 
 		private function onKeyDown(evt : KeyboardEvent) : void {
