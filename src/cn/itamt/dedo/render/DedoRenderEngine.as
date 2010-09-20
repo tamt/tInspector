@@ -19,6 +19,16 @@ package cn.itamt.dedo.render {
 		private var map : DMap;
 		private var tiles : TilesManager;
 		private var resMgr : ResourceManager;
+		private var viewW : uint = 400;
+		private var viewH : uint = 400;
+		private var outputRect : Rectangle;
+		private var outputBmd : BitmapData;
+		private var horizCutRect : Rectangle;
+		private var vertCutRect : Rectangle;
+		private var cornerCutRect : Rectangle;
+		private var horizPastePoint : Point;
+		private var vertPastePoint : Point;
+		private var cornerPastePoint : Point;
 
 		public function DedoRenderEngine():void {
 		}
@@ -26,27 +36,95 @@ package cn.itamt.dedo.render {
 		/*************************************
 		 **********public functions***********
 		 *************************************/
+		public function setViewPort(viewContainer : Sprite, w : uint, h : uint):void {
+			this.viewW = w;
+			this.viewH = h;
+
+			outputRect = new Rectangle(100, 100, w, h);
+			horizCutRect = new Rectangle();
+			vertCutRect = new Rectangle();
+			cornerCutRect = new Rectangle();
+			horizPastePoint = new Point();
+			vertPastePoint = new Point();
+			cornerPastePoint = new Point();
+
+			if(this.outputBmd) {
+				this.outputBmd.dispose();
+			}
+			this.outputBmd = new BitmapData(this.viewW, this.viewH, false, 0xff0000);
+			viewContainer.addChild(new Bitmap(this.outputBmd));
+		}
+
 		/**
 		 * 卷轴滚动.
-		 * 			N
-		 * 			
-		 * 		0	1	2
-		 * 	W	3	4	5	E
-		 * 		6	7	8
-		 * 		
-		 * 			S
 		 * 	@param direction		方向.
 		 */
-		public function scroll(x : int, y : int):void {
-			this.canvas.scroll(x, y);
+		public function scroll(scrollAmountX : int, scrollAmountY : int):void {
+			horizCutRect.x = outputRect.x;
+			horizCutRect.y = outputRect.y - scrollAmountY;
+			horizCutRect.width = viewW - Math.abs(scrollAmountX);
+			horizCutRect.height = Math.abs(scrollAmountY);
+
+			vertCutRect.x = outputRect.x - scrollAmountX;
+			vertCutRect.y = outputRect.y;
+			vertCutRect.width = Math.abs(scrollAmountX);
+			vertCutRect.height = viewH - Math.abs(scrollAmountY);
+
+			cornerCutRect.x = outputRect.x - scrollAmountX;
+			cornerCutRect.y = outputRect.y - scrollAmountY;
+			cornerCutRect.width = Math.abs(scrollAmountX);
+			cornerCutRect.height = Math.abs(scrollAmountY);
+
+			horizPastePoint.x = scrollAmountX;
+			horizPastePoint.y = 0;
+			vertPastePoint.x = 0;
+			vertPastePoint.y = scrollAmountY;
+			cornerPastePoint.x = 0;
+			cornerPastePoint.y = 0;
+
+			if (scrollAmountX < 0) {
+				vertCutRect.x = cornerCutRect.x = outputRect.right;
+				cornerPastePoint.x = vertPastePoint.x = viewW - Math.abs(scrollAmountX);
+
+				horizPastePoint.x = 0;
+				horizCutRect.x = outputRect.x + Math.abs(scrollAmountX);
+			}
+
+			if (scrollAmountY < 0) {
+				horizCutRect.y = cornerCutRect.y = outputRect.bottom;
+				cornerPastePoint.y = horizPastePoint.y = viewH - Math.abs(scrollAmountY);
+
+				vertCutRect.y = outputRect.y + Math.abs(scrollAmountY);
+				vertPastePoint.y = 0;
+			}
+
+			this.outputBmd.scroll(scrollAmountX, scrollAmountY);
+			this.outputBmd.copyPixels(this.canvas, horizCutRect, horizPastePoint);
+			this.outputBmd.copyPixels(this.canvas, vertCutRect, vertPastePoint);
+			this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
+
+			this.outputRect.offset(-scrollAmountX, -scrollAmountY);
+
+			// 绘制超过边缘的黑色区域
+
+			if(this.outputRect.left < 0) {
+				this.outputBmd.fillRect(new Rectangle(0, 0, -this.outputRect.left, this.outputBmd.height), 0xff000000);
+			} else if(this.outputRect.right > this.canvas.rect.right) {
+				this.outputBmd.fillRect(new Rectangle(this.outputBmd.rect.right - (this.outputRect.right - this.canvas.rect.right), 0, this.outputRect.right - this.canvas.rect.right, this.outputBmd.height), 0xff000000);
+			}
+			if(this.outputRect.top < 0) {
+				this.outputBmd.fillRect(new Rectangle(0, 0, this.outputBmd.width, -this.outputRect.top), 0xff000000);
+			} else if(this.outputRect.bottom > this.canvas.rect.bottom) {
+				this.outputBmd.fillRect(new Rectangle(0, this.outputBmd.rect.bottom - (this.outputRect.bottom - this.canvas.rect.bottom), this.outputBmd.width, this.outputRect.bottom - this.canvas.rect.bottom), 0xff000000);
+			}
 		}
 
 		/**
 		 * render an DedoProject on canvas.
-		 * @param canvas		
+		 * @param canvas
 		 * @param project
 		 */
-		public function render(canvas : Sprite, map : DMap, tilesManager : TilesManager) : void {
+		public function render(map : DMap, tilesManager : TilesManager) : void {
 			this.canvas = new BitmapData(map.cellsx * map.cellwidth, map.cellsy * map.cellheight, true, 0xffffffff);
 			this.map = map;
 			this.tiles = tilesManager;
@@ -55,8 +133,6 @@ package cn.itamt.dedo.render {
 				resMgr = new ResourceManager();
 
 			renderMap();
-
-			canvas.addChild(new Bitmap(this.canvas));
 		}
 
 		/*************************************
@@ -66,6 +142,11 @@ package cn.itamt.dedo.render {
 			var layers : DMapLayersCollection = map.layers;
 			for(var i : int = layers.length - 1; i >= 0; i--) {
 				this.renderLayer(layers.getMapLayer(i));
+			}
+
+			// render to output view
+			if(this.outputBmd) {
+				this.outputBmd.copyPixels(this.canvas, this.outputRect, new Point(), null, null, true);
 			}
 		}
 
