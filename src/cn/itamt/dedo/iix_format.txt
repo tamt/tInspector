@@ -36,4 +36,6 @@ IIX文件格式
 	aux names					char auxNames[128]				??名称
 	num brushes					Uint16 numBrushes				图片刷数
 		//for(numBrushes)
-		
+		aux names				char auxNames[128]				??名称
+		brush cells X			Uint32 brushCellsX				该图片刷在X上有几个tile
+		brush cells Y			Uint32 brushCellsY				该图片刷在Y上有几个tile
