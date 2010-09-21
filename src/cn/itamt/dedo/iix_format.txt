@@ -87,6 +87,10 @@ IIX文件格式
 			layer name			char layer->name[128]			层名称
 			layer visible		Uint8 visible					层是否显示
 			layer array cells	buffer sizeof(CELL_ST)*cellsx*cellsY	层下的cell数据.
+
+	//CELL_ST数据结构	
+	*9.1	Sint16	imageIndex
+			Uint32	userValue
 	
 	//跳转点信息
 10.	num jumps					Uint32 numJumps					跳转点数目
