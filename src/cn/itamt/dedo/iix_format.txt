@@ -1,0 +1,98 @@
+IIX文件格式
+
+	//文件头信息
+1.	IIX_HEADER_ST				Uint8 header_id[3];				IIX
+								Uint8 versionHigh;				版本号
+								Uint8 versionLow;				版本号
+	//项目基本信息
+2.	project name				char projectName[128]			项目名称
+	project cell width			Uint16 projectCellWidth			单元格宽度(像素)
+	project cell height			Uint16 projectCellHeight		单元格高度(像素)
+	num maps in project			Unit32 numMapsInProject			项目中有几个Map
+
+	//图片信息
+3.	title name					char tileName[128]				tile名称
+	cell width					Uint16 cellWidth				如果该值!=projectCellWidth则报错
+	cell height					Uint16 cellHeight				如果该值!=projectCellHeight则报错
+	num bitmaps					Uint16 numBitmaps				tile数量
+		//for(numBitmaps)
+		//单张图片的数据块
+		buffer size				Unit32 bufferSize				数据块大小
+		buffer data				bufferSize						数据块
+
+	//图片类别信息
+4.	num categories				Uint32 numCategories			类别数
+		//for(numCategories)
+		//单个图片类别的数据
+		category name			char categoryName[128]			类别名称
+		num bitmaps				Uint16 numBitmapsInTile			该类别下的图片数
+		//if(IIX_HEADER_ST.versionHigh>4)						
+		num tiles by row		Uint16							一行有几张图.
+			//跳过图片类别下的图片信息.
+			//ignore numBitmapsInTile*sizeof(Uint16)
+
+	//图片刷信息
+5.	//if(IIX_HEADER_ST.versionHigh>2)
+	aux names					char auxNames[128]				??名称
+	num brushes					Uint16 numBrushes				图片刷数
+		//for(numBrushes)
+		aux names				char auxNames[128]				??名称
+		brush cells X			Uint32 brushCellsX				该图片刷在X上有几个tile
+		brush cells Y			Uint32 brushCellsY				该图片刷在Y上有几个tile
+			//跳过刷子cell的图片信息
+			//ignore brushCellsX*brushCellsY*sizeof(Uint32)
+			//跳过cell上的value信息
+			//ignore brushCellsX*brushCellsY*sizeof(Uint32)
+			
+	//图片刷分类信息
+6.	//if(IIX_HEADER_ST.versionHigh>2)
+	num brush category			Uint32 numBrushesCategories		类别数
+		//for(numBrushesCategories)
+		aux names				char auxNames[128]				??名称
+		num brushes				Uint16 numBrushes				图片刷数
+		//跳过图片刷信息
+		//ignore numBrushes*sizeof(Uint16)
+		
+	//动画信息
+7.	//if(IIX_HEADER_ST.versionHigh>3)
+	aux names					char auxNames[128]				??名称
+	num animations				Uint32 numAnimations			动画数目
+		//for(numAnimations)
+		aux names				char auxNames[128]				名称
+		type					Uint8 type						类型
+		delay					Uint32 delay					延时
+		num tiles				Uint16 numTiles					tile数
+		buffer					buffer numTiles*sizeof(Uint32)	animations具体的tile数据
+		
+	//动画分类信息
+8.	//if(IIX_HEADER_ST.versionHigh>3)
+	num animation category		Uint32 numAnimationsCategories	动画类型数目
+		//for(numAnimationsCategories)
+		aux names				char auxNames[128]				??名称
+		num animations			Uint32 numAnimations			动画数
+		//if(index>0)
+		//跳过动画信息
+		buffer					buffer numAnimations*sizeof(Uint32)
+		
+	//地图信息
+9.	num maps					Uint32 numMaps					地图数目, 如果!=numMapsInProject报错
+		//for(numMaps)
+		map name				char map->name[128]				地图名称
+		cells x					Uint16 cellsX					地图宽度(单元)
+		cells y					Uint16 cellsY					地图高度(单元)
+		cell width				Uint16 cellWidth				地图单元宽度(像素)
+		cell height				Uint16 cellHeight				地图单元高度(像素)
+		num layers				Uint8 numLayers					地图层数
+			//for(numLayers)
+			layer name			char layer->name[128]			层名称
+			layer visible		Uint8 visible					层是否显示
+			layer array cells	buffer sizeof(CELL_ST)*cellsx*cellsY	层下的cell数据.
+	
+	//跳转点信息
+10.	num jumps					Uint32 numJumps					跳转点数目
+		//for(numJumps)
+		cellx aux				Uint16 cellxAux
+		celly aux				Uint16 cellyAux
+		map index				Uint16 mapIndex
+		jumpto cellx			Uint16 jumptoCellx
+		jumpto celly			Uint16 jumptoCelly
