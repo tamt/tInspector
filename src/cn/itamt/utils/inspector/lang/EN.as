@@ -15,6 +15,7 @@ SubmmitBug		=	I catch a bug!
 InspectChild	=	inspect child
 InspectParent	=	inspect parent
 InspectBrother	=	inspect next
+InspectPrev		=	inspect prev
 InspectInfo		=	show info
 ViewStructure	=	show structure
 SetFilterClass	=	set as filter
