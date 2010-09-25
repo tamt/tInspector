@@ -4,7 +4,7 @@ package cn.itamt.dedo.parser {
 	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DTilesCollection;
 	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.IIX;
+	
 
 	import flash.utils.ByteArray;
 

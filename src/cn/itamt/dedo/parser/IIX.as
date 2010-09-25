@@ -1,4 +1,4 @@
-package cn.itamt.utils {
+package cn.itamt.dedo.parser {
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 
