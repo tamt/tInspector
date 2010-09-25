@@ -58,10 +58,10 @@ package cn.itamt.dedo.parser {
 			Debug.trace('[IIXParser][parse] tiles num: ' + numTiles);
 			for(var i : uint = 0; i < numTiles; i++) {
 				var bufferLen : uint = iix.readUint32();
-				Debug.trace('[IIXParser][parse]' + bufferLen);
-				iix.readBuffer(new ByteArray(), bufferLen);
+				// 这里放置对png数据的解析.
+				// iix.readBuffer(new ByteArray(), bufferLen);
+				iix.position += bufferLen;
 			}
-
 			return true;
 		}
 

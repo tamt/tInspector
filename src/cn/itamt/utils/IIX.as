@@ -1,11 +1,16 @@
 package cn.itamt.utils {
 	import flash.utils.ByteArray;
+	import flash.utils.Endian;
 
 	/**
 	 * @author itamt[at]qq.com
 	 */
 	public class IIX {
 		private var _ba : ByteArray;
+
+		public function get bytesAvialiable() : uint {
+			return _ba.bytesAvailable;
+		}
 
 		public function set position(value : uint) :void {
 			_ba.position = value;
@@ -17,6 +22,7 @@ package cn.itamt.utils {
 
 		public function IIX(ba : ByteArray):void {
 			this._ba = ba;
+			this._ba.endian = Endian.LITTLE_ENDIAN;
 		}
 
 		public function readString(length : uint):String {
@@ -28,7 +34,7 @@ package cn.itamt.utils {
 			var i : uint;
 			while(i++ < length) {
 				if(_ba.readByte() == 0 && i > 1) {
-					end = _ba.position - 1;
+					end = _ba.position;
 					break;
 				}
 			}
@@ -46,21 +52,12 @@ package cn.itamt.utils {
 		}
 
 		public function readUint32() : uint {
-			// var t : uint = _ba.readUnsignedInt();
-			// _ba.readByte();
-			// return t;
-			var t : ByteArray = new ByteArray();
-			_ba.readBytes(t, 0, 4);
-			var h1 : uint = t.readUnsignedShort();
-			var h2 : uint = t.readUnsignedShort();
-			Debug.trace('[IIX][readUint32]' + h1.toString(16) + ", " + h2.toString(16));
-			var i : uint = h1 + h2;
-			return i;
+			var t : uint = _ba.readUnsignedInt();
+			return t;
 		}
 
 		public function readBuffer(byteArray : ByteArray, bufferLen : uint) : void {
 			_ba.readBytes(byteArray, 0, bufferLen);
-			Debug.trace('[IIX][readBuffer]' + byteArray.readUTFBytes(4));
 		}
 	}
 }
