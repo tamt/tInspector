@@ -21,6 +21,7 @@ package cn.itamt.dedo.parser {
 		private var mapNum : uint;
 		//
 		private var tiles : DTilesCollection;
+		private var tileCategories : DTileCategoriesCollection;
 
 		public function parse(data : *, onComplete : Function = null) : Boolean {
 			iix = new IIX(data as ByteArray);
@@ -40,14 +41,11 @@ package cn.itamt.dedo.parser {
 			pName = iix.readString(128);
 			pCellWidth = iix.readUint16();
 			pCellHeight = iix.readUint16();
-			Debug.trace('[IIXParser][parse]' + pName + ", " + pCellWidth + ", " + pCellHeight);
 			mapNum = iix.readUint32();
-			Debug.trace('[IIXParser][parse] map num: ' + mapNum);
 
 			// 解析图片(tile)信息
 			tiles = new DTilesCollection();
 			tiles.fileName = iix.readString(128);
-			Debug.trace('[IIXParser][parse]' + tiles.fileName);
 			var cellW : uint = iix.readUint16();
 			var cellH : uint = iix.readUint16();
 			if(cellW != this.pCellWidth || cellH != this.pCellHeight) {
@@ -55,13 +53,53 @@ package cn.itamt.dedo.parser {
 				return;
 			}
 			var numTiles : uint = iix.readUint16();
-			Debug.trace('[IIXParser][parse] tiles num: ' + numTiles);
 			for(var i : uint = 0; i < numTiles; i++) {
 				var bufferLen : uint = iix.readUint32();
 				// 这里放置对png数据的解析.
 				// iix.readBuffer(new ByteArray(), bufferLen);
 				iix.position += bufferLen;
+				tiles.setValue(i, i);
 			}
+
+			// 解析tile的分类信息
+			tileCategories = new DTileCategoriesCollection();
+			var numTileCategories : uint = iix.readUint32();
+			Debug.trace('[IIXParser][parse]' + numTileCategories);
+			for(i = 0; i < numTileCategories; i++) {
+				var catName : String = iix.readString(128);
+				Debug.trace('[IIXParser][parse]' + catName);
+				var numTilesInCat : uint = iix.readUint16();
+				var numTilesByRow : uint = iix.readUint16();
+				Debug.trace('[IIXParser][parse]' + numTilesInCat + ", " + numTilesByRow);
+				//				//  跳过
+				iix.position += numTilesInCat * 2;
+			}
+
+			// 解析图片刷信息
+			var auxNames : String = iix.readString(128);
+			Debug.trace('[IIXParser][parse]' + auxNames);
+			var numBrushes : uint = iix.readUint16();
+			Debug.trace('[IIXParser][parse]' + numBrushes);
+			for(i = 0; i < numBrushes; i++) {
+				var brushName : String = iix.readString(128);
+				Debug.trace('[IIXParser][parse]' + brushName);
+				var brushCellsX : uint = iix.readUint32();
+				var brushCellsY : uint = iix.readUint32();
+				// 跳过刷子上的tile信息
+				iix.position += brushCellsX * brushCellsY * 4;
+				// 跳过刷子上的value信息
+				iix.position += brushCellsX * brushCellsY * 4;
+			}
+
+			// 解析图片刷分类信息
+			var numBrushCategories : uint = iix.readUint32();
+			for(i = 0; i < numBrushCategories; i++) {
+				Debug.trace('[IIXParser][parse]' + iix.readString(128));
+				numBrushes = iix.readUint16();
+				// 跳过刷子分类信息
+				iix.position += numBrushes * 2;
+			}
+
 			return true;
 		}
 
