@@ -26,35 +26,35 @@ package cn.itamt.utils.inspector.core.liveinspect {
 	 * @author tamt
 	 */
 	public class LiveInspectView extends BaseInspectorPlugin {
-		//显示信息文本
+		// 显示信息文本
 		private var _des : TextField;
-		//覆盖在查看对象之上的矩形按钮
+		// 覆盖在查看对象之上的矩形按钮
 		private var _mBtn : Sprite;
-		//显示查看对象区域的矩形(会一直置顶)
+		// 显示查看对象区域的矩形(会一直置顶)
 		private var _mFrame : Shape;
-		//操作菜单条
+		// 操作菜单条
 		private var _bar : OperationBar;
-		//用于变形
+		// 用于变形
 		private var _tfm : TransformTool;
 		//
 		private var inited : Boolean;
 
 		public function LiveInspectView() : void {
 			super();
-			
+
 			outputerManager = new InspectorOutPuterManager();
 		}
 
-		//////////////////////////////////////
-		//////////override interfaces/////////
-		//////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////override interfaces/////////
+		// ////////////////////////////////////
 		override public function getPluginId() : String {
 			return InspectorPluginId.LIVE_VIEW;
 		}
 
 		override public function onRegister(inspector : IInspector) : void {
 			super.onRegister(inspector);
-			
+
 			_icon = new LiveInspectButton();
 		}
 
@@ -63,12 +63,13 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		 */
 		override public function onActive() : void {
 			super.onActive();
-			
+
 			this._inspector.startLiveInspect();
-			
-			if(inited)return;
+
+			if(inited)
+				return;
 			inited = true;
-			
+
 			this.viewContainer = new Sprite();
 			this.viewContainer.mouseEnabled = false;
 
@@ -80,15 +81,15 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_des.cacheAsBitmap = true;
 			_des.autoSize = 'left';
 			this.viewContainer.addChild(_des);
-		
+
 			_mBtn = new Sprite();
 			_mBtn.buttonMode = true;
 			this.viewContainer.addChild(_mBtn);
-			
-			//显示查看对象区域的矩形(会一直置顶)
+
+			// 显示查看对象区域的矩形(会一直置顶)
 			_mFrame = new Shape();
-			
-			//变形器
+
+			// 变形器
 			_tfm = new TransformTool();
 			_tfm.addEventListener(TransformTool.TRANSFORM_TARGET, function(evt : Event):void {
 				update();
@@ -96,9 +97,9 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_tfm.addControl(new ResetTransofrmControl());
 			_tfm.raiseNewTargets = false;
 			_tfm.moveEnabled = false;
-			//			_tfm.moveNewTargets = true;
+			// _tfm.moveNewTargets = true;
 			_tfm.outlineEnabled = false;
-			//			_tfm.cursorsEnabled = false;
+			// _tfm.cursorsEnabled = false;
 			_tfm.setSkin(TransformTool.SCALE_TOP_LEFT, new Sprite());
 			_tfm.setSkin(TransformTool.SCALE_TOP_RIGHT, new Sprite());
 			_tfm.setSkin(TransformTool.SCALE_BOTTOM_RIGHT, new LiveScalePointBtn());
@@ -112,60 +113,64 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_tfm.setSkin(TransformTool.ROTATION_TOP_LEFT, new Sprite());
 			_tfm.setSkin(TransformTool.ROTATION_BOTTOM_RIGHT, new Sprite());
 			this.viewContainer.addChild(_tfm);
-			
-			//------操作条------
+
+			// ------操作条------
 			_bar = new OperationBar();
 			_bar.init();
-			//------------------
+			// ------------------
 
 			_mBtn.addEventListener(MouseEvent.CLICK, onClickInspect);
-			
+
 			_bar.addEventListener(OperationBar.DOWN_MOVE, onStartMove);
 			_bar.addEventListener(OperationBar.UP_MOVE, onStopMove);
 			_bar.addEventListener(OperationBar.PRESS_CLOSE, onCloseBar);
 			_bar.addEventListener(OperationBar.PRESS_PARENT, onPressParent);
 			_bar.addEventListener(OperationBar.PRESS_CHILD, onPressChild);
-			_bar.addEventListener(OperationBar.PRESS_BROTHER, onPressBrother);
+			_bar.addEventListener(OperationBar.PRESS_NEXT, onPressBrother);
+			_bar.addEventListener(OperationBar.PRESS_PREV, onPressPrevious);
 			_bar.addEventListener(OperationBar.PRESS_STRUCTURE, onPressStructure);
 			_bar.addEventListener(OperationBar.PRESS_INFO, onPressInfo);
 			_bar.addEventListener(OperationBar.PRESS_FILTER, onPressFilter);
 			_bar.addEventListener(OperationBar.DB_CLICK_MOVE, onClickReset);
 		}
 
-		
 		/**
 		 * 当Inspector关闭时
 		 */
 		override public function onUnActive() : void {
 			super.onUnActive();
-			
+
 			this._inspector.stopLiveInspect();
-			
+
 			inited = false;
-			
+
 			if(this.viewContainer) {
 				this.viewContainer.graphics.clear();
-				//			this.viewContainer.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+				// this.viewContainer.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 				if(this.viewContainer.stage) {
 					this.viewContainer.stage.removeEventListener(Event.ENTER_FRAME, onMouseMove);
 					this.viewContainer.stage.removeChild(this.viewContainer);
 				}
-				if(this._mFrame.stage)this._mFrame.stage.removeChild(this._mFrame);
+				if(this._mFrame.stage)
+					this._mFrame.stage.removeChild(this._mFrame);
 			}
-			
-			if(_des)if(_des.parent)_des.parent.removeChild(_des);
-		
+
+			if(_des)
+				if(_des.parent)
+					_des.parent.removeChild(_des);
+
 			target = null;
 			_tfm.target = null;
-		
+
 			_mBtn.removeEventListener(MouseEvent.CLICK, onClickInspect);
-			
+
 			_bar.removeEventListener(OperationBar.DOWN_MOVE, this.onStartMove);
 			_bar.removeEventListener(OperationBar.UP_MOVE, this.onStopMove);
 			_bar.removeEventListener(OperationBar.PRESS_CLOSE, onCloseBar);
 			_bar.removeEventListener(OperationBar.PRESS_PARENT, onPressParent);
 			_bar.removeEventListener(OperationBar.PRESS_CHILD, onPressChild);
-			_bar.removeEventListener(OperationBar.PRESS_BROTHER, onPressBrother);
+			_bar.removeEventListener(OperationBar.PRESS_NEXT, onPressBrother);
+			_bar.removeEventListener(OperationBar.PRESS_NEXT, onPressPrevious);
 			_bar.removeEventListener(OperationBar.PRESS_STRUCTURE, onPressStructure);
 			_bar.removeEventListener(OperationBar.PRESS_INFO, onPressInfo);
 		}
@@ -187,25 +192,28 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_tfm.target = target.displayObject;
 			update();
 
-			if(_bar.stage == null)this.viewContainer.addChild(_bar);
+			if(_bar.stage == null)
+				this.viewContainer.addChild(_bar);
 			_bar.validate(target.displayObject);
-			
+
 			//
-			//			DisplayObjectTool.swapToTop(this.viewContainer);
+		// DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
 		/**
 		 * 当Inspector实时查看某个目标显示对象时
 		 */
 		override public function onLiveInspect(ele : InspectTarget) : void {
-			if(this.viewContainer.stage == null)this._inspector.stage.addChild(this.viewContainer);
+			if(this.viewContainer.stage == null)
+				this._inspector.stage.addChild(this.viewContainer);
 			this._inspector.stage.addChild(this._mFrame);
-			
+
 			target = ele;
 			_tfm.target = null;
 			update(true);
-			
-			if(_bar.stage)this.viewContainer.removeChild(_bar);
+
+			if(_bar.stage)
+				this.viewContainer.removeChild(_bar);
 			_bar.validate(target.displayObject);
 		}
 
@@ -214,7 +222,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		 */
 		override public function onUpdate(target : InspectTarget = null) : void {
 			_bar.validate(target.displayObject);
-			
+
 			if(target == this.target) {
 				_tfm.target = null;
 				_tfm.target = this.target.displayObject;
@@ -222,29 +230,30 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			}
 		}
 
-		//////////////////////////////////////
-		//////////////////////////////////////
-		//////////////////////////////////////
-		//////////////////////////////////////
-		//////////private functions///////////
-		//////////////////////////////////////
-		//////////////////////////////////////
-		//////////////////////////////////////
-		//////////////////////////////////////
-
+		// ////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////private functions///////////
+		// ////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////////////////////////////////
 		private var rect : Rectangle;
-		//目标的注册点
+		// 目标的注册点
 		private var reg : Point;
-		//目标父容器的注册点
+		// 目标父容器的注册点
 		private var parentReg : Point;
 
 		/**
 		 * 更新显示
 		 */
 		private function update(isLiveMode : Boolean = false) : void {
-			if(!contains(_des))this.viewContainer.addChild(_des);
-			if(!contains(_mBtn))this.viewContainer.addChild(_mBtn);
-			
+			if(!contains(_des))
+				this.viewContainer.addChild(_des);
+			if(!contains(_mBtn))
+				this.viewContainer.addChild(_mBtn);
+
 			rect = target.displayObject.getBounds(this.viewContainer.stage);
 			reg = target.displayObject.localToGlobal(new Point(0, 0));
 			if(target.displayObject.parent) {
@@ -252,12 +261,12 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			} else {
 				parentReg = null;
 			}
-			
+
 			var outputer : DisplayObjectInfoOutPuter = outputerManager.getOutputerByInstance(target.displayObject);
 			_des.htmlText = outputer.output(target.displayObject);
 			_des.x = rect.x - .5;
 			_des.y = rect.y - _des.height + .5;
-			
+
 			if(isLiveMode) {
 				this.drawMbtn();
 				_mBtn.mouseChildren = _mBtn.mouseEnabled = true;
@@ -279,8 +288,9 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		private function onStartMove(evt : Event) : void {
 			this.viewContainer.stage.addEventListener(Event.ENTER_FRAME, onMouseMove);
 			lp = new Point(_tfm.mouseX, _tfm.mouseY);
-			
-			if(this.viewContainer.parent)DisplayObjectTool.swapToTop(this.viewContainer);
+
+			if(this.viewContainer.parent)
+				DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
 		private function onStopMove(evt : Event = null) : void {
@@ -293,16 +303,18 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			toolMatrix.ty += _tfm.mouseY - lp.y;
 			_tfm.toolMatrix = toolMatrix;
 			_tfm.apply();
-			
+
 			lp.x = _tfm.mouseX;
 			lp.y = _tfm.mouseY;
-			
+
 			this.update();
 		}
 
 		private function onCloseBar(evt : Event = null) : void {
-			if(this.viewContainer.stage)this.viewContainer.parent.removeChild(this.viewContainer);
-			if(this._mFrame.stage)this._mFrame.parent.removeChild(this._mFrame);
+			if(this.viewContainer.stage)
+				this.viewContainer.parent.removeChild(this.viewContainer);
+			if(this._mFrame.stage)
+				this._mFrame.parent.removeChild(this._mFrame);
 			//
 			this._inspector.startLiveInspect();
 		}
@@ -334,6 +346,17 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			}
 		}
 
+		private function onPressPrevious(evt : Event) : void {
+			if(target) {
+				if(target.displayObject.parent) {
+					var container : DisplayObjectContainer = target.displayObject.parent;
+					var i : int = container.getChildIndex(target.displayObject);
+					var t : int = (--i < 0) ? (container.numChildren - 1) : i;
+					this._inspector.inspect(container.getChildAt(t));
+				}
+			}
+		}
+
 		/**
 		 * 单击重置时
 		 */
@@ -352,7 +375,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_mBtn.graphics.clear();
 			_mBtn.graphics.lineStyle(2, bColor, 1, false, 'normal', 'square', 'miter');
 			_mBtn.graphics.beginFill(0xff0000, 0);
-			
+
 			var tmp : Rectangle = this.target.displayObject.getBounds(this.target.displayObject);
 			var tl : Point = this.target.displayObject.localToGlobal(tmp.topLeft);
 			var tr : Point = this.target.displayObject.localToGlobal(new Point(tmp.right, tmp.top));
@@ -363,11 +386,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_mBtn.graphics.lineTo(br.x, br.y);
 			_mBtn.graphics.lineTo(bl.x, bl.y);
 			_mBtn.graphics.lineTo(tl.x, tl.y);
-			
+
 			_mBtn.graphics.beginFill(0xff0000, 0);
 			_mBtn.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
-			
-			//注册点十字形绘制.
+
+			// 注册点十字形绘制.
 			_mBtn.graphics.lineStyle(1, bColor, 1, false, 'normal', 'square', 'miter');
 			_mBtn.graphics.drawCircle(reg.x, reg.y, 5);
 			_mBtn.graphics.lineStyle(2, bColor, 1, false, 'normal', 'square', 'miter');
@@ -375,10 +398,10 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_mBtn.graphics.lineTo(reg.x + 3, reg.y);
 			_mBtn.graphics.moveTo(reg.x, reg.y - 3);
 			_mBtn.graphics.lineTo(reg.x, reg.y + 3);
-			
+
 			_mBtn.graphics.endFill();
-			
-			//父容器注册点十字形
+
+			// 父容器注册点十字形
 			if(parentReg) {
 				_mBtn.graphics.lineStyle(2, 0x0000ff, 1, false, 'normal', 'square', 'miter');
 				_mBtn.graphics.moveTo(parentReg.x - 4, parentReg.y);
@@ -386,16 +409,16 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				_mBtn.graphics.moveTo(parentReg.x, parentReg.y - 4);
 				_mBtn.graphics.lineTo(parentReg.x, parentReg.y + 4);
 			}
-			
+
 			//
 			_mFrame.graphics.clear();
 			_mFrame.graphics.lineStyle(2, bColor, 1, false, 'normal', 'square', 'miter');
-			//			_mFrame.graphics.beginFill(0xff0000, alpha);
-			//			_mFrame.graphics.moveTo(tl.x, tl.y);
-			//			_mFrame.graphics.lineTo(tr.x, tr.y);
-			//			_mFrame.graphics.lineTo(br.x, br.y);
-			//			_mFrame.graphics.lineTo(bl.x, bl.y);
-			//			_mFrame.graphics.lineTo(tl.x, tl.y);
+			// _mFrame.graphics.beginFill(0xff0000, alpha);
+			// _mFrame.graphics.moveTo(tl.x, tl.y);
+			// _mFrame.graphics.lineTo(tr.x, tr.y);
+			// _mFrame.graphics.lineTo(br.x, br.y);
+			// _mFrame.graphics.lineTo(bl.x, bl.y);
+			// _mFrame.graphics.lineTo(tl.x, tl.y);
 			_mFrame.graphics.beginFill(0xff0000, alpha);
 			_mFrame.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
 			_mFrame.graphics.endFill();
@@ -419,7 +442,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		 * 單擊查看詳細信息
 		 */
 		private function onPressFilter(evt : Event) : void {
-			//			_inspector.setInspectFilter(this.target.displayObject['constructor'] as Class);
+			// _inspector.setInspectFilter(this.target.displayObject['constructor'] as Class);
 			_inspector.stage.dispatchEvent(new InspectorFilterEvent(InspectorFilterEvent.CHANGE, this.target.displayObject['constructor'] as Class));
 		}
 	}
