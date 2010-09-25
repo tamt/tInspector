@@ -8,10 +8,10 @@ IIX文件格式
 2.	project name				char projectName[128]			项目名称
 	project cell width			Uint16 projectCellWidth			单元格宽度(像素)
 	project cell height			Uint16 projectCellHeight		单元格高度(像素)
-	num maps in project			Unit32 numMapsInProject			项目中有几个Map
+	num maps in project			Uint16 numMapsInProject			项目中有几个Map
 
 	//图片信息
-3.	title name					char tileName[128]				tile名称
+3.	tiles name					char tileName[128]				tile名称
 	cell width					Uint16 cellWidth				如果该值!=projectCellWidth则报错
 	cell height					Uint16 cellHeight				如果该值!=projectCellHeight则报错
 	num bitmaps					Uint16 numBitmaps				tile数量
