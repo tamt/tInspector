@@ -107,6 +107,8 @@ package cn.itamt.dedo.render {
 			this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
 
 			this.outputRect.offset(-scrollAmountX, -scrollAmountY);
+
+			this.renderOffsetArea();
 		}
 
 		/**
