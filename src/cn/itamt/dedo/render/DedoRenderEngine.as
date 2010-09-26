@@ -107,6 +107,8 @@ package cn.itamt.dedo.render {
 			this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
 
 			this.outputRect.offset(-scrollAmountX, -scrollAmountY);
+
+			this.renderOffsetArea();
 		}
 
 		/**
@@ -175,6 +177,10 @@ package cn.itamt.dedo.render {
 			} else if(this.outputRect.bottom > this.canvas.rect.bottom) {
 				this.outputBmd.fillRect(new Rectangle(0, this.outputBmd.rect.bottom - (this.outputRect.bottom - this.canvas.rect.bottom), this.outputBmd.width, this.outputRect.bottom - this.canvas.rect.bottom), 0xff000000);
 			}
+		}
+
+		public function setResourceManager(resourceManager : ResourceManager) : void {
+			this.resMgr = resourceManager;
 		}
 	}
 }
