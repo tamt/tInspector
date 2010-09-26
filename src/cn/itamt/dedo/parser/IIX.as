@@ -56,8 +56,18 @@ package cn.itamt.dedo.parser {
 			return t;
 		}
 
+		public function readSint16():int {
+			var t : uint = _ba.readShort();
+			_ba.readShort();
+			return t;
+		}
+
 		public function readBuffer(byteArray : ByteArray, bufferLen : uint) : void {
 			_ba.readBytes(byteArray, 0, bufferLen);
+		}
+
+		public function readByte() : int {
+			return _ba.readUnsignedByte();
 		}
 	}
 }

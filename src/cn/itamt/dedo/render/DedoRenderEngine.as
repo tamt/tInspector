@@ -176,5 +176,9 @@ package cn.itamt.dedo.render {
 				this.outputBmd.fillRect(new Rectangle(0, this.outputBmd.rect.bottom - (this.outputRect.bottom - this.canvas.rect.bottom), this.outputBmd.width, this.outputRect.bottom - this.canvas.rect.bottom), 0xff000000);
 			}
 		}
+
+		public function setResourceManager(resourceManager : ResourceManager) : void {
+			this.resMgr = resourceManager;
+		}
 	}
 }

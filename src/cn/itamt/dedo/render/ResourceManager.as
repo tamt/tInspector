@@ -48,5 +48,15 @@ package cn.itamt.dedo.render {
 				listeners[fileName] = callback;
 			}
 		}
+
+		/**
+		 * 设置某一格的位置数据
+		 */
+		public function setTilesImage(fileName : String, bmd : BitmapData):void {
+			if(resources[fileName]) {
+				delete resources[fileName];
+			}
+			resources[fileName] = bmd;
+		}
 	}
 }

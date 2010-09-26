@@ -1,10 +1,14 @@
 package cn.itamt.dedo.parser {
 	import cn.itamt.dedo.data.DBrushesCollection;
+	import cn.itamt.dedo.data.DMap;
+	import cn.itamt.dedo.data.DMapCellsCollection;
+	import cn.itamt.dedo.data.DMapLayer;
+	import cn.itamt.dedo.data.DMapLayersCollection;
 	import cn.itamt.dedo.data.DMapsCollection;
 	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DTilesCollection;
+	import cn.itamt.dedo.render.ResourceManager;
 	import cn.itamt.utils.Debug;
-	
 
 	import flash.utils.ByteArray;
 
@@ -20,8 +24,14 @@ package cn.itamt.dedo.parser {
 		// 项目中含有的map数量.
 		private var mapNum : uint;
 		//
-		private var tiles : DTilesCollection;
-		private var tileCategories : DTileCategoriesCollection;
+		private var pTiles : DTilesCollection;
+		private var pMaps : DMapsCollection;
+		//
+		private var resMgr : ResourceManager;
+
+		public function IIXParser() {
+			resMgr = new ResourceManager();
+		}
 
 		public function parse(data : *, onComplete : Function = null) : Boolean {
 			iix = new IIX(data as ByteArray);
@@ -44,8 +54,9 @@ package cn.itamt.dedo.parser {
 			mapNum = iix.readUint32();
 
 			// 解析图片(tile)信息
-			tiles = new DTilesCollection();
-			tiles.fileName = iix.readString(128);
+			pTiles = new DTilesCollection();
+			pTiles.fileName = iix.readString(128);
+			pTiles.fileName = "dedo.png";
 			var cellW : uint = iix.readUint16();
 			var cellH : uint = iix.readUint16();
 			if(cellW != this.pCellWidth || cellH != this.pCellHeight) {
@@ -53,36 +64,32 @@ package cn.itamt.dedo.parser {
 				return;
 			}
 			var numTiles : uint = iix.readUint16();
+			var imgBuilder : IIXTilesImageBuilder = new IIXTilesImageBuilder();
 			for(var i : uint = 0; i < numTiles; i++) {
 				var bufferLen : uint = iix.readUint32();
-				// 这里放置对png数据的解析.
-				// iix.readBuffer(new ByteArray(), bufferLen);
-				iix.position += bufferLen;
-				tiles.setValue(i, i);
+				// 对png数据的解析.
+				var ba : ByteArray = new ByteArray();
+				iix.readBuffer(ba, bufferLen);
+				imgBuilder.setTileImg(ba, i);
+				pTiles.setValue(i, i);
 			}
+			resMgr.setTilesImage(pTiles.fileName, imgBuilder.build(numTiles, cellW, cellH));
 
 			// 解析tile的分类信息
-			tileCategories = new DTileCategoriesCollection();
 			var numTileCategories : uint = iix.readUint32();
-			Debug.trace('[IIXParser][parse]' + numTileCategories);
 			for(i = 0; i < numTileCategories; i++) {
 				var catName : String = iix.readString(128);
-				Debug.trace('[IIXParser][parse]' + catName);
 				var numTilesInCat : uint = iix.readUint16();
 				var numTilesByRow : uint = iix.readUint16();
-				Debug.trace('[IIXParser][parse]' + numTilesInCat + ", " + numTilesByRow);
 				//				//  跳过
 				iix.position += numTilesInCat * 2;
 			}
 
 			// 解析图片刷信息
 			var auxNames : String = iix.readString(128);
-			Debug.trace('[IIXParser][parse]' + auxNames);
 			var numBrushes : uint = iix.readUint16();
-			Debug.trace('[IIXParser][parse]' + numBrushes);
 			for(i = 0; i < numBrushes; i++) {
 				var brushName : String = iix.readString(128);
-				Debug.trace('[IIXParser][parse]' + brushName);
 				var brushCellsX : uint = iix.readUint32();
 				var brushCellsY : uint = iix.readUint32();
 				// 跳过刷子上的tile信息
@@ -94,10 +101,96 @@ package cn.itamt.dedo.parser {
 			// 解析图片刷分类信息
 			var numBrushCategories : uint = iix.readUint32();
 			for(i = 0; i < numBrushCategories; i++) {
-				Debug.trace('[IIXParser][parse]' + iix.readString(128));
+				var brushCategoryName : String = iix.readString(128);
 				numBrushes = iix.readUint16();
 				// 跳过刷子分类信息
 				iix.position += numBrushes * 2;
+			}
+
+			// 解析动画信息
+			var animationAuxName : String = iix.readString(128);
+			var numAnimations : uint = iix.readUint32();
+			for(i = 0; i < numAnimations; i++) {
+				var animationName : String = iix.readString(128);
+				var type : uint = iix.readUint8();
+				var delay : uint = iix.readUint32();
+				var numFrames : uint = iix.readUint16();
+				// 跳过动画数据
+				iix.position += numFrames * 4;
+			}
+
+			// 解析动画分类信息
+			var numAnimationCategories : uint = iix.readUint32();
+			for(i = 0; i < numAnimationCategories; i++) {
+				var animationCategoryName : String = iix.readString(128);
+				var numAnimationsInCategory : uint = iix.readUint32();
+				if(numAnimations > 0) {
+					iix.position += numAnimationsInCategory * 4;
+				}
+			}
+
+			// 解析地图信息
+			var numMaps : uint = iix.readUint32();
+			if(numMaps != mapNum) {
+				throw new Error("numMaps != mapNum");
+				return false;
+			}
+			pMaps = new DMapsCollection();
+			for(i = 0; i < numMaps; i++) {
+				var map : DMap = new DMap();
+
+				var mapName : String = iix.readString(128);
+				var cellsX : uint = iix.readUint16();
+				var cellsY : uint = iix.readUint16();
+				var cellsW : uint = iix.readUint16();
+				var cellsH : uint = iix.readUint16();
+				var numLayers : uint = iix.readUint8();
+				Debug.trace('[IIXParser][parse]map:' + "(" + i + "/" + numMaps + ")" + mapName + ", " + cellsX + ", " + cellsY + ", " + cellsW + ", " + cellsH);
+
+				map.index = i;
+				map.name = mapName;
+				map.cellsx = cellsX;
+				map.cellsy = cellsY;
+				map.cellheight = cellsH;
+				map.cellwidth = cellsW;
+				map.layers = new DMapLayersCollection();
+
+				for(var j : uint = 0; j < numLayers; j++) {
+					var layerName : String = iix.readString(128);
+					var layerVisible : Boolean = Boolean(iix.readUint8());
+
+					Debug.trace('[IIXParser][parse]map layer: ' + layerName + ", " + layerVisible);
+
+					var layer : DMapLayer = new DMapLayer();
+					layer.index = j;
+					layer.name = layerName;
+					layer.visible = layerVisible;
+					layer.cells = new DMapCellsCollection();
+
+					for(var k : uint = 0; k < cellsX * cellsY; k++) {
+						var img : int = iix.readSint16();
+						var value : uint = iix.readUint32();
+						layer.cells.setMapCell(k, k % cellsX, uint(k / cellsX), img, value);
+					}
+
+					map.layers.setMapLayer(j, layer);
+				}
+
+				// 解析跳转点信息
+				var numJumps : uint = iix.readUint32();
+				for(j = 0; j < numJumps; j++) {
+					var cellXaux : uint = iix.readUint16();
+					var cellYaux : uint = iix.readUint16();
+					var mapIndex : uint = iix.readUint16();
+					var jumpToCellX : uint = iix.readUint16();
+					var jumpToCellY : uint = iix.readUint16();
+				}
+
+				pMaps.setValue(i, map);
+			}
+
+			if(iix.bytesAvialiable) {
+				throw new Error("多据有余.");
 			}
 
 			return true;
@@ -120,27 +213,26 @@ package cn.itamt.dedo.parser {
 		}
 
 		public function getTiles() : DTilesCollection {
-			// TODO: Auto-generated method stub
-			return null;
+			return pTiles;
 		}
 
 		public function getTileCategories() : DTileCategoriesCollection {
-			// TODO: Auto-generated method stub
-			return null;
+			return new DTileCategoriesCollection();
 		}
 
 		public function getMaps() : DMapsCollection {
-			// TODO: Auto-generated method stub
-			return null;
+			return pMaps;
 		}
 
 		public function getBrushes() : DBrushesCollection {
-			// TODO: Auto-generated method stub
-			return null;
+			return new DBrushesCollection();
+		}
+
+		public function resourceManager():ResourceManager {
+			return resMgr;
 		}
 
 		public function getAnimations() : XML {
-			// TODO: Auto-generated method stub
 			return null;
 		}
 	}
