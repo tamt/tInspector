@@ -1,4 +1,5 @@
 package cn.itamt.dedo.parser {
+	import cn.itamt.dedo.data.DAnimationsCollection;
 	import cn.itamt.dedo.data.DBrushesCollection;
 	import cn.itamt.dedo.data.DMapsCollection;
 	import cn.itamt.dedo.data.DTileCategoriesCollection;
@@ -26,6 +27,6 @@ package cn.itamt.dedo.parser {
 
 		function getBrushes() : DBrushesCollection;
 
-		function getAnimations() : XML;
+		function getAnimations() : DAnimationsCollection;
 	}
 }

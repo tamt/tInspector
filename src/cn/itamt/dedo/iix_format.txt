@@ -62,7 +62,8 @@ IIX文件格式
 		type					Uint8 type						类型
 		delay					Uint32 delay					延时
 		num tiles				Uint16 numTiles					tile数
-		buffer					buffer numTiles*sizeof(Uint32)	animations具体的tile数据
+			//for(numTiles)
+			tile index			Uint32 tileIndex				
 		
 	//动画分类信息
 8.	//if(IIX_HEADER_ST.versionHigh>3)

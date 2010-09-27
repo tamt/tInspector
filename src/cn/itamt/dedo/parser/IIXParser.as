@@ -1,4 +1,5 @@
 package cn.itamt.dedo.parser {
+	import cn.itamt.dedo.data.DAnimationsCollection;
 	import cn.itamt.dedo.data.DBrushesCollection;
 	import cn.itamt.dedo.data.DMap;
 	import cn.itamt.dedo.data.DMapCellsCollection;
@@ -26,7 +27,7 @@ package cn.itamt.dedo.parser {
 		//
 		private var pTiles : DTilesCollection;
 		private var pMaps : DMapsCollection;
-		//
+		private var pAnis : DAnimationsCollection;
 		private var resMgr : ResourceManager;
 
 		public function IIXParser() {
@@ -108,6 +109,7 @@ package cn.itamt.dedo.parser {
 			}
 
 			// 解析动画信息
+			this.pAnis = new DAnimationsCollection();
 			var animationAuxName : String = iix.readString(128);
 			var numAnimations : uint = iix.readUint32();
 			for(i = 0; i < numAnimations; i++) {
@@ -115,8 +117,11 @@ package cn.itamt.dedo.parser {
 				var type : uint = iix.readUint8();
 				var delay : uint = iix.readUint32();
 				var numFrames : uint = iix.readUint16();
-				// 跳过动画数据
-				iix.position += numFrames * 4;
+				var frames : Vector.<uint> = new Vector.<uint>();
+				for(var fi : uint = 0; fi < numFrames; fi++) {
+					frames[fi] = iix.readUint32();
+				}
+				this.pAnis.setAnimation(i, i, animationName, type, delay, frames);
 			}
 
 			// 解析动画分类信息
@@ -232,8 +237,8 @@ package cn.itamt.dedo.parser {
 			return resMgr;
 		}
 
-		public function getAnimations() : XML {
-			return null;
+		public function getAnimations() : DAnimationsCollection {
+			return this.pAnis;
 		}
 	}
 }
