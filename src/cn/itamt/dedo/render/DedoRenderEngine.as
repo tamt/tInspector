@@ -1,8 +1,11 @@
 package cn.itamt.dedo.render {
+	import cn.itamt.dedo.DedoProject;
 	import cn.itamt.dedo.data.DMap;
 	import cn.itamt.dedo.data.DMapCellsCollection;
 	import cn.itamt.dedo.data.DMapLayer;
 	import cn.itamt.dedo.data.DMapLayersCollection;
+	import cn.itamt.dedo.manager.AnimationsManager;
+	import cn.itamt.dedo.manager.TickManager;
 	import cn.itamt.dedo.manager.TilesManager;
 
 	import flash.display.Bitmap;
@@ -18,6 +21,7 @@ package cn.itamt.dedo.render {
 		private var canvas : BitmapData;
 		private var map : DMap;
 		private var tiles : TilesManager;
+		private var anis : AnimationsManager;
 		private var resMgr : ResourceManager;
 		private var viewW : uint = 400;
 		private var viewH : uint = 400;
@@ -30,6 +34,9 @@ package cn.itamt.dedo.render {
 		private var vertPastePoint : Point;
 		private var cornerPastePoint : Point;
 		private var viewContainer : Sprite;
+		private var running : Boolean;
+		// 计时器
+		private var tickMgr : TickManager;
 
 		public function DedoRenderEngine():void {
 		}
@@ -63,6 +70,8 @@ package cn.itamt.dedo.render {
 		 * 	@param direction		方向.
 		 */
 		public function scroll(scrollAmountX : int, scrollAmountY : int):void {
+			this.outputBmd.lock();
+
 			horizCutRect.x = outputRect.x;
 			horizCutRect.y = outputRect.y - scrollAmountY;
 			horizCutRect.width = viewW - Math.abs(scrollAmountX);
@@ -105,10 +114,11 @@ package cn.itamt.dedo.render {
 			this.outputBmd.copyPixels(this.canvas, horizCutRect, horizPastePoint);
 			this.outputBmd.copyPixels(this.canvas, vertCutRect, vertPastePoint);
 			this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
-
 			this.outputRect.offset(-scrollAmountX, -scrollAmountY);
-
+			// 绘制超出边缘的黑色区域
 			this.renderOffsetArea();
+
+			this.outputBmd.unlock();
 		}
 
 		/**
@@ -116,15 +126,29 @@ package cn.itamt.dedo.render {
 		 * @param canvas
 		 * @param project
 		 */
-		public function render(map : DMap, tilesManager : TilesManager) : void {
+		public function render(map : DMap, project : DedoProject) : void {
 			this.canvas = new BitmapData(map.cellsx * map.cellwidth, map.cellsy * map.cellheight, true, 0xffffffff);
 			this.map = map;
-			this.tiles = tilesManager;
+			this.tiles = project.tilesMgr;
+			this.anis = project.animationsMgr;
 
 			if(resMgr == null)
 				resMgr = new ResourceManager();
 
 			renderMap();
+		}
+
+		public function start():void {
+			if(running)
+				return;
+			tickMgr = new TickManager();
+			tickMgr.start();
+			tickMgr.onTick(this.update);
+			running = true;
+		}
+
+		public function setResourceManager(resourceManager : ResourceManager) : void {
+			this.resMgr = resourceManager;
 		}
 
 		/*************************************
@@ -155,8 +179,13 @@ package cn.itamt.dedo.render {
 				var sourceRect : Rectangle = new Rectangle(0, 0, this.map.cellwidth, this.map.cellheight);
 				var destPoint : Point = new Point();
 				for(var i : int = 0; i < cells.length; i++) {
-					sourceRect.x = map.cellwidth * (tiles.getTilePosX(cells.getMapCellImg(i)));
-					sourceRect.y = map.cellheight * (tiles.getTilePosY(cells.getMapCellImg(i)));
+					var imgOrAni : int = cells.getMapCellImg(i);
+					if(imgOrAni < -1000) {
+						// 动画元素
+						imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, this.anis.getAnimationCurFrame(-1001 - imgOrAni));
+					}
+					sourceRect.x = map.cellwidth * (tiles.getTilePosX(imgOrAni));
+					sourceRect.y = map.cellheight * (tiles.getTilePosY(imgOrAni));
 					destPoint.x = cells.getMapCellX(i) * map.cellwidth;
 					destPoint.y = cells.getMapCellY(i) * map.cellheight;
 					this.canvas.copyPixels(resBmd, sourceRect, destPoint, null, null, true);
@@ -179,8 +208,7 @@ package cn.itamt.dedo.render {
 			}
 		}
 
-		public function setResourceManager(resourceManager : ResourceManager) : void {
-			this.resMgr = resourceManager;
+		private function update() : void {
 		}
 	}
 }

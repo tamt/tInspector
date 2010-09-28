@@ -28,6 +28,7 @@ package cn.itamt.dedo.render {
 				var loader : Loader = new Loader();
 				loader.load(new URLRequest(tiles.images.fileName));
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function(evt : Event):void {
+					loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, arguments.callee);
 					if(listeners[tiles.images.fileName]) {
 						DisplayObjectTool.callLater(listeners[tiles.images.fileName]);
 						delete listeners[tiles.images.fileName];

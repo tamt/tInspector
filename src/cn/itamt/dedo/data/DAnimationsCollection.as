@@ -27,7 +27,16 @@ package cn.itamt.dedo.data {
 			_tiles  [index] = frames;
 		}
 
-		public function getAnimation():void {
+		public function getAnimationName(index : uint):String {
+			return _names[index];
+		}
+
+		public function getAnimationFirstTile(index : uint):uint {
+			return _tiles[index][0];
+		}
+
+		public function getAnimationTile(index : uint, frame : uint):uint {
+			return _tiles[index][frame];
 		}
 	}
 }

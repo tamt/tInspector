@@ -17,10 +17,10 @@ package cn.itamt.dedo.data {
 			cellsValue = new Vector.<uint>();
 		}
 
-		public function setMapCell(index : uint, x : uint, y : uint, img : uint, value : uint) : void {
+		public function setMapCell(index : uint, x : uint, y : uint, imgOrAni : int, value : uint) : void {
 			cellsX[index] = x;
 			cellsY[index] = y;
-			cellsImg[index] = img;
+			cellsImg[index] = imgOrAni;
 			cellsValue[index] = value;
 		}
 
@@ -32,7 +32,7 @@ package cn.itamt.dedo.data {
 			return cellsY[index];
 		}
 
-		public function getMapCellImg(index : uint):uint {
+		public function getMapCellImg(index : uint):int {
 			return cellsImg[index];
 		}
 

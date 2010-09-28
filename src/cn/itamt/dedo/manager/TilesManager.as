@@ -1,6 +1,7 @@
 package cn.itamt.dedo.manager {
 	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DTilesCollection;
+	import cn.itamt.utils.Debug;
 
 	/**
 	 * @author itamt[at]qq.com
@@ -19,11 +20,14 @@ package cn.itamt.dedo.manager {
 			tilesY = Math.ceil(this.images.length / tilesX);
 		}
 
-		public function getTilePosX(tileIndex : uint) : uint {
+		public function getTilePosX(tileIndex : int) : uint {
+			if(tileIndex < -1000) {
+				Debug.trace('[TilesManager][getTilePosX]' + tileIndex);
+			}
 			return tileIndex % tilesX;
 		}
 
-		public function getTilePosY(tileIndex : uint) : uint {
+		public function getTilePosY(tileIndex : int) : uint {
 			return tileIndex / tilesX;
 		}
 	}

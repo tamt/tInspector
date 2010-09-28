@@ -10,5 +10,13 @@ package cn.itamt.dedo.manager {
 		public function AnimationsManager(animations : DAnimationsCollection) {
 			_animations = animations;
 		}
+
+		public function getAnimationTile(index : uint, frame : uint):uint {
+			return _animations.getAnimationTile(index, frame);
+		}
+
+		public function getAnimationCurFrame(index : uint) : uint {
+			return 1;
+		}
 	}
 }
