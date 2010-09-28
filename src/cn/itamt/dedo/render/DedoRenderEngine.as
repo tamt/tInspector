@@ -70,8 +70,6 @@ package cn.itamt.dedo.render {
 		 * 	@param direction		方向.
 		 */
 		public function scroll(scrollAmountX : int, scrollAmountY : int):void {
-			this.outputBmd.lock();
-
 			horizCutRect.x = outputRect.x;
 			horizCutRect.y = outputRect.y - scrollAmountY;
 			horizCutRect.width = viewW - Math.abs(scrollAmountX);
@@ -110,6 +108,8 @@ package cn.itamt.dedo.render {
 				vertPastePoint.y = 0;
 			}
 
+			// TODO:绘制应该放在专有的render方法中. 如果同一帧内多次调用scroll, 应该侦听RENDER事件, 保证一侦内只绘制一次.
+			this.outputBmd.lock();
 			this.outputBmd.scroll(scrollAmountX, scrollAmountY);
 			this.outputBmd.copyPixels(this.canvas, horizCutRect, horizPastePoint);
 			this.outputBmd.copyPixels(this.canvas, vertCutRect, vertPastePoint);
@@ -117,7 +117,6 @@ package cn.itamt.dedo.render {
 			this.outputRect.offset(-scrollAmountX, -scrollAmountY);
 			// 绘制超出边缘的黑色区域
 			this.renderOffsetArea();
-
 			this.outputBmd.unlock();
 		}
 
@@ -181,7 +180,7 @@ package cn.itamt.dedo.render {
 				for(var i : int = 0; i < cells.length; i++) {
 					var imgOrAni : int = cells.getMapCellImg(i);
 					if(imgOrAni < -1000) {
-						// 动画元素
+						// this cell is an Animation cell.
 						imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, this.anis.getAnimationCurFrame(-1001 - imgOrAni));
 					}
 					sourceRect.x = map.cellwidth * (tiles.getTilePosX(imgOrAni));
@@ -209,6 +208,7 @@ package cn.itamt.dedo.render {
 		}
 
 		private function update() : void {
+			// TODO:check is there an Animation in view port area.
 		}
 	}
 }
