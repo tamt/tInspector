@@ -1,6 +1,4 @@
 package cn.itamt.dedo.data {
-	import cn.itamt.utils.Debug;
-
 	/**
 	 * @author itamt[at]qq.com
 	 */
@@ -46,6 +44,10 @@ package cn.itamt.dedo.data {
 
 		public function getMapCellValue(index : uint):uint {
 			return cellsValue[index];
+		}
+
+		public function getMapCellFrame(index : uint) : uint {
+			return 0;
 		}
 
 		/**

@@ -181,7 +181,8 @@ package cn.itamt.dedo.render {
 					var imgOrAni : int = cells.getMapCellImg(i);
 					if(imgOrAni < -1000) {
 						// this cell is an Animation cell.
-						imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, this.anis.getAnimationCurFrame(-1001 - imgOrAni));
+						// imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, cells.getMapCellFrame(i));
+						imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, this.tickMgr.tick);
 					}
 					sourceRect.x = map.cellwidth * (tiles.getTilePosX(imgOrAni));
 					sourceRect.y = map.cellheight * (tiles.getTilePosY(imgOrAni));

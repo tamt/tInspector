@@ -1,8 +1,6 @@
 package cn.itamt.dedo.manager {
 	import cn.itamt.dedo.data.DAnimationsCollection;
 
-	import flash.geom.Rectangle;
-
 	/**
 	 * @author itamt[at]qq.com
 	 */
@@ -13,12 +11,8 @@ package cn.itamt.dedo.manager {
 			_animations = animations;
 		}
 
-		public function getAnimationTile(index : uint, frame : uint):uint {
-			return _animations.getAnimationTile(index, frame);
-		}
-
-		public function getAnimationCurFrame(index : uint) : uint {
-			return _animations.getAnimationCurFrame(index);
+		public function getAnimationTile(index : uint, tick : uint):uint {
+			return _animations.getAnimationTile(index, tick);
 		}
 	}
 }

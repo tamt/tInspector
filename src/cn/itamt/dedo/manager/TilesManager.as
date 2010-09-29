@@ -23,9 +23,6 @@ package cn.itamt.dedo.manager {
 		}
 
 		public function getTilePosX(tileIndex : int) : uint {
-			if(tileIndex < -1000) {
-				Debug.trace('[TilesManager][getTilePosX]' + tileIndex);
-			}
 			return tileIndex % tilesX;
 		}
 

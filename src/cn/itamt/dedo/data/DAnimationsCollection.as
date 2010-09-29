@@ -36,8 +36,8 @@ package cn.itamt.dedo.data {
 			return _tiles[index][0];
 		}
 
-		public function getAnimationTile(index : uint, frame : uint):uint {
-			return _tiles[index][frame];
+		public function getAnimationTile(index : uint, tick : uint):uint {
+			return _tiles[index][tick % _tiles[index].length];
 		}
 
 		public function getAnimationCurFrame(index : uint) : uint {
