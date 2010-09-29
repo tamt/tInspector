@@ -8,6 +8,7 @@ package cn.itamt.dedo.data {
 		private var _types : Vector.<uint>;
 		private var _delays : Vector.<uint>;
 		private var _tiles : Vector.<Vector.<uint>>;
+		private var _curFrame : uint;
 
 		public function DAnimationsCollection() {
 			super();
@@ -37,6 +38,12 @@ package cn.itamt.dedo.data {
 
 		public function getAnimationTile(index : uint, frame : uint):uint {
 			return _tiles[index][frame];
+		}
+
+		public function getAnimationCurFrame(index : uint) : uint {
+			if(_curFrame++ >= 2)
+				_curFrame = 0;
+			return _curFrame;
 		}
 	}
 }

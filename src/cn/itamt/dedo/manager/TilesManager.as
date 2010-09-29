@@ -3,6 +3,8 @@ package cn.itamt.dedo.manager {
 	import cn.itamt.dedo.data.DTilesCollection;
 	import cn.itamt.utils.Debug;
 
+	import flash.geom.Rectangle;
+
 	/**
 	 * @author itamt[at]qq.com
 	 */
@@ -29,6 +31,15 @@ package cn.itamt.dedo.manager {
 
 		public function getTilePosY(tileIndex : int) : uint {
 			return tileIndex / tilesX;
+		}
+
+		/**
+		 * 返回在某个区域内是不是含有动画元素
+		 */
+		public function hasAnimationInArea(area : Rectangle):Boolean {
+			var has : Boolean;
+
+			return has;
 		}
 	}
 }

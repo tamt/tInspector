@@ -1,6 +1,7 @@
 package cn.itamt.dedo.render {
 	import cn.itamt.dedo.DedoProject;
 	import cn.itamt.dedo.data.DMap;
+	import cn.itamt.dedo.data.DMapArea;
 	import cn.itamt.dedo.data.DMapCellsCollection;
 	import cn.itamt.dedo.data.DMapLayer;
 	import cn.itamt.dedo.data.DMapLayersCollection;
@@ -11,6 +12,7 @@ package cn.itamt.dedo.render {
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
@@ -26,6 +28,7 @@ package cn.itamt.dedo.render {
 		private var viewW : uint = 400;
 		private var viewH : uint = 400;
 		private var outputRect : Rectangle;
+		private var mapArea : DMapArea;
 		private var outputBmd : BitmapData;
 		private var horizCutRect : Rectangle;
 		private var vertCutRect : Rectangle;
@@ -37,6 +40,7 @@ package cn.itamt.dedo.render {
 		private var running : Boolean;
 		// 计时器
 		private var tickMgr : TickManager;
+		private var validated : Boolean;
 
 		public function DedoRenderEngine():void {
 		}
@@ -50,7 +54,8 @@ package cn.itamt.dedo.render {
 			this.viewW = w;
 			this.viewH = h;
 
-			outputRect = new Rectangle(0, 0, w, h);
+			outputRect = new Rectangle(0, 0, this.viewW, this.viewH);
+			mapArea = new DMapArea(0, 0, this.viewW / 32, this.viewH / 32);
 			horizCutRect = new Rectangle();
 			vertCutRect = new Rectangle();
 			cornerCutRect = new Rectangle();
@@ -107,17 +112,11 @@ package cn.itamt.dedo.render {
 				vertCutRect.y = outputRect.y + Math.abs(scrollAmountY);
 				vertPastePoint.y = 0;
 			}
-
-			// TODO:绘制应该放在专有的render方法中. 如果同一帧内多次调用scroll, 应该侦听RENDER事件, 保证一侦内只绘制一次.
-			this.outputBmd.lock();
-			this.outputBmd.scroll(scrollAmountX, scrollAmountY);
-			this.outputBmd.copyPixels(this.canvas, horizCutRect, horizPastePoint);
-			this.outputBmd.copyPixels(this.canvas, vertCutRect, vertPastePoint);
-			this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
 			this.outputRect.offset(-scrollAmountX, -scrollAmountY);
-			// 绘制超出边缘的黑色区域
-			this.renderOffsetArea();
-			this.outputBmd.unlock();
+			this.transformOutputRect2MapRect();
+
+			// 需要重绘
+			validate();
 		}
 
 		/**
@@ -130,6 +129,7 @@ package cn.itamt.dedo.render {
 			this.map = map;
 			this.tiles = project.tilesMgr;
 			this.anis = project.animationsMgr;
+			this.transformOutputRect2MapRect();
 
 			if(resMgr == null)
 				resMgr = new ResourceManager();
@@ -142,7 +142,7 @@ package cn.itamt.dedo.render {
 				return;
 			tickMgr = new TickManager();
 			tickMgr.start();
-			tickMgr.onTick(this.update);
+			tickMgr.onTick(updateAnimationTiles);
 			running = true;
 		}
 
@@ -153,10 +153,10 @@ package cn.itamt.dedo.render {
 		/*************************************
 		 **********private functions**********
 		 *************************************/
-		private function renderMap():void {
+		private function renderMap(area : DMapArea = null):void {
 			var layers : DMapLayersCollection = map.layers;
 			for(var i : int = layers.length - 1; i >= 0; i--) {
-				this.renderLayer(layers.getMapLayer(i));
+				this.renderLayer(layers.getMapLayer(i), area);
 			}
 
 			// render to output view
@@ -169,7 +169,7 @@ package cn.itamt.dedo.render {
 		/**
 		 * render single layer of a map.
 		 */
-		private function renderLayer(layer : DMapLayer):void {
+		private function renderLayer(layer : DMapLayer, area : DMapArea = null):void {
 			var resBmd : BitmapData = resMgr.getTilesImage(tiles);
 			if(resBmd == null) {
 				resMgr.listenLoad(tiles.images.fileName, this.renderMap);
@@ -208,7 +208,52 @@ package cn.itamt.dedo.render {
 		}
 
 		private function update() : void {
-			// TODO:check is there an Animation in view port area.
+			// this.outputBmd.lock();
+			// this.outputBmd.scroll(scrollAmountX, scrollAmountY);
+			// this.outputBmd.copyPixels(this.canvas, horizCutRect, horizPastePoint);
+			// this.outputBmd.copyPixels(this.canvas, vertCutRect, vertPastePoint);
+			// this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
+			// this.outputRect.offset(-scrollAmountX, -scrollAmountY);
+			//			//  绘制超出边缘的黑色区域
+			// this.renderOffsetArea();
+			// this.outputBmd.unlock();
+
+			this.outputBmd.lock();
+			this.outputBmd.copyPixels(this.canvas, this.outputRect, new Point());
+			// 绘制超出边缘的黑色区域
+			this.renderOffsetArea();
+			this.outputBmd.unlock();
+		}
+
+		private function validate() : void {
+			if(this.validated)
+				return;
+			this.validated = true;
+			this.viewContainer.stage.invalidate();
+			this.viewContainer.stage.addEventListener(Event.RENDER, function(evt : Event):void {
+				viewContainer.stage.removeEventListener(Event.RENDER, arguments.callee);
+				validated = false;
+				update();
+			});
+		}
+
+		/**
+		 * 更新动画
+		 */
+		private function updateAnimationTiles() : void {
+			// 查找当前可视范围内的动画元素
+			if(this.map.hasAnimationInArea(this.mapArea)) {
+				this.renderMap(this.mapArea);
+				// 更新canvas的内容
+				this.validate();
+			}
+		}
+
+		private function transformOutputRect2MapRect() : void {
+			this.mapArea.left = Math.floor(this.outputRect.left < 0 ? 0 : this.outputRect.left / map.cellwidth);
+			this.mapArea.top = Math.floor(this.outputRect.top < 0 ? 0 : this.outputRect.top / map.cellheight);
+			this.mapArea.right = Math.ceil(this.outputRect.right < 0 ? 0 : this.outputRect.right / map.cellwidth);
+			this.mapArea.bottom = Math.ceil(this.outputRect.bottom < 0 ? 0 : this.outputRect.bottom / map.cellheight);
 		}
 	}
 }

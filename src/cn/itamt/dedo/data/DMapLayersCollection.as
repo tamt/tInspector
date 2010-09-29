@@ -22,5 +22,18 @@ package cn.itamt.dedo.data {
 		public function get length():uint {
 			return layers.length;
 		}
+
+		/**
+		 * 返回在某个区域内是不是含有动画元素
+		 */
+		public function hasAnimationInArea(area : DMapArea):Boolean {
+			for(var i : int = 0; i < layers.length; i++) {
+				if(layers[i].hasAnimationInArea(area)) {
+					return true;
+					break;
+				}
+			}
+			return false;
+		}
 	}
 }

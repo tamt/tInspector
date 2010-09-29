@@ -1,10 +1,8 @@
 package cn.itamt.dedo.data {
-
 	/**
 	 * @author itamt[at]qq.com
 	 */
 	public class DMap {
-
 		public var index : uint;
 		public var name : String;
 		public var cellsx : uint;
@@ -15,6 +13,13 @@ package cn.itamt.dedo.data {
 		public var jumps : DMapJumpsCollection;
 
 		public function DMap() : void {
+		}
+
+		/**
+		 * 返回在某个区域内是不是含有动画元素
+		 */
+		public function hasAnimationInArea(area : DMapArea):Boolean {
+			return layers.hasAnimationInArea(area);
 		}
 	}
 }
