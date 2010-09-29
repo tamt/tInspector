@@ -6,6 +6,7 @@ package cn.itamt.dedo.render {
 	import cn.itamt.dedo.data.DMapLayer;
 	import cn.itamt.dedo.data.DMapLayersCollection;
 	import cn.itamt.dedo.manager.AnimationsManager;
+	import cn.itamt.dedo.manager.CharactersManager;
 	import cn.itamt.dedo.manager.TickManager;
 	import cn.itamt.dedo.manager.TilesManager;
 
@@ -24,6 +25,7 @@ package cn.itamt.dedo.render {
 		private var map : DMap;
 		private var tiles : TilesManager;
 		private var anis : AnimationsManager;
+		private var chaMgr : CharactersManager;
 		private var resMgr : ResourceManager;
 		private var viewW : uint = 400;
 		private var viewH : uint = 400;
@@ -129,6 +131,7 @@ package cn.itamt.dedo.render {
 			this.map = map;
 			this.tiles = project.tilesMgr;
 			this.anis = project.animationsMgr;
+			this.chaMgr = project.charactersMgr;
 			this.transformOutputRect2MapRect();
 
 			if(resMgr == null)

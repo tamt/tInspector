@@ -9,6 +9,7 @@ package cn.itamt.utils.inspector.plugins.stats {
 	import flash.geom.Rectangle;
 
 	/**
+	 * TODO:增加GC按钮
 	 * @author itamt[at]qq.com
 	 */
 	public class AppStats extends BaseInspectorPlugin {
@@ -32,17 +33,17 @@ package cn.itamt.utils.inspector.plugins.stats {
 
 		override public function onRegister(inspector : IInspector) : void {
 			super.onRegister(inspector);
-			
+
 			_icon = new AppStatsButton();
 		}
 
 		override public function onActive() : void {
 			super.onActive();
-			
+
 			this.panel = new AppStatsViewPanel(""/*InspectorLanguageManager.getStr(InspectorViewID.APPSTATS_VIEW)*/);
 			this.panel.addEventListener(Event.CLOSE, onClickClose, false, 0, true);
 			this._inspector.stage.addChild(this.panel);
-			
+
 			var rect : Rectangle = InspectorStageReference.getStageBounds();
 			this.panel.x = rect.right - this.panel.width - 10;
 			this.panel.y = rect.top + 10;
@@ -50,9 +51,10 @@ package cn.itamt.utils.inspector.plugins.stats {
 
 		override public function onUnActive() : void {
 			super.onUnActive();
-			
-			//			this.panel.removeEventListener(Event.CLOSE, onClickClose);
-			if(this.panel.stage)this.panel.parent.removeChild(this.panel);
+
+			// this.panel.removeEventListener(Event.CLOSE, onClickClose);
+			if(this.panel.stage)
+				this.panel.parent.removeChild(this.panel);
 			this.panel = null;
 		}
 

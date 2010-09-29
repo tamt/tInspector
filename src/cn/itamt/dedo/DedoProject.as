@@ -1,6 +1,7 @@
 package cn.itamt.dedo {
 	import cn.itamt.dedo.manager.AnimationsManager;
 	import cn.itamt.dedo.manager.BrushesManager;
+	import cn.itamt.dedo.manager.CharactersManager;
 	import cn.itamt.dedo.manager.MapsManager;
 	import cn.itamt.dedo.manager.TilesManager;
 
@@ -13,11 +14,11 @@ package cn.itamt.dedo {
 		public var version : String;
 		public var cellwidth : uint;
 		public var cellheight : uint;
-
 		public var animationsMgr : AnimationsManager;
 		public var brushesMgr : BrushesManager;
 		public var mapsMgr : MapsManager;
 		public var tilesMgr : TilesManager;
+		public var charactersMgr : CharactersManager;
 
 		public function DedoProject() : void {
 		}

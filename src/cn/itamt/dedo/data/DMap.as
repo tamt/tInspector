@@ -11,6 +11,7 @@ package cn.itamt.dedo.data {
 		public var cellheight : uint;
 		public var layers : DMapLayersCollection;
 		public var jumps : DMapJumpsCollection;
+		public var characters : DMapCharactersCollection;
 
 		public function DMap() : void {
 		}
@@ -19,6 +20,13 @@ package cn.itamt.dedo.data {
 		 * 返回在某个区域内是不是含有动画元素
 		 */
 		public function hasAnimationInArea(area : DMapArea):Boolean {
+			return layers.hasAnimationInArea(area);
+		}
+
+		/**
+		 * 返回在某个区域内是不是含有角色
+		 */
+		public function hasCharacterInArea(area : DMapArea):Boolean {
 			return layers.hasAnimationInArea(area);
 		}
 	}
