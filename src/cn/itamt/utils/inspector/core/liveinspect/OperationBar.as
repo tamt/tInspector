@@ -55,12 +55,13 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			// 按钮
 			var btns : Array = [	_moveBtn = new InspectorViewMoveButton, 
 									_pareBtn = new InspectorViewParentButton, 
-									_childBtn = new InspectorViewChildButton, 
-									_broBtn = new InspectorViewBrotherButton,
+									_childBtn = new InspectorViewChildButton,
 									_prevBtn = new InspectorViewPrevButton, 
+									_broBtn = new InspectorViewBrotherButton, 
 									_infoBtn = new PropertiesViewButton, 
 									_struBtn = new StructureViewButton, 
-									_filterBtn = new FilterManagerButton];
+									_filterBtn = new FilterManagerButton,
+									_closeBtn = new InspectorViewCloseButton];
 			var btn : InspectorButton;
 			for(var i : int = 0;i < btns.length;i++) {
 				btn = btns[i] as InspectorButton;
@@ -72,11 +73,6 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				}
 				btn.y = _paddings[1];
 			}
-			// 关闭按钮
-			_closeBtn = new InspectorViewCloseButton;
-			addChild(_closeBtn);
-			_closeBtn.x = btn.x + btn.width + 20/* - _paddings[2] - _closeBtn.width*/;
-			_closeBtn.y = _paddings[1];
 
 			// 背景
 			graphics.clear();
