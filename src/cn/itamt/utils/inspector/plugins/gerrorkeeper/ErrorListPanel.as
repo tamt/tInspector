@@ -1,6 +1,5 @@
 package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	import cn.itamt.utils.ObjectPool;
-	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterItemRenderer;
 	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
@@ -16,7 +15,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 
 		private var _listContainer : Sprite;
 		private var _data : Array;
-		private var _itemRenderer : Class = InspectorFilterItemRenderer;
+		private var _itemRenderer : Class = ErrorLogItemRenderer;
 
 		private var _clearBtn : ReloadButton;
 

@@ -1,16 +1,13 @@
 package cn.itamt.utils.inspector.firefox {
+	import cn.itamt.utils.inspector.firefox.download.DownloadAll;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
-	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
 	import cn.itamt.utils.inspector.plugins.stats.AppStats;
-	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
-
 	import msc.console.mConsole;
 	import msc.console.mIConsoleDelegate;
-
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.LoaderInfo;
@@ -19,7 +16,6 @@ package cn.itamt.utils.inspector.firefox {
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.external.ExternalInterface;
-	import flash.net.URLRequest;
 	import flash.system.Security;
 	import flash.text.TextField;
 
@@ -29,16 +25,15 @@ package cn.itamt.utils.inspector.firefox {
 	public class tInspectorPreloader extends Sprite implements mIConsoleDelegate {
 		public static var mainStage : Stage;
 		public static var mainRoot : DisplayObject;
-
 		private var controlBar : ControlBar;
 		public var tf : TextField;
 		private var tInspector : Inspector;
-		private var statsView : AppStats;		private var swfInfoView : SwfInfoView;
-		private var gErrorKeeper : GlobalErrorKeeper;
+		private var statsView : AppStats;
+		// private var swfInfoView : SwfInfoView;
+//		private var gErrorKeeper : GlobalErrorKeeper;
 
-		//由finspector.js分配给的id, 用于与fInspector通信.
-		//		private var swfId : String = '';
-
+		// 由finspector.js分配给的id, 用于与fInspector通信.
+		// private var swfId : String = '';
 		public function tInspectorPreloader() {
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
@@ -47,10 +42,10 @@ package cn.itamt.utils.inspector.firefox {
 			controlBar.addEventListener(InspectEvent.RELOAD, onClickReload);
 
 			statsView = new AppStats();
-			swfInfoView = new SwfInfoView();
-			gErrorKeeper = new GlobalErrorKeeper();
-			gErrorKeeper.watch(this.loaderInfo);
-			
+			// swfInfoView = new SwfInfoView();
+//			gErrorKeeper = new GlobalErrorKeeper();
+//			gErrorKeeper.watch(this.loaderInfo);
+
 			if(ExternalInterface.available) {
 				ExternalInterface.addCallback("connectController", connectController);
 				ExternalInterface.addCallback("disconnectController", disconnectController);
@@ -73,10 +68,11 @@ package cn.itamt.utils.inspector.firefox {
 		}
 
 		private function init() : void {
-			//			mainRoot = this.root;
+			// mainRoot = this.root;
 			mainStage = stage;
-			
-			this.root.addEventListener("allComplete", this.allCompleteHandler);			this.root.addEventListener("allComplete", this.watchGlobalError);
+
+			this.root.addEventListener("allComplete", this.allCompleteHandler);
+			this.root.addEventListener("allComplete", this.watchGlobalError);
 			mainStage.addEventListener(Event.ADDED_TO_STAGE, onSthAdded, true);
 		}
 
@@ -85,7 +81,7 @@ package cn.itamt.utils.inspector.firefox {
 			if(loaderInfo) {
 				if(loaderInfo.url) {
 					if(loaderInfo.contentType == "application/x-shockwave-flash") {
-						gErrorKeeper.watch(loaderInfo);
+//						gErrorKeeper.watch(loaderInfo);
 					}
 				}
 			}
@@ -103,13 +99,14 @@ package cn.itamt.utils.inspector.firefox {
 
 		private function allCompleteHandler(evt : Event) : void {
 			log('[tInspectorPreloader][allCompleteHandler]');
-			
+
 			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
 			if(loaderInfo) {
 				if(loaderInfo.url) {
 					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
 						log(loaderInfo.url);
-						setupControlBar();						initInspector();
+						setupControlBar();
+						initInspector();
 						mainRoot.removeEventListener("allComplete", this.allCompleteHandler);
 					}
 				}
@@ -126,7 +123,14 @@ package cn.itamt.utils.inspector.firefox {
 			}
 
 			tInspector = Inspector.getInstance();
-			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);			tInspector.pluginManager.registerPlugin(statsView);			tInspector.pluginManager.registerPlugin(swfInfoView);			tInspector.pluginManager.registerPlugin(gErrorKeeper);			tInspector.pluginManager.loadPlugin(new URLRequest("http://www.itamt.cn/tinspector_plugins/DownloadAll.swf"));			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))tInspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
+			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
+			tInspector.pluginManager.registerPlugin(statsView);
+			tInspector.pluginManager.registerPlugin(new DownloadAll());
+			// tInspector.pluginManager.registerPlugin(swfInfoView);
+//			tInspector.pluginManager.registerPlugin(gErrorKeeper);
+			// tInspector.pluginManager.loadPlugin(new URLRequest("http://www.itamt.cn/tinspector_plugins/DownloadAll.swf"));
+			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))
+				tInspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 		}
 
 		private function setupControlBar() : void {
@@ -144,11 +148,9 @@ package cn.itamt.utils.inspector.firefox {
 			}
 		}
 
-		
-		//////////////////////////////////////
-		/////////public functions/////////////
-		//////////////////////////////////////
-
+		// ////////////////////////////////////
+		// ///////public functions/////////////
+		// ////////////////////////////////////
 		public function connectController() : void {
 			Debug.trace('[tInspectorPreloader][connectController]');
 			mConsole.connectMonitor();
@@ -191,7 +193,10 @@ package cn.itamt.utils.inspector.firefox {
 			}
 		}
 
-		/////////////////////////////////////////		/////////////////////////////////////////		/////////////////////////////////////////		/////////////////////////////////////////
+		// ///////////////////////////////////////
+		// ///////////////////////////////////////
+		// ///////////////////////////////////////
+		// ///////////////////////////////////////
 		private static var engine : MovieClip = new MovieClip();
 
 		public static function callLater(func : Function, args : Array = null, frame : int = 1) : void {

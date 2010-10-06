@@ -51,6 +51,8 @@ GEK_Unsupported =	该swf不支持全局错误处理, 该功能需要Debug Flash 
 GEK_History		=	错误历史
 GEK_ClearHistory=	清空
 ControlBar		=	控制栏
+Clear			=	清除
+DownloadAll		=	资源
 ]]>
 					</lang>;
 		}

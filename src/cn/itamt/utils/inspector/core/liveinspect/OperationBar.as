@@ -157,7 +157,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		 * 验证target, 是否禁用相关按钮
 		 */
 		public function validate(target : DisplayObject) : void {
-			_moveBtn.enabled = _pareBtn.enabled = _childBtn.enabled = _broBtn.enabled = /*_infoBtn.enabled =*/ _closeBtn.enabled = true;
+			_moveBtn.enabled = _pareBtn.enabled = _childBtn.enabled = _prevBtn.enabled = _broBtn.enabled = /*_infoBtn.enabled =*/ _closeBtn.enabled = true;
 
 			if(target is Stage) {
 				_moveBtn.enabled = false;
@@ -166,10 +166,12 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			if(target.parent) {
 				if(target.parent.numChildren == 1) {
 					_broBtn.enabled = false;
+					_prevBtn.enabled = false;
 				}
 			} else {
 				_pareBtn.enabled = false;
 				_broBtn.enabled = false;
+				_prevBtn.enabled = false;
 			}
 
 			if(target is DisplayObjectContainer) {

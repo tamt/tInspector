@@ -55,6 +55,8 @@ GEK_Unsupported =	global error handler is desabeld, it need Debug Flas Player 10
 GEK_History		=	global errors history
 GEK_ClearHistory=	clear errors history
 ControlBar		=	control bar
+Clear			=	clear
+DownloadAll		＝	loaded stuff
 ]]>
 					</lang>;
 		}

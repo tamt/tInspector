@@ -37,9 +37,9 @@
 		public static const VERSION : String = '1.2';
 		private static var _instance : Inspector;
 		public static var APP_DOMAIN : ApplicationDomain;
-		// // //////////////////////////////////
-		// // ////////setter, getter////////////
-		// // //////////////////////////////////
+		// // // ////////////////////////////////
+		// // // //////setter,  getter////////////
+		// // // ////////////////////////////////
 		private var _root : DisplayObjectContainer;
 
 		public function get root() : DisplayObjectContainer {
@@ -112,11 +112,11 @@
 			return _instance;
 		}
 
-		// // ////////////////////////////////////////////////////
-		// // ////////////////////////////////////////////////////
-		// // /////////////////public functions///////////////////
-		// // ////////////////////////////////////////////////////
-		// // ////////////////////////////////////////////////////
+		// // // //////////////////////////////////////////////////
+		// // // //////////////////////////////////////////////////
+		// // // ///////////////public  functions///////////////////
+		// // // //////////////////////////////////////////////////
+		// // // //////////////////////////////////////////////////
 		/**
 		 * 初始化tInspector，并注册要使用功能（只有注册过的功能才能开启，turnOn）。
 		 * @param root				所在根对象
@@ -139,6 +139,10 @@
 				return;
 			}
 
+			this._root.addEventListener("allComplete", function(evt : Event):void {
+				trace("hello world");
+			});
+
 			InspectorStageReference.referenceTo(this._stage);
 
 			this.pluginManager.registerPlugin(_structureView);
@@ -147,8 +151,6 @@
 			this.pluginManager.registerPlugin(_filterManager);
 			if(controlBar)
 				this.pluginManager.registerPlugin(new ControlBar());
-
-			this._root.addEventListener("allComplete", allCompleteHandler);
 		}
 
 		/**
@@ -342,9 +344,9 @@
 			}
 		}
 
-		// // //////////////////////////////////
-		// // //////private functions///////////
-		// // //////////////////////////////////
+		// // // ////////////////////////////////
+		// // // ////private  functions///////////
+		// // // ////////////////////////////////
 		private var _tMap : Dictionary;
 
 		/**
@@ -360,17 +362,6 @@
 			}
 
 			return _tMap[target];
-		}
-
-		private function allCompleteHandler(evt : Event) : void {
-			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
-			if(loaderInfo) {
-				if(loaderInfo.url) {
-					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
-						Debug.trace('[Inspector][allCompleteHandler]' + loaderInfo.url);
-					}
-				}
-			}
 		}
 	}
 }
