@@ -1,5 +1,4 @@
 package cn.itamt.utils.inspector.lang {
-
 	/**
 	 * @author itamt@qq.com
 	 */
@@ -56,7 +55,8 @@ GEK_History		=	global errors history
 GEK_ClearHistory=	clear errors history
 ControlBar		=	control bar
 Clear			=	clear
-DownloadAll		＝	loaded stuff
+DownloadAll		=	loaded stuff
+SaveAs			=	open in new tab
 ]]>
 					</lang>;
 		}

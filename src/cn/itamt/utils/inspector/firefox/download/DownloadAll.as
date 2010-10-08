@@ -1,6 +1,4 @@
 package cn.itamt.utils.inspector.firefox.download {
-	import flash.net.URLRequest;
-	import flash.net.navigateToURL;
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.IInspectorPlugin;
 	import cn.itamt.utils.inspector.core.InspectTarget;
@@ -10,7 +8,6 @@ package cn.itamt.utils.inspector.firefox.download {
 
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;
-	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.system.Security;
@@ -24,15 +21,16 @@ package cn.itamt.utils.inspector.firefox.download {
 		private var _inspector : IInspector;
 		private var _panel : DownloadAllPanel;
 		private var _loadeds : Array;
+		private var _itemPanel : DownloadedStuffInfoPanel;
 
 		public function DownloadAll() {
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 		}
 
-		// // // // // ////////////////////////////
+		// // // // // // // // // // // // // // // // // // //
 		// // //   /实现接口：IInspectorPlugin//////
-		// // // // // ////////////////////////////
+		// // // // // // // // // // // // // // // // // // //
 		public function getPluginId() : String {
 			return "DownloadAll";
 		}
@@ -57,6 +55,8 @@ package cn.itamt.utils.inspector.firefox.download {
 		}
 
 		public function contains(child : DisplayObject) : Boolean {
+			if(this._itemPanel && this._itemPanel.contains(child))
+				return true;
 			return this._panel && this._panel.contains(child);
 		}
 
@@ -100,6 +100,9 @@ package cn.itamt.utils.inspector.firefox.download {
 			_panel.removeEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.removeEventListener("clear", onClickClear);
 			InspectorPopupManager.remove(_panel);
+
+			if(_itemPanel)
+				this.removeLoadedStuffInfoPanel();
 		}
 
 		public function onTurnOn() : void {
@@ -182,15 +185,30 @@ package cn.itamt.utils.inspector.firefox.download {
 		}
 
 		private function onClickLoadedItem(event : MouseEvent) : void {
-			if(event.target is LoadedStuffItemRenderer){
-				var stuff:LoadedStuffInfo = (event.target as LoadedStuffItemRenderer).data as LoadedStuffInfo;
+			if(event.target is LoadedStuffItemRenderer) {
+				var stuff : LoadedStuffInfo = (event.target as LoadedStuffItemRenderer).data as LoadedStuffInfo;
 				// navigateToURL(new URLRequest(stuff.url), "_blank");
+				if(this._itemPanel)
+					removeLoadedStuffInfoPanel(stuff);
 				this.popupLoadedStuffInfoPanel(stuff);
 			}
 		}
-		
-		private function popupLoadedStuffInfoPanel(info:LoadedStuffInfo):void{
-			//
+
+		private function popupLoadedStuffInfoPanel(info : LoadedStuffInfo):void {
+			_itemPanel = new DownloadedStuffInfoPanel();
+			_itemPanel.onInspect(info);
+			_itemPanel.addEventListener(Event.CLOSE, onClickCloseItemPanel, false, 0, true);
+			InspectorPopupManager.popup(_itemPanel, PopupAlignMode.CENTER);
+		}
+
+		private function onClickCloseItemPanel(event : Event) : void {
+			this.removeLoadedStuffInfoPanel();
+		}
+
+		private function removeLoadedStuffInfoPanel(info : LoadedStuffInfo = null):void {
+			InspectorPopupManager.remove(_itemPanel);
+			_itemPanel.dispose();
+			_itemPanel = null;
 		}
 	}
 }
