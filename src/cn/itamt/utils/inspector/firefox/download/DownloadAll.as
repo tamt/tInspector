@@ -184,7 +184,6 @@ package cn.itamt.utils.inspector.firefox.download {
 		private function onClickLoadedItem(event : MouseEvent) : void {
 			if(event.target is LoadedStuffItemRenderer){
 				var stuff:LoadedStuffInfo = (event.target as LoadedStuffItemRenderer).data as LoadedStuffInfo;
-				// navigateToURL(new URLRequest(stuff.url), "_blank");
 				this.popupLoadedStuffInfoPanel(stuff);
 			}
 		}
