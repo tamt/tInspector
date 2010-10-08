@@ -13,15 +13,11 @@ package cn.itamt.utils.inspector.core.structureview {
 	 * @author itamt@qq.com
 	 */
 	public class DisplayObjectTree extends Sprite {
-
 		private var _root : DisplayObject;
 		private var _data : Array;
 		private var _map : Dictionary;
-
 		private var _list : Sprite;
-
 		private var _itemRenderer : Class;
-
 		public var filterFun : Function;
 
 		/**
@@ -31,7 +27,7 @@ package cn.itamt.utils.inspector.core.structureview {
 		public function DisplayObjectTree(object : DisplayObject, itemRenderClass : Class = null) {
 			_data = [];
 			_map = new Dictionary();
-			
+
 			if(itemRenderClass == null) {
 				_itemRenderer = DisplayItemRenderer;
 			} else {
@@ -39,12 +35,12 @@ package cn.itamt.utils.inspector.core.structureview {
 			}
 
 			this._root = object;
-			
+
 			this._list = new Sprite();
 			addChild(this._list);
-			
-			//绘制
-			//			this.buildTree(this._root);
+
+			// 绘制
+			// this.buildTree(this._root);
 			this.initTree();
 			this.drawList();
 		}
@@ -101,16 +97,17 @@ package cn.itamt.utils.inspector.core.structureview {
 					inspectDisplayItem(parent);
 				}
 			}
-//			buildTree(this._root);
-//			this.drawList();
+			// buildTree(this._root);
+			// this.drawList();
 		}
 
 		/**
 		 * 添加一个项
 		 */
 		private function addDisplayItem(item : DisplayItemData) : void {
-			//过滤显示
-			if(item.displayObject == this && this.contains(item.displayObject))return;
+			// 过滤显示
+			if(item.displayObject == this && this.contains(item.displayObject))
+				return;
 
 			if(_data.indexOf(item) < 0) {
 				_data.push(item);
@@ -129,15 +126,17 @@ package cn.itamt.utils.inspector.core.structureview {
 		 */
 		private function addDisplayItemAfter(item : DisplayItemData, afterItem : DisplayItemData) : void {
 			var t : int = _data.indexOf(afterItem);
-			if(t >= 0)addDisplayItemAt(t + 1, item);
+			if(t >= 0)
+				addDisplayItemAt(t + 1, item);
 		}
 
 		/**
 		 * 添加项
 		 */
 		private function addDisplayItemAt(index : int, item : DisplayItemData) : void {
-			//过滤显示
-			if(item.displayObject == this && this.contains(item.displayObject))return;
+			// 过滤显示
+			if(item.displayObject == this && this.contains(item.displayObject))
+				return;
 
 			if(_data.indexOf(item) < 0) {
 				_data.splice(index, 0, item);
@@ -149,7 +148,8 @@ package cn.itamt.utils.inspector.core.structureview {
 		 */
 		private function removeDisplayItem(item : DisplayItemData) : void {
 			var i : int = _data.indexOf(item);
-			if(i >= 0)_data.splice(i, 1);
+			if(i >= 0)
+				_data.splice(i, 1);
 		}
 
 		/**
@@ -162,24 +162,25 @@ package cn.itamt.utils.inspector.core.structureview {
 			while(_list.numChildren) {
 				ObjectPool.disposeObject(_list.removeChildAt(0), _itemRenderer);
 			}
-			
+
 			var item : DisplayItemData;
 			for(var i : int = 0;i < _data.length;i++) {
 				item = _data[i];
-				if(item.displayObject.stage == null)continue;
+				if(item.displayObject.stage == null)
+					continue;
 				if(filterFun != null) {
 					if(filterFun.apply(null, [item.displayObject])) {
 						continue;
 					}
 				}
-				//				var render : BaseDisplayItemView = new _itemRenderer();
+				// var render : BaseDisplayItemView = new _itemRenderer();
 				var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
 				render.setData(item);
 				render.x = 0;
 				render.y = _list.height + 2;
 				_list.addChild(render);
 			}
-			
+
 			dispatchEvent(new Event(Event.RESIZE));
 		}
 
@@ -192,7 +193,7 @@ package cn.itamt.utils.inspector.core.structureview {
 				(_map[object] as DisplayItemData).addEventListener(DisplayItemEvent.EXPAND, onExpandCollapseItem);
 				(_map[object] as DisplayItemData).addEventListener(DisplayItemEvent.COLLAPSE, onExpandCollapseItem);
 			}
-			
+
 			return _map[object];
 		}
 
@@ -209,7 +210,7 @@ package cn.itamt.utils.inspector.core.structureview {
 					collapseDisplayItem(item);
 					break;
 			}
-			
+
 			this.drawList();
 		}
 
@@ -255,7 +256,7 @@ package cn.itamt.utils.inspector.core.structureview {
 		 */
 		public function getObjectRenderer(object : DisplayObject) : * {
 			var render : BaseDisplayItemView;
-			
+
 			var i : int = _list.numChildren;
 			while(i--) {
 				render = _list.getChildAt(i) as BaseDisplayItemView;
@@ -264,7 +265,7 @@ package cn.itamt.utils.inspector.core.structureview {
 					break;
 				}
 			}
-			
+
 			return null;
 		}
 	}

@@ -6,10 +6,13 @@ package cn.itamt.utils {
 
 		public static function printf(...args) : void {
 			// trace(args);
+
 		}
 
 		public static function trace(str : String, level : int = 0) : void {
-//			com.hexagonstar.util.debug.Debug.trace(str, level);//			trace(str);
+//			com.hexagonstar.util.debug.Debug.trace(str, level);
+			// trace(str);
+
 		}
 	}
 }

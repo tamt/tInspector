@@ -1,5 +1,4 @@
 package cn.itamt.utils.inspector.lang {
-
 	/**
 	 * @author itamt@qq.com
 	 */
@@ -53,6 +52,7 @@ GEK_ClearHistory=	清空
 ControlBar		=	控制栏
 Clear			=	清除
 DownloadAll		=	资源
+SaveAs			=	在网页中打开
 ]]>
 					</lang>;
 		}

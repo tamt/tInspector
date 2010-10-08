@@ -1,5 +1,6 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.ClassTool;
+
 	import flash.display.AVM1Movie;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -47,9 +48,14 @@ package cn.itamt.utils.inspector.ui {
 		// inspector logo
 		public static const LOGO : String = 'inspector_logo';
 		public static const INSPECT : String = 'inspector_inspect';
+		//
+		public static const COPY : String = "copy";
+		public static const OPEN : String = "open";
+		public static const FOLDER : String = "folder";
+		//
 		private static var assetBmd : InspectorSymbolBmd;
 		private static var iconBmds : Array;
-		private static var icons : Array = [InspectorSymbolIcon.UNKNOWN, InspectorSymbolIcon.SPRITE, InspectorSymbolIcon.MOVIE_CLIP, InspectorSymbolIcon.BITMAP, InspectorSymbolIcon.SHAPE, InspectorSymbolIcon.TEXT_FIELD, InspectorSymbolIcon.LOADER, InspectorSymbolIcon.VIDEO, InspectorSymbolIcon.AVM1_MOVIE, InspectorSymbolIcon.STATIC_TEXT, InspectorSymbolIcon.MORPH_SHAPE, InspectorSymbolIcon.SIMPLE_BUTTON, InspectorSymbolIcon.STAGE, InspectorSymbolIcon.EXPAND, InspectorSymbolIcon.CLLOAPSE, InspectorSymbolIcon.BUG, InspectorSymbolIcon.FAVORITE, InspectorSymbolIcon.DELETE, InspectorSymbolIcon.LOGO, InspectorSymbolIcon.INSPECT];
+		private static var icons : Array = [InspectorSymbolIcon.UNKNOWN, InspectorSymbolIcon.SPRITE, InspectorSymbolIcon.MOVIE_CLIP, InspectorSymbolIcon.BITMAP, InspectorSymbolIcon.SHAPE, InspectorSymbolIcon.TEXT_FIELD, InspectorSymbolIcon.LOADER, InspectorSymbolIcon.VIDEO, InspectorSymbolIcon.AVM1_MOVIE, InspectorSymbolIcon.STATIC_TEXT, InspectorSymbolIcon.MORPH_SHAPE, InspectorSymbolIcon.SIMPLE_BUTTON, InspectorSymbolIcon.STAGE, InspectorSymbolIcon.EXPAND, InspectorSymbolIcon.CLLOAPSE, InspectorSymbolIcon.BUG, InspectorSymbolIcon.FAVORITE, InspectorSymbolIcon.DELETE, InspectorSymbolIcon.LOGO, InspectorSymbolIcon.INSPECT, InspectorSymbolIcon.OPEN, InspectorSymbolIcon.COPY, InspectorSymbolIcon.FOLDER];
 		// ['sprite', 'movie clip', 'bitmap', 'shape', 'textfield', 'loader', 'video', 'avm1movie', 'static text', 'morphshape', '+', '-'];
 		private static var types : Array;
 
@@ -125,7 +131,7 @@ package cn.itamt.utils.inspector.ui {
 			return iconBmds[t];
 		}
 
-		public static function getFileIcon(contentType : String) : BitmapData {
+		public static function getIconNameByContentType(contentType : String) : String {
 			switch(contentType) {
 				case "application/x-shockwave-flash":
 					contentType = InspectorSymbolIcon.SWF;
@@ -136,11 +142,14 @@ package cn.itamt.utils.inspector.ui {
 				case "image/gif":
 					contentType = InspectorSymbolIcon.BITMAP;
 					break;
+				case null:
+					contentType = InspectorSymbolIcon.FOLDER;
+					break;
 				default:
 					contentType = InspectorSymbolIcon.UNKNOWN;
 					break;
 			}
-			return getIcon(contentType);
+			return contentType;
 		}
 	}
 }
