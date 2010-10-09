@@ -1,14 +1,19 @@
 package cn.itamt.utils.inspector.core.inspectfilter {
+	import flash.text.TextField;
+	import flash.display.MovieClip;
 	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.DisplayObjectTool;
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
-	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
 	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import flash.display.DisplayObject;
+	import flash.display.Shape;
+	import flash.display.SimpleButton;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 
@@ -19,8 +24,6 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 	public class InspectorFilterManager extends BaseInspectorPlugin {
 		//过滤器库
 		private var _filtersDb : Dictionary;
-		//保存所有的过滤器
-		//		private var _history : Array = [/*DisplayObject, Sprite, Shape, SimpleButton*/];
 		//处于启用状态的过滤器
 		private var _activeFilters : Array;
 		//清除設置前，進行保存設置的
@@ -152,6 +155,9 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 			}else if(evt.type == InspectorFilterEvent.CHANGE) {
 				if(isFilterActiving(evt.filter)) {
 					this.killFilter(evt.filter);
+					if(this._activeFilters == null) {
+						this.applyFilter(_defaultFilter);
+					}
 				} else {
 					this.applyFilter(evt.filter);
 				}
@@ -218,13 +224,22 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 		}
 
 		private function buildFilterDataBase() : void {
+			//将常用的几种类型存入库中
+			var t:Array = [Sprite, Shape, SimpleButton, MovieClip, TextField];
+			for each (var clazz : Class in t) {
+				if(this._filtersDb[clazz] == undefined) {
+					this._filtersDb[clazz] = true;
+				}
+			}
+			
+			//分析当前舞台上的显示对象类型，存入库中。
 			DisplayObjectTool.everyDisplayObject(_inspector.stage, checkInDb);
 		}
 
 		private function checkInDb(dp : DisplayObject) : void {
 			if(_inspector.isInspectView(dp))return;
-			if(this._filtersDb[dp["constructor"]] == undefined) {
-				this._filtersDb[dp["constructor"]] = true;
+			if(this._filtersDb[dp["constructor"] as Class] == undefined) {
+				this._filtersDb[dp["constructor"] as Class] = true;
 			}
 		}
 

@@ -9,7 +9,6 @@ package cn.itamt.utils.inspector.firefox {
 	import cn.itamt.utils.inspector.plugins.fullscreen.FullScreen;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
 	import cn.itamt.utils.inspector.plugins.stats.AppStats;
-	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
 
 	import msc.console.mConsole;
 	import msc.console.mIConsoleDelegate;
@@ -35,8 +34,7 @@ package cn.itamt.utils.inspector.firefox {
 		public var tf : TextField;
 		private var tInspector : Inspector;
 		private var statsView : AppStats;
-
-		private var swfInfoView : SwfInfoView;
+		// private var swfInfoView : SwfInfoView;
 		private var gErrorKeeper : GlobalErrorKeeper;
 
 		// 由finspector.js分配给的id, 用于与fInspector通信.
@@ -49,7 +47,7 @@ package cn.itamt.utils.inspector.firefox {
 			controlBar.addEventListener(InspectEvent.RELOAD, onClickReload);
 
 			statsView = new AppStats();
-			swfInfoView = new SwfInfoView();
+			// swfInfoView = new SwfInfoView();
 			gErrorKeeper = new GlobalErrorKeeper();
 			gErrorKeeper.watch(this.loaderInfo);
 
@@ -135,7 +133,7 @@ package cn.itamt.utils.inspector.firefox {
 			tInspector.pluginManager.registerPlugin(new ReloadApp());
 			tInspector.pluginManager.registerPlugin(new DownloadAll());
 			tInspector.pluginManager.registerPlugin(new FullScreen());
-			tInspector.pluginManager.registerPlugin(swfInfoView);
+//			tInspector.pluginManager.registerPlugin(swfInfoView);
 			tInspector.pluginManager.registerPlugin(gErrorKeeper);
 			// tInspector.pluginManager.loadPlugin(new URLRequest("http://www.itamt.cn/tinspector_plugins/DownloadAll.swf"));
 			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))
@@ -157,9 +155,9 @@ package cn.itamt.utils.inspector.firefox {
 			}
 		}
 
-		// // // // // // // // // // // // // ////////////
+		// // // // // // // // // // // // // // //////////
 		// // // //    /public   functions/////////////
-		// // // // // // // // // // // // // ////////////
+		// // // // // // // // // // // // // // //////////
 		public function connectController() : void {
 			Debug.trace('[tInspectorPreloader][connectController]');
 			mConsole.connectMonitor();
@@ -202,10 +200,10 @@ package cn.itamt.utils.inspector.firefox {
 			}
 		}
 
-		// // // // // // // // // // // // // ///////////////
-		// // // // // // // // // // // // // ///////////////
-		// // // // // // // // // // // // // ///////////////
-		// // // // // // // // // // // // // ///////////////
+		// // // // // // // // // // // // // // /////////////
+		// // // // // // // // // // // // // // /////////////
+		// // // // // // // // // // // // // // /////////////
+		// // // // // // // // // // // // // // /////////////
 		private static var engine : MovieClip = new MovieClip();
 
 		public static function callLater(func : Function, args : Array = null, frame : int = 1) : void {
