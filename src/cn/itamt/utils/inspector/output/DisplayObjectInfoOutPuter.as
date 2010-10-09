@@ -15,6 +15,8 @@ package cn.itamt.utils.inspector.output {
 		}
 
 		public function output(source : DisplayObject) : String {
+			if(source == null)
+				return null;
 			return '[' + ClassTool.getShortClassName(source) + ']' + '<font color="#990000">[x:' + source.x + ', y: ' + source.y + ']</font><font color="#0000FF">[w: ' + source.width + ', h: ' + source.height + ']</font><font color="#FF9900">[r: ' + int(source.rotation) + '°]</font>';
 		}
 	}

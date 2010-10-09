@@ -46,7 +46,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 		// 刷新按钮
 		protected var refreshBtn : InspectorViewRefreshButton;
 		protected var _owner : PropertyAccessorRender;
-		private var favoritable : Boolean = true;
+		protected var favoritable : Boolean = true;
 
 		public function get owner() : PropertyAccessorRender {
 			return _owner;

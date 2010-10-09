@@ -55,8 +55,8 @@ package cn.itamt.utils.inspector.firefox.download {
 		}
 
 		public function contains(child : DisplayObject) : Boolean {
-			if(this._itemPanel && this._itemPanel.contains(child))
-				return true;
+			// if(this._itemPanel && this._itemPanel.contains(child))
+			// return true;
 			return this._panel && this._panel.contains(child);
 		}
 

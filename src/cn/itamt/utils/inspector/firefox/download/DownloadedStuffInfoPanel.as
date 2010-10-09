@@ -8,31 +8,41 @@ package cn.itamt.utils.inspector.firefox.download {
 	 * @author itamt[at]qq.com
 	 */
 	public class DownloadedStuffInfoPanel extends PropertyPanel {
-		public function DownloadedStuffInfoPanel(w : Number = 340, h : Number = 230, owner : PropertyAccessorRender = null, favoritable : Boolean = false) {
-			super(w, h, owner, favoritable);
+		public function DownloadedStuffInfoPanel(w : Number = 300, h : Number = 200) {
+			super(w, h, null, false);
 
 			this.removeChild(this.viewMethodBtn);
 			this.removeChild(this.viewPropBtn);
 			this.removeChild(this.singletonBtn);
 			this.removeChild(this.refreshBtn);
+			this.search.visible = false;
 		}
 
 		override protected function onClickFull(evt : MouseEvent = null) : void {
 			if(evt)
 				evt.stopImmediatePropagation();
 			this.drawList();
-			// if(this.resizeBtn.normalMode) {
-			// if(_fSavedSize == null) {
-			// _fSavedSize = new Point(this._width, 400);
-			// } else {
-			// _fSavedSize = new Point(this._width, this.height);
-			// }
-			// if(_mSavedSize == null)
-			// _mSavedSize = new Point(this._width, 270);
-			// this.addChild(this.search);
-			// if(this.resizeBtn.normalMode)
-			// this.resize(_mSavedSize.x, _mSavedSize.y);
-			// }
+		}
+
+		// 对象的属性重绘
+		override protected function drawPropList() : void {
+			list.graphics.clear();
+			list.graphics.lineTo(0, 0);
+			while(list.numChildren) {
+				list.removeChildAt(0);
+			}
+
+			if(propList) {
+				var l : int = propList.length;
+				for(var i : int = 0;i < l;i++) {
+					var render : PropertyAccessorRender;
+					render = new PropertyAccessorRender(200, 20, false, this.owner, this.favoritable);
+					render.setXML(this.curTarget, propList[i]);
+					render.y = list.height + 4;
+
+					list.addChild(render);
+				}
+			}
 		}
 	}
 }
