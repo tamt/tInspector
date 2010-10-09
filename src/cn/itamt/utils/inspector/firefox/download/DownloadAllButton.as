@@ -1,7 +1,8 @@
-package cn.itamt.utils.inspector.firefox.download {
+﻿package cn.itamt.utils.inspector.firefox.download {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 
 	/**
@@ -14,7 +15,7 @@ package cn.itamt.utils.inspector.firefox.download {
 			_tip = InspectorLanguageManager.getStr('ReloadSwf');
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				//背景
@@ -36,7 +37,7 @@ package cn.itamt.utils.inspector.firefox.download {
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				//背景
@@ -59,7 +60,7 @@ package cn.itamt.utils.inspector.firefox.download {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				//背景
@@ -82,7 +83,7 @@ package cn.itamt.utils.inspector.firefox.download {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				//背景

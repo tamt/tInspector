@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 
@@ -11,11 +12,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 	public class LiveRotatePointBtn extends LiveTransformPointBtn {
 		public function LiveRotatePointBtn(onMouseDown : Function = null, onMouseUp : Function = null, onDrag : Function = null) {
 			super(onMouseDown, onMouseUp, onDrag);
-			
+
 			_tip = InspectorLanguageManager.getStr('LiveRotate');
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0xffffff);
@@ -25,7 +26,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0xffffff);
@@ -35,7 +36,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0);
@@ -45,7 +46,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildHitState() : Shape {
+		override protected function buildHitState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0xffffff);
@@ -55,7 +56,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0xffffff);

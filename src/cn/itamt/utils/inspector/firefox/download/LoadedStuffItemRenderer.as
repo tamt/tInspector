@@ -22,6 +22,7 @@ package cn.itamt.utils.inspector.firefox.download {
 		// protected var _iconOpenUrl : InspectorIconButton;
 		protected var _loadedLog : LoadedStuffInfo;
 		protected var _paddingLeft : Number = 0;
+		private var _background : Boolean;
 
 		public function LoadedStuffItemRenderer(w : Number = 200, h : Number = 20) : void {
 			this._width = w;
@@ -41,9 +42,9 @@ package cn.itamt.utils.inspector.firefox.download {
 			this.relayout();
 		}
 
-		protected function drawBg(bgColor : uint = 0x282828) : void {
+		protected function drawBg(bgColor : uint = 0x282828, alpha : Number = 1) : void {
 			this.graphics.clear();
-			this.graphics.beginFill(bgColor);
+			this.graphics.beginFill(bgColor, alpha);
 			// this.graphics.drawRoundRect(0, 0, Math.max(name_tf.x + name_tf.textWidth + 16, _width), _height, 5, 5);
 			this.graphics.drawRoundRect(20 + _paddingLeft, 0, name_tf.textWidth + 4, _height, 5, 5);
 			this.graphics.endFill();
@@ -51,7 +52,7 @@ package cn.itamt.utils.inspector.firefox.download {
 
 		protected function onMouseAct(evt : MouseEvent) : void {
 			if(evt.type == MouseEvent.ROLL_OUT) {
-				this.drawBg(0x282828);
+				this.drawBg(0x282828, _background ? 1 : 0);
 			} else if(evt.type == MouseEvent.ROLL_OVER) {
 				this.drawBg(0x444444);
 			} else if(evt.type == MouseEvent.CLICK) {
@@ -67,7 +68,7 @@ package cn.itamt.utils.inspector.firefox.download {
 			}
 			name_tf.x = 20 + _paddingLeft;
 			// name_tf.width = _width - 20;
-			drawBg();
+			drawBg(0x282828, _background ? 1 : 0);
 		}
 
 		protected function getBriefUrl(url : String):String {
@@ -105,7 +106,7 @@ package cn.itamt.utils.inspector.firefox.download {
 			}
 
 			this._iconSave = new InspectorIconButton(InspectorSymbolIcon.getIconNameByContentType(_loadedLog.contentType));
-			this._iconSave.tip = InspectorLanguageManager.getStr("SaveAs");
+			this._iconSave.tip = InspectorLanguageManager.getStr("OpenTip");
 			this._iconSave.addEventListener(MouseEvent.CLICK, onClickSave);
 			addChild(this._iconSave);
 
@@ -132,6 +133,17 @@ package cn.itamt.utils.inspector.firefox.download {
 
 		public function get color() : uint {
 			return name_tf.textColor;
+		}
+
+		public function set background(val : Boolean):void {
+			if(_background != val) {
+				_background = val;
+				drawBg(0x282828, _background ? 1 : 0);
+			}
+		}
+
+		public function get background():Boolean {
+			return _background;
 		}
 
 		public function dispose():void {

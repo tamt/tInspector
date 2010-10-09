@@ -36,7 +36,7 @@ DelMark			=	删除
 StructurePanel	=	结构面板
 PropertyPanel	=	属性面板
 InspectorFilterManager = 设置查看类型
-FilterAllDisplayObject	=	所有显示对象FullScreen	=	全屏StartMouseInspect	=	鼠标查看StopMouseInspect	=	关闭鼠标查看InspectorOnOff	=	开/关tInspector
+FilterAllDisplayObject	=	所有显示对象FullScreen		=	全屏StartMouseInspect	=	鼠标查看StopMouseInspect	=	关闭鼠标查看InspectorOnOff	=	开/关tInspector
 ResetTransform	=	还原变形
 SearchBtnHelp	=	按Tab/Enter键
 AppStatsPanel	=	Flash Stats面板
@@ -52,7 +52,13 @@ GEK_ClearHistory=	清空
 ControlBar		=	控制栏
 Clear			=	清除
 DownloadAll		=	资源
-SaveAs			=	在网页中打开
+LoadedStuffInfo	=	资源信息
+SaveAsTip		=	另存为...   
+OpenTip			=	在网页中打开   
+CopyUrlTip		=	复制URL    
+SaveAs			=	保存
+Open			=	打开
+CopyUrl			=	复制
 ]]>
 					</lang>;
 		}

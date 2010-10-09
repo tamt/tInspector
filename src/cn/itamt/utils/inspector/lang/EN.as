@@ -56,7 +56,13 @@ GEK_ClearHistory=	clear errors history
 ControlBar		=	control bar
 Clear			=	clear
 DownloadAll		=	loaded stuff
-SaveAs			=	open in new tab
+LoadedStuffInfo	=	stuff info
+SaveAs			=	Save
+Open			=	Open
+CopyUrl			=	URL
+SaveAsTip		=	save as...
+OpenTip			=	open in new tab
+CopyUrlTip		=	copy the url
 ]]>
 					</lang>;
 		}

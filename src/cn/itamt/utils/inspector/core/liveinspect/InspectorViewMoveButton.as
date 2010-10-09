@@ -1,7 +1,8 @@
 package cn.itamt.utils.inspector.core.liveinspect {
-	import cn.itamt.utils.inspector.ui.InspectorButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 
 	/**
@@ -10,18 +11,18 @@ package cn.itamt.utils.inspector.core.liveinspect {
 	public class InspectorViewMoveButton extends InspectorButton {
 		public function InspectorViewMoveButton() : void {
 			super();
-			
+
 			_tip = InspectorLanguageManager.getStr('LiveMove');
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0x99cc00);
 				graphics.moveTo(11.5, 4.2);
 				graphics.lineTo(13.2, 5.9);
@@ -40,14 +41,14 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0xffffff);
 				graphics.moveTo(11.5, 4.2);
 				graphics.lineTo(13.2, 5.9);
@@ -66,14 +67,14 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0xffffff);
 				graphics.moveTo(11.5, 4.2);
 				graphics.lineTo(13.2, 5.9);
@@ -92,14 +93,14 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0x000000);
 				graphics.moveTo(11.5, 4.2);
 				graphics.lineTo(13.2, 5.9);

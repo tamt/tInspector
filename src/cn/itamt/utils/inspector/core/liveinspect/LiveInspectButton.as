@@ -1,7 +1,8 @@
 package cn.itamt.utils.inspector.core.liveinspect {
-	import cn.itamt.utils.inspector.ui.InspectorViewFullButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.ui.InspectorViewFullButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 
@@ -14,12 +15,12 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			super();
 		}
 
-		
-		override protected function buildOverState() : Shape {
+
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
@@ -35,15 +36,15 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			g.curveTo(5.950000, 4.950000, 6.950000, 4.950000);
 			g.lineTo(13.050000, 6.600000);
 
-			
+
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
@@ -59,15 +60,15 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			g.curveTo(5.950000, 4.950000, 6.950000, 4.950000);
 			g.lineTo(13.050000, 6.600000);
 
-			
+
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
@@ -82,20 +83,20 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			g.lineTo(5.450000, 5.450000);
 			g.curveTo(5.950000, 4.950000, 6.950000, 4.950000);
 			g.lineTo(13.050000, 6.600000);
-			
+
 			return sp;
 		}
 
-		
-		//---------------------------
-		//---------------------------
-		//---------------------------
+
+		// ---------------------------
+		// ---------------------------
+		// ---------------------------
 
 		override protected function buildOverState2() : Shape {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
@@ -111,15 +112,15 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			g.curveTo(5.950000, 4.950000, 6.950000, 4.950000);
 			g.lineTo(13.050000, 6.600000);
 
-			
+
 			return sp;
 		}
 
 		override protected function buildDownState2() : Shape {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
@@ -141,8 +142,8 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		override protected function buildUpState2() : Shape {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
@@ -161,11 +162,14 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		//-----------------------------------		//-----------------------------------		//-----------------------------------		//-----------------------------------
+		// -----------------------------------
+		// -----------------------------------
+		// -----------------------------------
+		// -----------------------------------
 
 		override protected function updateStates() : void {
 			super.updateStates();
-			
+
 			if(_normalMode) {
 				_tip = InspectorLanguageManager.getStr('StartMouseInspect');
 			} else {

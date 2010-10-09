@@ -1,7 +1,8 @@
 package cn.itamt.utils.inspector.core.inspectfilter {
-	import cn.itamt.utils.inspector.ui.InspectorButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 
 	/**
@@ -11,11 +12,11 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 
 		public function FilterManagerButton() {
 			super();
-			
+
 			_tip = InspectorLanguageManager.getStr('SetFilterClass');
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				// Fills:
@@ -60,7 +61,7 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				// Fills:
@@ -102,12 +103,12 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 				graphics.curveTo(18.450000, 17.400000, 18.450000, 13.950000);
 				graphics.lineTo(18.450000, 8.750000);
 				graphics.curveTo(18.450000, 5.300000, 15.000000, 5.300000);
-//			
+				//
 			}
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				// Fills:
@@ -153,7 +154,7 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				// Fills:

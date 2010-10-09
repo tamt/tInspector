@@ -1,8 +1,9 @@
 package cn.itamt.utils.inspector.plugins.swfinfo {
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 
@@ -12,17 +13,17 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 	public class SwfInfoButton extends InspectorButton {
 		public function SwfInfoButton() {
 			super();
-			
+
 			_tip = InspectorLanguageManager.getStr(InspectorPluginId.SWFINFO_VIEW);
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(17.000000, 5.500000);
 			g.curveTo(14.700000, 5.500000, 12.950000, 7.050000);
@@ -35,13 +36,13 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(17.000000, 5.500000);
 			g.curveTo(14.700000, 5.500000, 12.950000, 7.050000);
@@ -54,13 +55,13 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			return sp;
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0x99cc00);
 			g.moveTo(17.000000, 5.500000);
 			g.curveTo(14.700000, 5.500000, 12.950000, 7.050000);
@@ -73,7 +74,7 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			return sp;
 		}
 
-		override protected function buildHitState() : Shape {
+		override protected function buildHitState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
@@ -82,13 +83,13 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(17.000000, 5.500000);
 			g.curveTo(14.700000, 5.500000, 12.950000, 7.050000);

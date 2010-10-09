@@ -66,29 +66,47 @@ package cn.itamt.utils.inspector.firefox.download {
 
 			// 按照域名进行排序
 			var list : Array;
+			// 层级数据
+			var levels : Array = [];
+			var domainRelativePaths : Array = [];
+			var lastDomainInfo : LoadedStuffInfo;
 			if(_data) {
 				list = _data.slice();
 				if(_sortOnDomain) {
 					list.sortOn("path");
 					if(list.length > 1) {
 						list.splice(0, 0, new LoadedStuffInfo((list[0] as LoadedStuffInfo).path));
-						var lastDomainInfo : LoadedStuffInfo = list[0];
+						levels[0] = 0;
+						lastDomainInfo = list[0];
 						for(var j : int = 1; j < list.length; j++) {
 							var info : LoadedStuffInfo = list[j] as LoadedStuffInfo;
 							if(info.path != lastDomainInfo.path) {
 								list.splice(j, 0, new LoadedStuffInfo(info.path));
+
+								// 计算层级关系
+								var level : int = 0;
+								for(var k : int = j; k >= 0; k--) {
+									if(list[k].contentType == null) {
+										if(info.path.indexOf(list[k].path) == 0 && info.path != list[k].path) {
+											level = levels[k] + 1;
+											domainRelativePaths[j] = info.path.slice(list[k].path.length, info.path.length - 1);
+											break;
+										}
+									}
+								}
+								levels[j] = level;
+								//
+
 								lastDomainInfo = list[j];
+							} else {
+								levels[j] = levels[j - 1];
 							}
 						}
 					}
-				} else {
-					list.sortOn("time");
 				}
 			}
 
 			var l : int = (list == null) ? 0 : list.length;
-			var lastDomainLevel : uint = 0;
-			var lastDomain : LoadedStuffInfo = list[0] as LoadedStuffInfo;
 			for(var i : int = 0;i < l;i++) {
 				var tinfo : LoadedStuffInfo = list[i] as LoadedStuffInfo;
 				var render : LoadedStuffItemRenderer;
@@ -96,19 +114,18 @@ package cn.itamt.utils.inspector.firefox.download {
 				render.x = 0;
 				render.y = _listContainer.height + 2;
 				render.data = list[i];
+
+				render.label = tinfo.path;
 				if(tinfo.contentType == null) {
-					if(tinfo.path.indexOf(lastDomain.path) == 0 && lastDomain.path != tinfo.path) {
-						lastDomainLevel++;
-						render.label = tinfo.path.substring(lastDomain.path.length, tinfo.path.length - 1);
-					} else {
-						lastDomainLevel = 0;
-						render.label = tinfo.path;
-					}
-					render.paddingLeft = lastDomainLevel * 20;
-					lastDomain = tinfo;
+					render.paddingLeft = levels[i] * 20;
+					render.label = (domainRelativePaths[i] ? domainRelativePaths[i] : tinfo.path);
+					render.color = 0x666666;
+					render.background = true;
 				} else {
-					render.paddingLeft = (lastDomainLevel + 1) * 20;
+					render.paddingLeft = (levels[i] + 1) * 20;
 					render.label = tinfo.name;
+					render.color = 0xcccccc;
+					render.background = false;
 				}
 				_listContainer.addChild(render);
 			}

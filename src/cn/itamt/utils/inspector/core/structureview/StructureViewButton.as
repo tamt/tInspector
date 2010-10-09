@@ -2,6 +2,7 @@ package cn.itamt.utils.inspector.core.structureview {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 
 	/**
@@ -11,14 +12,14 @@ package cn.itamt.utils.inspector.core.structureview {
 	public class StructureViewButton extends InspectorButton {
 		public function StructureViewButton() {
 			super();
-			
+
 			_tip = InspectorLanguageManager.getStr('ViewStructure');
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.lineStyle();
 				graphics.beginFill(0, 1);
 				graphics.moveTo(23.000000, 5.750000);
@@ -50,10 +51,10 @@ package cn.itamt.utils.inspector.core.structureview {
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.lineStyle();
 				graphics.beginFill(0, 1);
 				graphics.moveTo(23.000000, 5.750000);
@@ -85,10 +86,10 @@ package cn.itamt.utils.inspector.core.structureview {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.lineStyle();
 				graphics.beginFill(0, 0);
 				graphics.moveTo(23.000000, 5.750000);
@@ -120,10 +121,10 @@ package cn.itamt.utils.inspector.core.structureview {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.lineStyle();
 				graphics.beginFill(0, 0);
 				graphics.moveTo(23.000000, 5.750000);

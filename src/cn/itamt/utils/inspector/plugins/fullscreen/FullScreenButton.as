@@ -2,6 +2,7 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 
 	/**
@@ -10,18 +11,18 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 	public class FullScreenButton extends InspectorButton {
 		public function FullScreenButton() : void {
 			super();
-			
+
 			_tip = InspectorLanguageManager.getStr('FullScreen');
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				// Lines:
 				graphics.lineStyle(3.000000, 0x99cc00);
 				graphics.moveTo(15.150000, 5.250000);
@@ -37,18 +38,18 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 				graphics.lineTo(18.300000, 18.450000);
 				graphics.lineTo(15.150000, 18.450000);
 			}
-			
+
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				// Lines:
 				graphics.lineStyle(3.000000, 0xffffff);
 				graphics.moveTo(15.150000, 5.250000);
@@ -64,18 +65,18 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 				graphics.lineTo(18.300000, 18.450000);
 				graphics.lineTo(15.150000, 18.450000);
 			}
-			
+
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				// Lines:
 				graphics.lineStyle(3.000000, 0xffffff);
 				graphics.moveTo(15.150000, 5.250000);
@@ -91,18 +92,18 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 				graphics.lineTo(18.300000, 18.450000);
 				graphics.lineTo(15.150000, 18.450000);
 			}
-			
+
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				// Lines:
 				graphics.lineStyle(3.000000, 0xffffff);
 				graphics.moveTo(15.150000, 5.250000);
@@ -118,7 +119,7 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 				graphics.lineTo(18.300000, 18.450000);
 				graphics.lineTo(15.150000, 18.450000);
 			}
-			
+
 			return sp;
 		}
 	}

@@ -1,5 +1,7 @@
 package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.inspector.ui.InspectorButton;
+
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 	import flash.events.Event;
@@ -19,11 +21,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 		public function LiveTransformPointBtn(onMouseDown : Function = null, onMouseUp : Function = null, onDrag : Function = null) {
 			super();
-			
+
 			downHandler = onMouseDown;
 			upHandler = onMouseUp;
 			dragHandler = onDrag;
-			
+
 			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
 		}
@@ -31,8 +33,9 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		private var inited : Boolean;
 
 		private function onAdded(evt : Event) : void {
-			if(inited)return;
-			
+			if(inited)
+				return;
+
 			inited = true;
 			this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			this.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -47,24 +50,27 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		private function onMouseDown(evt : MouseEvent) : void {
 			lastMousePt = new Point(evt.stageX, evt.stageY);
 			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			
-			if(this.downHandler != null)this.downHandler.call(null, this);
+
+			if(this.downHandler != null)
+				this.downHandler.call(null, this);
 		}
 
 		private function onMouseUp(evt : MouseEvent) : void {
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-			
-			if(this.downHandler != null)this.upHandler.call(null, this);
+
+			if(this.downHandler != null)
+				this.upHandler.call(null, this);
 		}
 
 		private function onMouseMove(evt : MouseEvent) : void {
-			if(this.dragHandler != null)this.dragHandler.call(null, this);
-			
+			if(this.dragHandler != null)
+				this.dragHandler.call(null, this);
+
 			lastMousePt.x = evt.stageX;
 			lastMousePt.y = evt.stageY;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0xffffff);
@@ -74,7 +80,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0xffffff);
@@ -84,7 +90,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0);
@@ -94,7 +100,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildHitState() : Shape {
+		override protected function buildHitState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0xffffff);
@@ -104,7 +110,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.lineStyle(1, 0xffffff);

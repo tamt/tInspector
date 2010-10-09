@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.events.MouseEvent;
 
@@ -12,19 +13,19 @@ package cn.itamt.utils.inspector.ui {
 
 		public function InspectorViewFullButton() {
 			super();
-			
+
 			this.addEventListener(MouseEvent.CLICK, onToggleMode, false, 0, true);
 			this.updateStates();
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0x99cc00);
 				graphics.moveTo(6, 5);
 				graphics.lineTo(15, 5);
@@ -36,15 +37,15 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
-				
+
+
 				graphics.lineStyle(3, 0xffffff);
 				graphics.moveTo(6, 5);
 				graphics.lineTo(15, 5);
@@ -56,14 +57,14 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0xffffff);
 				graphics.moveTo(6, 5);
 				graphics.lineTo(15, 5);
@@ -75,19 +76,19 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		
-		//---------------------------
-		//---------------------------
-		//---------------------------
+
+		// ---------------------------
+		// ---------------------------
+		// ---------------------------
 
 		protected function buildOverState2() : Shape {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0x99cc00);
 				graphics.moveTo(6, 6);
 				graphics.lineTo(15, 6);
@@ -100,11 +101,11 @@ package cn.itamt.utils.inspector.ui {
 		protected function buildDownState2() : Shape {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0xffffff);
 				graphics.moveTo(6, 6);
 				graphics.lineTo(15, 6);
@@ -117,11 +118,11 @@ package cn.itamt.utils.inspector.ui {
 		protected function buildUpState2() : Shape {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
-				
+
 				graphics.lineStyle(3, 0xffffff);
 				graphics.moveTo(6, 6);
 				graphics.lineTo(15, 6);
@@ -131,8 +132,8 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		//-----------------------------
-		//-----------------------------
+		// -----------------------------
+		// -----------------------------
 		protected var _normalMode : Boolean = true;
 
 		public function get normalMode() : Boolean {
@@ -141,14 +142,14 @@ package cn.itamt.utils.inspector.ui {
 
 		public function set normalMode(bool : Boolean) : void {
 			_normalMode = bool;
-			
+
 			updateStates();
 		}
 
-		//切换按钮状态
+		// 切换按钮状态
 		private function onToggleMode(evt : MouseEvent) : void {
 			_normalMode = !_normalMode;
-			
+
 			updateStates();
 		}
 
@@ -158,14 +159,14 @@ package cn.itamt.utils.inspector.ui {
 				this.upState = buildUpState();
 				this.overState = buildOverState();
 				this.hitTestState = buildHitState();
-			
+
 				_tip = InspectorLanguageManager.getStr('ViewFullProperties');
 			} else {
 				this.downState = buildDownState2();
 				this.upState = buildUpState2();
 				this.overState = buildOverState2();
 				this.hitTestState = buildHitState();
-			
+
 				_tip = InspectorLanguageManager.getStr('ViewMarkedProperties');
 			}
 		}
@@ -181,15 +182,15 @@ package cn.itamt.utils.inspector.ui {
 			}
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			if(_normalMode) {
 				with(sp) {
-					//背景
+					// 背景
 					graphics.beginFill(0, 0);
 					graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 					graphics.endFill();
-				
+
 					graphics.lineStyle(3, 0x000000);
 					graphics.moveTo(6, 5);
 					graphics.lineTo(15, 5);
@@ -200,11 +201,11 @@ package cn.itamt.utils.inspector.ui {
 				}
 			} else {
 				with(sp) {
-					//背景
+					// 背景
 					graphics.beginFill(0, 0);
 					graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 					graphics.endFill();
-				
+
 					graphics.lineStyle(3, 0x000000);
 					graphics.moveTo(6, 6);
 					graphics.lineTo(15, 6);

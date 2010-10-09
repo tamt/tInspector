@@ -48,15 +48,15 @@ package cn.itamt.utils.inspector.firefox.download {
 
 		public function getPluginName(lang : String) : String {
 			if(lang == "cn") {
-				return "下载";
+				return "资源下载";
 			} else {
-				return "download";
+				return "download stuff";
 			}
 		}
 
 		public function contains(child : DisplayObject) : Boolean {
-			// if(this._itemPanel && this._itemPanel.contains(child))
-			// return true;
+			if(this._itemPanel && this._itemPanel.contains(child))
+				return true;
 			return this._panel && this._panel.contains(child);
 		}
 
@@ -99,7 +99,10 @@ package cn.itamt.utils.inspector.firefox.download {
 
 			_panel.removeEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.removeEventListener("clear", onClickClear);
+			_panel.removeEventListener(MouseEvent.CLICK, onClickLoadedItem);
 			InspectorPopupManager.remove(_panel);
+			_panel.dispose();
+			_panel = null;
 
 			if(_itemPanel)
 				this.removeLoadedStuffInfoPanel();
@@ -178,8 +181,10 @@ package cn.itamt.utils.inspector.firefox.download {
 					}
 
 					this._loadeds.push(new LoadedStuffInfo(loaderInfo.url, loaderInfo.contentType));
-					if(this._panel)
-						this._panel.update();
+					if(this.isActive) {
+						if(this._panel)
+							this._panel.update();
+					}
 				}
 			}
 		}

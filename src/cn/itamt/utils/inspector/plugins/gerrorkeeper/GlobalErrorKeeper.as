@@ -9,6 +9,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;
+	import flash.display.Sprite;
 	import flash.events.ErrorEvent;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -24,6 +25,8 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 		protected var historyPanel : ErrorListPanel;
 		protected var errorPanels : Array;
 		protected var errorList : Array;
+		protected var iconBtnContainer : Sprite;
+		protected var historyBtn : GlobalErrorsHistoryButton;
 
 		public function GlobalErrorKeeper() {
 			super();
@@ -35,21 +38,29 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 
 		override public function onRegister(inspector : IInspector) : void {
 			super.onRegister(inspector);
-			
+
 			_icon = new GlobalErrorKeeperButton();
+			historyBtn = new GlobalErrorsHistoryButton();
+
+			iconBtnContainer = new Sprite();
+			iconBtnContainer.mouseEnabled = false;
+			iconBtnContainer.addChild(_icon);
+			historyBtn.x = _icon.width;
+			iconBtnContainer.addChild(historyBtn);
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
 			if(errorPanels) {
 				for each(var ep:ErrorInfoPanel in errorPanels) {
-					if(ep == child || ep.contains(child))return true;
+					if(ep == child || ep.contains(child))
+						return true;
 				}
 			}
-			
+
 			if(historyPanel) {
 				return historyPanel == child || historyPanel.contains(child);
 			}
-			
+
 			return false;
 		}
 
@@ -58,10 +69,12 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 		 */
 		override public function onTurnOn() : void {
 			super.onTurnOn();
-			
+
 			if(this.enabled) {
 				_inspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 			}
+
+			historyBtn.addEventListener(MouseEvent.CLICK, onClickHistoryBtn);
 		}
 
 		/**
@@ -69,11 +82,13 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 		 */
 		override public function onTurnOff() : void {
 			_isOn = false;
+
+			historyBtn.removeEventListener(MouseEvent.CLICK, onClickHistoryBtn);
 		}
 
 		override public function onActive() : void {
 			super.onActive();
-			
+
 			if(this._inspector.stage.loaderInfo.hasOwnProperty("uncaughtErrorEvents")) {
 				enabled = true;
 				for(var i : int = 0;i < this._inspector.stage.numChildren;i++) {
@@ -81,27 +96,30 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 				}
 			} else {
 				enabled = false;
-				
-				//提示用户该Flash Player不支持"错误全局处理".
+
+				// 提示用户该Flash Player不支持"错误全局处理".
 				this.popupErrorDetail(new ErrorLog(InspectorLanguageManager.getStr("GEK_Unsupported")));
 			}
 		}
 
 		override public function onUnActive() : void {
-			//			this.panel.removeEventListener(Event.CLOSE, onClickClose);
+			// this.panel.removeEventListener(Event.CLOSE, onClickClose);
 			if(this.historyPanel) {
-				if(this.historyPanel.stage)this.historyPanel.parent.removeChild(this.historyPanel);
-				this.historyPanel.removeEventListener(Event.CLOSE, onClickClose);				this.historyPanel.removeEventListener(MouseEvent.CLICK, onClickErrorItem);				this.historyPanel.removeEventListener(Event.CLEAR, onClickClear);
+				if(this.historyPanel.stage)
+					this.historyPanel.parent.removeChild(this.historyPanel);
+				this.historyPanel.removeEventListener(Event.CLOSE, onClickClose);
+				this.historyPanel.removeEventListener(MouseEvent.CLICK, onClickErrorItem);
+				this.historyPanel.removeEventListener(Event.CLEAR, onClickClear);
 				this.historyPanel = null;
 			}
-			
+
 			if(enabled) {
 				for(var i : int = 0;i < this._inspector.stage.numChildren;i++) {
 					unwatch(this._inspector.stage.getChildAt(i).loaderInfo);
 				}
 			}
 			enabled = false;
-			
+
 			super.onUnActive();
 		}
 
@@ -123,7 +141,9 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 		public function popupHistoryPanel() : void {
 			this.historyPanel = new ErrorListPanel();
 			this.historyPanel.setData(this.errorList);
-			this.historyPanel.addEventListener(Event.CLOSE, onClickClose);			this.historyPanel.addEventListener(Event.CLEAR, onClickClear);			this.historyPanel.addEventListener(MouseEvent.CLICK, onClickErrorItem);
+			this.historyPanel.addEventListener(Event.CLOSE, onClickClose);
+			this.historyPanel.addEventListener(Event.CLEAR, onClickClear);
+			this.historyPanel.addEventListener(MouseEvent.CLICK, onClickErrorItem);
 
 			InspectorPopupManager.popup(this.historyPanel, PopupAlignMode.CENTER);
 		}
@@ -134,7 +154,9 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 		public function hideHistoryPanel() : void {
 			if(this.historyPanel) {
 				InspectorPopupManager.remove(this.historyPanel);
-				this.historyPanel.removeEventListener(Event.CLOSE, onClickClose);				this.historyPanel.removeEventListener(MouseEvent.CLICK, onClickErrorItem);				this.historyPanel.removeEventListener(Event.CLEAR, onClickClear);
+				this.historyPanel.removeEventListener(Event.CLOSE, onClickClose);
+				this.historyPanel.removeEventListener(MouseEvent.CLICK, onClickErrorItem);
+				this.historyPanel.removeEventListener(Event.CLEAR, onClickClear);
 				this.historyPanel.dispose();
 				this.historyPanel = null;
 			}
@@ -143,7 +165,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 		public function toggleHistoryPanel() : void {
 			Debug.trace('[GlobalErrorKeeper][toggleHistoryPanel]' + InspectorPopupManager.contains(this.historyPanel));
 			if(InspectorPopupManager.contains(this.historyPanel)) {
-				this.hideHistoryPanel();	
+				this.hideHistoryPanel();
 			} else {
 				this.popupHistoryPanel();
 			}
@@ -155,39 +177,47 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 					removeErrorLog(errorList[0]);
 				}
 			}
-			
+
 			Debug.trace('[GlobalErrorKeeper][clearAllErrors]' + errorList.length);
 		}
 
 		public function removeErrorLog(errorLog : ErrorLog) : void {
-			if(errorList == null)return;
+			if(errorList == null)
+				return;
 			var t : int = errorList.indexOf(errorLog);
 			if(t < 0) {
 				Debug.trace('[GlobalErrorKeeper][removeErrorLog]nono, i can not find it.');
 				return;
 			}
-			
+
 			errorList.splice(t, 1);
 			Debug.trace('[GlobalErrorKeeper][removeErrorLog]' + errorList.length);
-			
+
 			this.removePopupErrorDetail(errorLog);
-			if(this.historyPanel)this.historyPanel.update();
+			if(this.historyPanel)
+				this.historyPanel.update();
 		}
 
 		public function addErrorLog(errorLog : ErrorLog) : void {
-			if(errorList == null)errorList = [];
-			
+			if(errorList == null)
+				errorList = [];
+
 			if(errorList.indexOf(errorLog) < 0) {
 				errorList.push(errorLog);
-				if(this.historyPanel)this.historyPanel.update();
+				if(this.historyPanel)
+					this.historyPanel.update();
 			}
-			
+
 			this.popupErrorDetail(errorLog);
 		}
 
-		//////////////////////////////////////
-		//////////private functions///////////
-		//////////////////////////////////////
+		override public function getPluginIcon() : DisplayObject {
+			return iconBtnContainer;
+		}
+
+		// // // // // // // // // // // // // // // // // // //
+		// // // // //     private    functions///////////
+		// // // // // // // // // // // // // // // // // // //
 
 		/**
 		 * 玩家单击关闭按钮时
@@ -200,17 +230,17 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 					errorPanels.splice(i, 1);
 				}
 				(evt.target as ErrorInfoPanel).removeEventListener(Event.CLOSE, onClickClose);
-			}else if(evt.target == this.historyPanel) {
+			} else if(evt.target == this.historyPanel) {
 				this.hideHistoryPanel();
 			}
 		}
 
 		private function uncaughtErrorHandler(evt : ErrorEvent) : void {
 			evt.preventDefault();
-			
+
 			var evtError : * = evt['error'];
 			var errorLog : ErrorLog = new ErrorLog(evtError);
-			
+
 			this.addErrorLog(errorLog);
 		}
 
@@ -225,10 +255,11 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 		 * 在界面上弹出错误的具体信息
 		 */
 		private function popupErrorDetail(errorLog : ErrorLog) : void {
-			if(errorPanels == null)errorPanels = [];
-			
+			if(errorPanels == null)
+				errorPanels = [];
+
 			var panel : ErrorInfoPanel;
-			var hasExist : Boolean;	
+			var hasExist : Boolean;
 			for each(panel in errorPanels) {
 				if(panel.errorLog == errorLog) {
 					hasExist = true;
@@ -240,13 +271,14 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 				errorPanels.push(panel);
 				panel.addEventListener(Event.CLOSE, onClickClose);
 			}
-			
+
 			InspectorPopupManager.popup(panel, PopupAlignMode.CENTER);
 		}
 
 		private function removePopupErrorDetail(errorLog : ErrorLog) : void {
-			if(errorPanels == null)return;
-			
+			if(errorPanels == null)
+				return;
+
 			var panel : ErrorInfoPanel;
 			for(var i : int = 0;i < errorPanels.length;i++) {
 				panel = errorPanels[i];
@@ -257,6 +289,10 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 					break;
 				}
 			}
+		}
+
+		private function onClickHistoryBtn(evt : MouseEvent):void {
+			this.toggleHistoryPanel();
 		}
 
 		private function onClickClear(event : Event) : void {

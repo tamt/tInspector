@@ -45,9 +45,9 @@ package cn.itamt.utils.inspector.firefox.download {
 			return _path;
 		}
 
-		public function get time():int {
-			return _time;
-		}
+		// public function get time():int {
+		// return _time;
+		// }
 
 		/*************************************
 		 *********private functions***********

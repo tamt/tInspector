@@ -2,6 +2,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 
@@ -11,7 +12,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 	public class GlobalErrorsHistoryButton extends InspectorButton {
 		public function GlobalErrorsHistoryButton() {
 			super();
-			
+
 			_tip = InspectorLanguageManager.getStr("GEK_History");
 		}
 
@@ -30,13 +31,13 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			}
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(4.400000, 5.300000);
 			g.lineTo(11.900000, 5.300000);
@@ -53,13 +54,13 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(4.400000, 5.300000);
 			g.lineTo(11.900000, 5.300000);
@@ -76,13 +77,13 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			return sp;
 		}
 
-		protected function buildActiveState() : Shape {
+		protected function buildActiveState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0x99cc00);
 			g.moveTo(4.400000, 5.300000);
 			g.lineTo(11.900000, 5.300000);
@@ -99,13 +100,13 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			return sp;
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0x99cc00);
 			g.moveTo(4.400000, 5.300000);
 			g.lineTo(11.900000, 5.300000);
@@ -122,7 +123,7 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			return sp;
 		}
 
-		override protected function buildHitState() : Shape {
+		override protected function buildHitState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
@@ -131,13 +132,13 @@ package cn.itamt.utils.inspector.plugins.gerrorkeeper {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(4.400000, 5.300000);
 			g.lineTo(11.900000, 5.300000);

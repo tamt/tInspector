@@ -1,8 +1,9 @@
 package cn.itamt.utils.inspector.plugins.stats {
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 
@@ -12,17 +13,17 @@ package cn.itamt.utils.inspector.plugins.stats {
 	public class AppStatsButton extends InspectorButton {
 		public function AppStatsButton() {
 			super();
-			
+
 			_tip = InspectorLanguageManager.getStr(InspectorPluginId.APPSTATS_VIEW);
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(3.750000, 11.600000);
 			g.curveTo(5.000000, 5.100000, 7.450000, 5.050000);
@@ -32,13 +33,13 @@ package cn.itamt.utils.inspector.plugins.stats {
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(3.750000, 11.600000);
 			g.curveTo(5.000000, 5.100000, 7.450000, 5.050000);
@@ -48,13 +49,13 @@ package cn.itamt.utils.inspector.plugins.stats {
 			return sp;
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0x99cc00);
 			g.moveTo(3.750000, 11.600000);
 			g.curveTo(5.000000, 5.100000, 7.450000, 5.050000);
@@ -64,7 +65,7 @@ package cn.itamt.utils.inspector.plugins.stats {
 			return sp;
 		}
 
-		override protected function buildHitState() : Shape {
+		override protected function buildHitState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 1);
@@ -73,13 +74,13 @@ package cn.itamt.utils.inspector.plugins.stats {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-			
+
 			g.lineStyle(3.000000, 0xffffff);
 			g.moveTo(3.750000, 11.600000);
 			g.curveTo(5.000000, 5.100000, 7.450000, 5.050000);

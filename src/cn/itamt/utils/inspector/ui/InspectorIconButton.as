@@ -1,5 +1,6 @@
 package cn.itamt.utils.inspector.ui {
 	import flash.display.BitmapData;
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.Shape;
 	import flash.filters.ColorMatrixFilter;
@@ -18,7 +19,7 @@ package cn.itamt.utils.inspector.ui {
 			super();
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 
@@ -33,7 +34,7 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 
@@ -50,7 +51,7 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				graphics.beginFill(0xcccccc, 0);

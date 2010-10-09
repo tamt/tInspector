@@ -1,8 +1,9 @@
 package cn.itamt.utils.inspector.core.propertyview {
-	import cn.itamt.utils.inspector.ui.InspectorViewFullButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.ui.InspectorViewFullButton;
 
 	import flash.display.CapsStyle;
+	import flash.display.DisplayObject;
 	import flash.display.Graphics;
 	import flash.display.JointStyle;
 	import flash.display.Shape;
@@ -16,109 +17,113 @@ package cn.itamt.utils.inspector.core.propertyview {
 			super();
 		}
 
-		
-		override protected function buildOverState() : Shape {
+
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-				
+
 			g.lineStyle(3, 0x99cc00, 1.0, false, "normal", CapsStyle.SQUARE, JointStyle.MITER);
 			g.drawRect(6, 6, 9, 9);
-			
+
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-				
+
 			g.lineStyle(3, 0xffffff, 1.0, false, "normal", CapsStyle.SQUARE, JointStyle.MITER);
 			g.drawRect(6, 6, 9, 9);
-			
+
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-				
+
 			g.lineStyle(3, 0xffffff, 1.0, false, "normal", CapsStyle.SQUARE, JointStyle.MITER);
 			g.drawRect(6, 6, 9, 9);
-			
+
 			return sp;
 		}
 
-		
-		//---------------------------
-		//---------------------------
-		//---------------------------
+
+		// ---------------------------
+		// ---------------------------
+		// ---------------------------
 
 		override protected function buildOverState2() : Shape {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-				
+
 			g.lineStyle(3, 0x99cc00);
-			g.drawRect(5, 5, 6, 6);			g.drawRect(9, 9, 6, 6);
-			
+			g.drawRect(5, 5, 6, 6);
+			g.drawRect(9, 9, 6, 6);
+
 			return sp;
 		}
 
 		override protected function buildDownState2() : Shape {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 1);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-				
+
 			g.lineStyle(3, 0xffffff);
 			g.drawRect(5, 5, 6, 6);
 			g.drawRect(9, 9, 6, 6);
-			
+
 			return sp;
 		}
 
 		override protected function buildUpState2() : Shape {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
-			
-			//背景
+
+			// 背景
 			g.beginFill(0, 0);
 			g.drawRoundRect(0, 0, 23, 23, 10, 10);
 			g.endFill();
-				
+
 			g.lineStyle(3, 0xffffff);
 			g.drawRect(5, 5, 6, 6);
 			g.drawRect(9, 9, 6, 6);
-			
+
 			return sp;
 		}
 
-		//-----------------------------------		//-----------------------------------		//-----------------------------------		//-----------------------------------
+		// -----------------------------------
+		// -----------------------------------
+		// -----------------------------------
+		// -----------------------------------
 
 		override protected function updateStates() : void {
 			super.updateStates();
-			
+
 			if(_normalMode) {
 				_tip = InspectorLanguageManager.getStr('SingletonMode');
 			} else {

@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.plugins.swfinfo {
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.inspector.firefox.FlashPlayerEnvironment;
+	import cn.itamt.utils.inspector.ui.InspectorStageReference;
 
 	import com.codeazur.as3swf.SWF;
 	import com.codeazur.as3swf.data.SWFRectangle;
@@ -9,6 +10,7 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 	import com.codeazur.as3swf.tags.TagSetBackgroundColor;
 
 	import flash.display.DisplayObject;
+	import flash.display.Stage;
 	import flash.geom.Rectangle;
 	import flash.system.Capabilities;
 
@@ -17,7 +19,8 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 	 */
 	public class SWFInfo {
 		private var _swfRoot : DisplayObject;
-		//这个swf的url地址
+		private var _stage : Stage;
+		// 这个swf的url地址
 		private var _url : String;
 
 		public function get url() : String {
@@ -53,42 +56,42 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 		[tinspector_enum(type="String", value="BEST,HIGH,LOW,MEDIUM")]
 
 		public function set quality(val : String) : void {
-			_swfRoot.stage.quality = val;
+			_stage.quality = val;
 		}
 
 		public function get quality() : String {
-			return _swfRoot.stage.quality;
+			return _stage.quality;
 		}
 
 		/**
 		 * 帧速
 		 */
 		public function get frameRate() : uint {
-			return _swfRoot.stage.frameRate;
+			return _stage.frameRate;
 		}
 
 		public function set frameRate(num : uint) : void {
-			this._swfRoot.stage.frameRate = num;
+			this._stage.frameRate = num;
 		}
 
 		/**
 		 * 缩放模式
 		 */
-		[tinspector_enum(type="String", value="exactFit,noBorder,noScale,showAll")]
+		[tinspector_enum(type="String", value="exactFit,noBorder,noScale,showAll")]
 		public function set scaleMode(mode : String) : void {
-			this._swfRoot.stage.scaleMode = mode;
+			this._stage.scaleMode = mode;
 		}
 
 		public function get scaleMode() : String {
-			return this._swfRoot.stage.scaleMode;
+			return this._stage.scaleMode;
 		}
 
 		public function set contextMenu(bool : Boolean) : void {
-			this._swfRoot.stage.showDefaultContextMenu = bool;
+			this._stage.showDefaultContextMenu = bool;
 		}
 
 		public function get contextMenu() : Boolean {
-			return this._swfRoot.stage.showDefaultContextMenu;
+			return this._stage.showDefaultContextMenu;
 		}
 
 		/**
@@ -97,11 +100,11 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 		[tinspector_enum(type="String", value="B,BL,BR,L,R,T,TL,TR")]
 
 		public function set align(val : String) : void {
-			_swfRoot.stage.align = val;
+			_stage.align = val;
 		}
 
 		public function get align() : String {
-			return _swfRoot.stage.align;
+			return _stage.align;
 		}
 
 		protected var _size : SWFSize;
@@ -110,9 +113,9 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			return _size;
 		}
 
-		//		public function set size(val : SWFSize) : void {
-		//			_size = val;
-		//		}
+		// public function set size(val : SWFSize) : void {
+		// _size = val;
+		// }
 
 		protected var _compileDate : Date;
 
@@ -122,7 +125,8 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 
 		public function get playerSize() : SWFSize {
 			var rect : Rectangle = FlashPlayerEnvironment.getSwfSize();
-			if(rect == null)return null;
+			if(rect == null)
+				return null;
 			var size : SWFSize = new SWFSize(rect.width, rect.height);
 			return size;
 		}
@@ -134,11 +138,12 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 
 		public function SWFInfo(swfRoot : DisplayObject) : void {
 			_swfRoot = swfRoot;
-			
+			_stage = InspectorStageReference.entity;
+
 			_url = _swfRoot.loaderInfo.url;
 			_version = _swfRoot.loaderInfo.swfVersion;
 			_playerVersion = Capabilities.version;
-			
+
 			var swf : SWF = new SWF(swfRoot.loaderInfo.bytes);
 			var rect : SWFRectangle = swf.frameSize;
 			_size = new SWFSize((Number(rect.xmax) / 20 - Number(rect.xmin) / 20), (Number(rect.ymax) / 20 - Number(rect.ymin) / 20));
@@ -146,13 +151,14 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			for each(var tag:ITag in swf.tags) {
 				if(tag is TagSetBackgroundColor) {
 					_bgcolor = (tag as TagSetBackgroundColor).color;
-				}else if(tag is TagProductInfo) {
+				} else if(tag is TagProductInfo) {
 					_compileDate = (tag as TagProductInfo).compileDate;
 				}
 			}
-			
+
 			var t : int = FlashPlayerEnvironment.getSwfBgColor();
-			if(t >= 0)_bgcolor = t;
+			if(t >= 0)
+				_bgcolor = t;
 		}
 	}
 }

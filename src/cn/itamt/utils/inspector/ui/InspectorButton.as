@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.events.TipEvent;
 
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.SimpleButton;
 	import flash.events.MouseEvent;
@@ -14,7 +15,7 @@ package cn.itamt.utils.inspector.ui {
 		protected var _active : Boolean = false;
 
 		private var _timer : Timer;
-		protected var _tip : String = '提示';
+		protected var _tip : String = 'tip';
 
 		public function get tip() : String {
 			return _tip;
@@ -29,10 +30,12 @@ package cn.itamt.utils.inspector.ui {
 			this.upState = buildUpState();
 			this.overState = buildOverState();
 			this.hitTestState = buildHitState();
-			
+
 			_timer = new Timer(1000);
-			addEventListener(MouseEvent.ROLL_OVER, onRollOver);			addEventListener(MouseEvent.MOUSE_DOWN, removeTip);			addEventListener(MouseEvent.CLICK, removeTip);
-			
+			addEventListener(MouseEvent.ROLL_OVER, onRollOver);
+			addEventListener(MouseEvent.MOUSE_DOWN, removeTip);
+			addEventListener(MouseEvent.CLICK, removeTip);
+
 			this.tabEnabled = false;
 		}
 
@@ -56,17 +59,18 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		private function onRollOver(evt : MouseEvent) : void {
-			//			_timer.start();
+			// _timer.start();
 			_timer.addEventListener(TimerEvent.TIMER, onTimerShowTip);
-			
+
 			addEventListener(MouseEvent.ROLL_OUT, onRollOut);
 			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
 		}
 
 		private function onTimerShowTip(evt : TimerEvent) : void {
-			_timer.removeEventListener(TimerEvent.TIMER, onTimerShowTip);			_timer.addEventListener(TimerEvent.TIMER, onTimerRemoveTip);
-			
-			//显示tip
+			_timer.removeEventListener(TimerEvent.TIMER, onTimerShowTip);
+			_timer.addEventListener(TimerEvent.TIMER, onTimerRemoveTip);
+
+			// 显示tip
 			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
 		}
 
@@ -75,8 +79,8 @@ package cn.itamt.utils.inspector.ui {
 			_timer.removeEventListener(TimerEvent.TIMER, onTimerShowTip);
 			_timer.reset();
 			_timer.stop();
-			
-			//删除tip
+
+			// 删除tip
 			dispatchEvent(new TipEvent(TipEvent.EVT_REMOVE_TIP, this.tip));
 		}
 
@@ -98,11 +102,11 @@ package cn.itamt.utils.inspector.ui {
 				this.overState = buildOverState();
 				this.hitTestState = buildHitState();
 			}
-			
+
 			super.enabled = val;
 		}
 
-		protected function buildDownState() : Shape {
+		protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				graphics.beginFill(0, 1);
@@ -112,7 +116,7 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		protected function buildUpState() : Shape {
+		protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				graphics.beginFill(0, 1);
@@ -122,7 +126,7 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		protected function buildOverState() : Shape {
+		protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				graphics.beginFill(0, 1);
@@ -132,7 +136,7 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		protected function buildHitState() : Shape {
+		protected function buildHitState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				graphics.beginFill(0, 1);
@@ -142,7 +146,7 @@ package cn.itamt.utils.inspector.ui {
 			return sp;
 		}
 
-		protected function buildUnenabledState() : Shape {
+		protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
 				graphics.beginFill(0, 1);

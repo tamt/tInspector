@@ -2,6 +2,7 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
 
 	/**
@@ -10,14 +11,14 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 	public class ReloadButton extends InspectorButton {
 		public function ReloadButton() : void {
 			super();
-			
+
 			_tip = InspectorLanguageManager.getStr('ReloadSwf');
 		}
 
-		override protected function buildOverState() : Shape {
+		override protected function buildOverState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
@@ -37,14 +38,14 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 				graphics.lineTo(10.400000, 6.550000);
 				graphics.lineTo(11.100000, 6.600000);
 			}
-			
+
 			return sp;
 		}
 
-		override protected function buildDownState() : Shape {
+		override protected function buildDownState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
@@ -64,14 +65,14 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 				graphics.lineTo(10.400000, 6.550000);
 				graphics.lineTo(11.100000, 6.600000);
 			}
-			
+
 			return sp;
 		}
 
-		override protected function buildUpState() : Shape {
+		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
@@ -91,14 +92,14 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 				graphics.lineTo(10.400000, 6.550000);
 				graphics.lineTo(11.100000, 6.600000);
 			}
-			
+
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : Shape {
+		override protected function buildUnenabledState() : DisplayObject {
 			var sp : Shape = new Shape();
 			with(sp) {
-				//背景
+				// 背景
 				graphics.beginFill(0, 0);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
 				graphics.endFill();
@@ -118,7 +119,7 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 				graphics.lineTo(10.400000, 6.550000);
 				graphics.lineTo(11.100000, 6.600000);
 			}
-			
+
 			return sp;
 		}
 	}
