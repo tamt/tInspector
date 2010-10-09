@@ -42,6 +42,16 @@
 			</html:div>
 		</panel>
 	</window>
+	<popupset>
+		<panel align="right" id="fInspectorPluginSelector"
+			style="background-color:transparent;border-style: none;" noautohide="true">
+			<html:embed
+				src="chrome://finspector/content/fInspectorSetting.swf"
+				allowScriptAccess="always" type="application/x-shockwave-flash"
+				allowfullscreen="true" menu="false" wmode="transparent" width="200"
+				height="200" style="width:200px;height:200px;" />
+		</panel>
+	</popupset>
 	<statusbar id="status-bar">
 		<box width="0">
 			<html:embed id="tInspectorController"
@@ -50,7 +60,7 @@
 				allowfullscreen="true" menu="false" wmode="transparent" width="0"
 				height="0" style="width:0px;height:0px;" />
 		</box>
-		<statusbarpanel role="button" id="finspectorStatusBarBtn"
+		<statusbarpanel role="button" id="finspectorStatusBarBtn" context="fInspectorPluginSelector"
 			tooltiptext="&finspectorBtn.tooltip;" onclick="fInspector.toggleInspector();">
 			<image id="finspectorBtnImg" />
 		</statusbarpanel>

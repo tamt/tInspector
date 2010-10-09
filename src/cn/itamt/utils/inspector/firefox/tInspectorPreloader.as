@@ -1,12 +1,12 @@
 package cn.itamt.utils.inspector.firefox {
-	import cn.itamt.utils.inspector.plugins.fullscreen.FullScreen;
-	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadApp;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.firefox.download.DownloadAll;
+	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadApp;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
+	import cn.itamt.utils.inspector.plugins.fullscreen.FullScreen;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
 	import cn.itamt.utils.inspector.plugins.stats.AppStats;
 	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
@@ -110,7 +110,7 @@ package cn.itamt.utils.inspector.firefox {
 			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
 			if(loaderInfo) {
 				if(loaderInfo.url) {
-					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
+					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.url.indexOf("fInspectorSetting.swf") == -1) && (loaderInfo.url.indexOf("tInspectorConsoleMonitor.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
 						log(loaderInfo.url);
 						setupControlBar();
 						initInspector();
@@ -157,9 +157,9 @@ package cn.itamt.utils.inspector.firefox {
 			}
 		}
 
-		// // // // // // // // //////////////////////
+		// // // // // // // // // // // // // ////////////
 		// // // //    /public   functions/////////////
-		// // // // // // // // //////////////////////
+		// // // // // // // // // // // // // ////////////
 		public function connectController() : void {
 			Debug.trace('[tInspectorPreloader][connectController]');
 			mConsole.connectMonitor();
@@ -202,10 +202,10 @@ package cn.itamt.utils.inspector.firefox {
 			}
 		}
 
-		// // // // // // // // /////////////////////////
-		// // // // // // // // /////////////////////////
-		// // // // // // // // /////////////////////////
-		// // // // // // // // /////////////////////////
+		// // // // // // // // // // // // // ///////////////
+		// // // // // // // // // // // // // ///////////////
+		// // // // // // // // // // // // // ///////////////
+		// // // // // // // // // // // // // ///////////////
 		private static var engine : MovieClip = new MovieClip();
 
 		public static function callLater(func : Function, args : Array = null, frame : int = 1) : void {

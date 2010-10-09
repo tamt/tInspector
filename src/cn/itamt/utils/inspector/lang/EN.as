@@ -1,4 +1,5 @@
 package cn.itamt.utils.inspector.lang {
+	import cn.itamt.utils.inspector.firefox.setting.fInspectorSetting;
 	/**
 	 * @author itamt@qq.com
 	 */
@@ -63,6 +64,7 @@ CopyUrl			=	URL
 SaveAsTip		=	save as...
 OpenTip			=	open in new tab
 CopyUrlTip		=	copy the url
+Setting			=	Setting
 ]]>
 					</lang>;
 		}

@@ -59,6 +59,7 @@ CopyUrlTip		=	复制URL
 SaveAs			=	保存
 Open			=	打开
 CopyUrl			=	复制
+Setting			=	设置
 ]]>
 					</lang>;
 		}
