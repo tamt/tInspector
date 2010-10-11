@@ -15,7 +15,6 @@
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
-	import flash.display.LoaderInfo;
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;

@@ -19,7 +19,7 @@ package cn.itamt.utils.inspector.firefox.setting {
 		}
 
 		public function init():void {
-			_so = SharedObject.getLocal("FlashInspector");
+			_so = SharedObject.getLocal("FlashInspector", "");
 		}
 	}
 }
