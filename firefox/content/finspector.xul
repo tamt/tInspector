@@ -43,13 +43,13 @@
 		</panel>
 	</window>
 	<popupset>
-		<panel align="right" id="fInspectorPluginSelector"
+		<panel align="right" id="fInspectorSetting"
 			style="background-color:transparent;border-style: none;" noautohide="true">
 			<html:embed
 				src="chrome://finspector/content/fInspectorSetting.swf"
 				allowScriptAccess="always" type="application/x-shockwave-flash"
 				allowfullscreen="true" menu="false" wmode="transparent" width="200"
-				height="200" style="width:200px;height:200px;" />
+				height="250" style="width:200px;height:250px;" />
 		</panel>
 	</popupset>
 	<statusbar id="status-bar">
@@ -60,9 +60,9 @@
 				allowfullscreen="true" menu="false" wmode="transparent" width="0"
 				height="0" style="width:0px;height:0px;" />
 		</box>
-		<statusbarpanel role="button" id="finspectorStatusBarBtn" context="fInspectorPluginSelector"
-			tooltiptext="&finspectorBtn.tooltip;" onclick="fInspector.toggleInspector();">
-			<image id="finspectorBtnImg" />
+		<statusbarpanel role="button" id="finspectorStatusBarBtn" context="fInspectorSetting"
+			tooltiptext="&finspectorBtn.tooltip;" onclick="fInspector.toggleInspector();" >
+			<image id="finspectorBtnImg"/>
 		</statusbarpanel>
 	</statusbar>
 </overlay>

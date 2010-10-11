@@ -3,6 +3,7 @@ package cn.itamt.utils.inspector.firefox.download {
 	import cn.itamt.utils.inspector.core.IInspectorPlugin;
 	import cn.itamt.utils.inspector.core.InspectTarget;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.PopupAlignMode;
 
@@ -32,7 +33,7 @@ package cn.itamt.utils.inspector.firefox.download {
 		// // //   /实现接口：IInspectorPlugin//////
 		// // // // // // // // // // // // // // // // // // //
 		public function getPluginId() : String {
-			return "DownloadAll";
+			return InspectorPluginId.DOWNLOAD_ALL;
 		}
 
 		public function getPluginIcon() : DisplayObject {
@@ -85,7 +86,7 @@ package cn.itamt.utils.inspector.firefox.download {
 			_actived = true;
 			this._icon.active = true;
 
-			_panel = new DownloadAllPanel(InspectorLanguageManager.getStr("DownloadAll"));
+			_panel = new DownloadAllPanel(InspectorLanguageManager.getStr(InspectorPluginId.DOWNLOAD_ALL));
 			_panel.setData(this._loadeds);
 			_panel.addEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.addEventListener("clear", onClickClear);

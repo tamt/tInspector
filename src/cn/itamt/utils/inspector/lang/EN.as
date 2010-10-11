@@ -1,5 +1,4 @@
 package cn.itamt.utils.inspector.lang {
-	import cn.itamt.utils.inspector.firefox.setting.fInspectorSetting;
 	/**
 	 * @author itamt@qq.com
 	 */
@@ -56,7 +55,7 @@ GEK_History		=	global errors history
 GEK_ClearHistory=	clear errors history
 ControlBar		=	control bar
 Clear			=	clear
-DownloadAll		=	loaded stuff
+DownloadAll		=	Download Stuff
 LoadedStuffInfo	=	stuff info
 SaveAs			=	Save
 Open			=	Open
@@ -64,7 +63,8 @@ CopyUrl			=	URL
 SaveAsTip		=	save as...
 OpenTip			=	open in new tab
 CopyUrlTip		=	copy the url
-Setting			=	Setting
+FunctionSetting	=	Function Selector
+PluginSelectorTip	=	Refresh page after setting.
 ]]>
 					</lang>;
 		}

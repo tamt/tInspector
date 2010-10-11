@@ -4,11 +4,13 @@ package cn.itamt.utils.inspector.firefox {
 	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.firefox.download.DownloadAll;
 	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadApp;
+	import cn.itamt.utils.inspector.firefox.setting.fInspectorConfig;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
 	import cn.itamt.utils.inspector.plugins.fullscreen.FullScreen;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
 	import cn.itamt.utils.inspector.plugins.stats.AppStats;
+	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
 
 	import msc.console.mConsole;
 	import msc.console.mIConsoleDelegate;
@@ -33,8 +35,6 @@ package cn.itamt.utils.inspector.firefox {
 		private var controlBar : ControlBar;
 		public var tf : TextField;
 		private var tInspector : Inspector;
-		private var statsView : AppStats;
-		// private var swfInfoView : SwfInfoView;
 		private var gErrorKeeper : GlobalErrorKeeper;
 
 		// 由finspector.js分配给的id, 用于与fInspector通信.
@@ -46,8 +46,6 @@ package cn.itamt.utils.inspector.firefox {
 			controlBar = new ControlBar();
 			controlBar.addEventListener(InspectEvent.RELOAD, onClickReload);
 
-			statsView = new AppStats();
-			// swfInfoView = new SwfInfoView();
 			gErrorKeeper = new GlobalErrorKeeper();
 			gErrorKeeper.watch(this.loaderInfo);
 
@@ -129,15 +127,42 @@ package cn.itamt.utils.inspector.firefox {
 
 			tInspector = Inspector.getInstance();
 			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
-			tInspector.pluginManager.registerPlugin(statsView);
-			tInspector.pluginManager.registerPlugin(new ReloadApp());
-			tInspector.pluginManager.registerPlugin(new DownloadAll());
-			tInspector.pluginManager.registerPlugin(new FullScreen());
-//			tInspector.pluginManager.registerPlugin(swfInfoView);
-			tInspector.pluginManager.registerPlugin(gErrorKeeper);
-			// tInspector.pluginManager.loadPlugin(new URLRequest("http://www.itamt.cn/tinspector_plugins/DownloadAll.swf"));
-			if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))
-				tInspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
+			// 读取配置，注册相应的插件
+			var arr : Array = fInspectorConfig.getEnablePlugins();
+			if(arr == null) {
+				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
+				for each (var pluginName : String in arr) {
+					fInspectorConfig.setEnablePlugin(pluginName);
+				}
+				fInspectorConfig.save();
+			}
+			if(arr) {
+				for(var i : int = 0; i < arr.length; i++) {
+					switch(arr[i]) {
+						case InspectorPluginId.APPSTATS_VIEW:
+							tInspector.pluginManager.registerPlugin(new AppStats());
+							break;
+						case InspectorPluginId.RELOAD_APP:
+							tInspector.pluginManager.registerPlugin(new ReloadApp());
+							break;
+						case InspectorPluginId.DOWNLOAD_ALL:
+							tInspector.pluginManager.registerPlugin(new DownloadAll());
+							break;
+						case InspectorPluginId.FULL_SCREEN:
+							tInspector.pluginManager.registerPlugin(new FullScreen());
+							break;
+						case InspectorPluginId.GLOBAL_ERROR_KEEPER:
+							tInspector.pluginManager.registerPlugin(gErrorKeeper);
+							if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))
+								tInspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
+							break;
+						case InspectorPluginId.SWFINFO_VIEW:
+							tInspector.pluginManager.registerPlugin(new SwfInfoView());
+							break;
+					}
+				}
+			}
+
 		}
 
 		private function setupControlBar() : void {
@@ -155,9 +180,9 @@ package cn.itamt.utils.inspector.firefox {
 			}
 		}
 
-		// // // // // // // // // // // // // // //////////
+		// // // // // // // // // // // // // // // // // // //
 		// // // //    /public   functions/////////////
-		// // // // // // // // // // // // // // //////////
+		// // // // // // // // // // // // // // // // // // //
 		public function connectController() : void {
 			Debug.trace('[tInspectorPreloader][connectController]');
 			mConsole.connectMonitor();
@@ -200,10 +225,10 @@ package cn.itamt.utils.inspector.firefox {
 			}
 		}
 
-		// // // // // // // // // // // // // // /////////////
-		// // // // // // // // // // // // // // /////////////
-		// // // // // // // // // // // // // // /////////////
-		// // // // // // // // // // // // // // /////////////
+		// // // // // // // // // // // // // // // // // // // //                    /
+		// // // // // // // // // // // // // // // // // // // //                    /
+		// // // // // // // // // // // // // // // // // // // //                    /
+		// // // // // // // // // // // // // // // // // // // //                    /
 		private static var engine : MovieClip = new MovieClip();
 
 		public static function callLater(func : Function, args : Array = null, frame : int = 1) : void {

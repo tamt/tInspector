@@ -1,49 +1,63 @@
-package cn.itamt.utils.inspector.core.inspectfilter {
-	import cn.itamt.utils.ClassTool;
-	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
+package cn.itamt.utils.inspector.firefox.setting {
+	import cn.itamt.utils.inspector.ui.InspectorIconButton;
+	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
 	import cn.itamt.utils.inspector.ui.ToggleBooleanButton;
 
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorFilterItemRenderer extends Sprite {
+	public class fInspectorPluginItemRenderer extends Sprite {
 		private var valueBtn : ToggleBooleanButton;
 		protected var name_tf : TextField;
 		protected var _width : Number;
 		protected var _height : Number;
-		protected var _filter : Class;
+		protected var _plugin : String;
+		protected var helpBtn : InspectorIconButton;
 
-		public function InspectorFilterItemRenderer(w : Number = 200, h : Number = 20) : void {
+		public function fInspectorPluginItemRenderer(w : Number = 200, h : Number = 20) : void {
 			this._width = w;
 			this._height = h;
 
-			this.mouseChildren = false;
-			this.buttonMode = true;
+			// this.mouseChildren = false;
+			this.mouseEnabled = false;
 
 			name_tf = InspectorTextField.create('property name', 0xcccccc, 12, 0, 0, 'left', 'left');
 			name_tf.height = _height - 2;
 			addChild(name_tf);
 
 			valueBtn = new ToggleBooleanButton();
+			valueBtn.mouseEnabled = false;
 			addChild(valueBtn);
 
-			this.addEventListener(MouseEvent.ROLL_OVER, onMouseAct);
-			this.addEventListener(MouseEvent.ROLL_OUT, onMouseAct);
-			this.addEventListener(MouseEvent.CLICK, onMouseAct);
+			helpBtn = new InspectorIconButton(InspectorSymbolIcon.HELP);
+			helpBtn.addEventListener(MouseEvent.CLICK, onClickHelp);
+			addChild(helpBtn);
+
+
+			this.name_tf.addEventListener(MouseEvent.ROLL_OVER, onMouseAct);
+			this.name_tf.addEventListener(MouseEvent.ROLL_OUT, onMouseAct);
+			this.name_tf.addEventListener(MouseEvent.CLICK, onMouseAct);
 
 			this.relayout();
+		}
+
+		private function onClickHelp(event : MouseEvent) : void {
+			event.stopImmediatePropagation();
+
+			dispatchEvent(new Event("pluginHelp", true));
 		}
 
 		protected function drawBg(bgColor : uint = 0x282828) : void {
 			this.graphics.clear();
 			this.graphics.beginFill(bgColor);
 			// this.graphics.drawRoundRect(0, 0, Math.max(name_tf.x + name_tf.textWidth + 16, _width), _height, 5, 5);
-			this.graphics.drawRoundRect(0, 0, name_tf.x + name_tf.textWidth + 16, _height, 5, 5);
+			this.graphics.drawRoundRect(0, 0, name_tf.x + name_tf.textWidth + 30, _height, 5, 5);
 			this.graphics.endFill();
 		}
 
@@ -54,7 +68,7 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 				this.drawBg(0x444444);
 			} else if(evt.type == MouseEvent.CLICK) {
 				valueBtn.value = !valueBtn.value;
-				this.dispatchEvent(new InspectorFilterEvent(valueBtn.value ? InspectorFilterEvent.APPLY : InspectorFilterEvent.KILL, this._filter, true, true));
+				this.dispatchEvent(new Event(Event.SELECT, true));
 			}
 		}
 
@@ -64,19 +78,20 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 
 			name_tf.x = valueBtn.x + valueBtn.width + 3;
 			// name_tf.textColor = (_filter == DisplayObject ? 0xff6666 : 0xcccccc);
+			helpBtn.x = name_tf.x + name_tf.width + 5;
+			helpBtn.y = 1;
 
 			drawBg();
 		}
 
 		public function set data(value : Object) : void {
-			_filter = value as Class;
+			_plugin = value as String;
 
-			this.label = ClassTool.getClassName(value).replace("::", ".");
-			// this.label = ClassTool.getShortClassName(value);
+			this.label = _plugin;
 		}
 
 		public function set label(val : String) : void {
-			name_tf.text = (val == null ? '' : val);
+			name_tf.htmlText = "<a href='event:myEvent'><font color='#ffffff'>" + (val == null ? '' : val) + "</a></font>";
 
 			this.relayout();
 		}
@@ -86,7 +101,7 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 		}
 
 		public function get data() : * {
-			return _filter;
+			return _plugin;
 		}
 
 		public function set enable(value : Boolean) : void {

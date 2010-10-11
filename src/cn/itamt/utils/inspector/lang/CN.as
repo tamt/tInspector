@@ -51,7 +51,7 @@ GEK_History		=	错误历史
 GEK_ClearHistory=	清空
 ControlBar		=	控制栏
 Clear			=	清除
-DownloadAll		=	资源
+DownloadAll		=	下载资源
 LoadedStuffInfo	=	资源信息
 SaveAsTip		=	另存为...   
 OpenTip			=	在网页中打开   
@@ -59,7 +59,8 @@ CopyUrlTip		=	复制URL
 SaveAs			=	保存
 Open			=	打开
 CopyUrl			=	复制
-Setting			=	设置
+FunctionSetting	=	功能选择
+PluginSelectorTip	=	设置之后请刷新网页
 ]]>
 					</lang>;
 		}

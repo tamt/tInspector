@@ -8,6 +8,7 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 	import flash.external.ExternalInterface;
 
 	/**
+	 * TODO:ReloadApp可以通过ConsoleMonitor根据swf的url地址来实现.
 	 * @author itamt[at]qq.com
 	 */
 	public class ReloadApp extends BaseInspectorPlugin {
@@ -21,13 +22,13 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 			}
 		}
 
-		//////////////////////////////////////
-		////////////override funcions/////////
-		//////////////////////////////////////
+		// ////////////////////////////////////
+		// //////////override funcions/////////
+		// ////////////////////////////////////
 
 		override public function onRegister(inspector : IInspector) : void {
 			super.onRegister(inspector);
-			
+
 			_icon = new ReloadButton();
 		}
 
