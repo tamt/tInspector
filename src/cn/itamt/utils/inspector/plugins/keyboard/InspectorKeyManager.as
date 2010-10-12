@@ -2,9 +2,9 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 	import cn.itamt.keyboard.Shortcut;
 	import cn.itamt.keyboard.ShortcutEvent;
 	import cn.itamt.keyboard.ShortcutManager;
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
-	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 
 	import flash.display.DisplayObject;
 	import flash.utils.Dictionary;
@@ -20,7 +20,7 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 
 		public function InspectorKeyManager() : void {
 			super();
-			
+
 			_stMgr = new ShortcutManager();
 			_stMgr.addEventListener(ShortcutEvent.DOWN, onShortcutDown);
 		}
@@ -29,8 +29,9 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 		 * 绑定一组视图与快捷键。
 		 */
 		public function bindKey2View(keys : Array, viewID : String = null) : void {
-			if(_keyViewMap == null)_keyViewMap = new Dictionary(true);
-			
+			if(_keyViewMap == null)
+				_keyViewMap = new Dictionary(true);
+
 			var shortcut : Shortcut = _stMgr.checkShortcutExist(keys);
 			if(shortcut == null) {
 				shortcut = new Shortcut(keys);
@@ -43,8 +44,9 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 		 * 解除一组视图与快捷键的绑定
 		 */
 		public function unbindKey2View(keys : Array = null, viewID : String = null) : void {
-			if(keys == null && viewID == null)throw new ArgumentError('keys, view两个参数不能同时为空.');
-			
+			if(keys == null && viewID == null)
+				throw new ArgumentError('keys, view两个参数不能同时为空.');
+
 			var shortcut : Shortcut;
 			if(keys) {
 				shortcut = _stMgr.checkShortcutExist(keys);
@@ -69,8 +71,9 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 		 * 绑定键盘与函数
 		 */
 		public function bindKey2Fun(keys : Array, fun : Function) : void {
-			if(_keyFunMap == null)_keyFunMap = new Dictionary(true);
-			
+			if(_keyFunMap == null)
+				_keyFunMap = new Dictionary(true);
+
 			var shortcut : Shortcut = _stMgr.checkShortcutExist(keys);
 			if(shortcut == null) {
 				shortcut = new Shortcut(keys);
@@ -83,8 +86,9 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 		 * 解除绑定键盘与函数
 		 */
 		public function unbindKey2Fun(keys : Array = null, fun : Function = null) : void {
-			if(keys == null && fun == null)throw new ArgumentError('keys, fun两个参数不能同时为空.');
-			
+			if(keys == null && fun == null)
+				throw new ArgumentError('keys, fun两个参数不能同时为空.');
+
 			var shortcut : Shortcut;
 			if(keys) {
 				shortcut = _stMgr.checkShortcutExist(keys);
@@ -108,18 +112,18 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 		private function onShortcutDown(evt : ShortcutEvent) : void {
 			var viewID : String = _keyViewMap[evt.shortcut];
 			if(viewID) {
-				this._inspector.togglePluginById(viewID);
+				this._inspector.pluginManager.togglePluginById(viewID);
 			}
-			
+
 			var fun : Function = _keyFunMap[evt.shortcut];
 			if(fun != null) {
 				fun.call();
 			}
 		}
 
-		///////////////////////
-		///////////实现接口///////
-		///////////////////////
+		// /////////////////////
+		// /////////实现接口///////
+		// /////////////////////
 
 		override public function contains(child : DisplayObject) : Boolean {
 			return false;
@@ -127,20 +131,20 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 
 		override public function onRegister(inspector : IInspector) : void {
 			super.onRegister(inspector);
-			
+
 			_stMgr.setStage(_inspector.stage);
-			
-			//			this.bindKey2Fun([KeyCode.CONTROL, KeyCode.I], this.toggleTurn);			
+
+			// this.bindKey2Fun([KeyCode.CONTROL, KeyCode.I], this.toggleTurn);
 			this.bindKey2Fun([17, 73], _inspector.toggleTurn);
 		}
 
 		override public function onActive() : void {
 			super.onActive();
 
-			//			this.bindKey2View([KeyCode.CONTROL, KeyCode.S], StructureView.ID);
-			//			this.bindKey2View([KeyCode.CONTROL, KeyCode.T], LiveInspectView.ID);
-			//			this.bindKey2View([KeyCode.CONTROL, KeyCode.P], PropertiesView.ID);
-			//			this.bindKey2Fun([KeyCode.CONTROL, KeyCode.F], InspectorFilterManager.ID);
+			// this.bindKey2View([KeyCode.CONTROL, KeyCode.S], StructureView.ID);
+			// this.bindKey2View([KeyCode.CONTROL, KeyCode.T], LiveInspectView.ID);
+			// this.bindKey2View([KeyCode.CONTROL, KeyCode.P], PropertiesView.ID);
+			// this.bindKey2Fun([KeyCode.CONTROL, KeyCode.F], InspectorFilterManager.ID);
 			this.bindKey2View([17, 83], InspectorPluginId.STRUCT_VIEW);
 			this.bindKey2View([17, 84], InspectorPluginId.LIVE_VIEW);
 			this.bindKey2View([17, 80], InspectorPluginId.PROPER_VIEW);
@@ -149,7 +153,7 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 
 		override public function onUnActive() : void {
 			super.onUnActive();
-			
+
 			this.unbindKey2View([17, 83], InspectorPluginId.STRUCT_VIEW);
 			this.unbindKey2View([17, 84], InspectorPluginId.LIVE_VIEW);
 			this.unbindKey2View([17, 80], InspectorPluginId.PROPER_VIEW);
@@ -158,7 +162,7 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 
 		override public function onTurnOn() : void {
 			super.onTurnOn();
-			
+
 			this.bindKey2View([17, 83], InspectorPluginId.STRUCT_VIEW);
 			this.bindKey2View([17, 84], InspectorPluginId.LIVE_VIEW);
 			this.bindKey2View([17, 80], InspectorPluginId.PROPER_VIEW);
@@ -167,7 +171,7 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 
 		override public function onTurnOff() : void {
 			super.onTurnOff();
-			
+
 			this.unbindKey2View([17, 83], InspectorPluginId.STRUCT_VIEW);
 			this.unbindKey2View([17, 84], InspectorPluginId.LIVE_VIEW);
 			this.unbindKey2View([17, 80], InspectorPluginId.PROPER_VIEW);

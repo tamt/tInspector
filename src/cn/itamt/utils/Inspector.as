@@ -8,7 +8,6 @@
 	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesView;
 	import cn.itamt.utils.inspector.core.structureview.StructureView;
-	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.InspectorTipsManager;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
@@ -36,9 +35,9 @@
 		public static const VERSION : String = '1.2';
 		private static var _instance : Inspector;
 		public static var APP_DOMAIN : ApplicationDomain;
-		// // // ////////////////////////////////
-		// // // //////setter,  getter////////////
-		// // // ////////////////////////////////
+		// // // // // // // ////////////////////////
+		// // // // // //      setter,     getter////////////
+		// // // // // // // ////////////////////////
 		private var _root : DisplayObjectContainer;
 
 		public function get root() : DisplayObjectContainer {
@@ -111,21 +110,15 @@
 			return _instance;
 		}
 
-		// // // //////////////////////////////////////////////////
-		// // // //////////////////////////////////////////////////
-		// // // ///////////////public  functions///////////////////
-		// // // //////////////////////////////////////////////////
-		// // // //////////////////////////////////////////////////
+		// // // // // // // //////////////////////////////////////////
+		// // // // // // // //////////////////////////////////////////
+		// // // // // // // ///////public      functions///////////////////
+		// // // // // // // //////////////////////////////////////////
+		// // // // // // // //////////////////////////////////////////
 		/**
 		 * 初始化tInspector，并注册要使用功能（只有注册过的功能才能开启，turnOn）。
-		 * @param root				所在根对象
-		 * @param menu				注册右键菜单
-		 * @param live				注册实时查看功能
-		 * @param structure			注册显示结构功能
-		 * @param property			注册显示对象信息功能
-		 * @param keys				注册快捷键
 		 */
-		public function init(root : DisplayObjectContainer, controlBar : Boolean = true) : void {
+		public function init(root : DisplayObjectContainer) : void {
 			if(_inited)
 				return;
 			_inited = true;
@@ -148,8 +141,6 @@
 			this.pluginManager.registerPlugin(_propertiesView);
 			this.pluginManager.registerPlugin(_inspectView);
 			this.pluginManager.registerPlugin(_filterManager);
-			if(controlBar)
-				this.pluginManager.registerPlugin(new ControlBar());
 		}
 
 		/**
@@ -343,9 +334,9 @@
 			}
 		}
 
-		// // // ////////////////////////////////
-		// // // ////private  functions///////////
-		// // // ////////////////////////////////
+		// // // // // // // ////////////////////////
+		// // // // //     private    functions///////////
+		// // // // // // // ////////////////////////
 		private var _tMap : Dictionary;
 
 		/**
