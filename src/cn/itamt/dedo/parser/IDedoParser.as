@@ -1,6 +1,7 @@
 package cn.itamt.dedo.parser {
 	import cn.itamt.dedo.data.DAnimationsCollection;
 	import cn.itamt.dedo.data.DBrushesCollection;
+	import cn.itamt.dedo.data.DMapCharactersCollection;
 	import cn.itamt.dedo.data.DMapsCollection;
 	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DTilesCollection;
@@ -28,5 +29,7 @@ package cn.itamt.dedo.parser {
 		function getBrushes() : DBrushesCollection;
 
 		function getAnimations() : DAnimationsCollection;
+
+		function getCharacters() : DMapCharactersCollection;
 	}
 }

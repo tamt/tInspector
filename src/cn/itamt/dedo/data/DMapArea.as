@@ -1,5 +1,4 @@
 package cn.itamt.dedo.data {
-	import cn.itamt.utils.Debug;
 	/**
 	 * @author itamt[at]qq.com
 	 */

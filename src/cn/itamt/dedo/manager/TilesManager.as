@@ -1,7 +1,6 @@
 package cn.itamt.dedo.manager {
 	import cn.itamt.dedo.data.DTileCategoriesCollection;
 	import cn.itamt.dedo.data.DTilesCollection;
-	import cn.itamt.utils.Debug;
 
 	import flash.geom.Rectangle;
 

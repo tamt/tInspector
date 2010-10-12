@@ -2,6 +2,7 @@ package cn.itamt.dedo.factory {
 	import cn.itamt.dedo.DedoProject;
 	import cn.itamt.dedo.manager.AnimationsManager;
 	import cn.itamt.dedo.manager.BrushesManager;
+	import cn.itamt.dedo.manager.CharactersManager;
 	import cn.itamt.dedo.manager.MapsManager;
 	import cn.itamt.dedo.manager.TilesManager;
 	import cn.itamt.dedo.parser.IDedoParser;
@@ -31,6 +32,7 @@ package cn.itamt.dedo.factory {
 			project.mapsMgr = new MapsManager(parser.getMaps());
 			project.brushesMgr = new BrushesManager(parser.getBrushes());
 			project.animationsMgr = new AnimationsManager(parser.getAnimations());
+			project.charactersMgr = new CharactersManager(parser.getCharacters());
 
 			return project;
 		}

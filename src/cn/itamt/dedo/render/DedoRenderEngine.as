@@ -43,6 +43,7 @@ package cn.itamt.dedo.render {
 		// 计时器
 		private var tickMgr : TickManager;
 		private var validated : Boolean;
+		private var zeroPoint : Point = new Point();
 
 		public function DedoRenderEngine():void {
 		}
@@ -137,7 +138,7 @@ package cn.itamt.dedo.render {
 			if(resMgr == null)
 				resMgr = new ResourceManager();
 
-			renderMap();
+			renderMap(this.mapArea);
 		}
 
 		public function start():void {
@@ -156,7 +157,13 @@ package cn.itamt.dedo.render {
 		/*************************************
 		 **********private functions**********
 		 *************************************/
+		/**
+		 * 渲染地图
+		 * @param area	要渲染的区域
+		 */
 		private function renderMap(area : DMapArea = null):void {
+			if(area == null)
+				area = this.mapArea;
 			var layers : DMapLayersCollection = map.layers;
 			for(var i : int = layers.length - 1; i >= 0; i--) {
 				this.renderLayer(layers.getMapLayer(i), area);
@@ -164,7 +171,7 @@ package cn.itamt.dedo.render {
 
 			// render to output view
 			if(this.outputBmd) {
-				this.outputBmd.copyPixels(this.canvas, this.outputRect, new Point(), null, null, true);
+				this.outputBmd.copyPixels(this.canvas, this.outputRect, zeroPoint, null, null, true);
 				renderOffsetArea();
 			}
 		}
@@ -180,6 +187,7 @@ package cn.itamt.dedo.render {
 				var cells : DMapCellsCollection = layer.cells;
 				var sourceRect : Rectangle = new Rectangle(0, 0, this.map.cellwidth, this.map.cellheight);
 				var destPoint : Point = new Point();
+
 				for(var i : int = 0; i < cells.length; i++) {
 					var imgOrAni : int = cells.getMapCellImg(i);
 					if(imgOrAni < -1000) {
@@ -192,6 +200,14 @@ package cn.itamt.dedo.render {
 					destPoint.x = cells.getMapCellX(i) * map.cellwidth;
 					destPoint.y = cells.getMapCellY(i) * map.cellheight;
 					this.canvas.copyPixels(resBmd, sourceRect, destPoint, null, null, true);
+				}
+
+				var hasChars : Boolean = chaMgr.hasCharacterInArea(area);
+				if(hasChars) {
+					var charas : Vector.<uint> = chaMgr.getCharactersInArea(area);
+					destPoint.x = map.cellwidth * chaMgr.charas.getCharacterX(charas[0]);
+					destPoint.y = map.cellheight * chaMgr.charas.getCharacterY(charas[0]);
+					this.canvas.copyPixels(new BitmapData(32, 32, false, 0xff0000ff), new Rectangle(0, 0, 32, 32), destPoint, null, null, true);
 				}
 			}
 		}
@@ -212,19 +228,8 @@ package cn.itamt.dedo.render {
 		}
 
 		private function update() : void {
-			// this.outputBmd.lock();
-			// this.outputBmd.scroll(scrollAmountX, scrollAmountY);
-			// this.outputBmd.copyPixels(this.canvas, horizCutRect, horizPastePoint);
-			// this.outputBmd.copyPixels(this.canvas, vertCutRect, vertPastePoint);
-			// this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
-			// this.outputRect.offset(-scrollAmountX, -scrollAmountY);
-			//			//  绘制超出边缘的黑色区域
-			// this.renderOffsetArea();
-			// this.outputBmd.unlock();
-
 			this.outputBmd.lock();
-			this.outputBmd.copyPixels(this.canvas, this.outputRect, new Point());
-			// 绘制超出边缘的黑色区域
+			this.outputBmd.copyPixels(this.canvas, this.outputRect, zeroPoint);
 			this.renderOffsetArea();
 			this.outputBmd.unlock();
 		}

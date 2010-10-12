@@ -1,4 +1,5 @@
 package cn.itamt.dedo.parser {
+	import cn.itamt.dedo.data.DMapCharactersCollection;
 	import cn.itamt.dedo.data.DAnimationsCollection;
 	import cn.itamt.dedo.data.DBrushesCollection;
 	import cn.itamt.dedo.data.DMap;
@@ -26,9 +27,9 @@ package cn.itamt.dedo.parser {
 		public function TileMapperParser() : void {
 		}
 
-		// // // // //////////////////////////////
-		// // // // //实现接口：IMapParser/////////
-		// // // // //////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // 实现接口：IMapParser/////////
+		// // // // // ////////////////////////////
 		public function parse(xml : *, onComplete : Function = null) : Boolean {
 			this.xml = xml as XML;
 
@@ -126,6 +127,11 @@ package cn.itamt.dedo.parser {
 		}
 
 		public function getAnimations() : DAnimationsCollection {
+			return null;
+		}
+
+		public function getCharacters() : DMapCharactersCollection {
+			// TODO: Auto-generated method stub
 			return null;
 		}
 	}

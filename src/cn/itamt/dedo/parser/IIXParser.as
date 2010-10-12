@@ -3,6 +3,7 @@ package cn.itamt.dedo.parser {
 	import cn.itamt.dedo.data.DBrushesCollection;
 	import cn.itamt.dedo.data.DMap;
 	import cn.itamt.dedo.data.DMapCellsCollection;
+	import cn.itamt.dedo.data.DMapCharactersCollection;
 	import cn.itamt.dedo.data.DMapLayer;
 	import cn.itamt.dedo.data.DMapLayersCollection;
 	import cn.itamt.dedo.data.DMapsCollection;
@@ -239,6 +240,17 @@ package cn.itamt.dedo.parser {
 
 		public function getAnimations() : DAnimationsCollection {
 			return this.pAnis;
+		}
+
+		/**
+		 * 返回角色数据
+		 * TODO:使用的是测试数据
+		 */
+		public function getCharacters() : DMapCharactersCollection {
+			var charas : DMapCharactersCollection;
+			charas = new DMapCharactersCollection();
+			charas.setCharacter(0, 0, 10, 10, "tamt");
+			return charas;
 		}
 	}
 }
