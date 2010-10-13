@@ -3,10 +3,10 @@ package cn.itamt.dedo.render {
 	import cn.itamt.dedo.data.DMap;
 	import cn.itamt.dedo.data.DMapArea;
 	import cn.itamt.dedo.data.DMapCellsCollection;
+	import cn.itamt.dedo.data.DMapCharactersCollection;
 	import cn.itamt.dedo.data.DMapLayer;
 	import cn.itamt.dedo.data.DMapLayersCollection;
 	import cn.itamt.dedo.manager.AnimationsManager;
-	import cn.itamt.dedo.manager.CharactersManager;
 	import cn.itamt.dedo.manager.TickManager;
 	import cn.itamt.dedo.manager.TilesManager;
 
@@ -26,7 +26,6 @@ package cn.itamt.dedo.render {
 		private var map : DMap;
 		private var tiles : TilesManager;
 		private var anis : AnimationsManager;
-		private var chaMgr : CharactersManager;
 		private var resMgr : ResourceManager;
 		private var viewW : uint = 400;
 		private var viewH : uint = 400;
@@ -45,6 +44,8 @@ package cn.itamt.dedo.render {
 		private var tickMgr : TickManager;
 		private var validated : Boolean;
 		private var zeroPoint : Point = new Point();
+		//
+		private var charas : DMapCharactersCollection;
 
 		public function DedoRenderEngine():void {
 		}
@@ -133,7 +134,7 @@ package cn.itamt.dedo.render {
 			this.map = map;
 			this.tiles = project.tilesMgr;
 			this.anis = project.animationsMgr;
-			this.chaMgr = project.charactersMgr;
+			this.charas = map.characters;
 			this.transformOutputRect2MapRect();
 
 			if(resMgr == null)
@@ -177,7 +178,7 @@ package cn.itamt.dedo.render {
 			var layers : DMapLayersCollection = map.layers;
 			for(var i : int = layers.length - 1; i >= 0; i--) {
 				var layer : DMapLayer = layers.getMapLayer(i);
-				if(layer.visible)
+				if(layer && layer.visible)
 					this.renderLayer(layer, area);
 			}
 
@@ -214,21 +215,27 @@ package cn.itamt.dedo.render {
 					this.canvas.copyPixels(resBmd, sourceRect, destPoint, null, null, true);
 				}
 
-				var hasChars : Boolean = chaMgr.hasCharacterInArea(area);
+				var hasChars : Boolean = charas.hasCharacterInArea(area);
 				if(hasChars) {
-					var charas : Vector.<uint> = chaMgr.getCharactersInArea(area);
-					var posX : Number = chaMgr.charas.getCharacterX(charas[0]);
-					var posY : Number = chaMgr.charas.getCharacterY(charas[0]);
-					destPoint.x = map.cellwidth * posX;
-					destPoint.y = map.cellheight * posY;
+					var charaIndexs : Vector.<uint> = charas.getCharactersInArea(area);
+					var posX : Number = charas.getCharacterX(charaIndexs[0]);
+					var posY : Number = charas.getCharacterY(charaIndexs[0]);
 
 					// 绘制会遮住角色层的物体
 					var tcells : Vector.<int> = cells.getMapCellByWorldPos(posX, posY);
 					for(var j : int = 0; j < tcells.length; j++) {
 						var index : int = tcells[j];
 						if(index > 0) {
-							if(cells.getMapCellImg(index) > 0 && cells.getMapCellValue(index) < chaMgr.charas.getCharacterValue(0)) {
-								this.canvas.copyPixels(new BitmapData(32, 32, false, 0xff0000ff), new Rectangle(0, 0, 32, 32), destPoint, null, null, true);
+							if(cells.getMapCellImg(index) > 0 && cells.getMapCellValue(index) < charas.getCharacterValue(0)) {
+								var img : int = charas.getCharacterImg(0);
+								if(img < -1000) {
+									img = this.anis.getAnimationTile(-1001 - img, this.tickMgr.tick);
+								}
+								sourceRect.x = map.cellwidth * (tiles.getTilePosX(img));
+								sourceRect.y = map.cellheight * (tiles.getTilePosY(img));
+								destPoint.x = map.cellwidth * posX;
+								destPoint.y = map.cellheight * posY;
+								this.canvas.copyPixels(resBmd, sourceRect, destPoint, null, null, true);
 							}
 						}
 					}

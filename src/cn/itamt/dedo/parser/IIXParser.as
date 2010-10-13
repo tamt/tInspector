@@ -160,6 +160,7 @@ package cn.itamt.dedo.parser {
 				map.cellheight = cellsH;
 				map.cellwidth = cellsW;
 				map.layers = new DMapLayersCollection();
+				map.characters = new DMapCharactersCollection();
 
 				for(var j : uint = 0; j < numLayers; j++) {
 					var layerName : String = iix.readString(128);
@@ -173,13 +174,26 @@ package cn.itamt.dedo.parser {
 					layer.visible = layerVisible;
 					layer.cells = new DMapCellsCollection();
 
-					for(var k : uint = 0; k < cellsX * cellsY; k++) {
-						var img : int = iix.readSint16();
-						var value : uint = iix.readUint32();
-						layer.cells.setMapCell(k, k % cellsX, uint(k / cellsX), img, value);
-					}
+					var k : uint, img : int, value : uint;
+					if(!((j == 0) && layerName == "player")) {
+						map.layers.setMapLayer(j, layer);
 
-					map.layers.setMapLayer(j, layer);
+						for(k = 0; k < cellsX * cellsY; k++) {
+							img = iix.readSint16();
+							value = iix.readUint32();
+							layer.cells.setMapCell(k, k % cellsX, uint(k / cellsX), img, value);
+						}
+					} else {
+						// 特殊情况:该层是角色层
+						map.layers.setMapLayer(j, null);
+						for(k = 0; k < cellsX * cellsY; k++) {
+							img = iix.readSint16();
+							value = iix.readUint32();
+							if(img != -1) {
+								map.characters.setCharacter(map.characters.length, img, k % cellsX, uint(k / cellsX));
+							}
+						}
+					}
 				}
 
 				// 解析跳转点信息
@@ -240,17 +254,6 @@ package cn.itamt.dedo.parser {
 
 		public function getAnimations() : DAnimationsCollection {
 			return this.pAnis;
-		}
-
-		/**
-		 * 返回角色数据
-		 * TODO:使用的是测试数据
-		 */
-		public function getCharacters() : DMapCharactersCollection {
-			var charas : DMapCharactersCollection;
-			charas = new DMapCharactersCollection();
-			charas.setCharacter(0, 0, 10, 10, "tamt");
-			return charas;
 		}
 	}
 }

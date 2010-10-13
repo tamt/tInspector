@@ -14,28 +14,11 @@ package cn.itamt.dedo.manager {
 		}
 
 		public function hasCharacterInArea(area : DMapArea):Boolean {
-			var has : Boolean;
-			if(charas.length) {
-				for(var i : int = 0; i < length; i++) {
-					if(area.contains(charas.getCharacterX(i), charas.getCharacterY(i))) {
-						has = true;
-						break;
-					}
-				}
-			}
-			return has;
+			return charas.hasCharacterInArea(area);
 		}
 
 		public function getCharactersInArea(area : DMapArea):Vector.<uint> {
-			var indexs : Vector.<uint> = new Vector.<uint>;
-			if(charas.length) {
-				for(var i : uint = 0; i < length; i++) {
-					if(area.contains(charas.getCharacterX(i), charas.getCharacterY(i))) {
-						indexs.push(i);
-					}
-				}
-			}
-			return indexs;
+			return charas.getCharactersInArea(area);
 		}
 	}
 }

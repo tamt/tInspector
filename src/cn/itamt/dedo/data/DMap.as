@@ -27,7 +27,7 @@ package cn.itamt.dedo.data {
 		 * 返回在某个区域内是不是含有角色
 		 */
 		public function hasCharacterInArea(area : DMapArea):Boolean {
-			return layers.hasAnimationInArea(area);
+			return characters.hasCharacterInArea(area);
 		}
 	}
 }
