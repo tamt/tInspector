@@ -83,5 +83,17 @@ package cn.itamt.dedo.data {
 
 			return -1;
 		}
+
+		/**
+		 * 根据
+		 */
+		public function getMapCellByWorldPos(worldX : Number, worldY : Number):Vector.<int> {
+			var cells : Vector.<int> = new Vector.<int>;
+			cells.push(getMapCellByPos(Math.ceil(worldX), Math.ceil(worldY)));
+			cells.push(getMapCellByPos(Math.floor(worldX), Math.floor(worldY)));
+			cells.push(getMapCellByPos(Math.floor(worldX), Math.ceil(worldY)));
+			cells.push(getMapCellByPos(Math.ceil(worldX), Math.floor(worldY)));
+			return cells;
+		}
 	}
 }

@@ -9,7 +9,7 @@ package cn.itamt.keyboard {
 		private var _keycodes : Array;
 		public var mode : uint;
 
-		public function Shortcut(keycodes : Array, mode : uint = 1) : void {
+		public function Shortcut(keycodes : Array, mode : uint = 0) : void {
 			_keycodes = keycodes.sort();
 			this.mode = mode;
 		}

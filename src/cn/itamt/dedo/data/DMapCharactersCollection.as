@@ -4,37 +4,37 @@ package cn.itamt.dedo.data {
 	 */
 	public class DMapCharactersCollection extends DCollection {
 		private var _ids : Vector.<uint>;
-		private var _posx : Vector.<uint>;
-		private var _posy : Vector.<uint>;
+		private var _posx : Vector.<Number>;
+		private var _posy : Vector.<Number>;
 		private var _names : Vector.<String>;
 
 		public function DMapCharactersCollection():void {
 			_ids = new Vector.<uint>();
-			_posx = new Vector.<uint>();
-			_posy = new Vector.<uint>();
+			_posx = new Vector.<Number>();
+			_posy = new Vector.<Number>();
 			_names = new Vector.<String>();
 		}
 
-		public function setCharacter(index : uint, id : uint, x : uint, y : uint, name : String = null):void {
+		public function setCharacter(index : uint, id : uint, x : Number, y : Number, name : String = null):void {
 			_ids[index] = id;
 			_posx[index] = x;
 			_posy[index] = y;
 			_names[index] = name;
 		}
 
-		public function getCharacterX(index : uint):uint {
+		public function getCharacterX(index : uint):Number {
 			return _posx[index];
 		}
 
-		public function getCharacterY(index : uint):uint {
+		public function getCharacterY(index : uint):Number {
 			return _posy[index];
 		}
 
-		public function setCharacterX(index : uint, x : uint):void {
+		public function setCharacterX(index : uint, x : Number):void {
 			_posx[index] = x;
 		}
 
-		public function setCharacterY(index : uint, y : uint):void {
+		public function setCharacterY(index : uint, y : Number):void {
 			_posy[index] = y;
 		}
 

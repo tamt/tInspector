@@ -18,6 +18,7 @@ package cn.itamt.dedo.render {
 	import flash.geom.Rectangle;
 
 	/**
+	 * Dedo渲染引擎
 	 * @author itamt[at]qq.com
 	 */
 	public class DedoRenderEngine {
@@ -154,6 +155,15 @@ package cn.itamt.dedo.render {
 			this.resMgr = resourceManager;
 		}
 
+		public function updateCharacters():void {
+			// 查找当前可视范围内的角色元素
+			if(this.map.hasCharacterInArea(this.mapArea)) {
+				this.renderMap(this.mapArea);
+				// 更新canvas的内容
+				this.validate();
+			}
+		}
+
 		/*************************************
 		 **********private functions**********
 		 *************************************/
@@ -207,16 +217,19 @@ package cn.itamt.dedo.render {
 				var hasChars : Boolean = chaMgr.hasCharacterInArea(area);
 				if(hasChars) {
 					var charas : Vector.<uint> = chaMgr.getCharactersInArea(area);
-					var posX : uint = chaMgr.charas.getCharacterX(charas[0]);
-					var posY : uint = chaMgr.charas.getCharacterY(charas[0]);
+					var posX : Number = chaMgr.charas.getCharacterX(charas[0]);
+					var posY : Number = chaMgr.charas.getCharacterY(charas[0]);
 					destPoint.x = map.cellwidth * posX;
 					destPoint.y = map.cellheight * posY;
 
 					// 绘制会遮住角色层的物体
-					var index : int = cells.getMapCellByPos(posX, posY);
-					if(index > 0) {
-						if(cells.getMapCellImg(index) > 0 && cells.getMapCellValue(index) < chaMgr.charas.getCharacterValue(0)) {
-							this.canvas.copyPixels(new BitmapData(32, 32, false, 0xff0000ff), new Rectangle(0, 0, 32, 32), destPoint, null, null, true);
+					var tcells : Vector.<int> = cells.getMapCellByWorldPos(posX, posY);
+					for(var j : int = 0; j < tcells.length; j++) {
+						var index : int = tcells[j];
+						if(index > 0) {
+							if(cells.getMapCellImg(index) > 0 && cells.getMapCellValue(index) < chaMgr.charas.getCharacterValue(0)) {
+								this.canvas.copyPixels(new BitmapData(32, 32, false, 0xff0000ff), new Rectangle(0, 0, 32, 32), destPoint, null, null, true);
+							}
 						}
 					}
 				}
