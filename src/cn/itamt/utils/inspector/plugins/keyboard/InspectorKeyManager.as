@@ -22,7 +22,7 @@ package cn.itamt.utils.inspector.plugins.keyboard {
 			super();
 
 			_stMgr = new ShortcutManager();
-			_stMgr.addEventListener(ShortcutEvent.DOWN, onShortcutDown);
+			_stMgr.addEventListener(ShortcutEvent.FIRE, onShortcutDown);
 		}
 
 		/**

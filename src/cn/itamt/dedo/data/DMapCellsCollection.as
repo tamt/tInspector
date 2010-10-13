@@ -1,4 +1,5 @@
 package cn.itamt.dedo.data {
+
 	/**
 	 * @author itamt[at]qq.com
 	 */
@@ -68,6 +69,19 @@ package cn.itamt.dedo.data {
 
 		public function get length():uint {
 			return cellsX.length;
+		}
+
+		/**
+		 * 根据位置得到cell index;
+		 */
+		public function getMapCellByPos(posX : uint, posY : uint) : int {
+			for(var i : int = 0; i < length; i++) {
+				if((getMapCellX(i) == posX) && (getMapCellY(i) == posY)) {
+					return i;
+				}
+			}
+
+			return -1;
 		}
 	}
 }

@@ -30,6 +30,14 @@ package cn.itamt.dedo.data {
 			return _posy[index];
 		}
 
+		public function setCharacterX(index : uint, x : uint):void {
+			_posx[index] = x;
+		}
+
+		public function setCharacterY(index : uint, y : uint):void {
+			_posy[index] = y;
+		}
+
 		public function getCharacterId(index : uint):uint {
 			return _ids[index];
 		}
@@ -40,6 +48,10 @@ package cn.itamt.dedo.data {
 
 		public function get length():uint {
 			return _ids.length;
+		}
+
+		public function getCharacterValue(i : int) : Number {
+			return .5;
 		}
 	}
 }

@@ -166,7 +166,9 @@ package cn.itamt.dedo.render {
 				area = this.mapArea;
 			var layers : DMapLayersCollection = map.layers;
 			for(var i : int = layers.length - 1; i >= 0; i--) {
-				this.renderLayer(layers.getMapLayer(i), area);
+				var layer : DMapLayer = layers.getMapLayer(i);
+				if(layer.visible)
+					this.renderLayer(layer, area);
 			}
 
 			// render to output view
@@ -205,16 +207,23 @@ package cn.itamt.dedo.render {
 				var hasChars : Boolean = chaMgr.hasCharacterInArea(area);
 				if(hasChars) {
 					var charas : Vector.<uint> = chaMgr.getCharactersInArea(area);
-					destPoint.x = map.cellwidth * chaMgr.charas.getCharacterX(charas[0]);
-					destPoint.y = map.cellheight * chaMgr.charas.getCharacterY(charas[0]);
-					this.canvas.copyPixels(new BitmapData(32, 32, false, 0xff0000ff), new Rectangle(0, 0, 32, 32), destPoint, null, null, true);
+					var posX : uint = chaMgr.charas.getCharacterX(charas[0]);
+					var posY : uint = chaMgr.charas.getCharacterY(charas[0]);
+					destPoint.x = map.cellwidth * posX;
+					destPoint.y = map.cellheight * posY;
+
+					// 绘制会遮住角色层的物体
+					var index : int = cells.getMapCellByPos(posX, posY);
+					if(index > 0) {
+						if(cells.getMapCellImg(index) > 0 && cells.getMapCellValue(index) < chaMgr.charas.getCharacterValue(0)) {
+							this.canvas.copyPixels(new BitmapData(32, 32, false, 0xff0000ff), new Rectangle(0, 0, 32, 32), destPoint, null, null, true);
+						}
+					}
 				}
 			}
 		}
 
 		private function renderOffsetArea():void {
-			// 绘制超过边缘的黑色区域
-
 			if(this.outputRect.left < 0) {
 				this.outputBmd.fillRect(new Rectangle(0, 0, -this.outputRect.left, this.outputBmd.height), 0xff000000);
 			} else if(this.outputRect.right > this.canvas.rect.right) {
