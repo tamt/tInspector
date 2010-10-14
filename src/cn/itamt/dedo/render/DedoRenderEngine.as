@@ -3,12 +3,13 @@ package cn.itamt.dedo.render {
 	import cn.itamt.dedo.data.DMap;
 	import cn.itamt.dedo.data.DMapArea;
 	import cn.itamt.dedo.data.DMapCellsCollection;
-	import cn.itamt.dedo.data.DMapCharactersCollection;
 	import cn.itamt.dedo.data.DMapLayer;
 	import cn.itamt.dedo.data.DMapLayersCollection;
 	import cn.itamt.dedo.manager.AnimationsManager;
+	import cn.itamt.dedo.manager.CharactersManager;
 	import cn.itamt.dedo.manager.TickManager;
 	import cn.itamt.dedo.manager.TilesManager;
+	import cn.itamt.utils.Debug;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -45,7 +46,7 @@ package cn.itamt.dedo.render {
 		private var validated : Boolean;
 		private var zeroPoint : Point = new Point();
 		//
-		private var charas : DMapCharactersCollection;
+		private var charaMgr : CharactersManager;
 
 		public function DedoRenderEngine():void {
 		}
@@ -73,6 +74,10 @@ package cn.itamt.dedo.render {
 			}
 			this.outputBmd = new BitmapData(this.viewW, this.viewH, false, 0xffff0000);
 			viewContainer.addChild(new Bitmap(this.outputBmd));
+		}
+
+		public function getViewArea():DMapArea {
+			return this.mapArea;
 		}
 
 		/**
@@ -134,7 +139,7 @@ package cn.itamt.dedo.render {
 			this.map = map;
 			this.tiles = project.tilesMgr;
 			this.anis = project.animationsMgr;
-			this.charas = map.characters;
+			this.charaMgr = new CharactersManager(map.characters);
 			this.transformOutputRect2MapRect();
 
 			if(resMgr == null)
@@ -202,11 +207,10 @@ package cn.itamt.dedo.render {
 				var destPoint : Point = new Point();
 
 				for(var i : int = 0; i < cells.length; i++) {
-					var imgOrAni : int = cells.getMapCellImg(i);
-					if(imgOrAni < -1000) {
+					var imgOrAni : uint = cells.getMapCellImg(i);
+					if(cells.getMapCellIsAnimation(i)) {
 						// this cell is an Animation cell.
-						// imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, cells.getMapCellFrame(i));
-						imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, this.tickMgr.tick);
+						imgOrAni = this.anis.getAnimationTile(imgOrAni, this.tickMgr.tick);
 					}
 					sourceRect.x = map.cellwidth * (tiles.getTilePosX(imgOrAni));
 					sourceRect.y = map.cellheight * (tiles.getTilePosY(imgOrAni));
@@ -215,22 +219,20 @@ package cn.itamt.dedo.render {
 					this.canvas.copyPixels(resBmd, sourceRect, destPoint, null, null, true);
 				}
 
-				var hasChars : Boolean = charas.hasCharacterInArea(area);
+				var hasChars : Boolean = charaMgr.hasCharacterInArea(area);
 				if(hasChars) {
-					var charaIndexs : Vector.<uint> = charas.getCharactersInArea(area);
-					var posX : Number = charas.getCharacterX(charaIndexs[0]);
-					var posY : Number = charas.getCharacterY(charaIndexs[0]);
+					var charaIndexs : Vector.<uint> = charaMgr.getCharactersInArea(area);
+					for(var k : int = 0; k < charaIndexs.length; k++) {
+						var posX : Number = charaMgr.charas.getCharacterX(charaIndexs[k]);
+						var posY : Number = charaMgr.charas.getCharacterY(charaIndexs[k]);
 
-					// 绘制会遮住角色层的物体
-					var tcells : Vector.<int> = cells.getMapCellByWorldPos(posX, posY);
-					for(var j : int = 0; j < tcells.length; j++) {
-						var index : int = tcells[j];
-						if(index > 0) {
-							if(cells.getMapCellImg(index) > 0 && cells.getMapCellValue(index) < charas.getCharacterValue(0)) {
-								var img : int = charas.getCharacterImg(0);
-								if(img < -1000) {
-									img = this.anis.getAnimationTile(-1001 - img, this.tickMgr.tick);
-								}
+						// 绘制会遮住角色层的物体
+						var tcells : Vector.<uint> = cells.getMapCellByWorldPos(posX, posY);
+						for(var j : int = 0; j < tcells.length; j++) {
+							var index : int = tcells[j];
+							if(cells.getMapCellValue(index) < charaMgr.charas.getCharacterValue(charaIndexs[k])) {
+								var img : uint = charaMgr.charas.getCharacterImg(charaIndexs[k]);
+								img = this.anis.getAnimationTile(img, charaMgr.charas.getCharacterFrame(charaIndexs[k]));
 								sourceRect.x = map.cellwidth * (tiles.getTilePosX(img));
 								sourceRect.y = map.cellheight * (tiles.getTilePosY(img));
 								destPoint.x = map.cellwidth * posX;
@@ -292,6 +294,8 @@ package cn.itamt.dedo.render {
 			this.mapArea.top = Math.floor(this.outputRect.top < 0 ? 0 : this.outputRect.top / map.cellheight);
 			this.mapArea.right = Math.ceil(this.outputRect.right < 0 ? 0 : this.outputRect.right / map.cellwidth);
 			this.mapArea.bottom = Math.ceil(this.outputRect.bottom < 0 ? 0 : this.outputRect.bottom / map.cellheight);
+
+			Debug.trace('[DedoRenderEngine][transformOutputRect2MapRect]' + this.mapArea.toString());
 		}
 	}
 }

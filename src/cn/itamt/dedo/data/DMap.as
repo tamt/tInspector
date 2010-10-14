@@ -12,6 +12,7 @@ package cn.itamt.dedo.data {
 		public var layers : DMapLayersCollection;
 		public var jumps : DMapJumpsCollection;
 		public var characters : DMapCharactersCollection;
+		public var blocks : DMapBlocksCollection;
 
 		public function DMap() : void {
 		}

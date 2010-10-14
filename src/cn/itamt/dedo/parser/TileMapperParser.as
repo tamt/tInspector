@@ -12,6 +12,7 @@ package cn.itamt.dedo.parser {
 
 	/**
 	 * 解析由TileMapper导出的xml文件
+	 * TODO:注意,因为TileMapper本身在导出xml时就有问题,所以请不要使用这个解析器.直接使用IIXParser.
 	 * @author itamt[at]qq.com
 	 */
 	public class TileMapperParser implements IDedoParser {
@@ -27,9 +28,9 @@ package cn.itamt.dedo.parser {
 		public function TileMapperParser() : void {
 		}
 
-		// // // // // ////////////////////////////
-		// // // // // 实现接口：IMapParser/////////
-		// // // // // ////////////////////////////
+		// // // // // // //////////////////////////
+		// // // // //     实现接口：IMapParser/////////
+		// // // // // // //////////////////////////
 		public function parse(xml : *, onComplete : Function = null) : Boolean {
 			this.xml = xml as XML;
 

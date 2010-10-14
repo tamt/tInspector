@@ -40,6 +40,10 @@ package cn.itamt.dedo.data {
 			return _tiles[index][tick % _tiles[index].length];
 		}
 
+		public function getAnimationTilesLength(index : uint):uint {
+			return _tiles[index].length;
+		}
+
 		public function getAnimationCurFrame(index : uint) : uint {
 			if(_curFrame++ >= 2)
 				_curFrame = 0;
