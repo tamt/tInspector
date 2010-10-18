@@ -1,7 +1,6 @@
-package cn.itamt.utils.inspector.firefox {
+﻿package cn.itamt.utils.inspector.firefox {
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.firefox.download.DownloadAll;
 	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadApp;
 	import cn.itamt.utils.inspector.firefox.setting.fInspectorConfig;
@@ -43,8 +42,9 @@ package cn.itamt.utils.inspector.firefox {
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 
+			Debug.trace('[tInspectorPreloader][tInspectorPreloader]');
+
 			controlBar = new ControlBar();
-			controlBar.addEventListener(InspectEvent.RELOAD, onClickReload);
 
 			gErrorKeeper = new GlobalErrorKeeper();
 			gErrorKeeper.watch(this.loaderInfo);
@@ -84,7 +84,8 @@ package cn.itamt.utils.inspector.firefox {
 			if(loaderInfo) {
 				if(loaderInfo.url) {
 					if(loaderInfo.contentType == "application/x-shockwave-flash") {
-						gErrorKeeper.watch(loaderInfo);
+						if(gErrorKeeper)
+							gErrorKeeper.watch(loaderInfo);
 					}
 				}
 			}
@@ -127,6 +128,7 @@ package cn.itamt.utils.inspector.firefox {
 
 			tInspector = Inspector.getInstance();
 			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
+			tInspector.pluginManager.registerPlugin(controlBar);
 			// 读取配置，注册相应的插件
 			var arr : Array = fInspectorConfig.getEnablePlugins();
 			if(arr == null) {
@@ -170,13 +172,6 @@ package cn.itamt.utils.inspector.firefox {
 				mainStage.addChild(this.controlBar);
 			} else {
 				this.controlBar.stage.addChild(this.controlBar);
-			}
-		}
-
-		private function onClickReload(event : InspectEvent) : void {
-			Debug.trace('[tInspectorPreloader][onClickReload]ExternalInterface.available: ' + ExternalInterface.available + ", " + FlashPlayerEnvironment.swfId);
-			if(ExternalInterface.available) {
-				ExternalInterface.call("fInspectorReloadSwf", FlashPlayerEnvironment.swfId);
 			}
 		}
 
