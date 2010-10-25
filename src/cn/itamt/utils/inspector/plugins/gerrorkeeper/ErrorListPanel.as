@@ -1,4 +1,5 @@
 ﻿package cn.itamt.utils.inspector.plugins.gerrorkeeper {
+	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.ObjectPool;
 	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
@@ -47,9 +48,9 @@
 			addChild(_statusInfo);
 		}
 
-		// // // // // // // // // // //////////////////
+		// // // // // // // // // // // // //////////////
 		// // // // // //      override     funcions/////////
-		// // // // // // // // // // //////////////////
+		// // // // // // // // // // // // //////////////
 		override public function relayout() : void {
 			super.relayout();
 			_clearBtn.x = this.resizeBtn.x - this.resizeBtn.width - 2;
@@ -57,7 +58,7 @@
 
 			alertBtn.x = _width - _padding.right - alertBtn.width;
 			alertBtn.y = _height - alertBtn.height - 10;
-			
+
 			drawStatus();
 		}
 
@@ -85,11 +86,14 @@
 			this._statusInfo.visible = false;
 		}
 
-		// // // // // // // // // // //////////////////
+		// // // // // // // // // // // // //////////////
 		// // // // //     private    functions///////////
-		// // // // // // // // // // //////////////////
+		// // // // // // // // // // // // //////////////
 
 		private function drawStatus() : void {
+			var l : int = (_data == null) ? 0 : _data.length;
+			_statusInfo.text = l.toString() + InspectorLanguageManager.getStr("Errors");
+
 			_statusInfo.width = _statusInfo.textWidth + 4;
 			if(_statusInfo.width > _width - _padding.left - _padding.right)
 				_statusInfo.width = _width - _padding.left - _padding.right;
@@ -98,7 +102,7 @@
 		}
 
 		private function drawList() : void {
-			
+			Debug.trace('[ErrorListPanel][drawList]');
 			_listContainer.graphics.clear();
 			_listContainer.graphics.lineTo(0, 0);
 			while(_listContainer.numChildren) {
@@ -113,9 +117,7 @@
 				render.data = _data[i];
 				_listContainer.addChild(render);
 			}
-			
-			_statusInfo.text = l.toString();
-			
+
 			this.relayout();
 		}
 
@@ -127,9 +129,9 @@
 			this.dispatchEvent(new Event("change"));
 		}
 
-		// // // // // // // // // // //////////////////
+		// // // // // // // // // // // // //////////////
 		// // // //    /public   functions/////////////
-		// // // // // // // // // // //////////////////
+		// // // // // // // // // // // // //////////////
 		/**		 * @param errorList		an array store ErrorLog instances.		 */
 		public function setData(errorList : Array) : void {
 			this._data = errorList;

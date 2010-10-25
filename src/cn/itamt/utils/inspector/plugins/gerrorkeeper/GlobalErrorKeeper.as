@@ -204,12 +204,12 @@
 			if(errorList.indexOf(errorLog) < 0) {
 				errorList.push(errorLog);
 				if(this.historyPanel)
-					this.historyPanel.update();
+					this.historyPanel.setData(this.errorList);
 			}
-			Debug.trace('[GlobalErrorKeeper][addErrorLog]');
 			if(this.useAlert) {
 				this.popupErrorDetail(errorLog);
-			} else if(this.historyPanel == null) {
+			}
+			if(this.historyPanel == null) {
 				if(this.historyBtn.stage)
 					this.historyBtn.showTempTip(errorList.length.toString());
 			}

@@ -53,6 +53,7 @@ GEK_ENABLE_POPUP	=	错误警告
 GEK_DISABLE_POPUP	=	错误警告
 GEK_ENABLE_POPUP_TIP	=	有错误时弹出警告(已开启)
 GEK_DISABLE_POPUP_TIP	=	有错误时弹出警告(已禁用)
+Errors			=	错误
 ControlBar		=	控制栏
 Clear			=	清除
 DownloadAll		=	下载资源

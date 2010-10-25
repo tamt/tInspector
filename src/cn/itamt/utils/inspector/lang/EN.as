@@ -57,6 +57,7 @@ GEK_DISABLE_POPUP	=	alert error
 GEK_ENABLE_POPUP_TIP	=	Popup alert error info(enabled)
 GEK_DISABLE_POPUP_TIP	=	Popup alert error info(disabled)
 GEK_ClearHistory=	clear errors history
+Errors			=	erros
 ControlBar		=	control bar
 Clear			=	clear
 DownloadAll		=	Download Stuff
