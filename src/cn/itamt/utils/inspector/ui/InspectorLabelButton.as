@@ -15,8 +15,10 @@ package cn.itamt.utils.inspector.ui {
 		public function InspectorLabelButton(label : String = '按钮', active : Boolean = false) : void {
 			_label = label;
 			_active = active;
-			
+
 			super();
+
+			this.update();
 		}
 
 		override public function set active(value : Boolean) : void {
@@ -74,7 +76,7 @@ package cn.itamt.utils.inspector.ui {
 			var w : Number = tf.width < _minW ? _minW : tf.width;
 			var h : Number = tf.height < _minH ? _minH : tf.height;
 
-			state.graphics.beginFill(_active ? 0xcccccc : 0x282828);
+			state.graphics.beginFill(_active ? 0x999999 : 0x282828);
 			state.graphics.drawRoundRect(0, 0, w, h, 4, 4);
 			state.graphics.endFill();
 
@@ -94,7 +96,7 @@ package cn.itamt.utils.inspector.ui {
 			var w : Number = tf.width < _minW ? _minW : tf.width;
 			var h : Number = tf.height < _minH ? _minH : tf.height;
 
-			state.graphics.beginFill(0xcccccc);
+			state.graphics.beginFill(_active ? 0xcccccc : 0x000000);
 			state.graphics.drawRoundRect(0, 0, w, h, 4, 4);
 			state.graphics.endFill();
 

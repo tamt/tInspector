@@ -35,6 +35,7 @@
 		public var tf : TextField;
 		private var tInspector : Inspector;
 		private var gErrorKeeper : GlobalErrorKeeper;
+		private var findKiller : Boolean;
 
 		// 由finspector.js分配给的id, 用于与fInspector通信.
 		// private var swfId : String = '';
@@ -108,10 +109,17 @@
 			if(loaderInfo) {
 				if(loaderInfo.url) {
 					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.url.indexOf("fInspectorSetting.swf") == -1) && (loaderInfo.url.indexOf("tInspectorConsoleMonitor.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
-						log(loaderInfo.url);
-						setupControlBar();
-						initInspector();
-						mainRoot.removeEventListener("allComplete", this.allCompleteHandler);
+						if(loaderInfo.content.hasOwnProperty("disableFlashInspector") && loaderInfo.content["disableFlashInspector"]) {
+							findKiller = true;
+							this.stopInspector();
+						} else {
+							if(findKiller)
+								return;
+							log(loaderInfo.url);
+							setupControlBar();
+							initInspector();
+							mainRoot.removeEventListener("allComplete", this.allCompleteHandler);
+						}
 					}
 				}
 			}
@@ -198,7 +206,8 @@
 		 */
 		public function startInspector() : void {
 			log('[tInspectorPreloader][startInspector]');
-			this.controlBar.visible = true;
+			if(!findKiller)
+				this.controlBar.visible = true;
 		}
 
 		/**

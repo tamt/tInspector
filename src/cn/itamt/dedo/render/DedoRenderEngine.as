@@ -295,7 +295,7 @@ package cn.itamt.dedo.render {
 			this.mapArea.right = Math.ceil(this.outputRect.right < 0 ? 0 : this.outputRect.right / map.cellwidth);
 			this.mapArea.bottom = Math.ceil(this.outputRect.bottom < 0 ? 0 : this.outputRect.bottom / map.cellheight);
 
-			Debug.trace('[DedoRenderEngine][transformOutputRect2MapRect]' + this.mapArea.toString());
+			// Debug.trace('[DedoRenderEngine][transformOutputRect2MapRect]' + this.mapArea.toString());
 		}
 	}
 }

@@ -14,11 +14,11 @@ package cn.itamt.utils.inspector.core {
 	public class BaseInspectorPlugin implements IInspectorPlugin {
 		protected var viewContainer : Sprite;
 		protected var _inspector : IInspector;
-		//current inspect target.
+		// current inspect target.
 		protected var target : InspectTarget;
 		//
 		protected var _outputerManager : InspectorOutPuterManager;
-		//is this plugin actived?
+		// is this plugin actived?
 		protected var _actived : Boolean;
 
 		public function get isActive() : Boolean {
@@ -53,7 +53,7 @@ package cn.itamt.utils.inspector.core {
 		 */
 		public function onRegister(inspector : IInspector) : void {
 			this._inspector = inspector;
-			
+
 			if(this._inspector.isOn) {
 				onTurnOn();
 				var tg : InspectTarget = _inspector.getCurInspectTarget();
@@ -72,7 +72,8 @@ package cn.itamt.utils.inspector.core {
 		 */
 		public function onUnRegister(inspector : IInspector) : void {
 			this.onTurnOff();
-			if(_icon)_icon = null;
+			if(_icon)
+				_icon = null;
 		}
 
 		public function onRegisterPlugin(pluginId : String) : void {
@@ -89,9 +90,11 @@ package cn.itamt.utils.inspector.core {
 		}
 
 		public function onActive() : void {
-			if(_actived)return;
+			if(_actived)
+				return;
 			_actived = true;
-			if(_icon)_icon.active = true;
+			if(_icon)
+				_icon.active = true;
 		}
 
 		/**
@@ -99,16 +102,18 @@ package cn.itamt.utils.inspector.core {
 		 */
 		public function onUnActive() : void {
 			_actived = false;
-			if(_icon)_icon.active = false;
+			if(_icon)
+				_icon.active = false;
 		}
 
 		/**
 		 * 当Inspector开启时
 		 */
 		public function onTurnOn() : void {
-			if(_isOn)return;
+			if(_isOn)
+				return;
 			_isOn = true;
-			
+
 			if(_icon) {
 				_icon.addEventListener(MouseEvent.CLICK, onClickPluginIcon);
 			}
@@ -119,12 +124,13 @@ package cn.itamt.utils.inspector.core {
 		 */
 		public function onTurnOff() : void {
 			_isOn = false;
-			
+
 			if(_icon) {
 				_icon.removeEventListener(MouseEvent.CLICK, onClickPluginIcon);
 			}
-			
-			if(_actived)onUnActive();
+
+			if(_actived)
+				onUnActive();
 		}
 
 		/**
@@ -193,10 +199,10 @@ package cn.itamt.utils.inspector.core {
 			return _icon;
 		}
 
-		//////////////////////////////////////
-		//////////private functions///////////
-		//////////////////////////////////////
-		private function onClickPluginIcon(event : MouseEvent) : void {
+		// ////////////////////////////////////
+		// ////////private functions///////////
+		// ////////////////////////////////////
+		protected function onClickPluginIcon(event : MouseEvent) : void {
 			if(!isActive) {
 				_inspector.pluginManager.activePlugin(this.getPluginId());
 			} else {

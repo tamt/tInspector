@@ -24,6 +24,7 @@
 		protected var iconBtnContainer : Sprite;
 		protected var historyBtn : GlobalErrorsHistoryButton;
 		protected var watchTargets : Array;
+		protected var useAlert : Boolean = true;
 
 		public function GlobalErrorKeeper() {
 			super();
@@ -94,6 +95,7 @@
 				this.historyPanel.removeEventListener(Event.CLOSE, onClickClose);
 				this.historyPanel.removeEventListener(MouseEvent.CLICK, onClickErrorItem);
 				this.historyPanel.removeEventListener("clear", onClickClear);
+				this.historyPanel.removeEventListener("change", this.onToggleAlert);
 				this.historyPanel = null;
 			}
 			if(enabled) {
@@ -124,8 +126,10 @@
 		}
 
 		public function unwatch(loaderInfo : LoaderInfo) : void {
-			if(loaderInfo == null)
+			if(loaderInfo == null) {
+				Debug.trace('[GlobalErrorKeeper][unwatch]' + "find an null LoaderInfo");
 				return;
+			}
 			if(loaderInfo.hasOwnProperty("uncaughtErrorEvents")) {
 				if(watchTargets) {
 					var i : int = watchTargets.indexOf(loaderInfo);
@@ -141,9 +145,11 @@
 		public function popupHistoryPanel() : void {
 			this.historyPanel = new ErrorListPanel();
 			this.historyPanel.setData(this.errorList);
+			this.setErrorPanel(this.historyPanel);
 			this.historyPanel.addEventListener(Event.CLOSE, onClickClose);
 			this.historyPanel.addEventListener("clear", onClickClear);
 			this.historyPanel.addEventListener(MouseEvent.CLICK, onClickErrorItem);
+			this.historyPanel.addEventListener("change", this.onToggleAlert);
 			InspectorPopupManager.popup(this.historyPanel, PopupAlignMode.CENTER);
 		}
 
@@ -154,7 +160,7 @@
 				this.historyPanel.removeEventListener(Event.CLOSE, onClickClose);
 				this.historyPanel.removeEventListener(MouseEvent.CLICK, onClickErrorItem);
 				this.historyPanel.removeEventListener("clear", onClickClear);
-				this.historyPanel.dispose();
+				this.historyPanel.removeEventListener("change", this.onToggleAlert);
 				this.historyPanel = null;
 			}
 		}
@@ -200,7 +206,13 @@
 				if(this.historyPanel)
 					this.historyPanel.update();
 			}
-			this.popupErrorDetail(errorLog);
+			Debug.trace('[GlobalErrorKeeper][addErrorLog]');
+			if(this.useAlert) {
+				this.popupErrorDetail(errorLog);
+			} else if(this.historyPanel == null) {
+				if(this.historyBtn.stage)
+					this.historyBtn.showTempTip(errorList.length.toString());
+			}
 		}
 
 		override public function getPluginIcon() : DisplayObject {
@@ -219,6 +231,7 @@
 					errorPanels.splice(i, 1);
 				}
 				(evt.target as ErrorInfoPanel).removeEventListener(Event.CLOSE, onClickClose);
+				(evt.target as ErrorInfoPanel).removeEventListener("change", onToggleAlert);
 			} else if(evt.target == this.historyPanel) {
 				this.hideHistoryPanel();
 			}
@@ -252,10 +265,36 @@
 			}
 			if(!hasExist) {
 				panel = new ErrorInfoPanel(errorLog, '错误');
+				this.setErrorPanel(panel);
 				errorPanels.push(panel);
 				panel.addEventListener(Event.CLOSE, onClickClose);
+				panel.addEventListener("change", onToggleAlert);
 			}
 			InspectorPopupManager.popup(panel, PopupAlignMode.CENTER);
+		}
+
+		/**
+		 * 切换是否启用
+		 */
+		private function onToggleAlert(evt : Event) : void {
+			useAlert = !useAlert;
+			for each (var panel : ErrorInfoPanel in errorPanels) {
+				this.setErrorPanel(panel);
+			}
+
+			if(this.historyPanel)
+				this.setErrorPanel(this.historyPanel);
+		}
+
+		private function setErrorPanel(panel : *):void {
+			panel.alertBtn.active = useAlert;
+			if(useAlert) {
+				panel.alertBtn.label = InspectorLanguageManager.getStr("GEK_ENABLE_POPUP");
+				panel.alertBtn.tip = InspectorLanguageManager.getStr("GEK_ENABLE_POPUP_TIP");
+			} else {
+				panel.alertBtn.label = InspectorLanguageManager.getStr("GEK_DISABLE_POPUP");
+				panel.alertBtn.tip = InspectorLanguageManager.getStr("GEK_DISABLE_POPUP_TIP");
+			}
 		}
 
 		private function removePopupErrorDetail(errorLog : ErrorLog) : void {

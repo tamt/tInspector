@@ -1,15 +1,18 @@
 package cn.itamt.utils.inspector.plugins.fullscreen {
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
-	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
+	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 
 	import flash.display.StageDisplayState;
 	import flash.events.FullScreenEvent;
+	import flash.events.MouseEvent;
 
 	/**
 	 * @author itamt[at]qq.com
 	 */
 	public class FullScreen extends BaseInspectorPlugin {
+		private var _fullScreenByMe : Boolean = false;
+
 		public function FullScreen() {
 			super();
 		}
@@ -22,12 +25,12 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 			}
 		}
 
-		//////////////////////////////////////
-		////////////override funcions/////////
-		//////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // //override    funcions/////////
+		// // // // // ////////////////////////////
 		override public function onRegister(inspector : IInspector) : void {
 			super.onRegister(inspector);
-			
+
 			_icon = new FullScreenButton();
 		}
 
@@ -37,27 +40,37 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 
 		override public function onTurnOn() : void {
 			super.onTurnOn();
-			
-			if(_inspector.stage.displayState == StageDisplayState.FULL_SCREEN)onActive();
+
+			if(_inspector.stage.displayState == StageDisplayState.FULL_SCREEN)
+				onActive();
 			_inspector.stage.addEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
 		}
 
 		override public function onTurnOff() : void {
-			super.onTurnOff();
+			_isOn = false;
+
+			if(_icon) {
+				_icon.removeEventListener(MouseEvent.CLICK, onClickPluginIcon);
+			}
+
+			if(_actived && _fullScreenByMe)
+				onUnActive();
+
 			_inspector.stage.removeEventListener(FullScreenEvent.FULL_SCREEN, onFullScreen);
 		}
 
 		override public function onActive() : void {
 			super.onActive();
-			
+
 			if(_inspector.stage.displayState != StageDisplayState.FULL_SCREEN) {
+				_fullScreenByMe = true;
 				_inspector.stage.displayState = StageDisplayState.FULL_SCREEN;
 			}
 		}
 
 		override public function onUnActive() : void {
 			super.onUnActive();
-			
+
 			if(_inspector.stage.displayState == StageDisplayState.FULL_SCREEN) {
 				_inspector.stage.displayState = StageDisplayState.NORMAL;
 			}
