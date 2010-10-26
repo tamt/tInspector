@@ -17,16 +17,16 @@ package msc.console {
 	 * @author itamt@qq.com
 	 */
 	public class mConsole extends Shape {
-		//////////////////////////////////////
-		//////////static variables////////////
-		//////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////static variables////////////
+		// ////////////////////////////////////
 		public static const VERSION : String = 'mConsole 1.0 beta';
 
 		private static var _instance : mConsole;
 
-		//////////////////////////////////////
-		//////////static functions////////////
-		//////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////static functions////////////
+		// ////////////////////////////////////
 		public static function init(connectMonitor : Boolean = true) : void {
 			if(_instance == null) {
 				_instance = new mConsole(new SingletonEnforcer());
@@ -38,21 +38,24 @@ package msc.console {
 		 * 连接到Monitor
 		 */
 		public static function connectMonitor() : void {
-			if(_instance)_instance.connectMonitor();
+			if(_instance)
+				_instance.connectMonitor();
 		}
 
 		/**
 		 * 断开该Console与Monitor的连接
 		 */
 		public static function disconnectMonitor() : void {
-			if(_instance)_instance.disconnectMonitor();
+			if(_instance)
+				_instance.disconnectMonitor();
 		}
 
 		/**
 		 * 调用Monitor之Proxy的方法
 		 */
 		public static function callMonitorProxyFun(fun : String, ...paras) : void {
-			if(_instance)_instance.callMonitorProxyFun(fun, paras);
+			if(_instance)
+				_instance.callMonitorProxyFun(fun, paras);
 		}
 
 		/**
@@ -76,36 +79,36 @@ package msc.console {
 			_instance.dispatchEvent(new mConsoleLogEvent(new mConsoleLog(args.toString(), mConsoleLogType.ERROR)));
 		}
 
-		//////////////////////////////////////
-		//////////private variables///////////
-		//////////////////////////////////////
-		//控制台通道，供客户端调用
+		// ////////////////////////////////////
+		// ////////private variables///////////
+		// ////////////////////////////////////
+		// 控制台通道，供客户端调用
 		private var _conn : LocalConnection;
 		private var _inited : Boolean;
 		private var _delegates : Array;
-		//是否已经连接了客户端
+		// 是否已经连接了客户端
 		private var _clientConnected : Boolean;
-		//该console的id
+		// 该console的id
 		private var _id : String;
 
 		public function get id() : String {
 			return _id;
 		}
 
-		//////////////////////////////////////
-		////////////constructor///////////////
-		//////////////////////////////////////
+		// ////////////////////////////////////
+		// //////////constructor///////////////
+		// ////////////////////////////////////
 		public function mConsole(se : SingletonEnforcer) {
 			if(se == null) {
 				throw new Error('Singleton!!');
 			}
-			
+
 			_id = new Date().getTime().toString();
 		}
 
-		//////////////////////////////////////
-		//////////private functions///////////
-		//////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////private functions///////////
+		// ////////////////////////////////////
 		private function onLogEvent(evt : mConsoleLogEvent) : void {
 			_conn.send(mConsoleConnName.CLIENT, 'addLogMessage', evt.log.msg, evt.log.type, id);
 		}
@@ -123,32 +126,33 @@ package msc.console {
 				case "status":
 					break;
 				case "error":
-					//					dispatchEvent(new mConsoleLogEvent(new mConsoleLog('error: ' + event.code, mConsoleLogType.ERROR)));
+					// dispatchEvent(new mConsoleLogEvent(new mConsoleLog('error: ' + event.code, mConsoleLogType.ERROR)));
 					break;
 				case "warning":
-					//					dispatchEvent(new mConsoleLogEvent(new mConsoleLog('warning: ' + event.code, mConsoleLogType.ERROR)));
+					// dispatchEvent(new mConsoleLogEvent(new mConsoleLog('warning: ' + event.code, mConsoleLogType.ERROR)));
 					break;
 				default:
-					//					dispatchEvent(new mConsoleLogEvent(new mConsoleLog(event.code, mConsoleLogType.ERROR)));
+					// dispatchEvent(new mConsoleLogEvent(new mConsoleLog(event.code, mConsoleLogType.ERROR)));
 					break;
 			}
 		}
 
-		//////////////////////////////////////
-		//////////public functions////////////
-		//////////////////////////////////////
+		// ////////////////////////////////////
+		// ////////public functions////////////
+		// ////////////////////////////////////
 		public function init(connect2Monitor : Boolean = true) : void {
-			if(_inited)return;
+			if(_inited)
+				return;
 			_inited = true;
-			
+
 			if(connect2Monitor) {
 				this.connectMonitor();
 			}
-			
-			//侦听log事件
+
+			// 侦听log事件
 			this.addEventListener(mConsoleLogEvent.LOG, onLogEvent);
-			
-			//添加内置的一些命令
+
+			// 添加内置的一些命令
 			var defaultDelegate : mDefaultConsoleCmdDelegate = new mDefaultConsoleCmdDelegate();
 			defaultDelegate.setConsole(this);
 			this.addDelegate(defaultDelegate);
@@ -158,9 +162,10 @@ package msc.console {
 		 * 连接到Monitor
 		 */
 		public function connectMonitor() : void {
-			if(_clientConnected)return;
+			if(_clientConnected)
+				return;
 			_clientConnected = true;
-			//控制台通道，供客户端调用
+			// 控制台通道，供客户端调用
 			_conn = new LocalConnection();
 			_conn.allowInsecureDomain("*");
 			_conn.allowDomain("*");
@@ -168,11 +173,11 @@ package msc.console {
 			_conn.connect(mConsoleConnName.getConsoleConnName(id));
 			Debug.trace('[mConsole][connectMonitor]' + mConsoleConnName.getConsoleConnName(id));
 			try {
-//				_conn.connect(mConsoleConnName.CONSOLE);
-			}catch(e : Error) {
+				// _conn.connect(mConsoleConnName.CONSOLE);
+			} catch(e : Error) {
 				return;
 			}
-			
+
 			_conn.addEventListener(StatusEvent.STATUS, onStatus);
 			_conn.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			_conn.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
@@ -180,13 +185,15 @@ package msc.console {
 		}
 
 		public function disconnectMonitor() : void {
-			if(!_clientConnected)return;
+			if(!_clientConnected)
+				return;
 			Debug.trace('[mConsole][disconnectMonitor]' + mConsoleConnName.getConsoleConnName(id));
 			_conn.send(mConsoleConnName.CLIENT, 'deconstructConnection', id);
 		}
 
 		public function callMonitorProxyFun(fun : String, ...paras) : void {
-			if(!_clientConnected)return;
+			if(!_clientConnected)
+				return;
 			Debug.trace('[mConsole][callMonitorProxyFun]');
 			_conn.send(mConsoleConnName.CLIENT, 'callProxyFun', fun, paras);
 		}
@@ -197,10 +204,10 @@ package msc.console {
 		public function onBuildConnection() : void {
 			Debug.trace('[mConsole][onBuildConnection]' + mConsoleConnName.getConsoleConnName(id));
 			_clientConnected = true;
-			
+
 			dispatchEvent(new mConsoleLogEvent(new mConsoleLog(VERSION, mConsoleLogType.CONSOLE)));
-			
-			//设置客户端词语字典
+
+			// 设置客户端词语字典
 			for each(var delegate:mIConsoleDelegate in _delegates) {
 				var xml : XML = describeType(delegate);
 				for each(var method:XML in xml.method) {
@@ -212,9 +219,9 @@ package msc.console {
 		public function onDeconstructConnection() : void {
 			_clientConnected = false;
 			dispatchEvent(new mConsoleLogEvent(new mConsoleLog('deconstructConnection: ' + id, mConsoleLogType.CONSOLE)));
-			
+
 			Debug.trace('[mConsole][onDeconstructConnection]' + mConsoleConnName.getConsoleConnName(id));
-			
+
 			_conn.close();
 			_conn.removeEventListener(StatusEvent.STATUS, onStatus);
 			_conn.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
@@ -225,12 +232,13 @@ package msc.console {
 		 * 添加一个新的Delegate
 		 */
 		public function addDelegate(delegate : mIConsoleDelegate) : void {
-			if(_delegates == null)_delegates = [];
+			if(_delegates == null)
+				_delegates = [];
 			if(_delegates.indexOf(delegate) < 0) {
 				_delegates.push(delegate);
-				
+
 				if(_clientConnected) {
-					//设置客户端词语字典
+					// 设置客户端词语字典
 					var xml : XML = describeType(delegate);
 					for each(var method:XML in xml.method) {
 						_conn.send(mConsoleConnName.CLIENT, 'addToCmdDictionary', String(method.@name), id);
@@ -243,27 +251,31 @@ package msc.console {
 		 * 这是供Monitor调用的接口：执行一条命令行
 		 */
 		public function executeCmdLine(cmdLineStr : String) : Boolean {
+			Debug.trace('[mConsole][executeCmdLine]' + cmdLineStr);
+
 			var params : Array = cmdLineStr.split(" ");
 			var funName : String = params.shift();
-			
+
 			for each(var delegate:mIConsoleDelegate in _delegates) {
-				if(!delegate['hasOwnProperty'](funName))continue;
+				if(!delegate['hasOwnProperty'](funName))
+					continue;
 				try {
 					(delegate[funName] as Function).apply(this, params);
-				}catch(e : Error) {
+				} catch(e : Error) {
 					dispatchEvent(new mConsoleLogEvent(new mConsoleLog(e.message, mConsoleLogType.ERROR)));
 					return false;
 				}
 				return true;
 			}
-			
+
 			dispatchEvent(new mConsoleLogEvent(new mConsoleLog('不存在' + funName + '的方法', mConsoleLogType.ERROR)));
 			return false;
 		}
 
 		public function getAllMethodsName() : Array {
-			if(_delegates == null)return null;
-			
+			if(_delegates == null)
+				return null;
+
 			var arr : Array = [];
 			for each(var delegate:mIConsoleDelegate in _delegates) {
 				var xml : XML = describeType(delegate);
@@ -275,9 +287,10 @@ package msc.console {
 		}
 
 		public function destroy() : void {
-			if(!_inited)return;
+			if(!_inited)
+				return;
 			_inited = false;
-			
+
 			_conn.close();
 			_conn = null;
 		}

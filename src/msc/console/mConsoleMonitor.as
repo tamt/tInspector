@@ -31,8 +31,8 @@ package msc.console {
 		//命令输入文本框
 		protected var _cmd : mCmdTextInput;
 		//初始的舞台长宽
-		private var _initStageW : Number, _initStageH : Number;
-		private var _ids : Array;
+		protected var _initStageW : Number, _initStageH : Number;
+		protected var _ids : Array;
 
 		//
 		public var proxy : *;

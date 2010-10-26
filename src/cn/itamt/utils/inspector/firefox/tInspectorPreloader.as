@@ -43,8 +43,6 @@
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 
-			Debug.trace('[tInspectorPreloader][tInspectorPreloader]');
-
 			controlBar = new ControlBar();
 
 			gErrorKeeper = new GlobalErrorKeeper();
@@ -95,7 +93,6 @@
 		private function onSthAdded(evt : Event) : void {
 			mainStage.removeEventListener(Event.ADDED_TO_STAGE, onSthAdded, true);
 
-			log('[tInspectorPreloader][onSthAdded]' + evt.target);
 			if(mainRoot != (evt.target as DisplayObject).root) {
 				mainRoot = (evt.target as DisplayObject).root;
 			}
@@ -128,7 +125,7 @@
 		private function initInspector() : void {
 			log('[tInspectorPreloader][initInspector]');
 
-			mConsole.init(false);
+			mConsole.init(true);
 			mConsole.addDelegate(this);
 			if(!ExternalInterface.available) {
 				connectController();
@@ -176,6 +173,7 @@
 		}
 
 		private function setupControlBar() : void {
+			this.controlBar.visible = false;
 			if(this.controlBar.stage == null) {
 				mainStage.addChild(this.controlBar);
 			} else {
@@ -216,6 +214,9 @@
 		public function stopInspector() : void {
 			log('[tInspectorPreloader][stopInspector]');
 			this.controlBar.visible = false;
+			if(tInspector) {
+				tInspector.turnOff();
+			}
 		}
 
 		public function log(str : String) : void {

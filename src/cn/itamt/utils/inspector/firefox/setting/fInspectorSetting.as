@@ -43,13 +43,18 @@ package cn.itamt.utils.inspector.firefox.setting {
 			_pluginList.graphics.lineTo(0, 0);
 			this.setContent(_pluginList);
 
+			var arr:Array;
 			if(fInspectorConfig.getPlugins() == null) {
-				fInspectorConfig.setPlugins([InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW]);
+				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
+				fInspectorConfig.setPlugins(arr);
+				for each (var pluginName : String in arr) {
+					fInspectorConfig.setEnablePlugin(pluginName);
+				}
 				fInspectorConfig.save();
 			}
 			Debug.trace('[fInspectorSetting][init]' + fInspectorConfig.getPlugins());
 
-			var arr : Array = fInspectorConfig.getPlugins();
+			arr = fInspectorConfig.getPlugins();
 			for(var i : int = 0; i < arr.length; i++) {
 				var renderer : fInspectorPluginItemRenderer = new fInspectorPluginItemRenderer();
 				renderer.data = arr[i];

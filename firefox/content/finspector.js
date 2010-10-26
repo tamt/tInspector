@@ -1,7 +1,7 @@
 var fInspector = {
 id : "finspector@itamt.org",
 path : "kiddingme?",
-isOn : false,
+isOn : true,
 enable : true,
 preTab : null,
 firefoxLoaded : false,
@@ -176,6 +176,7 @@ setupSwfsInDoc : function(doc) {
 },
 
 setSwfIdPersist : function(swf, num) {
+	// return;
 	if (!swf.fInspectorEnabled) {
 		try {
 			swf.setSwfId(swf.id);
@@ -276,7 +277,9 @@ injectSwf : function(element) {
 	}
 },
 
-toggleInspector : function() {
+toggleInspector : function(event) {
+	if (event.button != 0)
+		return;
 	if (!fInspector.enable) {
 		if (document.getElementById("needFlashPlayerPanel").state == "open") {
 			fInspector.hideNeedDebuggerFP();
@@ -285,22 +288,27 @@ toggleInspector : function() {
 		}
 		return;
 	}
-	fInspector.isOn = !fInspector.isOn;
 	fInspector.callInspector();
 },
 
 callInspector : function() {
 	fInspector.trace("callInspector");
-	if (fInspector.isOn) {
+	document.getElementById('tInspectorController').toggleInspector();
+},
+
+onInspectorState:function(state){
+	if(state == "on"){
 		document.getElementById('finspectorBtnImg').setAttribute("state", "on");
-		document.getElementById('tInspectorController').startInspector();
-	} else {
+	}else if(state == "off"){
 		document.getElementById('finspectorBtnImg').setAttribute("state", "off");
-		document.getElementById('tInspectorController').stopInspector();
 	}
 },
+
 // 设置mm.cfg中的PreloadSWF值
 setPreloadSwf : function(file) {
+	// if (!fInspector.enable)
+	// return;
+
 	var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 	if (!mmcfg.exists()) {
 		fInspector.trace('the mm.cfg file dose not exist, we create it.');
@@ -398,6 +406,14 @@ closeSettingPanel : function() {
 showFlashInspectorPluginGuide : function(pluginName) {
 	var stringBundle = document.getElementById("tips");
 	alert(stringBundle.getString(pluginName + "Guide"));
+},
+
+showFullScreenGuide : function(swfId) {
+	var stringBundle = document.getElementById("tips");
+	if(confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))){
+		var swf = gBrowser.contentDocument.wrappedJSObject.getElementById(swfId);
+		fInspector.reloadSwfElement(swf);
+	}
 },
 
 progressListener : {

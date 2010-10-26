@@ -1,7 +1,11 @@
 package cn.itamt.utils.inspector.plugins.fullscreen {
+	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
+	import cn.itamt.utils.inspector.firefox.FlashPlayerEnvironment;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+
+	import msc.console.mConsole;
 
 	import flash.display.StageDisplayState;
 	import flash.events.FullScreenEvent;
@@ -25,9 +29,9 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 			}
 		}
 
-		// // // // // ////////////////////////////
-		// // // // // //override    funcions/////////
-		// // // // // ////////////////////////////
+		// // // // // // // // //////////////////////
+		// // // // // //      override     funcions/////////
+		// // // // // // // // //////////////////////
 		override public function onRegister(inspector : IInspector) : void {
 			super.onRegister(inspector);
 
@@ -64,7 +68,13 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 
 			if(_inspector.stage.displayState != StageDisplayState.FULL_SCREEN) {
 				_fullScreenByMe = true;
-				_inspector.stage.displayState = StageDisplayState.FULL_SCREEN;
+				try {
+					_inspector.stage.displayState = StageDisplayState.FULL_SCREEN;
+				} catch(e : Error) {
+					Debug.trace('[FullScreen][onActive]error when full screen');
+					// ExternalInterface.call("fInspector.showFullScreenGuide", FlashPlayerEnvironment.swfId);
+					mConsole.callMonitorProxyFun("showFullScreenGuide", FlashPlayerEnvironment.swfId);
+				}
 			}
 		}
 

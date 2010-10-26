@@ -55,6 +55,18 @@ package cn.itamt.utils.inspector.firefox.setting {
 		public static function getPlugins():Array {
 			return so.data.plugins;
 		}
+		
+		public static function getEnable():Boolean{
+			if(so.data.enable == null){
+				so.data.enable = true;
+				save();
+			}
+			return so.data.enable;
+		}
+		
+		public static function setEnable(bool:Boolean):void{
+			so.data.enable = bool;	
+		}
 
 		/**
 		 * @param plugins	以plugin name为元素的数组

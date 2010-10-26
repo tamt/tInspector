@@ -5,7 +5,7 @@
 #finspectorBtnImg {
 	width: 16px;
 	height: 16px;
-	list-style-image: url(chrome://finspector/skin/finspector_gray_16.png);
+	list-style-image: url(chrome://finspector/skin/finspector_16.png);
 }
 
 #finspectorBtnImg[state="on"] {

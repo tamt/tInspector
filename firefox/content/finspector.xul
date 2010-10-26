@@ -60,8 +60,8 @@
 				allowfullscreen="true" menu="false" wmode="transparent" width="0"
 				height="0" style="width:0px;height:0px;" />
 		</box>
-		<statusbarpanel role="button" id="finspectorStatusBarBtn" context="fInspectorSetting"
-			tooltiptext="&finspectorBtn.tooltip;" onclick="fInspector.toggleInspector();" >
+		<statusbarpanel role="button" id="finspectorStatusBarBtn"
+			tooltiptext="&finspectorBtn.tooltip;" context="fInspectorSetting" onmouseup="fInspector.toggleInspector(event);" >
 			<image id="finspectorBtnImg"/>
 		</statusbarpanel>
 	</statusbar>
