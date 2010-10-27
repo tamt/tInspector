@@ -17,21 +17,21 @@ package msc.console {
 	 * @author itamt@qq.com
 	 */
 	public class mConsole extends Shape {
-		// ////////////////////////////////////
-		// ////////static variables////////////
-		// ////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // static    variables////////////
+		// // // // // ////////////////////////////
 		public static const VERSION : String = 'mConsole 1.0 beta';
 
 		private static var _instance : mConsole;
 
-		// ////////////////////////////////////
-		// ////////static functions////////////
-		// ////////////////////////////////////
-		public static function init(connectMonitor : Boolean = true) : void {
+		// // // // // ////////////////////////////
+		// // // // // static    functions////////////
+		// // // // // ////////////////////////////
+		public static function init(connectMonitor : Boolean = true, name : String = null) : void {
 			if(_instance == null) {
 				_instance = new mConsole(new SingletonEnforcer());
 			}
-			_instance.init(connectMonitor);
+			_instance.init(connectMonitor, name);
 		}
 
 		/**
@@ -79,9 +79,9 @@ package msc.console {
 			_instance.dispatchEvent(new mConsoleLogEvent(new mConsoleLog(args.toString(), mConsoleLogType.ERROR)));
 		}
 
-		// ////////////////////////////////////
-		// ////////private variables///////////
-		// ////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // private    variables///////////
+		// // // // // ////////////////////////////
 		// 控制台通道，供客户端调用
 		private var _conn : LocalConnection;
 		private var _inited : Boolean;
@@ -95,9 +95,9 @@ package msc.console {
 			return _id;
 		}
 
-		// ////////////////////////////////////
-		// //////////constructor///////////////
-		// ////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // //constructor///////////////
+		// // // // // ////////////////////////////
 		public function mConsole(se : SingletonEnforcer) {
 			if(se == null) {
 				throw new Error('Singleton!!');
@@ -106,9 +106,9 @@ package msc.console {
 			_id = new Date().getTime().toString();
 		}
 
-		// ////////////////////////////////////
-		// ////////private functions///////////
-		// ////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // private    functions///////////
+		// // // // // ////////////////////////////
 		private function onLogEvent(evt : mConsoleLogEvent) : void {
 			_conn.send(mConsoleConnName.CLIENT, 'addLogMessage', evt.log.msg, evt.log.type, id);
 		}
@@ -137,13 +137,15 @@ package msc.console {
 			}
 		}
 
-		// ////////////////////////////////////
-		// ////////public functions////////////
-		// ////////////////////////////////////
-		public function init(connect2Monitor : Boolean = true) : void {
+		// // // // // ////////////////////////////
+		// // // // // public    functions////////////
+		// // // // // ////////////////////////////
+		public function init(connect2Monitor : Boolean = true, name : String = null) : void {
 			if(_inited)
 				return;
 			_inited = true;
+
+			this.name = name;
 
 			if(connect2Monitor) {
 				this.connectMonitor();
@@ -181,7 +183,7 @@ package msc.console {
 			_conn.addEventListener(StatusEvent.STATUS, onStatus);
 			_conn.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			_conn.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-			_conn.send(mConsoleConnName.CLIENT, 'buildConnection', id);
+			_conn.send(mConsoleConnName.CLIENT, 'buildConnection', id, this.name);
 		}
 
 		public function disconnectMonitor() : void {

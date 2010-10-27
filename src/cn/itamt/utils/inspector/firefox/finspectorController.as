@@ -17,8 +17,8 @@ package cn.itamt.utils.inspector.firefox {
 		/**
 		 * 连接某个Console
 		 */
-		override public function buildConnection(id : String) : void {
-			super.buildConnection(id);
+		override public function buildConnection(id : String, name : String = null) : void {
+			super.buildConnection(id, name);
 
 			if(enable) {
 				Debug.trace('[finspectorController][buildConnection]try call startInspector()');
@@ -26,6 +26,13 @@ package cn.itamt.utils.inspector.firefox {
 			} else {
 				Debug.trace('[finspectorController][buildConnection]try call stopInspector()');
 				_conn.send(mConsoleConnName.getConsoleConnName(id), 'executeCmdLine', "stopInspector");
+			}
+		}
+
+		public function callInspectorFunBySwfUrl(fun : String, name : String = null):void {
+			var i : int = _names.indexOf(name);
+			if(i >= 0) {
+				_conn.send(mConsoleConnName.getConsoleConnName(_ids[i]), 'executeCmdLine', fun);
 			}
 		}
 	}

@@ -40,19 +40,18 @@ package cn.itamt.utils.inspector.firefox {
 				}
 				if(FlashPlayerEnvironment.isInFirefox()) {
 					ExternalInterface.addCallback('startInspector', startInspector);
-					ExternalInterface.addCallback('stopInspector', stopInspector);					ExternalInterface.addCallback('toggleInspector', toggleInspector);
+					ExternalInterface.addCallback('stopInspector', stopInspector);
+					ExternalInterface.addCallback('toggleInspector', toggleInspector);
+					ExternalInterface.addCallback('toggleInspectorByUrl', toggleInspectorByUrl);
 					ExternalInterface.addCallback('clearAllConnections', clearAllConnections);
 				}
 			}
 
-			if(controller.enable){
+			if(controller.enable) {
 				this.startInspector();
-			}else{
+			} else {
 				this.stopInspector();
 			}
-
-			//
-			// fInspectorConfig.build();
 
 			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
 		}
@@ -69,11 +68,11 @@ package cn.itamt.utils.inspector.firefox {
 			alert('[tInspectorConsoleMonitor][startInspector]');
 			controller.enable = true;
 			controller.callFun('startInspector');
-			
+
 			//
 			fInspectorConfig.setEnable(true);
 			fInspectorConfig.save();
-			
+
 			//
 			ExternalInterface.call("fInspector.onInspectorState", "on");
 		}
@@ -82,18 +81,18 @@ package cn.itamt.utils.inspector.firefox {
 			alert('[tInspectorConsoleMonitor][stopInspector]');
 			controller.enable = false;
 			controller.callFun('stopInspector');
-			
+
 			fInspectorConfig.setEnable(false);
 			fInspectorConfig.save();
-			
+
 			//
 			ExternalInterface.call("fInspector.onInspectorState", "off");
 		}
-		
+
 		public function toggleInspector():void {
-			if(controller.enable){
+			if(controller.enable) {
 				this.stopInspector();
-			}else{
+			} else {
 				this.startInspector();
 			}
 		}
@@ -102,10 +101,15 @@ package cn.itamt.utils.inspector.firefox {
 			alert('[tInspectorConsoleMonitor][clearAllConnections]');
 			controller.deconstructAllConnections();
 		}
-		
+
 		public function showFullScreenGuide(swfId : String):void {
 			Debug.trace('[tInspectorConsoleMonitor][showFullScreenGuide]');
 			ExternalInterface.call("fInspector.showFullScreenGuide", swfId);
+		}
+
+		public function toggleInspectorByUrl(swfUrl : String):void {
+			Debug.trace('[tInspectorConsoleMonitor][startInspectorByUrl]' + swfUrl);
+			controller.callInspectorFunBySwfUrl("toggleInspector", swfUrl);
 		}
 
 		/*************************************

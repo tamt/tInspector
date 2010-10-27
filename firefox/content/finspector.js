@@ -5,6 +5,7 @@ isOn : true,
 enable : true,
 preTab : null,
 firefoxLoaded : false,
+currTarget : null,
 setEnable : function(v) {
 	fInspector.enable = (String(v) == "true");
 	if (!fInspector.enable) {
@@ -162,21 +163,95 @@ setupSwfsInDoc : function(doc) {
 				fInspector.trace("swf injected.");
 			}
 
-			/*
-			 * var anchor = doc.createElement("a"); anchor.setAttribute("href",
-			 * "javascript:alert(\"finspector alert\");"); anchor.style.position =
-			 * "absolute"; anchor.style.left = "0"; anchor.style.top = "0";
-			 * anchor.innerHTML = "<img src=\"" +
-			 * fInspectorUtil.convertURLtoURI(fInspector.getAddonFilePath("/skin/finspector_16.png")) +
-			 * "\">"; doc.body.appendChild(anchor);
+			/**
+			 * TODO:FlashInspector 0.2.2 swf.addEventListener("mouseover",
+			 * fInspector.swfMouseEventHander, true);
+			 * swf.addEventListener("mouseout", fInspector.swfMouseEventHander,
+			 * true);
 			 */
-			// fInspector.reloadSwfElement(swf);
 		}
 	}
 },
 
+swfMouseEventHander : function(event) {
+	fInspector.trace("swf: " + event.type);
+	var swf = event.target;
+	if (event.type == "mouseover") {
+		if (swf != fInspector.currTarget) {
+			fInspector.currTarget = swf;
+			fInspector.showOperationBar(swf);
+		}
+	} else if (event.type == "mouseout") {
+		fInspector.currTarget = null;
+		setTimeout(function() {
+			fInspector.trace("curr target: " + fInspector.currTarget + ", " + swf);
+			if (fInspector.currTarget != swf)
+				fInspector.hideOperationBar(swf);
+		}, 200);
+	}
+},
+
+showOperationBar : function(swf) {
+	var doc = swf.ownerDocument.defaultView.top.document;
+	var anchor = doc.getElementById(swf.id + "_operation_bar");
+	if (!anchor) {
+		anchor = doc.createElement("a");
+		anchor.setAttribute("title", "Inspect swf");
+		anchor.setAttribute("id", swf.id + "_operation_bar");
+		anchor.style.position = "absolute";
+		anchor.addEventListener("mouseover", fInspector.operationBarMouseEventHandler, true);
+		anchor.addEventListener("mouseout", fInspector.operationBarMouseEventHandler, true);
+		anchor.addEventListener("click", fInspector.onClickOperationIcon, true);
+		anchor.innerHTML = '<img src="data:image/png;base64,' + fInspectorPngStr.getIcon("pngInspectorIcon") + '"/>';
+		anchor.owner = swf;
+		doc.documentElement.appendChild(anchor);
+	}
+
+	var rect = fInspectorUtil.getElementPosition(swf);
+
+	let
+	left = rect.left;
+	let
+	top = rect.top - 16;
+	anchor.style.left = left + "px";
+	anchor.style.top = top + "px";
+},
+
+hideOperationBar : function(swf) {
+	var doc = swf.ownerDocument.defaultView.top.document;
+	var anchor = doc.getElementById(swf.id + "_operation_bar");
+	if (anchor) {
+		anchor.removeEventListener("mouseover", fInspector.operationBarMouseEventHandler, false);
+		anchor.removeEventListener("mouseout", fInspector.operationBarMouseEventHandler, false);
+		anchor.removeEventListener("click", fInspector.onClickOperationIcon, false);
+		doc.documentElement.removeChild(anchor);
+	}
+},
+
+operationBarMouseEventHandler : function(event) {
+	fInspector.trace("operationBar: " + event.type);
+	var swf = event.currentTarget.owner;
+	if (event.type == "mouseover") {
+		fInspector.currTarget = swf;
+	} else if (event.type == "mouseout") {
+		fInspector.currTarget = null;
+		setTimeout(function() {
+			fInspector.trace("curr target: " + fInspector.currTarget + ", " + swf);
+			if (fInspector.currTarget != swf)
+				fInspector.hideOperationBar(swf);
+		}, 200);
+	}
+},
+
+onClickOperationIcon : function(event) {
+	var bar = event.currentTarget;
+	var doc = bar.ownerDocument.defaultView.top.document;
+	var swf = doc.getElementById(bar.id.slice(0, -14));
+	var swf_url = swf.data;
+	document.getElementById('tInspectorController').toggleInspectorByUrl(swf_url);
+},
+
 setSwfIdPersist : function(swf, num) {
-	// return;
 	if (!swf.fInspectorEnabled) {
 		try {
 			swf.setSwfId(swf.id);
@@ -250,6 +325,7 @@ onDomNodeInserted : function(evt) {
 },
 
 injectSwf : function(element) {
+	return;
 	var swf;
 	if ((element.tagName == "OBJECT" || element.tagName == "EMBED") && element.type == "application/x-shockwave-flash") {
 		swf = element;
@@ -296,10 +372,10 @@ callInspector : function() {
 	document.getElementById('tInspectorController').toggleInspector();
 },
 
-onInspectorState:function(state){
-	if(state == "on"){
+onInspectorState : function(state) {
+	if (state == "on") {
 		document.getElementById('finspectorBtnImg').setAttribute("state", "on");
-	}else if(state == "off"){
+	} else if (state == "off") {
 		document.getElementById('finspectorBtnImg').setAttribute("state", "off");
 	}
 },
@@ -410,7 +486,7 @@ showFlashInspectorPluginGuide : function(pluginName) {
 
 showFullScreenGuide : function(swfId) {
 	var stringBundle = document.getElementById("tips");
-	if(confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))){
+	if (confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))) {
 		var swf = gBrowser.contentDocument.wrappedJSObject.getElementById(swfId);
 		fInspector.reloadSwfElement(swf);
 	}

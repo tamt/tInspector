@@ -21,57 +21,59 @@ package msc.console {
 	 */
 	public class mConsoleMonitor extends mSprite {
 		public static const VERSION : String = 'mConsoleMonitor 1.0 beta';
-		//////////////////////////////////////
-		//////////private functions///////////
-		//////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // private    functions///////////
+		// // // // // ////////////////////////////
 		protected var _conn : LocalConnection;
 
-		//信息、命令历史文本区
+		// 信息、命令历史文本区
 		protected var _log : mConsoleHistoryView;
-		//命令输入文本框
+		// 命令输入文本框
 		protected var _cmd : mCmdTextInput;
-		//初始的舞台长宽
+		// 初始的舞台长宽
 		protected var _initStageW : Number, _initStageH : Number;
 		protected var _ids : Array;
+		protected var _names : Array;
 
 		//
 		public var proxy : *;
 
-		//////////////////////////////////////
-		////////////constructor///////////////
-		//////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // //constructor///////////////
+		// // // // // ////////////////////////////
 		public function mConsoleMonitor() {
 			_ids = [];
+			_names = [];
 		}
 
-		//////////////////////////////////////
-		////////////override funcions/////////
-		//////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // //override    funcions/////////
+		// // // // // ////////////////////////////
 		override protected function init() : void {
 			super.init();
-			
+
 			_initStageW = this.stage.stageWidth;
 			_initStageH = this.stage.stageHeight;
-			
-			//界面初始化
+
+			// 界面初始化
 			_log = new mConsoleHistoryView();
 			_log.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 			addChild(_log);
 			_cmd = new mCmdTextInput();
 			_cmd.addEventListener(mTextEvent.ENTER, onCmdEnter);
 			addChild(_cmd);
-			
+
 			var tfm : TextFormat = new TextFormat('Verdana', null, 0xffffff);
 			tfm.leftMargin = tfm.rightMargin = 4;
 			tfm.leading = 4;
 			_log.defaultTextFormat = _cmd.defaultTextFormat = tfm;
-			
-			//舞台大小事件
+
+			// 舞台大小事件
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
 			this.stage.align = StageAlign.TOP_LEFT;
 			this.stage.addEventListener(Event.RESIZE, onStageResize);
-			
-			//本地连接初始化
+
+			// 本地连接初始化
 			_conn = new LocalConnection();
 			_conn.allowInsecureDomain("*");
 			_conn.allowDomain("*");
@@ -79,25 +81,27 @@ package msc.console {
 
 			try {
 				_conn.connect(mConsoleConnName.CLIENT);
-			}catch(e : Error) {
+			} catch(e : Error) {
 				return;
 			}
-			
+
 			Debug.trace('[mConsoleMonitor][init]');
-			
-			_conn.addEventListener(StatusEvent.STATUS, onStatus);			_conn.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);			_conn.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-			//			_conn.send(mConsoleConnName.CONSOLE, 'buildConnection');
-			
-			//显示版本信息
+
+			_conn.addEventListener(StatusEvent.STATUS, onStatus);
+			_conn.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+			_conn.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
+			// _conn.send(mConsoleConnName.CONSOLE, 'buildConnection');
+
+			// 显示版本信息
 			addLog(new mConsoleLog(VERSION, mConsoleLogType.CONSOLE));
-			
+
 			this.stage.focus = this._cmd.textField;
 		}
 
 		override public function relayout() : void {
 			_log.setPos(5, 5);
 			_cmd.setPos(5, this.stage.stageHeight - _cmd.height - 5);
-			
+
 			_log.setSize(this.stage.stageWidth - 10, this.stage.stageHeight - _cmd.height - 16);
 			_cmd.setSize(this.stage.stageWidth - 10);
 		}
@@ -106,19 +110,19 @@ package msc.console {
 			_log = null;
 			_cmd = null;
 			_conn = null;
-			
+
 			super.destroy();
 		}
 
-		//////////////////////////////////////
-		//////////private functions///////////
-		//////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // private    functions///////////
+		// // // // // ////////////////////////////
 		private function onStatus(event : StatusEvent) : void {
 			switch (event.level) {
 				case "status":
 					break;
 				case "error":
-					//					addLog(new mConsoleLog(event.code, mConsoleLogType.ERROR));
+					// addLog(new mConsoleLog(event.code, mConsoleLogType.ERROR));
 					break;
 			}
 		}
@@ -136,8 +140,9 @@ package msc.console {
 		}
 
 		private function onCmdEnter(evt : mTextEvent) : void {
-			if(evt.text == '' || evt.text == null)return;
-			
+			if(evt.text == '' || evt.text == null)
+				return;
+
 			this.callFun(evt.text);
 		}
 
@@ -147,15 +152,16 @@ package msc.console {
 			}
 		}
 
-		//////////////////////////////////////
-		/////////public functions/////////////
-		//////////////////////////////////////
+		// // // // // ////////////////////////////
+		// // // //    /public   functions/////////////
+		// // // // // ////////////////////////////
 		/**
 		 * 连接某个Console
 		 */
-		public function buildConnection(id : String) : void {
+		public function buildConnection(id : String, name : String = null) : void {
 			if(_ids.indexOf(id) < 0) {
 				_ids.push(id);
+				_names.push(name);
 				Debug.trace('[mConsoleMonitor][buildConnection]' + mConsoleConnName.getConsoleConnName(id));
 				_conn.send(mConsoleConnName.getConsoleConnName(id), 'onBuildConnection');
 			}
@@ -168,6 +174,7 @@ package msc.console {
 			var t : int = _ids.indexOf(id);
 			if(t >= 0) {
 				_ids.splice(t, 1);
+				_names.splice(t, 1);
 				Debug.trace('[mConsoleMonitor][deconstructConnection]' + mConsoleConnName.getConsoleConnName(id));
 				_conn.send(mConsoleConnName.getConsoleConnName(id), 'onDeconstructConnection');
 			}
@@ -207,20 +214,22 @@ package msc.console {
 		 */
 		public function callFun(fun : String, id : String = null) : void {
 			addLog(new mConsoleLog(fun));
-			//			_conn.send(mConsoleConnName.CONSOLE, 'executeCmdLine', fun);
+			// _conn.send(mConsoleConnName.CONSOLE, 'executeCmdLine', fun);
 
 			for(var i : int = 0;i < _ids.length;i++) {
-				Debug.trace('[mConsoleMonitor][callFun]' + mConsoleConnName.getConsoleConnName(_ids[i]) + ', ' + fun);				_conn.send(mConsoleConnName.getConsoleConnName(_ids[i]), 'executeCmdLine', fun);
+				Debug.trace('[mConsoleMonitor][callFun]' + mConsoleConnName.getConsoleConnName(_ids[i]) + ', ' + fun);
+				_conn.send(mConsoleConnName.getConsoleConnName(_ids[i]), 'executeCmdLine', fun);
 			}
 		}
 
 		public function callProxyFun(fun : String, ...paras) : void {
 			Debug.trace('[mConsoleMonitor][callProxyFun]' + fun);
 			if(proxy) {
-				if(!proxy['hasOwnProperty'](fun))return;
+				if(!proxy['hasOwnProperty'](fun))
+					return;
 				try {
 					(proxy[fun] as Function).apply(proxy, paras);
-				}catch(e : Error) {
+				} catch(e : Error) {
 				}
 			}
 		}

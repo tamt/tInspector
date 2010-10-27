@@ -106,6 +106,8 @@
 			if(loaderInfo) {
 				if(loaderInfo.url) {
 					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.url.indexOf("fInspectorSetting.swf") == -1) && (loaderInfo.url.indexOf("tInspectorConsoleMonitor.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
+						if(FlashPlayerEnvironment.url == null)
+							FlashPlayerEnvironment.url = loaderInfo.url;
 						if(loaderInfo.content.hasOwnProperty("disableFlashInspector") && loaderInfo.content["disableFlashInspector"]) {
 							findKiller = true;
 							this.stopInspector();
@@ -125,7 +127,7 @@
 		private function initInspector() : void {
 			log('[tInspectorPreloader][initInspector]');
 
-			mConsole.init(true);
+			mConsole.init(true, FlashPlayerEnvironment.url);
 			mConsole.addDelegate(this);
 			if(!ExternalInterface.available) {
 				connectController();
@@ -216,6 +218,14 @@
 			this.controlBar.visible = false;
 			if(tInspector) {
 				tInspector.turnOff();
+			}
+		}
+
+		public function toggleInspector():void {
+			if(this.controlBar.visible) {
+				this.stopInspector();
+			} else {
+				this.startInspector();
 			}
 		}
 

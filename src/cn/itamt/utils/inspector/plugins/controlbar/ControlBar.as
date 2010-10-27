@@ -26,9 +26,9 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		public function ControlBar() {
 		}
 
-		// // // // // // // // // // // ////////////////
+		// // // // // // // // // // // // //////////////
 		// // // // //     private    functions///////////
-		// // // // // // // // // // // ////////////////
+		// // // // // // // // // // // // //////////////
 
 		private function onClickBtn(evt : MouseEvent) : void {
 			switch(evt.target) {
@@ -58,9 +58,9 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 
 		}
 
-		// // // // // // // // // // // ////////////////
+		// // // // // // // // // // // // //////////////
 		// // // //    实现接口：IInspectorPlugin/////
-		// // // // // // // // // // // ////////////////
+		// // // // // // // // // // // // //////////////
 		/**
 		 * get this plugin's id
 		 */
@@ -91,7 +91,10 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
-			return this == child || super.contains(child);
+			if(child) {
+				return this == child || super.contains(child);
+			}
+			return false;
 		}
 
 		public function onRegister(inspector : IInspector) : void {
@@ -178,9 +181,9 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 			return _active;
 		}
 
-		// // // // // // // // // // // ////////////////
+		// // // // // // // // // // // // //////////////
 		// // // // // //      override     funcions/////////
-		// // // // // // // // // // // ////////////////
+		// // // // // // // // // // // // //////////////
 		override public function addChild(child : DisplayObject) : DisplayObject {
 			if(child != null && !contains(child)) {
 				if(numChildren > 0) {
