@@ -247,7 +247,12 @@ onClickOperationIcon : function(event) {
 	var bar = event.currentTarget;
 	var doc = bar.ownerDocument.defaultView.top.document;
 	var swf = doc.getElementById(bar.id.slice(0, -14));
-	var swf_url = swf.data;
+	var swf_url;
+	if(swf.tagName == "OBJECT"){
+		swf_url = swf.data;
+	}else if(swf.tagName == "EMBED"){
+		swf_url = swf.src;
+	}
 	document.getElementById('tInspectorController').toggleInspectorByUrl(swf_url);
 },
 
@@ -488,6 +493,9 @@ showFullScreenGuide : function(swfId) {
 	var stringBundle = document.getElementById("tips");
 	if (confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))) {
 		var swf = gBrowser.contentDocument.wrappedJSObject.getElementById(swfId);
+		if(swf == null){
+			swf = gBrowser.contentDocument.wrappedJSObject.getElementsByName(swfId)[0];
+		}
 		fInspector.reloadSwfElement(swf);
 	}
 },
