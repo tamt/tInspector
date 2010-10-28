@@ -1,12 +1,19 @@
 "2.3.1 (created: 2010/04/07 18:56:53)
 
+set "runtimepath=C:\\Documents and Settings\\Administrator\\vimperator"
+source! "C:\\Documents and Settings\\Administrator\\_vimperatorrc.local"
+
+" vim: set ft=vimperator:
+
+" 键盘映射
 map J <C-d>
 map K <C-u>
 noremap j 3j
 noremap k 3k
-set nextpattern=s*下一页|下一张|下页s*,bnextb,^>$,^(>>|??|?)$,^(>|?),(>|?)$,bmoreb
-set previouspattern=s*上一页|上一弛|上页s*,bprev|previousb,^<$,^(<<|??|?)$,^(<|?),(<|?)$
-set "runtimepath=C:\\Documents and Settings\\Administrator\\vimperator"
-source! D:/flash/as3/tcodes/tInspector/vimperatorrc.local
 
-" vim: set ft=vimperator:
+" 杂项
+set nextpattern=\s*下一页|下一张|下页\s*,\bnext\b,^>$,^(>>|??|?)$,^(>|?),(>|?)$,\bmore\b
+set previouspattern=\s*上一页|上一弛|上页\s*,\bprev|previous\b,^<$,^(<<|??|?)$,^(<|?),(<|?)$
+
+" 禁用键盘
+autocmd LocationChange .* js modes.passAllKeys = /.*(mail\.google\.com|www\.google\.com\/reader).*/.test(buffer.URL)
