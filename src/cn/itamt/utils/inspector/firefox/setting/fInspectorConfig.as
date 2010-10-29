@@ -7,13 +7,13 @@ package cn.itamt.utils.inspector.firefox.setting {
 	public class fInspectorConfig {
 		private static var _so : SharedObject;
 
-		private static function init():void {
+		private static function init() : void {
 			_so = SharedObject.getLocal("FlashInspectorSetting", "/");
 			_so.data.buildAt = new Date().getMilliseconds();
 			_so.flush();
 		}
 
-		private static function get so():SharedObject {
+		private static function get so() : SharedObject {
 			if(_so == null) {
 				init();
 			}
@@ -23,7 +23,7 @@ package cn.itamt.utils.inspector.firefox.setting {
 		/*************************************
 		 *********public functions************
 		 ************************************/
-		public static function setEnablePlugin(pluginName : String):void {
+		public static function setEnablePlugin(pluginName : String) : void {
 			if(so.data.enablePlugins == null) {
 				so.data.enablePlugins = [];
 			}
@@ -33,7 +33,7 @@ package cn.itamt.utils.inspector.firefox.setting {
 			}
 		}
 
-		public static function setDisablePlugin(pluginName : String):void {
+		public static function setDisablePlugin(pluginName : String) : void {
 			if(so.data.enablePlugins == null) {
 				return;
 			}
@@ -44,46 +44,45 @@ package cn.itamt.utils.inspector.firefox.setting {
 			}
 		}
 
-		public static function getPluginEnable(pluginName : String):Boolean {
+		public static function getPluginEnable(pluginName : String) : Boolean {
 			return so.data.enablePlugins && (so.data.enablePlugins.indexOf(pluginName) >= 0);
 		}
 
-		public static function getEnablePlugins():Array {
+		public static function getEnablePlugins() : Array {
 			return so.data.enablePlugins;
 		}
 
-		public static function getPlugins():Array {
+		public static function getPlugins() : Array {
 			return so.data.plugins;
 		}
-		
-		public static function getEnable():Boolean{
-			if(so.data.enable == null){
+
+		public static function getEnable() : Boolean {
+			if(so.data.enable == null) {
 				so.data.enable = true;
 				save();
 			}
 			return so.data.enable;
 		}
-		
-		public static function setEnable(bool:Boolean):void{
+
+		public static function setEnable(bool : Boolean) : void {
 			so.data.enable = bool;	
 		}
 
 		/**
 		 * @param plugins	以plugin name为元素的数组
 		 */
-		public static function setPlugins(plugins : Array):void {
+		public static function setPlugins(plugins : Array) : void {
 			so.data.plugins = plugins;
 		}
 
-		public static function save():void {
+		public static function save() : void {
 			so.flush();
 		}
 
 		/**
 		 * 重设为默认
 		 */
-		public static function restore():void {
-
+		public static function restore() : void {
 		}
 	}
 }
