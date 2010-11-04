@@ -31,7 +31,9 @@ package cn.itamt.utils.inspector.ui {
 			this.overState = buildOverState();
 			this.hitTestState = buildHitState();
 
-			_timer = new Timer(1000);
+			_timer = new Timer(1000, 1);
+			_timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerRemoveTip);
+			
 			addEventListener(MouseEvent.ROLL_OVER, onRollOver);
 			addEventListener(MouseEvent.MOUSE_DOWN, removeTip);
 			addEventListener(MouseEvent.CLICK, removeTip);
@@ -57,18 +59,26 @@ package cn.itamt.utils.inspector.ui {
 		public function get active() : Boolean {
 			return _active;
 		}
+		
+		public function showTempTip(tmpTip:String = null):void {
+			if(tmpTip == null) {
+				tmpTip = this._tip;
+			}
+			
+			_timer.reset();
+			_timer.start();
+			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, tmpTip));
+		}
 
 		private function onRollOver(evt : MouseEvent) : void {
-			// _timer.start();
-			_timer.addEventListener(TimerEvent.TIMER, onTimerShowTip);
-
+			_timer.stop();
+			
 			addEventListener(MouseEvent.ROLL_OUT, onRollOut);
 			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
 		}
 
 		private function onTimerShowTip(evt : TimerEvent) : void {
 			_timer.removeEventListener(TimerEvent.TIMER, onTimerShowTip);
-			_timer.addEventListener(TimerEvent.TIMER, onTimerRemoveTip);
 
 			// 显示tip
 			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));

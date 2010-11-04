@@ -28,7 +28,7 @@ package cn.itamt.dedo.data {
 		 */
 		public function hasAnimationInArea(area : DMapArea):Boolean {
 			for(var i : int = 0; i < layers.length; i++) {
-				if(layers[i].hasAnimationInArea(area)) {
+				if(layers[i] && layers[i].hasAnimationInArea(area)) {
 					return true;
 					break;
 				}

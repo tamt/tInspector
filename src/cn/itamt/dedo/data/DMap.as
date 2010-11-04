@@ -12,6 +12,7 @@ package cn.itamt.dedo.data {
 		public var layers : DMapLayersCollection;
 		public var jumps : DMapJumpsCollection;
 		public var characters : DMapCharactersCollection;
+		public var blocks : DMapBlocksCollection;
 
 		public function DMap() : void {
 		}
@@ -27,7 +28,7 @@ package cn.itamt.dedo.data {
 		 * 返回在某个区域内是不是含有角色
 		 */
 		public function hasCharacterInArea(area : DMapArea):Boolean {
-			return layers.hasAnimationInArea(area);
+			return characters.hasCharacterInArea(area);
 		}
 	}
 }

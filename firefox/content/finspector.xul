@@ -12,6 +12,7 @@
 	<script type="application/x-javascript" src="chrome://finspector/content/Util.js" />
 	<script type="application/x-javascript" src="chrome://finspector/content/Io.js" />
 	<script type="application/x-javascript" src="chrome://finspector/content/htmlpareser.js" />
+	<script type="application/x-javascript" src="chrome://finspector/content/pngStr.js" />
 	<script type="application/x-javascript" src="chrome://finspector/content/finspector.js" />
 	<window id="main-window">
 		<panel align="right" id="needFlashPlayerPanel"
@@ -60,8 +61,8 @@
 				allowfullscreen="true" menu="false" wmode="transparent" width="0"
 				height="0" style="width:0px;height:0px;" />
 		</box>
-		<statusbarpanel role="button" id="finspectorStatusBarBtn" context="fInspectorSetting"
-			tooltiptext="&finspectorBtn.tooltip;" onclick="fInspector.toggleInspector();" >
+		<statusbarpanel role="button" id="finspectorStatusBarBtn"
+			tooltiptext="&finspectorBtn.tooltip;" context="fInspectorSetting" onmouseup="fInspector.toggleInspector(event);" >
 			<image id="finspectorBtnImg"/>
 		</statusbarpanel>
 	</statusbar>

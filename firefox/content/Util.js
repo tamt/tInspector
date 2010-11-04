@@ -88,6 +88,69 @@ convertURLtoURI : function(url) {
 	return path;
 },
 
+getElementPosition: function(element)
+{
+	// Restrict rectangle coordinates by the boundaries of a window's client area
+	function intersectRect(rect, wnd)
+	{
+		let doc = wnd.document;
+		let wndWidth = doc.documentElement.clientWidth;
+		let wndHeight = doc.documentElement.clientHeight;
+		if (doc.compatMode == "BackCompat") // clientHeight will be bogus in quirks mode
+			wndHeight = doc.documentElement.offsetHeight - wnd.scrollMaxY;
+		
+		rect.left += doc.documentElement.scrollLeft;
+		rect.top += doc.documentElement.scrollTop;
+
+		rect.left = Math.max(rect.left, 0);
+		rect.top = Math.max(rect.top, 0);
+		rect.right = Math.min(rect.right, wndWidth);
+		rect.bottom = Math.min(rect.bottom, wndHeight);
+	}
+
+	let rect = element.getBoundingClientRect();
+	let wnd = element.ownerDocument.defaultView;
+
+	let offsets = [0, 0, 0, 0];
+	_objectOverlapsBorder = false;
+	if (!_objectOverlapsBorder)
+	{
+		let style = wnd.getComputedStyle(element, null);
+		offsets[0] = parseFloat(style.borderLeftWidth) + parseFloat(style.paddingLeft);
+		offsets[1] = parseFloat(style.borderTopWidth) + parseFloat(style.paddingTop);
+		offsets[2] = parseFloat(style.borderRightWidth) + parseFloat(style.paddingRight);
+		offsets[3] = parseFloat(style.borderBottomWidth) + parseFloat(style.paddingBottom);
+	}
+
+	rect = {left: rect.left + offsets[0], top: rect.top + offsets[1],
+					right: rect.right - offsets[2], bottom: rect.bottom - offsets[3]};
+	while (true)
+	{
+		intersectRect(rect, wnd);
+
+		if (!wnd.frameElement)
+			break;
+
+		// Recalculate coordinates to be relative to frame's parent window
+		let frameElement = wnd.frameElement;
+		wnd = frameElement.ownerDocument.defaultView;
+		
+		//wf.ownerDocument.defaultView.top.document;
+
+		let frameRect = frameElement.getBoundingClientRect();
+		let frameStyle = wnd.getComputedStyle(frameElement, null);
+		let relLeft = frameRect.left + parseFloat(frameStyle.borderLeftWidth) + parseFloat(frameStyle.paddingLeft);
+		let relTop = frameRect.top + parseFloat(frameStyle.borderTopWidth) + parseFloat(frameStyle.paddingTop);
+
+		rect.left += relLeft;
+		rect.right += relLeft;
+		rect.top += relTop;
+		rect.bottom += relTop;
+	}
+
+	return rect;
+},
+
 getFlashPluginVersion : function() {
 	var version = {
 	major : -1,

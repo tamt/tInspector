@@ -26,9 +26,9 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		public function ControlBar() {
 		}
 
-		//////////////////////////////////////
-		//////////private functions///////////
-		//////////////////////////////////////
+		// // // // // // // // // // // // //////////////
+		// // // // //     private    functions///////////
+		// // // // // // // // // // // // //////////////
 
 		private function onClickBtn(evt : MouseEvent) : void {
 			switch(evt.target) {
@@ -37,23 +37,30 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 						this._inspector.turnOff();
 					} else {
 						this._inspector.turnOn();
-						if(!this._active)this._inspector.pluginManager.activePlugin(this.getPluginId());
+						if(!this._active)
+							this._inspector.pluginManager.activePlugin(this.getPluginId());
 					}
 					break;
 			}
 		}
 
 		private function keepTopest(event : Event) : void {
-			if(this.parent) {
-				if(this.parent.getChildIndex(this) != this.parent.numChildren - 1) {
-					this.parent.setChildIndex(this, this.parent.numChildren - 1);
+			this.stage.invalidate();
+			var me : ControlBar = this;
+			addEventListener(Event.RENDER, function(evt : Event):void {
+				removeEventListener(Event.RENDER, arguments.callee);
+				if(parent) {
+					if(parent.getChildIndex(me) != me.parent.numChildren - 1) {
+						parent.setChildIndex(me, me.parent.numChildren - 1);
+					}
 				}
-			}
+			});
+
 		}
 
-		//////////////////////////////////////
-		////////实现接口：IInspectorPlugin/////
-		//////////////////////////////////////
+		// // // // // // // // // // // // //////////////
+		// // // //    实现接口：IInspectorPlugin/////
+		// // // // // // // // // // // // //////////////
 		/**
 		 * get this plugin's id
 		 */
@@ -84,21 +91,24 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
-			return this == child || super.contains(child);
+			if(child) {
+				return this == child || super.contains(child);
+			}
+			return false;
 		}
 
 		public function onRegister(inspector : IInspector) : void {
 			_inspector = inspector;
 			this.addChild(_onOffBtn = new InspectorOnOffButton());
 			this.addEventListener(MouseEvent.CLICK, onClickBtn);
-			
+
 			InspectorPopupManager.popup(this, PopupAlignMode.TL);
 			InspectorStageReference.addEventListener(Event.ENTER_FRAME, keepTopest);
 		}
 
 		public function onUnRegister(inspector : IInspector) : void {
 			this.removeEventListener(MouseEvent.CLICK, onClickBtn);
-			
+
 			InspectorPopupManager.remove(this);
 		}
 
@@ -116,7 +126,7 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 			_active = false;
 		}
 
-		public function onTurnOn() : void {			
+		public function onTurnOn() : void {
 			var arr : Array = this._inspector.pluginManager.getPlugins();
 			for(var i : int = 0;i < arr.length;i++) {
 				var plugin : IInspectorPlugin = arr[i] as IInspectorPlugin;
@@ -124,7 +134,7 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 				if(icon is InspectorButton) {
 					(icon as InspectorButton).tip = plugin.getPluginName(InspectorLanguageManager.getLanguage());
 				}
-				this.addChild(arr[i].getPluginIcon());	
+				this.addChild(arr[i].getPluginIcon());
 			}
 		}
 
@@ -171,24 +181,24 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 			return _active;
 		}
 
-		//////////////////////////////////////
-		////////////override funcions/////////
-		//////////////////////////////////////
+		// // // // // // // // // // // // //////////////
+		// // // // // //      override     funcions/////////
+		// // // // // // // // // // // // //////////////
 		override public function addChild(child : DisplayObject) : DisplayObject {
 			if(child != null && !contains(child)) {
 				if(numChildren > 0) {
 					child.x = getChildAt(numChildren - 1).x + getChildAt(numChildren - 1).width;
-//					child.y = 5;
+					// child.y = 5;
 				} else {
-//					child.x = 5;
-//					child.y = 5;
+					// child.x = 5;
+					// child.y = 5;
 				}
-				
+
 				this.graphics.clear();
 				this.graphics.beginFill(0x000000, .5);
 				this.graphics.drawRoundRectComplex(0, 0, child.x + child.width/* + 5*/, child.height, 0, 0, 6, 6);
 				this.graphics.endFill();
-				
+
 				return super.addChild(child);
 			}
 			return null;
@@ -200,9 +210,9 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 				for(var i : int = t + 1;i < this.numChildren;i++) {
 					this.getChildAt(t).x -= child.width;
 				}
-				
+
 				super.removeChild(child);
-				
+
 				if(this.numChildren) {
 					var last : DisplayObject = this.getChildAt(this.numChildren - 1);
 					this.graphics.clear();
@@ -210,7 +220,7 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 					this.graphics.drawRoundRectComplex(0, 0, last.x + last.width/* + 5*/, last.height, 0, 0, 6, 6);
 					this.graphics.endFill();
 				}
-				
+
 				return child;
 			}
 			return null;

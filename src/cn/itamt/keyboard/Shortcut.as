@@ -7,9 +7,11 @@ package cn.itamt.keyboard {
 	public class Shortcut {
 
 		private var _keycodes : Array;
+		public var mode : uint;
 
-		public function Shortcut(keycodes : Array) : void {
+		public function Shortcut(keycodes : Array, mode : uint = 0) : void {
 			_keycodes = keycodes.sort();
+			this.mode = mode;
 		}
 
 		public function get keycodes() : Array {
@@ -21,7 +23,8 @@ package cn.itamt.keyboard {
 			if(codes.length == _keycodes.length) {
 				var i : int = codes.length;
 				while(i-- > 0) {
-					if(codes[i] != _keycodes[i])return false;
+					if(codes[i] != _keycodes[i])
+						return false;
 				}
 				return true;
 			} else {

@@ -10,6 +10,8 @@ package cn.itamt.utils.inspector.firefox {
 	 */
 	public class FlashPlayerEnvironment {
 
+		private static var _url : String;
+
 		private static var _swfId : String;
 
 		public static function get swfId() : String {
@@ -24,20 +26,21 @@ package cn.itamt.utils.inspector.firefox {
 			_swfId = val;
 		}
 
-		
+
 		/**
 		 * 是否允许全屏，通过判断在html的嵌入代码中allowfullscreen="true";
 		 */
 		public static function getAllowFullScreen() : Boolean {
 			var allowFullScreen : Boolean;
-			
+
 			if(ExternalInterface.available) {
 				var attr : Object = getSwfObjectAttributes();
-				if(attr != null)allowFullScreen = (attr['allowfullscreen'] == 'true');
+				if(attr != null)
+					allowFullScreen = (attr['allowfullscreen'] == 'true');
 			} else {
 				allowFullScreen = true;
 			}
-			
+
 			return allowFullScreen;
 		}
 
@@ -76,27 +79,27 @@ package cn.itamt.utils.inspector.firefox {
 				return attrs;
 			}
 			]]></xml>;
-			
+
 			var js : String = tmpXML.toString().replace(/&SWFID&/g, '"' + swfId + '"');
-			
+
 			var attribute : Object;
 			if(ExternalInterface.available) {
 				try {
 					attribute = ExternalInterface.call(js);
-				}catch(e : Error) {
+				} catch(e : Error) {
 				}
 			}
-			
+
 			for(var prop:String in attribute) {
 				Debug.trace('[FlashPlayerEnvironment][getAllowFullScreen]' + prop + ": " + attribute[prop]);
 			}
-			
+
 			return attribute;
 		}
 
 		public static function getSwfSize() : Rectangle {
 			var size : Rectangle;
-			
+
 			var tmpXML : XML = <xml><![CDATA[
 				function(){				
 					var swf = document.getElementById(&SWFID&);
@@ -104,11 +107,13 @@ package cn.itamt.utils.inspector.firefox {
 					return rect;
 				}
 			]]></xml>;
-			
+
 			var js : String = tmpXML.toString().replace(/&SWFID&/g, '"' + (swfId) + '"');
-			if(!ExternalInterface.available)return null;
+			if(!ExternalInterface.available)
+				return null;
 			var rect : * = ExternalInterface.call(js);
-			if(rect == null)return null;
+			if(rect == null)
+				return null;
 			return size = new Rectangle(rect.x, rect.y, rect.width, rect.height);
 		}
 
@@ -119,10 +124,12 @@ package cn.itamt.utils.inspector.firefox {
 				swf.setAttribute("width", width);				swf.setAttribute("height", height);
 			}
 			]]></xml>;
-			
-			//			var js : String = tmpXML.toString().replace(/&SWFID&/g, '"' + (swfId) + '"');			//			js = tmpXML.toString().replace(/&width&/g, width);			//			js = tmpXML.toString().replace(/&height&/g, height);
+
+			// var js : String = tmpXML.toString().replace(/&SWFID&/g, '"' + (swfId) + '"');
+			// js = tmpXML.toString().replace(/&width&/g, width);
+			// js = tmpXML.toString().replace(/&height&/g, height);
 			var js : String = tmpXML.toString();
-			
+
 			if(ExternalInterface.available) {
 				ExternalInterface.call(js, (swfId), width, height);
 			}
@@ -149,9 +156,9 @@ package cn.itamt.utils.inspector.firefox {
 				}
 			}
 			]]></xml>;
-			
+
 			var js : String = tmpXML.toString();
-			
+
 			if(ExternalInterface.available) {
 				var res : String = ExternalInterface.call(js, (swfId));
 				if(res && res != "null") {
@@ -189,30 +196,30 @@ package cn.itamt.utils.inspector.firefox {
 				}
 			}
 			]]></xml>;
-			
+
 			var js : String = tmpXML.toString();
-			
+
 			if(ExternalInterface.available) {
 				var colorStr : String = color.toString(16);
 				while (colorStr.length < 6) {
 					colorStr = "0" + colorStr;
 				}
 				ExternalInterface.call(js, (swfId), "#" + colorStr);
-				//reload swf;
+				// reload swf;
 				ExternalInterface.call("fInspectorReloadSwf", FlashPlayerEnvironment.swfId);
 			}
 		}
 
 		public static function isInFirefox() : Boolean {
 			var browser : String = "";
-			
+
 			if(ExternalInterface.available) {
 				try {
 					browser = ExternalInterface.call("function(){return navigator.userAgent.toLowerCase();}");
-				}catch(e : Error) {
+				} catch(e : Error) {
 				}
 			}
-			
+
 			return browser == null ? false : browser.indexOf("firefox") >= 0;
 		}
 
@@ -221,6 +228,16 @@ package cn.itamt.utils.inspector.firefox {
 		 */
 		public static function isDebugVersion() : Boolean {
 			return Capabilities.isDebugger;
-		} 
+		}
+
+		static public function get url() : String {
+			return _url;
+		}
+
+		static public function set url(url : String) : void {
+			if(_url == null) {
+				_url = url;
+			}
+		}
 	}
 }

@@ -5,7 +5,8 @@ package cn.itamt.keyboard {
 	 * @author itamt@qq.com
 	 */
 	public class ShortcutEvent extends Event {
-		public static const DOWN : String = 'shortcut_down';		public static const UP : String = 'shortcut_UP';
+		public static const FIRE : String = 'shortcut_down';
+		// public static const UP : String = 'shortcut_UP';
 
 		public var shortcut : Shortcut;
 

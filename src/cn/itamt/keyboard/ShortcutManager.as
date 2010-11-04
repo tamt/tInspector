@@ -44,19 +44,24 @@ package cn.itamt.keyboard {
 		public function start():void {
 			if(!running) {
 				running = true;
-				_stage.addEventListener(Event.ENTER_FRAME, this.checkShortcutTyped);
+				_stage.addEventListener(Event.ENTER_FRAME, this.enterFrameHandler);
 			}
 		}
 
 		public function stop():void {
 			running = false;
-			_stage.removeEventListener(Event.ENTER_FRAME, this.checkShortcutTyped);
+			_stage.removeEventListener(Event.ENTER_FRAME, this.enterFrameHandler);
 		}
 
 		private function onKeyDown(evt : KeyboardEvent) : void {
 			if(!_downKeys[evt.keyCode]) {
 				_downKeys[evt.keyCode] = true;
 				_typeKeys.push(evt.keyCode);
+			}
+
+			var shortcut : Shortcut = this.checkShortcutExist(_typeKeys);
+			if(shortcut && shortcut.mode == ShortcutFireMode.NORMAL) {
+				this.dispatchEvent(new ShortcutEvent(shortcut, ShortcutEvent.FIRE));
 			}
 		}
 
@@ -68,10 +73,10 @@ package cn.itamt.keyboard {
 				_typeKeys.splice(t, 1);
 		}
 
-		protected function checkShortcutTyped(evt : Event = null) : void {
+		protected function enterFrameHandler(evt : Event = null) : void {
 			var shortcut : Shortcut = this.checkShortcutExist(_typeKeys);
-			if(shortcut) {
-				this.dispatchEvent(new ShortcutEvent(shortcut, ShortcutEvent.DOWN));
+			if(shortcut && shortcut.mode == ShortcutFireMode.INCESSANT) {
+				this.dispatchEvent(new ShortcutEvent(shortcut, ShortcutEvent.FIRE));
 			}
 		}
 

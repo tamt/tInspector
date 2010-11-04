@@ -9,6 +9,7 @@ package cn.itamt.dedo.render {
 	import cn.itamt.dedo.manager.CharactersManager;
 	import cn.itamt.dedo.manager.TickManager;
 	import cn.itamt.dedo.manager.TilesManager;
+	import cn.itamt.utils.Debug;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -18,6 +19,7 @@ package cn.itamt.dedo.render {
 	import flash.geom.Rectangle;
 
 	/**
+	 * Dedo渲染引擎
 	 * @author itamt[at]qq.com
 	 */
 	public class DedoRenderEngine {
@@ -25,7 +27,6 @@ package cn.itamt.dedo.render {
 		private var map : DMap;
 		private var tiles : TilesManager;
 		private var anis : AnimationsManager;
-		private var chaMgr : CharactersManager;
 		private var resMgr : ResourceManager;
 		private var viewW : uint = 400;
 		private var viewH : uint = 400;
@@ -43,6 +44,9 @@ package cn.itamt.dedo.render {
 		// 计时器
 		private var tickMgr : TickManager;
 		private var validated : Boolean;
+		private var zeroPoint : Point = new Point();
+		//
+		private var charaMgr : CharactersManager;
 
 		public function DedoRenderEngine():void {
 		}
@@ -70,6 +74,10 @@ package cn.itamt.dedo.render {
 			}
 			this.outputBmd = new BitmapData(this.viewW, this.viewH, false, 0xffff0000);
 			viewContainer.addChild(new Bitmap(this.outputBmd));
+		}
+
+		public function getViewArea():DMapArea {
+			return this.mapArea;
 		}
 
 		/**
@@ -131,13 +139,13 @@ package cn.itamt.dedo.render {
 			this.map = map;
 			this.tiles = project.tilesMgr;
 			this.anis = project.animationsMgr;
-			this.chaMgr = project.charactersMgr;
+			this.charaMgr = new CharactersManager(map.characters);
 			this.transformOutputRect2MapRect();
 
 			if(resMgr == null)
 				resMgr = new ResourceManager();
 
-			renderMap();
+			renderMap(this.mapArea);
 		}
 
 		public function start():void {
@@ -153,18 +161,35 @@ package cn.itamt.dedo.render {
 			this.resMgr = resourceManager;
 		}
 
+		public function updateCharacters():void {
+			// 查找当前可视范围内的角色元素
+			if(this.map.hasCharacterInArea(this.mapArea)) {
+				this.renderMap(this.mapArea);
+				// 更新canvas的内容
+				this.validate();
+			}
+		}
+
 		/*************************************
 		 **********private functions**********
 		 *************************************/
+		/**
+		 * 渲染地图
+		 * @param area	要渲染的区域
+		 */
 		private function renderMap(area : DMapArea = null):void {
+			if(area == null)
+				area = this.mapArea;
 			var layers : DMapLayersCollection = map.layers;
 			for(var i : int = layers.length - 1; i >= 0; i--) {
-				this.renderLayer(layers.getMapLayer(i), area);
+				var layer : DMapLayer = layers.getMapLayer(i);
+				if(layer && layer.visible)
+					this.renderLayer(layer, area);
 			}
 
 			// render to output view
 			if(this.outputBmd) {
-				this.outputBmd.copyPixels(this.canvas, this.outputRect, new Point(), null, null, true);
+				this.outputBmd.copyPixels(this.canvas, this.outputRect, zeroPoint, null, null, true);
 				renderOffsetArea();
 			}
 		}
@@ -180,12 +205,12 @@ package cn.itamt.dedo.render {
 				var cells : DMapCellsCollection = layer.cells;
 				var sourceRect : Rectangle = new Rectangle(0, 0, this.map.cellwidth, this.map.cellheight);
 				var destPoint : Point = new Point();
+
 				for(var i : int = 0; i < cells.length; i++) {
-					var imgOrAni : int = cells.getMapCellImg(i);
-					if(imgOrAni < -1000) {
+					var imgOrAni : uint = cells.getMapCellImg(i);
+					if(cells.getMapCellIsAnimation(i)) {
 						// this cell is an Animation cell.
-						// imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, cells.getMapCellFrame(i));
-						imgOrAni = this.anis.getAnimationTile(-1001 - imgOrAni, this.tickMgr.tick);
+						imgOrAni = this.anis.getAnimationTile(imgOrAni, this.tickMgr.tick);
 					}
 					sourceRect.x = map.cellwidth * (tiles.getTilePosX(imgOrAni));
 					sourceRect.y = map.cellheight * (tiles.getTilePosY(imgOrAni));
@@ -193,12 +218,34 @@ package cn.itamt.dedo.render {
 					destPoint.y = cells.getMapCellY(i) * map.cellheight;
 					this.canvas.copyPixels(resBmd, sourceRect, destPoint, null, null, true);
 				}
+
+				var hasChars : Boolean = charaMgr.hasCharacterInArea(area);
+				if(hasChars) {
+					var charaIndexs : Vector.<uint> = charaMgr.getCharactersInArea(area);
+					for(var k : int = 0; k < charaIndexs.length; k++) {
+						var posX : Number = charaMgr.charas.getCharacterX(charaIndexs[k]);
+						var posY : Number = charaMgr.charas.getCharacterY(charaIndexs[k]);
+
+						// 绘制会遮住角色层的物体
+						var tcells : Vector.<uint> = cells.getMapCellByWorldPos(posX, posY);
+						for(var j : int = 0; j < tcells.length; j++) {
+							var index : int = tcells[j];
+							if(cells.getMapCellValue(index) < charaMgr.charas.getCharacterValue(charaIndexs[k])) {
+								var img : uint = charaMgr.charas.getCharacterImg(charaIndexs[k]);
+								img = this.anis.getAnimationTile(img, charaMgr.charas.getCharacterFrame(charaIndexs[k]));
+								sourceRect.x = map.cellwidth * (tiles.getTilePosX(img));
+								sourceRect.y = map.cellheight * (tiles.getTilePosY(img));
+								destPoint.x = map.cellwidth * posX;
+								destPoint.y = map.cellheight * posY;
+								this.canvas.copyPixels(resBmd, sourceRect, destPoint, null, null, true);
+							}
+						}
+					}
+				}
 			}
 		}
 
 		private function renderOffsetArea():void {
-			// 绘制超过边缘的黑色区域
-
 			if(this.outputRect.left < 0) {
 				this.outputBmd.fillRect(new Rectangle(0, 0, -this.outputRect.left, this.outputBmd.height), 0xff000000);
 			} else if(this.outputRect.right > this.canvas.rect.right) {
@@ -212,19 +259,8 @@ package cn.itamt.dedo.render {
 		}
 
 		private function update() : void {
-			// this.outputBmd.lock();
-			// this.outputBmd.scroll(scrollAmountX, scrollAmountY);
-			// this.outputBmd.copyPixels(this.canvas, horizCutRect, horizPastePoint);
-			// this.outputBmd.copyPixels(this.canvas, vertCutRect, vertPastePoint);
-			// this.outputBmd.copyPixels(this.canvas, cornerCutRect, cornerPastePoint);
-			// this.outputRect.offset(-scrollAmountX, -scrollAmountY);
-			//			//  绘制超出边缘的黑色区域
-			// this.renderOffsetArea();
-			// this.outputBmd.unlock();
-
 			this.outputBmd.lock();
-			this.outputBmd.copyPixels(this.canvas, this.outputRect, new Point());
-			// 绘制超出边缘的黑色区域
+			this.outputBmd.copyPixels(this.canvas, this.outputRect, zeroPoint);
 			this.renderOffsetArea();
 			this.outputBmd.unlock();
 		}
@@ -258,6 +294,8 @@ package cn.itamt.dedo.render {
 			this.mapArea.top = Math.floor(this.outputRect.top < 0 ? 0 : this.outputRect.top / map.cellheight);
 			this.mapArea.right = Math.ceil(this.outputRect.right < 0 ? 0 : this.outputRect.right / map.cellwidth);
 			this.mapArea.bottom = Math.ceil(this.outputRect.bottom < 0 ? 0 : this.outputRect.bottom / map.cellheight);
+
+			// Debug.trace('[DedoRenderEngine][transformOutputRect2MapRect]' + this.mapArea.toString());
 		}
 	}
 }

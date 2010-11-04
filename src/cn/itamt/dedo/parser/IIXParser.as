@@ -2,7 +2,9 @@ package cn.itamt.dedo.parser {
 	import cn.itamt.dedo.data.DAnimationsCollection;
 	import cn.itamt.dedo.data.DBrushesCollection;
 	import cn.itamt.dedo.data.DMap;
+	import cn.itamt.dedo.data.DMapBlocksCollection;
 	import cn.itamt.dedo.data.DMapCellsCollection;
+	import cn.itamt.dedo.data.DMapCharactersCollection;
 	import cn.itamt.dedo.data.DMapLayer;
 	import cn.itamt.dedo.data.DMapLayersCollection;
 	import cn.itamt.dedo.data.DMapsCollection;
@@ -159,6 +161,8 @@ package cn.itamt.dedo.parser {
 				map.cellheight = cellsH;
 				map.cellwidth = cellsW;
 				map.layers = new DMapLayersCollection();
+				map.characters = new DMapCharactersCollection();
+				map.blocks = new DMapBlocksCollection();
 
 				for(var j : uint = 0; j < numLayers; j++) {
 					var layerName : String = iix.readString(128);
@@ -172,13 +176,39 @@ package cn.itamt.dedo.parser {
 					layer.visible = layerVisible;
 					layer.cells = new DMapCellsCollection();
 
-					for(var k : uint = 0; k < cellsX * cellsY; k++) {
-						var img : int = iix.readSint16();
-						var value : uint = iix.readUint32();
-						layer.cells.setMapCell(k, k % cellsX, uint(k / cellsX), img, value);
-					}
+					var k : uint, img : int, value : uint;
+					if(layerName == "player") {
+						// 特殊情况:该层是角色层
+						map.layers.setMapLayer(j, null);
+						for(k = 0; k < cellsX * cellsY; k++) {
+							img = iix.readSint16();
+							value = iix.readUint32();
+							if(img != -1) {
+								map.characters.setCharacter(map.characters.length, (img < -1000) ? (-1001 - img) : (img), k % cellsX, uint(k / cellsX));
+							}
+						}
+					} else if(layerName == "block") {
+						// 特殊情况:该层是阻挡信息层
+						map.layers.setMapLayer(j, null);
+						for(k = 0; k < cellsX * cellsY; k++) {
+							img = iix.readSint16();
+							value = iix.readUint32();
+							if(img != -1) {
+								map.blocks.setBlock(map.blocks.length, (img < -1000) ? (-1001 - img) : (img), k % cellsX, uint(k / cellsX));
+							}
+						}
+					} else {
+						map.layers.setMapLayer(j, layer);
 
-					map.layers.setMapLayer(j, layer);
+						for(k = 0; k < cellsX * cellsY; k++) {
+							img = iix.readSint16();
+							value = iix.readUint32();
+							if(img != -1) {
+								layer.cells.setMapCell(layer.cells.length, k % cellsX, uint(k / cellsX), (img < -1000) ? (-1001 - img) : (img), value, img < -1000);
+							}
+						}
+
+					}
 				}
 
 				// 解析跳转点信息
@@ -195,7 +225,7 @@ package cn.itamt.dedo.parser {
 			}
 
 			if(iix.bytesAvialiable) {
-				throw new Error("多据有余.");
+				throw new Error("数据有余.");
 			}
 
 			return true;

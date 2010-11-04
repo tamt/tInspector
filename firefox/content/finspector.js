@@ -1,10 +1,11 @@
 var fInspector = {
 id : "finspector@itamt.org",
 path : "kiddingme?",
-isOn : false,
+isOn : true,
 enable : true,
 preTab : null,
 firefoxLoaded : false,
+currTarget : null,
 setEnable : function(v) {
 	fInspector.enable = (String(v) == "true");
 	if (!fInspector.enable) {
@@ -162,17 +163,97 @@ setupSwfsInDoc : function(doc) {
 				fInspector.trace("swf injected.");
 			}
 
-			/*
-			 * var anchor = doc.createElement("a"); anchor.setAttribute("href",
-			 * "javascript:alert(\"finspector alert\");"); anchor.style.position =
-			 * "absolute"; anchor.style.left = "0"; anchor.style.top = "0";
-			 * anchor.innerHTML = "<img src=\"" +
-			 * fInspectorUtil.convertURLtoURI(fInspector.getAddonFilePath("/skin/finspector_16.png")) +
-			 * "\">"; doc.body.appendChild(anchor);
+			/**
+			 * TODO:FlashInspector 0.2.2 swf.addEventListener("mouseover",
+			 * fInspector.swfMouseEventHander, true);
+			 * swf.addEventListener("mouseout", fInspector.swfMouseEventHander,
+			 * true);
 			 */
-			// fInspector.reloadSwfElement(swf);
 		}
 	}
+},
+
+swfMouseEventHander : function(event) {
+	fInspector.trace("swf: " + event.type);
+	var swf = event.target;
+	if (event.type == "mouseover") {
+		if (swf != fInspector.currTarget) {
+			fInspector.currTarget = swf;
+			fInspector.showOperationBar(swf);
+		}
+	} else if (event.type == "mouseout") {
+		fInspector.currTarget = null;
+		setTimeout(function() {
+			fInspector.trace("curr target: " + fInspector.currTarget + ", " + swf);
+			if (fInspector.currTarget != swf)
+				fInspector.hideOperationBar(swf);
+		}, 200);
+	}
+},
+
+showOperationBar : function(swf) {
+	var doc = swf.ownerDocument.defaultView.top.document;
+	var anchor = doc.getElementById(swf.id + "_operation_bar");
+	if (!anchor) {
+		anchor = doc.createElement("a");
+		anchor.setAttribute("title", "Inspect swf");
+		anchor.setAttribute("id", swf.id + "_operation_bar");
+		anchor.style.position = "absolute";
+		anchor.addEventListener("mouseover", fInspector.operationBarMouseEventHandler, true);
+		anchor.addEventListener("mouseout", fInspector.operationBarMouseEventHandler, true);
+		anchor.addEventListener("click", fInspector.onClickOperationIcon, true);
+		anchor.innerHTML = '<img src="data:image/png;base64,' + fInspectorPngStr.getIcon("pngInspectorIcon") + '"/>';
+		anchor.owner = swf;
+		doc.documentElement.appendChild(anchor);
+	}
+
+	var rect = fInspectorUtil.getElementPosition(swf);
+
+	let
+	left = rect.left;
+	let
+	top = rect.top - 16;
+	anchor.style.left = left + "px";
+	anchor.style.top = top + "px";
+},
+
+hideOperationBar : function(swf) {
+	var doc = swf.ownerDocument.defaultView.top.document;
+	var anchor = doc.getElementById(swf.id + "_operation_bar");
+	if (anchor) {
+		anchor.removeEventListener("mouseover", fInspector.operationBarMouseEventHandler, false);
+		anchor.removeEventListener("mouseout", fInspector.operationBarMouseEventHandler, false);
+		anchor.removeEventListener("click", fInspector.onClickOperationIcon, false);
+		doc.documentElement.removeChild(anchor);
+	}
+},
+
+operationBarMouseEventHandler : function(event) {
+	fInspector.trace("operationBar: " + event.type);
+	var swf = event.currentTarget.owner;
+	if (event.type == "mouseover") {
+		fInspector.currTarget = swf;
+	} else if (event.type == "mouseout") {
+		fInspector.currTarget = null;
+		setTimeout(function() {
+			fInspector.trace("curr target: " + fInspector.currTarget + ", " + swf);
+			if (fInspector.currTarget != swf)
+				fInspector.hideOperationBar(swf);
+		}, 200);
+	}
+},
+
+onClickOperationIcon : function(event) {
+	var bar = event.currentTarget;
+	var doc = bar.ownerDocument.defaultView.top.document;
+	var swf = doc.getElementById(bar.id.slice(0, -14));
+	var swf_url;
+	if(swf.tagName == "OBJECT"){
+		swf_url = swf.data;
+	}else if(swf.tagName == "EMBED"){
+		swf_url = swf.src;
+	}
+	document.getElementById('tInspectorController').toggleInspectorByUrl(swf_url);
 },
 
 setSwfIdPersist : function(swf, num) {
@@ -249,6 +330,7 @@ onDomNodeInserted : function(evt) {
 },
 
 injectSwf : function(element) {
+	return;
 	var swf;
 	if ((element.tagName == "OBJECT" || element.tagName == "EMBED") && element.type == "application/x-shockwave-flash") {
 		swf = element;
@@ -276,7 +358,9 @@ injectSwf : function(element) {
 	}
 },
 
-toggleInspector : function() {
+toggleInspector : function(event) {
+	if (event.button != 0)
+		return;
 	if (!fInspector.enable) {
 		if (document.getElementById("needFlashPlayerPanel").state == "open") {
 			fInspector.hideNeedDebuggerFP();
@@ -285,22 +369,27 @@ toggleInspector : function() {
 		}
 		return;
 	}
-	fInspector.isOn = !fInspector.isOn;
 	fInspector.callInspector();
 },
 
 callInspector : function() {
 	fInspector.trace("callInspector");
-	if (fInspector.isOn) {
+	document.getElementById('tInspectorController').toggleInspector();
+},
+
+onInspectorState : function(state) {
+	if (state == "on") {
 		document.getElementById('finspectorBtnImg').setAttribute("state", "on");
-		document.getElementById('tInspectorController').startInspector();
-	} else {
+	} else if (state == "off") {
 		document.getElementById('finspectorBtnImg').setAttribute("state", "off");
-		document.getElementById('tInspectorController').stopInspector();
 	}
 },
+
 // 设置mm.cfg中的PreloadSWF值
 setPreloadSwf : function(file) {
+	// if (!fInspector.enable)
+	// return;
+
 	var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 	if (!mmcfg.exists()) {
 		fInspector.trace('the mm.cfg file dose not exist, we create it.');
@@ -398,6 +487,17 @@ closeSettingPanel : function() {
 showFlashInspectorPluginGuide : function(pluginName) {
 	var stringBundle = document.getElementById("tips");
 	alert(stringBundle.getString(pluginName + "Guide"));
+},
+
+showFullScreenGuide : function(swfId) {
+	var stringBundle = document.getElementById("tips");
+	if (confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))) {
+		var swf = gBrowser.contentDocument.wrappedJSObject.getElementById(swfId);
+		if(swf == null){
+			swf = gBrowser.contentDocument.wrappedJSObject.getElementsByName(swfId)[0];
+		}
+		fInspector.reloadSwfElement(swf);
+	}
 },
 
 progressListener : {
