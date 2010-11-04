@@ -1,5 +1,4 @@
 package cn.itamt.utils.inspector.lang {
-
 	/**
 	 * @author itamt@qq.com
 	 */
@@ -15,6 +14,7 @@ SubmmitBug		=	I catch a bug!
 InspectChild	=	inspect child
 InspectParent	=	inspect parent
 InspectBrother	=	inspect next
+InspectPrev		=	inspect prev
 InspectInfo		=	show info
 ViewStructure	=	show structure
 SetFilterClass	=	set as filter
@@ -53,6 +53,18 @@ GEK_Disabled 	=	global error handler(disabled)
 GEK_Unsupported =	global error handler is desabeld, it need Debug Flas Player 10.1(+)
 GEK_History		=	global errors history
 GEK_ClearHistory=	clear errors history
+ControlBar		=	control bar
+Clear			=	clear
+DownloadAll		=	Download Stuff
+LoadedStuffInfo	=	stuff info
+SaveAs			=	Save
+Open			=	Open
+CopyUrl			=	URL
+SaveAsTip		=	save as...
+OpenTip			=	open in new tab
+CopyUrlTip		=	copy the url
+FunctionSetting	=	Function Selector
+PluginSelectorTip	=	Refresh page after setting.
 ]]>
 					</lang>;
 		}

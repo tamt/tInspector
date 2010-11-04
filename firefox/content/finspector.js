@@ -170,7 +170,7 @@ setupSwfsInDoc : function(doc) {
 			 * fInspectorUtil.convertURLtoURI(fInspector.getAddonFilePath("/skin/finspector_16.png")) +
 			 * "\">"; doc.body.appendChild(anchor);
 			 */
-//			fInspector.reloadSwfElement(swf);
+			// fInspector.reloadSwfElement(swf);
 		}
 	}
 },
@@ -271,7 +271,7 @@ injectSwf : function(element) {
 			swf.setAttribute("allowfullscreen", "true");
 		}
 
-//		fInspector.reloadSwfElement(swf);
+		// fInspector.reloadSwfElement(swf);
 	} else {
 	}
 },
@@ -387,6 +387,17 @@ trace : function(obj) {
 // 打开一个tab
 openTab : function(url) {
 	gBrowser.selectedTab = gBrowser.addTab(url);
+},
+
+// 关闭设置的面板
+closeSettingPanel : function() {
+	document.getElementById("fInspectorSetting").hidePopup();
+},
+
+// 显示fInspector的插件说明
+showFlashInspectorPluginGuide : function(pluginName) {
+	var stringBundle = document.getElementById("tips");
+	alert(stringBundle.getString(pluginName + "Guide"));
 },
 
 progressListener : {

@@ -16,7 +16,7 @@ package cn.itamt.utils.inspector.ui {
 				this.enabled = true;
 				this.mouseEnabled = true;
 			}
-			
+
 			super.active = value;
 		}
 	}

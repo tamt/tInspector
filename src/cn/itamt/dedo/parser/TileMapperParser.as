@@ -1,4 +1,5 @@
 package cn.itamt.dedo.parser {
+	import cn.itamt.dedo.data.DAnimationsCollection;
 	import cn.itamt.dedo.data.DBrushesCollection;
 	import cn.itamt.dedo.data.DMap;
 	import cn.itamt.dedo.data.DMapCellsCollection;
@@ -9,10 +10,10 @@ package cn.itamt.dedo.parser {
 	import cn.itamt.dedo.data.DTilesCollection;
 
 	/**
+	 * 解析由TileMapper导出的xml文件
 	 * @author itamt[at]qq.com
 	 */
 	public class TileMapperParser implements IDedoParser {
-
 		private var xml : XML;
 		private var pName : String;
 		private var pVersion : String;
@@ -25,18 +26,17 @@ package cn.itamt.dedo.parser {
 		public function TileMapperParser() : void {
 		}
 
-		//////////////////////////////////////
-		//////////实现接口：IMapParser/////////
-		//////////////////////////////////////
-
+		// // // // //////////////////////////////
+		// // // // //实现接口：IMapParser/////////
+		// // // // //////////////////////////////
 		public function parse(xml : *, onComplete : Function = null) : Boolean {
 			this.xml = xml as XML;
-			
+
 			pName = this.xml.@name;
 			pVersion = this.xml.@version;
 			pCellWidth = parseInt(this.xml.@cellwidth);
 			pCellHeight = parseInt(this.xml.@cellheight);
-			
+
 			return true;
 		}
 
@@ -67,7 +67,7 @@ package cn.itamt.dedo.parser {
 					pTiles.setValue(i++, parseInt(img.@index));
 				}
 			}
-			
+
 			return pTiles;
 		}
 
@@ -86,9 +86,11 @@ package cn.itamt.dedo.parser {
 					var map : DMap = new DMap();
 					map.index = parseInt(mXML.@index);
 					map.name = mXML.@name;
-					map.cellsx = parseInt(mXML.@cellsx);					map.cellsy = parseInt(mXML.@cellsy);
-					map.cellheight = parseInt(mXML.@cellheight);					map.cellwidth = parseInt(mXML.@cellwidth);
-					
+					map.cellsx = parseInt(mXML.@cellsx);
+					map.cellsy = parseInt(mXML.@cellsy);
+					map.cellheight = parseInt(mXML.@cellheight);
+					map.cellwidth = parseInt(mXML.@cellwidth);
+
 					map.layers = new DMapLayersCollection();
 					var layerList : XMLList = mXML.layers.layer;
 					var layerXML : XML;
@@ -98,7 +100,7 @@ package cn.itamt.dedo.parser {
 						layer.index = parseInt(layerXML.@index);
 						layer.name = layerXML.@name;
 						layer.visible = Boolean(parseInt(layerXML.@visible));
-						
+
 						layer.cells = new DMapCellsCollection();
 						var cellList : XMLList = layerXML.cell;
 						var cellXML : XML;
@@ -106,24 +108,24 @@ package cn.itamt.dedo.parser {
 						for each(cellXML in cellList) {
 							layer.cells.setMapCell(k++, parseInt(cellXML.@x), parseInt(cellXML.@y), parseInt(cellXML.@img), parseInt(cellXML.@value));
 						}
-						
+
 						map.layers.setMapLayer(j++, layer);
 					}
-					
+
 					pMaps.setValue(i++, map);
 				}
 			}
-			
+
 			return pMaps;
 		}
 
 		public function getBrushes() : DBrushesCollection {
 			var collection : DBrushesCollection;
-			
+
 			return collection;
 		}
 
-		public function getAnimations() : XML {
+		public function getAnimations() : DAnimationsCollection {
 			return null;
 		}
 	}

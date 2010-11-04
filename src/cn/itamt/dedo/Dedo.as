@@ -7,7 +7,6 @@ package cn.itamt.dedo {
 	 * @author itamt[at]qq.com
 	 */
 	public class Dedo {
-
 		public var coords : Array2;
 		protected var w : uint = 10;
 		protected var h : uint = 10;

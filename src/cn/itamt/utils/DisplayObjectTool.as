@@ -3,6 +3,7 @@ package cn.itamt.utils {
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.MovieClip;
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.geom.Matrix;
@@ -11,7 +12,6 @@ package cn.itamt.utils {
 	 * @author itamt@qq.com
 	 */
 	public class DisplayObjectTool {
-
 		/**
 		 * 返回显示列表中的某个显示对象在显示对象树当中的级别.
 		 */
@@ -137,9 +137,21 @@ package cn.itamt.utils {
 					break;
 				}
 			}
-			
-			if(trigger == scope)trigger = null;
+
+			if(trigger == scope)
+				trigger = null;
 			return trigger;
+		}
+
+		private static var engine : MovieClip = new MovieClip();
+
+		public static function callLater(func : Function, args : Array = null, frame : int = 1) : void {
+			engine.addEventListener(Event.ENTER_FRAME, function(event : Event):void {
+				if (--frame <= 0) {
+					engine.removeEventListener(Event.ENTER_FRAME, arguments.callee);
+					func.apply(null, args);
+				}
+			});
 		}
 	}
 }

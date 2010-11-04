@@ -1,5 +1,5 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.inspector.consts.InspectorSymbolIcon;
+	
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
 	import flash.display.Bitmap;
@@ -8,7 +8,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class InspectorViewFavoriteButton extends InspectorViewOperationButton {
+	public class InspectorViewFavoriteButton extends InspectorButton {
 		public function InspectorViewFavoriteButton(normal : Boolean = true) {
 			super();
 			

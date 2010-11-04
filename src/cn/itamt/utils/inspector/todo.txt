@@ -143,6 +143,7 @@ TODO LIST:
 	
 	
 	tInspector 1.2		插件(Plugin)机制实现.
+						AppStats面板增加"GC"按钮
 	
 	//////////////////////////////////////////
 	tInspector 2.0		

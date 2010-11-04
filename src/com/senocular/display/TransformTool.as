@@ -1087,8 +1087,8 @@
 				var regOffset : Point = innerInteractionStart.subtract(innerRegistration);
 				
 				// find the ratios between movement and the registration offset
-				var ratioH = regOffset.x ? moved.x / regOffset.x : 0;
-				var ratioV = regOffset.y ? moved.y / regOffset.y : 0;
+				var ratioH : Number = regOffset.x ? moved.x / regOffset.x : 0;
+				var ratioV : Number = regOffset.y ? moved.y / regOffset.y : 0;
 				
 				// have the larger of the movement distances brought down
 				// based on the lowest ratio to fit the registration offset
@@ -1441,7 +1441,7 @@ class TransformToolInternalControl extends TransformToolControl {
 	}
 
 	private function controlMove(event : Event) : void {
-		if (interactionMethod && _transformTool.currentControl == this) {
+		if (interactionMethod != null && _transformTool.currentControl == this) {
 			interactionMethod();
 		}
 	}
@@ -1528,7 +1528,7 @@ class TransformToolScaleControl extends TransformToolInternalControl {
 		if (!_skin) {
 			graphics.lineStyle(2, 0xFFFFFF);
 			graphics.beginFill(0);
-			var size = _transformTool.controlSize;
+			var size : Number = _transformTool.controlSize;
 			var size2 : Number = size / 2;
 			graphics.drawRect(-size2, -size2, size, size);
 			graphics.endFill();
