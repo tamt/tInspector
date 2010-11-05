@@ -73,7 +73,11 @@ package cn.itamt.utils.inspector.plugins.fullscreen {
 				} catch(e : Error) {
 					Debug.trace('[FullScreen][onActive]error when full screen');
 					// ExternalInterface.call("fInspector.showFullScreenGuide", FlashPlayerEnvironment.swfId);
-					mConsole.callMonitorProxyFun("showFullScreenGuide", FlashPlayerEnvironment.swfId);
+					if(FlashPlayerEnvironment.swfId){
+						mConsole.callMonitorProxyFun("showFullScreenGuide", FlashPlayerEnvironment.swfId);
+					}else{
+						mConsole.callMonitorProxyFun("showFullScreenGuideByUrl", FlashPlayerEnvironment.url);
+					}
 				}
 			}
 		}

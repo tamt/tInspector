@@ -1,14 +1,17 @@
 ﻿package cn.itamt.utils.inspector.firefox {
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
+	import cn.itamt.utils.inspector.firefox.download.DownloadAll;
+	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadApp;
 	import cn.itamt.utils.inspector.firefox.setting.fInspectorConfig;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
+	import cn.itamt.utils.inspector.plugins.fullscreen.FullScreen;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
+	import cn.itamt.utils.inspector.plugins.stats.AppStats;
 
 	import msc.console.mConsole;
 	import msc.console.mIConsoleDelegate;
-
-	import mx.containers.ControlBar;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -162,7 +165,7 @@
 								tInspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 							break;
 						case InspectorPluginId.SWFINFO_VIEW:
-							tInspector.pluginManager.registerPlugin(new SwfInfoView());
+							//tInspector.pluginManager.registerPlugin(new SwfInfoView());
 							break;
 					}
 				}

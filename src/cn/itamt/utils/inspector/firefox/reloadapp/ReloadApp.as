@@ -4,6 +4,8 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 	import cn.itamt.utils.inspector.firefox.FlashPlayerEnvironment;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 
+	import msc.console.mConsole;
+
 	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
 
@@ -18,14 +20,17 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 
 		private function onClickReload(event : MouseEvent) : void {
 			if(ExternalInterface.available) {
-				ExternalInterface.call("fInspectorReloadSwf", FlashPlayerEnvironment.swfId);
+				if(FlashPlayerEnvironment.swfId) {
+					ExternalInterface.call("fInspectorReloadSwf", FlashPlayerEnvironment.swfId);
+				} else {
+					mConsole.callMonitorProxyFun("reloadSwfByUrl", FlashPlayerEnvironment.url);
+				}
 			}
 		}
 
-		// ////////////////////////////////////
-		// //////////override funcions/////////
-		// ////////////////////////////////////
-
+		// // // ////////////////////////////////
+		// // // //////override  funcions/////////
+		// // // ////////////////////////////////
 		override public function onRegister(inspector : IInspector) : void {
 			super.onRegister(inspector);
 
