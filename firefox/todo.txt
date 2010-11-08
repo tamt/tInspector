@@ -15,5 +15,7 @@ v0.1		基本的功能
  	0.1.7	支持Firefox 4
  	
  	
-v0.2		将Debugger Flash Player打包到.xpi中,完善界面。
+v0.2	
+	0.2.2	bug：把swf直接拖进firefox，然后尝试全屏……
+		bug：web2.qq.com的时钟swf，尝试全屏……	
 v0.3	
