@@ -36,3 +36,13 @@
 #getFlashPlayer:hover {
 	text-decoration: underline;
 }
+
+.fInspectorPluginGuideBtn{
+	width: 	16px;
+	height: 16px;
+	list-style-image:	url(chrome://finspector/skin/info.gif);
+}
+
+.fInspectorPluginGuideBtn:hover{
+	list-style-image:	url(chrome://finspector/skin/info_gray.gif);
+}

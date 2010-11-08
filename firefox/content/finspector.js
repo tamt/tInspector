@@ -54,9 +54,9 @@ onFirefoxLoad : function(evt) {
 	}
 },
 
-// 关闭Firefox时
+// �抽�Firefox��
 onFirefoxUnLoad : function(evt) {
-	// 清除mm.cfg中PreloadSWF的设置
+	// 娓��mm.cfg涓�reloadSWF���缃�
 	fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
 
 	fInspector.toggleProgressListener(gBrowser.webProgress, false);
@@ -123,7 +123,7 @@ setupSwfsInDoc : function(doc) {
 
 	fInspector.trace("try setup swfs");
 
-	// 为该documen注入一些js方法.供tInspectorPreloader调用.
+	// 涓鸿�documen娉ㄥ�涓��js�规�.渚�InspectorPreloader璋��.
 	var tabDoc = doc;
 	if (!doc.getElementById("finspector_js_injector")) {
 		var script = tabDoc.createElement("script");
@@ -134,13 +134,13 @@ setupSwfsInDoc : function(doc) {
 		tabDoc.body.appendChild(script);
 	}
 
-	// 设置swf的属性, 比如:allowscriptaccess, allowfullscreen.
+	// 璁剧疆swf����� 姣��:allowscriptaccess, allowfullscreen.
 	var swfs = fInspector.getSwfElements(doc);
 	fInspector.trace(swfs.length + " swf(s) was found in this page.");
 	for ( var i = 0; i < swfs.length; i++) {
 		var swf = swfs[i];
 		if (!swf.fInspectorEnabled) {
-			// 如果没有id,则分配一个.
+			// 濡��娌℃�id,������涓�
 			if (!swf.id) {
 				swf.id = "fInspectorSwf_" + (new Date()).getTime();
 			}
@@ -247,12 +247,7 @@ onClickOperationIcon : function(event) {
 	var bar = event.currentTarget;
 	var doc = bar.ownerDocument.defaultView.top.document;
 	var swf = doc.getElementById(bar.id.slice(0, -14));
-	var swf_url;
-	if(swf.tagName == "OBJECT"){
-		swf_url = swf.data;
-	}else if(swf.tagName == "EMBED"){
-		swf_url = swf.src;
-	}
+	var swf_url = swf.data;
 	document.getElementById('tInspectorController').toggleInspectorByUrl(swf_url);
 },
 
@@ -281,18 +276,18 @@ setSwfIdPersist : function(swf, num) {
 },
 
 /**
- * 整个页面加载完成
+ * �翠釜椤甸���浇瀹��
  */
 onPageLoad : function(doc) {
 	fInspector.trace("onPageLoad");
 	fInspector.setupSwfsInDoc(doc);
 
-	// 清除mm.cfg中PreloadSWF的设置
+	// 娓��mm.cfg涓�reloadSWF���缃�
 	fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
 },
 
 /**
- * 页面的文档加载完成
+ * 椤甸����妗ｅ�杞藉���
  */
 onPageContentLoad : function(doc) {
 	fInspector.trace("onPageContentLoad");
@@ -301,14 +296,14 @@ onPageContentLoad : function(doc) {
 	// doc.addEventListener("DOMNodeInserted", fInspector.onDomNodeInserted,
 	// false);
 
-	// 清除mm.cfg中PreloadSWF的设置
+	// 娓��mm.cfg涓�reloadSWF���缃�
 	// fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
 },
 
 onPageUnload : function(doc) {
 	fInspector.trace("onPageUnload");
 
-	// 设置swf的属性, 比如:allowscriptaccess, allowfullscreen.
+	// 璁剧疆swf����� 姣��:allowscriptaccess, allowfullscreen.
 	var swfs = fInspector.getSwfElements(doc);
 	fInspector.trace(swfs.length + " swf(s) was found in this page.");
 	for ( var i = 0; i < swfs.length; i++) {
@@ -359,6 +354,16 @@ injectSwf : function(element) {
 },
 
 toggleInspector : function(event) {
+	//鼠标右击事件
+    if(event.button == 2){
+    	if(fInspectorUtil.OS == fInspectorUtil.MAC){
+    		document.getElementById("fInspectorSetting_mac").openPopup(document.getElementById("finspectorBtnImg"), "before_end");
+    	}else{
+    		document.getElementById("fInspectorSetting").openPopup(document.getElementById("finspectorBtnImg"), "before_end");
+    	}
+    }
+    
+    //鼠标左击事件
 	if (event.button != 0)
 		return;
 	if (!fInspector.enable) {
@@ -385,7 +390,7 @@ onInspectorState : function(state) {
 	}
 },
 
-// 设置mm.cfg中的PreloadSWF值
+// 璁剧疆mm.cfg涓��PreloadSWF��
 setPreloadSwf : function(file) {
 	// if (!fInspector.enable)
 	// return;
@@ -435,7 +440,7 @@ clearPreloadSwf : function(file) {
 	}
 },
 
-// 把文件路径添加到Flash Player的信任路径
+// ���浠惰矾寰�坊���Flash Player��俊浠昏矾寰�
 setPathFlashTrust : function(path) {
 	var cfg = fInspectorFileIO.open(fInspectorUtil.getFinspectorTrustPath());
 	if (!cfg.exists()) {
@@ -452,38 +457,38 @@ setPathFlashTrust : function(path) {
 	}
 },
 
-// 得到fInspector下文件的系统路径
+// 寰��fInspector涓��浠剁�绯荤�璺��
 getAddonFilePath : function(relativePath) {
 	relativePath = relativePath.replace(/\//g, fInspectorUtil.PATH_SEP);
 	return fInspector.path + relativePath;
 },
 
-// 如果Debugger Flash Player没有安装
+// 濡��Debugger Flash Player娌℃�瀹��
 showNeedDebuggerFP : function() {
 	document.getElementById("needFlashPlayerPanel").openPopup(document.getElementById("finspectorBtnImg"), "before_end");
 },
 
-// 如果Debugger Flash Player没有安装
+// 濡��Debugger Flash Player娌℃�瀹��
 hideNeedDebuggerFP : function() {
 	document.getElementById("needFlashPlayerPanel").hidePopup();
 },
 
-// 测试输出
+// 娴��杈��
 trace : function(obj) {
 	dump('\n' + obj);
 },
 
-// 打开一个tab
+// ���涓�釜tab
 openTab : function(url) {
 	gBrowser.selectedTab = gBrowser.addTab(url);
 },
 
-// 关闭设置的面板
+// �抽�璁剧疆�����
 closeSettingPanel : function() {
 	document.getElementById("fInspectorSetting").hidePopup();
 },
 
-// 显示fInspector的插件说明
+// �剧ずfInspector���浠惰���
 showFlashInspectorPluginGuide : function(pluginName) {
 	var stringBundle = document.getElementById("tips");
 	alert(stringBundle.getString(pluginName + "Guide"));
@@ -493,11 +498,59 @@ showFullScreenGuide : function(swfId) {
 	var stringBundle = document.getElementById("tips");
 	if (confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))) {
 		var swf = gBrowser.contentDocument.wrappedJSObject.getElementById(swfId);
-		if(swf == null){
-			swf = gBrowser.contentDocument.wrappedJSObject.getElementsByName(swfId)[0];
-		}
 		fInspector.reloadSwfElement(swf);
 	}
+},
+
+showFullScreenGuideByUrl : function(swfUrl) {
+	var stringBundle = document.getElementById("tips");
+	if (confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))) {
+		var swf = fInspector.getSwfElementByUrl(gBrowser.contentDocument, swfUrl);
+		fInspector.reloadSwfElement(swf);
+	}
+},
+
+//根据swf的url来重载swf
+reloadSwfByUrl:function(swfUrl){
+	var swf = fInspector.getSwfElementByUrl(gBrowser.contentDocument, swfUrl);
+	fInspector.reloadSwfElement(swf);
+},
+
+getSwfElementByUrl:function(doc, swfUrl){
+	var swfs=fInspector.getSwfElements(doc);
+	var target;
+	for(var i=0; i<swfs.length; i++){
+		var swf = swfs[i];
+		if(swf.tagName == "OBJECT"){
+			if(swfUrl.indexOf(swf["data"])>=0){
+				target = swf;
+				break;
+			}
+		}else if(swf.tagName == "EMBED"){
+			if(swfUrl.indexOf(swf["src"])>=0){
+				target = swf;
+				break;
+			}
+		}
+	}
+	
+	return target;
+},
+
+checkInspectorPlugin:function(pluginCheckBox){
+	var pluginId = pluginCheckBox.id.slice(("fInspectorPlugin_").length);
+	
+	//调用tInspectorController的函数
+	if(!pluginCheckBox.checked){
+		document.getElementById('tInspectorController').selectPlugin(pluginId);
+	}else{
+		document.getElementById('tInspectorController').rejectPlugin(pluginId);
+	}
+},
+
+showCheckInspectorPlugin:function(pluginId, check){
+	var pluginCheckBox = document.getElementById("fInspectorPlugin_" + pluginId);
+	pluginCheckBox.checked = check;
 },
 
 progressListener : {
@@ -515,7 +568,7 @@ onStateChange : function(aWebProgress, aRequest, aFlag, aStatus) {
 		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
 	} else if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) && (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
 		fInspector.trace("This fires when the load finishes");
-		// 给该页面中所有swf元素分配id
+		// 缁��椤甸�涓����wf������id
 		// fInspector.setupSwfsInDoc(doc);
 	}
 },

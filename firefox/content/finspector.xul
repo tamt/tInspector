@@ -44,13 +44,29 @@
 		</panel>
 	</window>
 	<popupset>
-		<panel align="right" id="fInspectorSetting"
-			style="background-color:transparent;border-style: none;" noautohide="true">
+		<panel align="left" id="fInspectorSetting"
+			style="border-style: none;">
 			<html:embed
 				src="chrome://finspector/content/fInspectorSetting.swf"
 				allowScriptAccess="always" type="application/x-shockwave-flash"
-				allowfullscreen="true" menu="false" wmode="transparent" width="200"
+				allowfullscreen="true" menu="true" wmode="transparent" width="200"
+				bgcolor="#99cc00"
 				height="250" style="width:200px;height:250px;" />
+		</panel>
+		<panel align="right" id="fInspectorSetting_mac"
+			style="border-style: none; padding:10px; font-size:12px;" width="200">
+			<groupbox>
+				<caption label="&fInspectorPluginSelector;"></caption>
+				<vbox style="">
+					<hbox><checkbox id="fInspectorPlugin_SwfInfoPanel" label="SwfInfoPanel" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('SwfInfoPanel');" class="fInspectorPluginGuideBtn"/></hbox>
+					<hbox><checkbox id="fInspectorPlugin_DownloadAll" label="DownloadAll" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('DownloadAll');" class="fInspectorPluginGuideBtn"/></hbox>
+					<hbox><checkbox id="fInspectorPlugin_ReloadSwf" label="ReloadSwf" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('ReloadSwf');" class="fInspectorPluginGuideBtn"/></hbox>
+					<hbox><checkbox id="fInspectorPlugin_GlobalErrorKeeper" label="GlobalErrorKeeper" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('GlobalErrorKeeper');" class="fInspectorPluginGuideBtn"/></hbox>
+					<hbox><checkbox id="fInspectorPlugin_FullScreen" label="FullScreen" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('FullScreen');" class="fInspectorPluginGuideBtn"/></hbox>
+					<hbox><checkbox id="fInspectorPlugin_AppStatsPanel" label="AppStats" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('AppStatsPanel');" class="fInspectorPluginGuideBtn"/></hbox>
+				</vbox>
+			</groupbox>
+			<label value="&fInspectorPluginSelectorTip;"/>
 		</panel>
 	</popupset>
 	<statusbar id="status-bar">
@@ -62,7 +78,7 @@
 				height="0" style="width:0px;height:0px;" />
 		</box>
 		<statusbarpanel role="button" id="finspectorStatusBarBtn"
-			tooltiptext="&finspectorBtn.tooltip;" context="fInspectorSetting" onmouseup="fInspector.toggleInspector(event);" >
+			tooltiptext="&finspectorBtn.tooltip;" context="fInspectorSetting_mac" onmouseup="fInspector.toggleInspector(event);" >
 			<image id="finspectorBtnImg"/>
 		</statusbarpanel>
 	</statusbar>
