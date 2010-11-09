@@ -4,6 +4,7 @@ path : "kiddingme?",
 isOn : true,
 enable : true,
 preTab : null,
+controllerId:new Date().getTime().toString(),
 firefoxLoaded : false,
 currTarget : null,
 setEnable : function(v) {
@@ -16,9 +17,12 @@ onFirefoxLoad : function(evt) {
 	fInspector.trace('onFirefoxLoad...');
 	fInspector.firefoxLoaded = true;
 
+	//设置FlashInspector的通信id
+	document.getElementById('tInspectorController').setupController(fInspector.controllerId);
+
 	var fpVersion = fInspectorUtil.getFlashPluginVersion();
 	if (fpVersion.major > 9) {
-		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 		fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
 
 		fInspector.toggleProgressListener(gBrowser.webProgress, true);
@@ -57,7 +61,7 @@ onFirefoxLoad : function(evt) {
 // �抽�Firefox��
 onFirefoxUnLoad : function(evt) {
 	// 娓��mm.cfg涓�reloadSWF���缃�
-	fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+	fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 
 	fInspector.toggleProgressListener(gBrowser.webProgress, false);
 
@@ -283,7 +287,7 @@ onPageLoad : function(doc) {
 	fInspector.setupSwfsInDoc(doc);
 
 	// 娓��mm.cfg涓�reloadSWF���缃�
-	fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+	fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 },
 
 /**
@@ -297,7 +301,7 @@ onPageContentLoad : function(doc) {
 	// false);
 
 	// 娓��mm.cfg涓�reloadSWF���缃�
-	// fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+	// fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 },
 
 onPageUnload : function(doc) {
@@ -565,7 +569,7 @@ onStateChange : function(aWebProgress, aRequest, aFlag, aStatus) {
 	var doc = aWebProgress.DOMWindow.document;
 	if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_START) && (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
 		fInspector.trace("This fires when the load event is initiated");
-		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 	} else if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) && (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
 		fInspector.trace("This fires when the load finishes");
 		// 缁��椤甸�涓����wf������id
@@ -597,7 +601,7 @@ onSecurityChange : function(aWebProgress, aRequest, aState) {
 if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 	fInspector.path = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager).getInstallLocation(fInspector.id).getItemFile(fInspector.id, "install.rdf").parent.path;
 
-	fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+	fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 	fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
 
 	window.addEventListener('load', fInspector.onFirefoxLoad, false);
@@ -609,7 +613,7 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 			var addonLocation = addon.getResourceURI("").QueryInterface(Components.interfaces.nsIFileURL).file;
 			fInspector.path = addonLocation.path;
 
-			fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf"));
+			fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 			fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
 
 			if (fInspector.firefoxLoaded) {
