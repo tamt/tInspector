@@ -86,6 +86,15 @@ package cn.itamt.utils {
 			}
 			return num;
 		}
+		
+		public static function getChilds(container:DisplayObjectContainer):Array {
+			var arr:Array = [];
+			for (var i:int = 0; i < container.numChildren; i++) {
+				arr.push(container.getChildAt(i));
+			}
+			
+			return arr;
+		}
 
 		/**
 		 * 得到一个显示对象他的全局的旋转角度.
