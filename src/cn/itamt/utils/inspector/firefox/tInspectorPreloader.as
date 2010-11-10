@@ -1,4 +1,5 @@
 ﻿package cn.itamt.utils.inspector.firefox {
+	import msc.console.mConsoleConnName;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.firefox.download.DownloadAll;
@@ -35,6 +36,8 @@
 		private var tInspector : Inspector;
 		private var gErrorKeeper : GlobalErrorKeeper;
 		private var findKiller : Boolean;
+		
+		private var finspectorId:String;
 
 		// 由finspector.js分配给的id, 用于与fInspector通信.
 		// private var swfId : String = '';
@@ -42,10 +45,14 @@
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 
+			finspectorId = loaderInfo.content.loaderInfo.parameters.finspectorId;
+			if(finspectorId) {
+				mConsoleConnName.CLIENT += "_" + finspectorId;
+			}
+
 			controlBar = new ControlBar();
 
 			gErrorKeeper = new GlobalErrorKeeper();
-			gErrorKeeper.watch(this.loaderInfo);
 
 			if(ExternalInterface.available) {
 				ExternalInterface.addCallback("connectController", connectController);
@@ -82,7 +89,7 @@
 			if(loaderInfo) {
 				if(loaderInfo.url) {
 					if(loaderInfo.contentType == "application/x-shockwave-flash") {
-						if(gErrorKeeper)
+						if(gErrorKeeper && gErrorKeeper.isActive)
 							gErrorKeeper.watch(loaderInfo);
 					}
 				}
@@ -161,8 +168,10 @@
 							break;
 						case InspectorPluginId.GLOBAL_ERROR_KEEPER:
 							tInspector.pluginManager.registerPlugin(gErrorKeeper);
-							if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))
+							if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents")){
 								tInspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
+								gErrorKeeper.watch(this.loaderInfo);
+							}
 							break;
 						case InspectorPluginId.SWFINFO_VIEW:
 							//tInspector.pluginManager.registerPlugin(new SwfInfoView());

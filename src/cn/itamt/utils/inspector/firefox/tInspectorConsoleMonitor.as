@@ -3,6 +3,8 @@ package cn.itamt.utils.inspector.firefox {
 	import cn.itamt.utils.inspector.firefox.setting.fInspectorConfig;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 
+	import msc.console.mConsoleConnName;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.external.ExternalInterface;
@@ -22,12 +24,6 @@ package cn.itamt.utils.inspector.firefox {
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 
-			controller = new finspectorController();
-			controller.visible = false;
-			controller.proxy = this;
-			controller.enable = fInspectorConfig.getEnable();
-			addChild(controller);
-
 			this.visible = false;
 
 			if(ExternalInterface.available) {
@@ -39,7 +35,9 @@ package cn.itamt.utils.inspector.firefox {
 					}
 					return;
 				}
-				if(FlashPlayerEnvironment.isInFirefox()) {
+				//if(FlashPlayerEnvironment.isInFirefox()) {
+					ExternalInterface.addCallback('setupController', setupController);
+					
 					ExternalInterface.addCallback('startInspector', startInspector);
 					ExternalInterface.addCallback('stopInspector', stopInspector);
 					ExternalInterface.addCallback('toggleInspector', toggleInspector);
@@ -47,14 +45,9 @@ package cn.itamt.utils.inspector.firefox {
 					ExternalInterface.addCallback('clearAllConnections', clearAllConnections);
 					ExternalInterface.addCallback('selectPlugin', selectPlugin);
 					ExternalInterface.addCallback('rejectPlugin', rejectPlugin);
-				}
+				//}
 			}
 
-			if(controller.enable) {
-				this.startInspector();
-			} else {
-				this.stopInspector();
-			}
 			
 			var arr:Array;
 			if(fInspectorConfig.getPlugins() == null){
@@ -76,6 +69,22 @@ package cn.itamt.utils.inspector.firefox {
 			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
 		}
 
+		private function setupController(controllerId : String) : void {
+			mConsoleConnName.CLIENT += "_" + controllerId;
+			
+			controller = new finspectorController();
+			controller.visible = false;
+			controller.proxy = this;
+			controller.enable = fInspectorConfig.getEnable();
+			addChild(controller);
+
+			if(controller.enable) {
+				this.startInspector();
+			} else {
+				this.stopInspector();
+			}	
+		}
+
 		private function rejectPlugin(pluginId : String) : void {
 			fInspectorConfig.setDisablePlugin(pluginId);
 			fInspectorConfig.save();
@@ -95,7 +104,7 @@ package cn.itamt.utils.inspector.firefox {
 		}
 
 		public function startInspector() : void {
-			alert('[tInspectorConsoleMonitor][startInspector]');
+			//
 			controller.enable = true;
 			controller.callFun('startInspector');
 
@@ -108,7 +117,6 @@ package cn.itamt.utils.inspector.firefox {
 		}
 
 		public function stopInspector() : void {
-			alert('[tInspectorConsoleMonitor][stopInspector]');
 			controller.enable = false;
 			controller.callFun('stopInspector');
 
@@ -128,7 +136,6 @@ package cn.itamt.utils.inspector.firefox {
 		}
 
 		public function clearAllConnections() : void {
-			alert('[tInspectorConsoleMonitor][clearAllConnections]');
 			controller.deconstructAllConnections();
 		}
 
@@ -154,14 +161,14 @@ package cn.itamt.utils.inspector.firefox {
 		 *********private functions***********
 		 ************************************/
 
-		private function alert(str : String) : void {
-			if(tf == null)
-				addChild(tf = new TextField());
-			tf.autoSize = 'left';
-			tf.text = str;
-
-			Debug.trace('[tInspectorConsoleMonitor][alert]' + str);
-		}
+//		private function alert(str : String) : void {
+//			if(tf == null)
+//				addChild(tf = new TextField());
+//			tf.autoSize = 'left';
+//			tf.text = str;
+//
+//			Debug.trace('[tInspectorConsoleMonitor][alert]' + str);
+//		}
 
 		private function onAdded(evt : Event) : void {
 			for(var i : int = 0;i < this.stage.numChildren;i++) {
