@@ -2,7 +2,7 @@ package cn.itamt.utils.inspector.core {
 	import flash.display.DisplayObject;
 
 	/**
-	 * 查看目标
+	 * inspect target.
 	 * @author tamt
 	 */
 	public class InspectTarget {
@@ -24,14 +24,14 @@ package cn.itamt.utils.inspector.core {
 		}
 
 		/**
-		 * 判断两个InspectTarget是否相等
+		 * whether tow inspect target equal?
 		 */
 		public function isEqual(inspectTarget : InspectTarget) : Boolean {
 			return this._dp == inspectTarget.displayObject;
 		}
 
 		/**
-		 * 重置
+		 * reset inspect target.
 		 */
 		public function resetTarget() : void {
 			if(_dp) {

@@ -39,7 +39,7 @@ package cn.itamt.utils.inspector.core {
 
 		public function BaseInspectorPlugin() {
 		}
-
+		
 		public function contains(child : DisplayObject) : Boolean {
 			if(viewContainer) {
 				return viewContainer == child || viewContainer.contains(child);
@@ -49,7 +49,7 @@ package cn.itamt.utils.inspector.core {
 		}
 
 		/**
-		 * 註冊到Inspector時
+		 * called when this plugin is register to an Inspector
 		 */
 		public function onRegister(inspector : IInspector) : void {
 			this._inspector = inspector;

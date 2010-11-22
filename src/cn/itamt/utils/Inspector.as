@@ -27,12 +27,12 @@
 	 * @example
 	 * 	<code>
 	 * 		_inspector = Inspector.getInstance();
-	 * 		_inspector.init(root, true);
+	 * 		_inspector.init(root);
 	 * 	</code>
 	 * @version 1.0 beta
 	 */
 	public class Inspector extends EventDispatcher implements IInspector {
-		public static const VERSION : String = '1.2';
+		public static const VERSION : String = '1.3';
 		private static var _instance : Inspector;
 		public static var APP_DOMAIN : ApplicationDomain;
 		// // // // // // // // // ////////////////////
@@ -65,7 +65,7 @@
 		private var _inspectView : LiveInspectView;
 
 		/**
-		 * “鼠标查看”视图
+		 * get the reference to tInspector's LiveInspectView plugin.
 		 */
 		public function get liveInspectView() : LiveInspectView {
 			return _inspectView;
@@ -116,7 +116,7 @@
 		// // // // // // // // // //////////////////////////////////////
 		// // // // // // // // // //////////////////////////////////////
 		/**
-		 * 初始化tInspector，并注册要使用功能（只有注册过的功能才能开启，turnOn）。
+		 * init tInspector
 		 */
 		public function init(root : DisplayObjectContainer) : void {
 			if(_inited)
@@ -144,7 +144,8 @@
 		}
 
 		/**
-		 * 开启tInspector，开始指定的功能模块
+		 * turn on tInspector, with plugin(s) want to use
+		 * @param	...paras  plugin IDs
 		 */
 		public function turnOn(...paras) : void {
 			if(_isOn)
@@ -168,7 +169,7 @@
 		}
 
 		/**
-		 * 关闭tInspector
+		 * turn off tInspector
 		 */
 		public function turnOff() : void {
 			this.stopLiveInspect();
@@ -197,7 +198,7 @@
 		}
 
 		/**
-		 * 开启查看
+		 * is tInspector on?
 		 */
 		private var _isOn : Boolean = false;
 
@@ -207,11 +208,16 @@
 
 		private var _isLiveInspecting : Boolean = false;
 
-		// 是否处于LiveInspect状态.
+		/**
+		 * is tinspector in  live inspecting?
+		 */
 		public function get isLiveInspecting() : Boolean {
 			return _isLiveInspecting;
 		}
 
+		/**
+		 * start live inspect
+		 */
 		public function startLiveInspect() : void {
 			if(!_isLiveInspecting) {
 				_curInspectEle = null;
@@ -226,7 +232,10 @@
 				}
 			}
 		}
-
+		
+		/**
+		 * stop live inspect
+		 */
 		public function stopLiveInspect() : void {
 			_isLiveInspecting = false;
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
@@ -238,6 +247,91 @@
 			}
 		}
 
+		/**
+		 * check whther the target is valid? if it is plugin or contained by the plugin...
+		 */
+		public function isInspectView(target : DisplayObject) : Boolean {
+			var plugins : Array = this.pluginManager.getPlugins();
+			for each(var view:IInspectorPlugin in plugins) {
+				if(view.contains(target)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * live inspect(mouse inspect) a target. this method is called by LiveInspectView when use live inspect(mouse inspect).
+		 * @param ele					inspect target
+		 * @param checkIsInspectorView	check whether the target is invalid(containded by any plugin)
+		 */
+		public function liveInspect(ele : DisplayObject, checkIsInspectorView : Boolean = true) : void {
+			if(_curInspectEle && _curInspectEle.displayObject == ele)
+				return;
+			if(checkIsInspectorView)
+				if(isInspectView(ele))
+					return;
+
+			_curInspectEle = getInspectTarget(ele);
+
+			var plugins : Array = this.pluginManager.getPlugins();
+			for each(var view:IInspectorPlugin in plugins) {
+				if(view.isActive)
+					view.onLiveInspect(_curInspectEle);
+			}
+		}
+
+		/**
+		 * inspect a DisplayObject
+		 */
+		public function inspect(ele : DisplayObject) : void {
+			if(isInspectView(ele))
+				return;
+
+			stopLiveInspect();
+
+			_curInspectEle = getInspectTarget(ele);
+
+			var plugins : Array = this.pluginManager.getPlugins();
+			for each(var view:IInspectorPlugin in plugins) {
+				if(view.isActive)
+					view.onInspect(_curInspectEle);
+			}
+		}
+
+		/**
+		 * update all the registered plugins
+		 */
+		public function updateInsectorView() : void {
+			if(_curInspectEle != null) {
+				var plugins : Array = this.pluginManager.getPlugins();
+				for each(var view:IInspectorPlugin in plugins) {
+					if(view.isActive)
+						view.onUpdate(_curInspectEle);
+				}
+			}
+		}
+
+		// // // // // // // // // ////////////////////
+		// // // // //     private    functions///////////
+		// // // // // // // // // ////////////////////
+		private var _tMap : Dictionary;
+
+		/**
+		 * map "DisplayObject" to "InspectTarget", we use "InspectTarget" in tInspector.
+		 */
+		private function getInspectTarget(target : DisplayObject) : InspectTarget {
+			if(_tMap == null) {
+				_tMap = new Dictionary();
+			}
+
+			if(_tMap[target] == null) {
+				_tMap[target] = new InspectTarget(target);
+			}
+
+			return _tMap[target];
+		}
+		
 		private function enterFrameHandler(evt : Event = null) : void {
 			var mousePos : Point = new Point(stage.mouseX, stage.mouseY);
 			var objs : Array = stage.getObjectsUnderPoint(mousePos);
@@ -269,91 +363,6 @@
 					}
 				}
 			}
-		}
-
-		/**
-		 * 要查看的对像是否是InspectView
-		 */
-		public function isInspectView(target : DisplayObject) : Boolean {
-			var plugins : Array = this.pluginManager.getPlugins();
-			for each(var view:IInspectorPlugin in plugins) {
-				if(view.contains(target)) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		/**
-		 * 实时查看某个显示对象
-		 * @param ele					要查看的显示对象
-		 * @param checkIsInspectorView	把InspectorView的显示对象排除掉
-		 */
-		public function liveInspect(ele : DisplayObject, checkIsInspectorView : Boolean = true) : void {
-			if(_curInspectEle && _curInspectEle.displayObject == ele)
-				return;
-			if(checkIsInspectorView)
-				if(isInspectView(ele))
-					return;
-
-			_curInspectEle = getInspectTarget(ele);
-
-			var plugins : Array = this.pluginManager.getPlugins();
-			for each(var view:IInspectorPlugin in plugins) {
-				if(view.isActive)
-					view.onLiveInspect(_curInspectEle);
-			}
-		}
-
-		/**
-		 * 查看某一个显示对象.
-		 */
-		public function inspect(ele : DisplayObject) : void {
-			if(isInspectView(ele))
-				return;
-
-			stopLiveInspect();
-
-			_curInspectEle = getInspectTarget(ele);
-
-			var plugins : Array = this.pluginManager.getPlugins();
-			for each(var view:IInspectorPlugin in plugins) {
-				if(view.isActive)
-					view.onInspect(_curInspectEle);
-			}
-		}
-
-		/**
-		 * 更新当前的查看对象
-		 */
-		public function updateInsectorView() : void {
-			if(_curInspectEle != null) {
-				var plugins : Array = this.pluginManager.getPlugins();
-				for each(var view:IInspectorPlugin in plugins) {
-					if(view.isActive)
-						view.onUpdate(_curInspectEle);
-				}
-			}
-		}
-
-		// // // // // // // // // ////////////////////
-		// // // // //     private    functions///////////
-		// // // // // // // // // ////////////////////
-		private var _tMap : Dictionary;
-
-		/**
-		 * InspectTarget存储
-		 */
-		private function getInspectTarget(target : DisplayObject) : InspectTarget {
-			if(_tMap == null) {
-				_tMap = new Dictionary();
-			}
-
-			if(_tMap[target] == null) {
-				_tMap[target] = new InspectTarget(target);
-			}
-
-			return _tMap[target];
 		}
 	}
 }
