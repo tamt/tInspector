@@ -68,7 +68,11 @@ package cn.itamt.utils.inspector.firefox {
 
 			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
 		}
-
+		
+		/**
+		 * called by FI in firefox
+		 * @param	controllerId	FI id, this id will be used as the LocalConnection id builded to communicate between tInspectorPreloader and tInspectorConsoleMonitor.swf
+		 */
 		private function setupController(controllerId : String) : void {
 			mConsoleConnName.CLIENT += "_" + controllerId;
 			
@@ -99,10 +103,9 @@ package cn.itamt.utils.inspector.firefox {
 		 *********public functions************
 		 ************************************/
 
-		public function reloadSwf() : void {
-			ExternalInterface.call("fInspector.reloadSwf", false);
-		}
-
+		/**
+		 * called by FI in Firefox.
+		 */
 		public function startInspector() : void {
 			//
 			controller.enable = true;
@@ -116,6 +119,9 @@ package cn.itamt.utils.inspector.firefox {
 			ExternalInterface.call("fInspector.onInspectorState", "on");
 		}
 
+		/**
+		 * called by FI in Firefox.
+		 */
 		public function stopInspector() : void {
 			controller.enable = false;
 			controller.callFun('stopInspector');
@@ -126,7 +132,10 @@ package cn.itamt.utils.inspector.firefox {
 			//
 			ExternalInterface.call("fInspector.onInspectorState", "off");
 		}
-
+		
+		/**
+		 * called by FI in Firefox.
+		 */
 		public function toggleInspector():void {
 			if(controller.enable) {
 				this.stopInspector();
@@ -134,24 +143,51 @@ package cn.itamt.utils.inspector.firefox {
 				this.startInspector();
 			}
 		}
-
+		
+		/**
+		 * disconnect all connections from tInspectorConsoleMonitor.swf to all tInspectorPreloader.swf, this may be used when Firefox close.
+		 */
 		public function clearAllConnections() : void {
 			controller.deconstructAllConnections();
 		}
-
+		
+		/**
+		 * called by tInspectorPreloader.swf through LocalConnection when fail to fullscreen.
+		 * @param	swfId		target swf's id. sometimes they doesn't have id.
+		 */
 		public function showFullScreenGuide(swfId : String):void {
 			Debug.trace('[tInspectorConsoleMonitor][showFullScreenGuide]');
 			ExternalInterface.call("fInspector.showFullScreenGuide", swfId);
 		}
 		
+		/**
+		 * called by tInspectorPreloader.swf through LocalConnection when fail to fullscreen.
+		 * @param	swfUrl		target swf's url. sometimes they doesn't have id, but they must have url.
+		 */
 		public function showFullScreenGuideByUrl(swfUrl : String):void {
 			ExternalInterface.call("fInspector.showFullScreenGuideByUrl", swfUrl);
 		}
 		
-		public function reloadSwfByUrl(swfUrl : String):void {
+		/**
+		 * called by tInspectorPreloader.swf through LocalConnection to reload target swf.
+		 * @param			target swf's id
+		 */
+		public function reloadSwf(swfId : String):void {
+			ExternalInterface.call("fInspector.reloadSwf", swfId);	
+		}
+		
+		/**
+		 * called by tInspectorPreloader.swf through LocalConnection to reload target swf.
+		 * @param			target swf's url. sometimes they doesn't have id, but they must have url
+		 */
+		public function reloadSwfByUrl(swfUrl:String):void {
 			ExternalInterface.call("fInspector.reloadSwfByUrl", swfUrl);	
 		}
-
+		
+		/**
+		 * called by tInspectorPreloader.swf through LocalConnection to toggle Inspector on target swf.
+		 * @param	swfUrl		target swf's url. sometimes they doesn't have id, but they must have url
+		 */
 		public function toggleInspectorByUrl(swfUrl : String):void {
 			Debug.trace('[tInspectorConsoleMonitor][startInspectorByUrl]' + swfUrl);
 			controller.callInspectorFunBySwfUrl("toggleInspector", swfUrl);
@@ -160,15 +196,6 @@ package cn.itamt.utils.inspector.firefox {
 		/*************************************
 		 *********private functions***********
 		 ************************************/
-
-//		private function alert(str : String) : void {
-//			if(tf == null)
-//				addChild(tf = new TextField());
-//			tf.autoSize = 'left';
-//			tf.text = str;
-//
-//			Debug.trace('[tInspectorConsoleMonitor][alert]' + str);
-//		}
 
 		private function onAdded(evt : Event) : void {
 			for(var i : int = 0;i < this.stage.numChildren;i++) {

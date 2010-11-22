@@ -1,9 +1,14 @@
+//--------------------------------------------------------------------------------
+//----------------------------[fInspector definition]-----------------------------
+//--------------------------------------------------------------------------------
+
 var fInspector = {
 id : "finspector@itamt.org",
 path : "kiddingme?",
 isOn : true,
 enable : true,
 preTab : null,
+//there may be several Firefox instances, each Firefox's FI controller has an id.
 controllerId:new Date().getTime().toString(),
 firefoxLoaded : false,
 currTarget : null,
@@ -17,16 +22,18 @@ onFirefoxLoad : function(evt) {
 	fInspector.trace('onFirefoxLoad...');
 	fInspector.firefoxLoaded = true;
 
-	//设置FlashInspector的通信id
+	//setup the tInspectorConsoleMonitor.swf, and set the FI controller id.
 	document.getElementById('tInspectorController').setupController(fInspector.controllerId);
 
 	var fpVersion = fInspectorUtil.getFlashPluginVersion();
 	if (fpVersion.major > 9) {
+		//set the "PreloadSWF" config in mm.cfg, remind that we add a "finspectorId" param to "tInspectorPreloader.swf", which will be used to communicate with FI.
 		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 		fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
-
+		
+		//listen the web load init event.
 		fInspector.toggleProgressListener(gBrowser.webProgress, true);
-
+		
 		gBrowser.tabContainer.addEventListener("TabOpen", fInspector.handleEvent, false);
 		gBrowser.tabContainer.addEventListener("TabClose", fInspector.handleEvent, false);
 
@@ -58,9 +65,8 @@ onFirefoxLoad : function(evt) {
 	}
 },
 
-// �抽�Firefox��
+//when firefox close
 onFirefoxUnLoad : function(evt) {
-	// 娓��mm.cfg涓�reloadSWF���缃�
 	fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 
 	fInspector.toggleProgressListener(gBrowser.webProgress, false);
@@ -124,27 +130,25 @@ reloadSwfElement : function(swfEle) {
 },
 
 setupSwfsInDoc : function(doc) {
-
 	fInspector.trace("try setup swfs");
 
-	// 涓鸿�documen娉ㄥ�涓��js�规�.渚�InspectorPreloader璋��.
 	var tabDoc = doc;
-	if (!doc.getElementById("finspector_js_injector")) {
-		var script = tabDoc.createElement("script");
-		script.setAttribute("type", "text/javascript");
-		script.setAttribute("language", "JavaScript");
-		script.id = "finspector_js_injector";
-		script.innerHTML = "function fInspectorReloadSwf(swfId){var swfEle = document.getElementById(swfId);var visibility = swfEle.style.visibility;swfEle.style.visibility = \"none\";var pos = swfEle.style.position;swfEle.style.position = (pos == \"fixed\" ? \"relative\" : \"fixed\");setTimeout(function() {swfEle.style.position = pos;swfEle.style.visibility = visibility;setTimeout(function() {try{swfEle.setSwfId(swfId);}catch(error){}}, 300);}, 0);}";
-		tabDoc.body.appendChild(script);
-	}
+	//you can inject some js functions here, to used by tInspectorPreloader.swf
+	//if (!doc.getElementById("finspector_js_injector")) {
+		//var script = tabDoc.createElement("script");
+		//script.setAttribute("type", "text/javascript");
+		//script.setAttribute("language", "JavaScript");
+		//script.id = "finspector_js_injector";
+		//script.innerHTML = "function fInspectorReloadSwf(swfId){var swfEle = document.getElementById(swfId);var visibility = swfEle.style.visibility;swfEle.style.visibility = \"none\";var pos = swfEle.style.position;swfEle.style.position = (pos == \"fixed\" ? \"relative\" : \"fixed\");setTimeout(function() {swfEle.style.position = pos;swfEle.style.visibility = visibility;setTimeout(function() {try{swfEle.setSwfId(swfId);}catch(error){}}, 300);}, 0);}";
+		//tabDoc.body.appendChild(script);
+	//}
 
-	// 璁剧疆swf����� 姣��:allowscriptaccess, allowfullscreen.
+	// change the swf attributes, like:allowscriptaccess, allowfullscreen.
 	var swfs = fInspector.getSwfElements(doc);
 	fInspector.trace(swfs.length + " swf(s) was found in this page.");
 	for ( var i = 0; i < swfs.length; i++) {
 		var swf = swfs[i];
 		if (!swf.fInspectorEnabled) {
-			// 濡��娌℃�id,������涓�
 			if (!swf.id) {
 				swf.id = "fInspectorSwf_" + (new Date()).getTime();
 			}
@@ -168,7 +172,7 @@ setupSwfsInDoc : function(doc) {
 			}
 
 			/**
-			 * TODO:FlashInspector 0.2.2 swf.addEventListener("mouseover",
+			 * [TODO:FlashInspector 0.2.2] swf.addEventListener("mouseover",
 			 * fInspector.swfMouseEventHander, true);
 			 * swf.addEventListener("mouseout", fInspector.swfMouseEventHander,
 			 * true);
@@ -177,6 +181,7 @@ setupSwfsInDoc : function(doc) {
 	}
 },
 
+//[TODO:FlashInspector 0.2.2] ignore currently.
 swfMouseEventHander : function(event) {
 	fInspector.trace("swf: " + event.type);
 	var swf = event.target;
@@ -195,6 +200,7 @@ swfMouseEventHander : function(event) {
 	}
 },
 
+//[TODO:FlashInspector 0.2.2] ignore currently.
 showOperationBar : function(swf) {
 	var doc = swf.ownerDocument.defaultView.top.document;
 	var anchor = doc.getElementById(swf.id + "_operation_bar");
@@ -221,6 +227,7 @@ showOperationBar : function(swf) {
 	anchor.style.top = top + "px";
 },
 
+//[TODO:FlashInspector 0.2.2] ignore currently.
 hideOperationBar : function(swf) {
 	var doc = swf.ownerDocument.defaultView.top.document;
 	var anchor = doc.getElementById(swf.id + "_operation_bar");
@@ -232,6 +239,7 @@ hideOperationBar : function(swf) {
 	}
 },
 
+//[TODO:FlashInspector 0.2.2] ignore currently.
 operationBarMouseEventHandler : function(event) {
 	fInspector.trace("operationBar: " + event.type);
 	var swf = event.currentTarget.owner;
@@ -247,6 +255,7 @@ operationBarMouseEventHandler : function(event) {
 	}
 },
 
+//[TODO:FlashInspector 0.2.2] ignore currently.
 onClickOperationIcon : function(event) {
 	var bar = event.currentTarget;
 	var doc = bar.ownerDocument.defaultView.top.document;
@@ -280,34 +289,34 @@ setSwfIdPersist : function(swf, num) {
 },
 
 /**
- * �翠釜椤甸���浇瀹��
+ * on page load
  */
 onPageLoad : function(doc) {
 	fInspector.trace("onPageLoad");
 	fInspector.setupSwfsInDoc(doc);
 
-	// 娓��mm.cfg涓�reloadSWF���缃�
+	// clear "PreloadSwf" config in mm.cfg
 	fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 },
 
 /**
- * 椤甸����妗ｅ�杞藉���
+ * when page content loaded.
  */
 onPageContentLoad : function(doc) {
 	fInspector.trace("onPageContentLoad");
 	fInspector.setupSwfsInDoc(doc);
 
-	// doc.addEventListener("DOMNodeInserted", fInspector.onDomNodeInserted,
-	// false);
+	//doc.addEventListener("DOMNodeInserted", fInspector.onDomNodeInserted,
+	//false);
 
-	// 娓��mm.cfg涓�reloadSWF���缃�
-	// fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
+	//clear the "PreloadSWF" config in mm.cfg
+	//fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 },
 
 onPageUnload : function(doc) {
 	fInspector.trace("onPageUnload");
 
-	// 璁剧疆swf����� 姣��:allowscriptaccess, allowfullscreen.
+	//set the swf "fInspectorEnabled" as false;
 	var swfs = fInspector.getSwfElements(doc);
 	fInspector.trace(swfs.length + " swf(s) was found in this page.");
 	for ( var i = 0; i < swfs.length; i++) {
@@ -358,18 +367,20 @@ injectSwf : function(element) {
 },
 
 toggleInspector : function(event) {
-	//鼠标右击事件
+	//if the mouseup event is trigger by right-click
     if(event.button == 2){
-    	if(fInspectorUtil.OS == fInspectorUtil.MAC){
-    		document.getElementById("fInspectorSetting_mac").openPopup(document.getElementById("finspectorBtnImg"), "before_end");
-    	}else{
-    		document.getElementById("fInspectorSetting").openPopup(document.getElementById("finspectorBtnImg"), "before_end");
-    	}
+		document.getElementById("fInspectorSetting").openPopup(document.getElementById("finspectorBtnImg"), "before_end");
+    	//if(fInspectorUtil.OS == fInspectorUtil.MAC){
+    		//document.getElementById("fInspectorSetting_mac").openPopup(document.getElementById("finspectorBtnImg"), "before_end");
+    	//}else{
+    	//}
     }
+	
     
-    //鼠标左击事件
+    //the mouseup event is not trigger by left-click
 	if (event.button != 0)
 		return;
+		
 	if (!fInspector.enable) {
 		if (document.getElementById("needFlashPlayerPanel").state == "open") {
 			fInspector.hideNeedDebuggerFP();
@@ -394,7 +405,7 @@ onInspectorState : function(state) {
 	}
 },
 
-// 璁剧疆mm.cfg涓��PreloadSWF��
+//set file path to "PreloadSWF" in mm.cfg
 setPreloadSwf : function(file) {
 	// if (!fInspector.enable)
 	// return;
@@ -426,6 +437,7 @@ setPreloadSwf : function(file) {
 	}
 },
 
+//clear the "PreloadSWF" config in mm.cfg
 clearPreloadSwf : function(file) {
 	var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 	if (!mmcfg.exists()) {
@@ -444,7 +456,7 @@ clearPreloadSwf : function(file) {
 	}
 },
 
-// ���浠惰矾寰�坊���Flash Player��俊浠昏矾寰�
+//add the path to Flash Player trusted path.
 setPathFlashTrust : function(path) {
 	var cfg = fInspectorFileIO.open(fInspectorUtil.getFinspectorTrustPath());
 	if (!cfg.exists()) {
@@ -461,43 +473,42 @@ setPathFlashTrust : function(path) {
 	}
 },
 
-// 寰��fInspector涓��浠剁�绯荤�璺��
+//get the full path of a file under extension folder.
 getAddonFilePath : function(relativePath) {
 	relativePath = relativePath.replace(/\//g, fInspectorUtil.PATH_SEP);
 	return fInspector.path + relativePath;
 },
 
-// 濡��Debugger Flash Player娌℃�瀹��
+//show panel tell user need debugger flashplayer.
 showNeedDebuggerFP : function() {
 	document.getElementById("needFlashPlayerPanel").openPopup(document.getElementById("finspectorBtnImg"), "before_end");
 },
-
-// 濡��Debugger Flash Player娌℃�瀹��
 hideNeedDebuggerFP : function() {
 	document.getElementById("needFlashPlayerPanel").hidePopup();
 },
 
-// 娴��杈��
+//for debug msg
 trace : function(obj) {
 	dump('\n' + obj);
 },
 
-// ���涓�釜tab
+//let firefox open an tab.
 openTab : function(url) {
 	gBrowser.selectedTab = gBrowser.addTab(url);
 },
 
-// �抽�璁剧疆�����
+//close the Setting Panel, not used currently.
 closeSettingPanel : function() {
 	document.getElementById("fInspectorSetting").hidePopup();
 },
 
-// �剧ずfInspector���浠惰���
+//called by tInspectorConsoleMonitor.swf(tInspectorController) when user click the FI plugin Icon on Setting Panel
 showFlashInspectorPluginGuide : function(pluginName) {
 	var stringBundle = document.getElementById("tips");
 	alert(stringBundle.getString(pluginName + "Guide"));
 },
 
+//called by tInspectorConsoleMonitor.swf(tInspectorController) when tInspectorPreloader.swf fail to fullscreen. if confirmed, FI will find the swf by swfid, and reload it.
 showFullScreenGuide : function(swfId) {
 	var stringBundle = document.getElementById("tips");
 	if (confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))) {
@@ -506,6 +517,7 @@ showFullScreenGuide : function(swfId) {
 	}
 },
 
+//called by tInspectorConsoleMonitor.swf(tInspectorController) when tInspectorPreloader.swf fail to fullscreen. if confirmed, FI will find the swf by swfUrl, and reload it. 
 showFullScreenGuideByUrl : function(swfUrl) {
 	var stringBundle = document.getElementById("tips");
 	if (confirm(stringBundle.getString("NeedReloadForFullScreenGuide"))) {
@@ -514,12 +526,19 @@ showFullScreenGuideByUrl : function(swfUrl) {
 	}
 },
 
-//根据swf的url来重载swf
+//called by tInspectorConsoleMonitor.swf(tInspectorController), find a swf element by swf id, and reload it.
+reloadSwf : function(swfId) {
+	var swf = gBrowser.contentDocument.wrappedJSObject.getElementById(swfId);
+	fInspector.reloadSwfElement(swf);
+},
+
+//called by tInspectorConsoleMonitor.swf(tInspectorController), find a swf element by swf url, and reload it.
 reloadSwfByUrl:function(swfUrl){
 	var swf = fInspector.getSwfElementByUrl(gBrowser.contentDocument, swfUrl);
 	fInspector.reloadSwfElement(swf);
 },
 
+//find a swf element by swf url
 getSwfElementByUrl:function(doc, swfUrl){
 	var swfs=fInspector.getSwfElements(doc);
 	var target;
@@ -541,10 +560,11 @@ getSwfElementByUrl:function(doc, swfUrl){
 	return target;
 },
 
+//called when user check plugin on Setting Panel.
 checkInspectorPlugin:function(pluginCheckBox){
 	var pluginId = pluginCheckBox.id.slice(("fInspectorPlugin_").length);
 	
-	//调用tInspectorController的函数
+	//call tInspectorConsoleMonitor.swf store select/unselect plugin setting (to SharedObject).
 	if(!pluginCheckBox.checked){
 		document.getElementById('tInspectorController').selectPlugin(pluginId);
 	}else{
@@ -552,13 +572,14 @@ checkInspectorPlugin:function(pluginCheckBox){
 	}
 },
 
+//called by tInspectorConsoleMonitor.swf (tInspectorController), after it read the plugin select setting from SharedObject.
 showCheckInspectorPlugin:function(pluginId, check){
 	var pluginCheckBox = document.getElementById("fInspectorPlugin_" + pluginId);
 	pluginCheckBox.checked = check;
 },
 
-progressListener : {
 
+progressListener : {
 QueryInterface : function(aIID) {
 	if (aIID.equals(Components.interfaces.nsIWebProgressListener) || aIID.equals(Components.interfaces.nsISupportsWeakReference) || aIID.equals(Components.interfaces.nsISupports))
 		return this;
@@ -572,8 +593,6 @@ onStateChange : function(aWebProgress, aRequest, aFlag, aStatus) {
 		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 	} else if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) && (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
 		fInspector.trace("This fires when the load finishes");
-		// 缁��椤甸�涓����wf������id
-		// fInspector.setupSwfsInDoc(doc);
 	}
 },
 
@@ -597,6 +616,10 @@ onSecurityChange : function(aWebProgress, aRequest, aState) {
 }
 }
 };
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
+
 
 if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 	fInspector.path = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager).getInstallLocation(fInspector.id).getItemFile(fInspector.id, "install.rdf").parent.path;
@@ -607,6 +630,7 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 	window.addEventListener('load', fInspector.onFirefoxLoad, false);
 	window.addEventListener('unload', fInspector.onFirefoxUnLoad, false);
 } else {
+	//it's Firefox 4!!
 	try {
 		Components.utils.import("resource://gre/modules/AddonManager.jsm");
 		AddonManager.getAddonByID("finspector@itamt.org", function(addon) {
@@ -628,86 +652,3 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 		dump("can not get the addon install location.");
 	}
 }
-
-// window.addEventListener("load", function(e) {
-// httpresponsetweak.windowEvent(e);
-// }, false);
-// window.addEventListener("unload", function(e) {
-// httpresponsetweak.unload_httpresponsetweak(e);
-// }, false);
-//
-
-/*
- * var httpresponsetweak = {
- * 
- * observerService :
- * Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService),
- * 
- * windowEvent : function() { this.init_httpresponsetweak(); },
- * 
- * init_httpresponsetweak : function() {
- * this.observerService.addObserver(httpresponsetweak_httpRequestObserver,
- * "http-on-examine-response", false); },
- * 
- * unload_httpresponsetweak : function() {
- * this.observerService.removeObserver(httpresponsetweak_httpRequestObserver,
- * "http-on-examine-response"); },
- * 
- * setupStreamListener : function(httpChannel, aSubject) { var newListener = new
- * TracingListener();
- * aSubject.QueryInterface(Components.interfaces.nsITraceableChannel);
- * newListener.originalListener = aSubject.setNewListener(newListener); } };
- * 
- * var httpresponsetweak_httpRequestObserver = { observe : function(aSubject,
- * aTopic, aData) { if (aTopic == "http-on-examine-response") { var httpChannel =
- * aSubject.QueryInterface(Components.interfaces.nsIHttpChannel);
- * 
- * if (httpChannel.loadFlags & httpChannel.LOAD_INITIAL_DOCUMENT_URI)
- * this.checkRequest(httpChannel, aSubject); // this.checkRequest(httpChannel,
- * aSubject); } },
- * 
- * checkRequest : function(httpChannel, aSubject) { var reqhost =
- * httpChannel.getRequestHeader("host"); var responseStatus =
- * httpChannel.responseStatus;
- * 
- * httpresponsetweak.setupStreamListener(httpChannel, aSubject); },
- * 
- * QueryInterface : function(aIID) { if
- * (aIID.equals(Components.interfaces.nsIObserver) ||
- * aIID.equals(Components.interfaces.nsISupports)) { return this; } throw
- * Components.results.NS_NOINTERFACE; } };
- * 
- * function CCIN(cName, ifaceName) { return
- * Components.classes[cName].createInstance(Components.interfaces[ifaceName]); }
- * 
- * function TracingListener() { } TracingListener.prototype = {
- * 
- * originalListener : null,
- * 
- * onDataAvailable : function(request, context, inputStream, offset, count) {
- * 
- * var binaryInputStream = CCIN("@mozilla.org/binaryinputstream;1",
- * "nsIBinaryInputStream"); var storageStream =
- * CCIN("@mozilla.org/storagestream;1", "nsIStorageStream"); var
- * binaryOutputStream = CCIN("@mozilla.org/binaryoutputstream;1",
- * "nsIBinaryOutputStream"); // binaryInputStream.setInputStream(inputStream); //
- * var data = binaryInputStream.readBytes(count); var str = data; data =
- * fInspectorSWFInjector(str);
- * 
- * var newcount = data.length; // storageStream.init(8192, newcount, null); //
- * binaryOutputStream.setOutputStream(storageStream.getOutputStream(0));
- * binaryOutputStream.writeBytes(data, newcount);
- * 
- * this.originalListener.onDataAvailable(request, context,
- * storageStream.newInputStream(0), offset, newcount); },
- * 
- * onStartRequest : function(request, context) {
- * this.originalListener.onStartRequest(request, context); },
- * 
- * onStopRequest : function(request, context, statusCode) {
- * this.originalListener.onStopRequest(request, context, statusCode); },
- * 
- * QueryInterface : function(aIID) { if (aIID.equals(Ci.nsIStreamListener) ||
- * aIID.equals(Ci.nsISupports)) { return this; } throw
- * Components.results.NS_NOINTERFACE; } };
- */

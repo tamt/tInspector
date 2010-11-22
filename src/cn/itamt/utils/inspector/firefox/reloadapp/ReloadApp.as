@@ -21,7 +21,8 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 		private function onClickReload(event : MouseEvent) : void {
 			if(ExternalInterface.available) {
 				if(FlashPlayerEnvironment.swfId) {
-					ExternalInterface.call("fInspectorReloadSwf", FlashPlayerEnvironment.swfId);
+					//ExternalInterface.call("fInspectorReloadSwf", FlashPlayerEnvironment.swfId);
+					mConsole.callMonitorProxyFun("reloadSwf", FlashPlayerEnvironment.swfId);
 				} else {
 					mConsole.callMonitorProxyFun("reloadSwfByUrl", FlashPlayerEnvironment.url);
 				}

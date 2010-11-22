@@ -111,7 +111,7 @@
 			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
 			if(loaderInfo) {
 				if(loaderInfo.url) {
-					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.url.indexOf("fInspectorSetting.swf") == -1) && (loaderInfo.url.indexOf("tInspectorConsoleMonitor.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
+					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.url.indexOf("fInspectorSetting.swf") == -1) && (loaderInfo.url.indexOf("tInspectorController.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
 						if(FlashPlayerEnvironment.url == null)
 							FlashPlayerEnvironment.url = loaderInfo.url;
 						if(loaderInfo.content.hasOwnProperty("disableFlashInspector") && loaderInfo.content["disableFlashInspector"]) {

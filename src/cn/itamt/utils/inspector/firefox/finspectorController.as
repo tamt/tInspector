@@ -5,7 +5,7 @@ package cn.itamt.utils.inspector.firefox {
 	import msc.console.mConsoleMonitor;
 
 	/**
-	 * @author http://activeden.net/user/Flash2Load
+	 * @author itamt@qq.com
 	 */
 	public class finspectorController extends mConsoleMonitor {
 		public var enable : Boolean = false;
@@ -15,7 +15,7 @@ package cn.itamt.utils.inspector.firefox {
 		}
 
 		/**
-		 * 连接某个Console
+		 * build connection to tInspectorPreloader.
 		 */
 		override public function buildConnection(id : String, name : String = null) : void {
 			super.buildConnection(id, name);

@@ -8,7 +8,7 @@ package cn.itamt.utils.inspector.core {
 	 */
 	public interface IInspector {
 		/**
-		 * 该Inspector是否处于启用状态
+		 * is Inspector on?
 		 */
 		function get isOn() : Boolean;
 
@@ -16,33 +16,52 @@ package cn.itamt.utils.inspector.core {
 
 		function get stage() : Stage;
 
+		/**
+		 * turn on tInspector, with plugin(s) want to use
+		 * @param	...paras  plugin IDs
+		 */
 		function turnOn(...paras) : void;
-
+		
+		/**
+		 * turn off tInspector
+		 */
 		function turnOff() : void;
 
 		/**
-		 * 当前正在查看的对象
+		 * get curr inspect taret.
 		 */
 		function getCurInspectTarget() : InspectTarget;
 
 		/**
-		 * 是否处于“鼠标查看”模式
+		 * is in live inspecting mode ?
 		 */
 		function get isLiveInspecting() : Boolean;
 
 		/**
-		 * 关闭/开启
+		 * toggle turn on/off
 		 */
 		function toggleTurn() : void;
 
 		function startLiveInspect() : void;
 
 		function stopLiveInspect() : void;
-
+		
+		/**
+		 * inspect a DisplayObject.
+		 * @param	ele
+		 */
 		function inspect(ele : DisplayObject) : void;
-
+		
+		/**
+		 * live inspect(mouse inspect) a DisplayObject
+		 * @param	ele
+		 * @param	checkIsInspectorView
+		 */
 		function liveInspect(ele : DisplayObject, checkIsInspectorView : Boolean = true) : void;
-
+		
+		/**
+		 * 
+		 */
 		function updateInsectorView() : void;
 
 		function isInspectView(target : DisplayObject) : Boolean;

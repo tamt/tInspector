@@ -7,7 +7,7 @@ package cn.itamt.utils.inspector.core {
 	public interface IInspectorPlugin {
 
 		/**
-		 * get this plugin's id
+		 * get this plugin's id, every InspectorPlugin has an id.
 		 */
 		function getPluginId() : String;
 
@@ -28,84 +28,97 @@ package cn.itamt.utils.inspector.core {
 		function getPluginName(lang : String) : String;
 
 		/**
-		 * 一個顯示對象是不是該view的子對象
+		 * use for check whether an DisplayObject is contained by the plugin, most used to check invalid inspect target, when use mouse inspect(live inspect).
+		 * @param	child
+		 * @return
 		 */
 		function contains(child : DisplayObject) : Boolean;
 
 		/**
-		 * 註冊到Inspector時
+		 * called when this plugin is register to an Inspector
 		 */
 		function onRegister(inspector : IInspector) : void;
 
 		/**
-		 * 刪除在Inspector註冊時
+		 * called when this plugin is unregister from an Inspector.
 		 */
 		function onUnRegister(inspector : IInspector) : void;
-
+		
+		/**
+		 * called when an plugin is register to owner Inspector.
+		 * @param	pluginId
+		 */
 		function onRegisterPlugin(pluginId : String) : void;
 
+		/**
+		 * called when an plugin is unregister from owner Inspector.
+		 * @param	pluginId
+		 */
 		function onUnRegisterPlugin(pluginId : String) : void;
 
 		/**
-		 * 注册到Inspector时.
+		 * called when active (start use) this plugin.
 		 */
 		function onActive() : void;
 
 		/**
-		 * 当取消在Inspector的注册时.
+		 * called when unactive (stop use) this plugin.
 		 */
 		function onUnActive() : void;
 
 		/**
-		 * 当Inspector开启时
+		 * called when owner Inspector turn on.
 		 */
 		function onTurnOn() : void;
 
 		/**
-		 * 当Inspector关闭时
+		 * called when owner Inspector turn off.
 		 */
 		function onTurnOff() : void;
 
 		/**
-		 * 当Inspector查看某个目标显示对象时.
+		 * called when owner Inspector inspect an target.
 		 */
 		function onInspect(target : InspectTarget) : void;
 
 		/**
-		 * 当Inspector实时查看某个目标显示对象时
+		 * called when owner Inspector live inspect(mouse inspect) an target.
 		 */
 		function onLiveInspect(target : InspectTarget) : void;
 
 		/**
-		 * 当停止实时查看
+		 * called when owner Inspector stop live inspect(mouse inpsect)
 		 */
 		function onStopLiveInspect() : void;
 
 		/**
-		 * 当开始实时查看
+		 * called when owner Inspector start live inspect(mouse inspect)
 		 */
 		function onStartLiveInspect() : void;
 
 		/**
-		 * 但需要更新某个显示对象时.
+		 * called when taret update.
 		 */
 		function onUpdate(target : InspectTarget = null) : void;
 
 		/**
-		 * 当设置Inspect的查看模式时.
+		 * called when Inspect filter changed.
 		 */
 		function onInspectMode(clazz : Class) : void;
 
 		/**
-		 * 当激活时
+		 * called when active(start use) an plugin.
 		 */
 		function onActivePlugin(pluginId : String) : void;
 
 		/**
-		 * 当不激活时
+		 * called when unactive(stop use) an plugin.
 		 */
 		function onUnActivePlugin(pluginId : String) : void;
-
+		
+		/**
+		 * is this plugin actve(being used)?
+		 */
 		function get isActive() : Boolean;
 	}
 }
