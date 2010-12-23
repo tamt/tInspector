@@ -54,12 +54,16 @@
 
 			gErrorKeeper = new GlobalErrorKeeper();
 
-			if(ExternalInterface.available) {
-				ExternalInterface.addCallback("connectController", connectController);
-				ExternalInterface.addCallback("disconnectController", disconnectController);
-				ExternalInterface.addCallback("setSwfId", setSwfId);
-				ExternalInterface.addCallback("startInspector", this.startInspector);
-				ExternalInterface.addCallback("stopInspector", this.stopInspector);
+			if (ExternalInterface.available) {
+				try{
+					ExternalInterface.addCallback("connectController", connectController);
+					ExternalInterface.addCallback("disconnectController", disconnectController);
+					ExternalInterface.addCallback("setSwfId", setSwfId);
+					ExternalInterface.addCallback("startInspector", this.startInspector);
+					ExternalInterface.addCallback("stopInspector", this.stopInspector);
+				}catch (e:Error) {
+					
+				}
 			} else {
 			}
 

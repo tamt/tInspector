@@ -1,4 +1,4 @@
-package cn.itamt.tick
+﻿package cn.itamt.tick
 {
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -27,13 +27,13 @@ package cn.itamt.tick
 			this.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
-		public function pause():void {
+		public function stop():void {
 			_running = false;
 			this.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 		
 		public function reset():void {
-			pause();
+			stop();
 			_lastTime = 0;
 		}
 		
