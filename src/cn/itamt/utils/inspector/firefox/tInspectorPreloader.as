@@ -62,7 +62,7 @@
 					ExternalInterface.addCallback("startInspector", this.startInspector);
 					ExternalInterface.addCallback("stopInspector", this.stopInspector);
 				}catch (e:Error) {
-					
+					trace("add call back failure.");
 				}
 			} else {
 			}
