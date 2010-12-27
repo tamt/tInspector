@@ -1,6 +1,7 @@
 package {
 	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.consts.InspectorViewID;
+	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
+	import flash.geom.Point;
 
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -11,14 +12,17 @@ package {
 	 */
 	public class tInspectorDemo extends Sprite {
 		public function tInspectorDemo() {
-			this.stage.scaleMode = StageScaleMode.EXACT_FIT;
+			this.stage.scaleMode = StageScaleMode.NO_SCALE;
 			this.stage.align = StageAlign.RIGHT;
+			
+			var bar:ControlBar = new ControlBar();
+			this.addChild(bar);
 			
 			//使用tInspector只需初始化即可
 			Inspector.getInstance().init(this);
-			
-			//开启“鼠标查看”，“设置查看类型”面板
-			Inspector.getInstance().turnOn(InspectorViewID.LIVE_VIEW);
+			//Inspector.getInstance().structureView.size = new Point(400, 400);
+			//Inspector.getInstance().propertiesView.size = new Point(400, 400);
+			Inspector.getInstance().pluginManager.registerPlugin(bar);
 		}
 	}
 }

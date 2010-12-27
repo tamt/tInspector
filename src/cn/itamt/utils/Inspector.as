@@ -132,7 +132,7 @@
 			}
 
 			this._root.addEventListener("allComplete", function(evt : Event):void {
-				trace("hello world");
+				trace("hello");
 			});
 
 			InspectorStageReference.referenceTo(this._stage);
@@ -214,6 +214,8 @@
 		public function get isLiveInspecting() : Boolean {
 			return _isLiveInspecting;
 		}
+		
+		public function get propertiesView():PropertiesView { return _propertiesView; }
 
 		/**
 		 * start live inspect

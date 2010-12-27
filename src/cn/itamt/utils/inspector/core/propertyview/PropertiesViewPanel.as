@@ -59,8 +59,8 @@ package cn.itamt.utils.inspector.ui {
 
 			renders = [];
 			
-			this._minW = 240;
-			this._minH = 170;			
+			this._minW = 250;
+			this._minH = 180;			
 			
 			list = new Sprite();
 			this.setContent(list);
@@ -87,7 +87,8 @@ package cn.itamt.utils.inspector.ui {
 			addChild(this.viewMethodBtn);
 			
 			this.addEventListener(PropertyEvent.UPDATE, onPropertyUpdate);
-			this.addEventListener(PropertyEvent.FAV, onFavProperty);			this.addEventListener(PropertyEvent.DEL_FAV, onDelFavProperty);
+			this.addEventListener(PropertyEvent.FAV, onFavProperty);
+			this.addEventListener(PropertyEvent.DEL_FAV, onDelFavProperty);
 			
 			//刷新按钮
 			refreshBtn = new InspectorViewRefreshButton();
@@ -165,7 +166,8 @@ package cn.itamt.utils.inspector.ui {
 			this.setContent(list);
 			this.onInspectProp(this.curTarget);
 			
-			this.viewMethodBtn.active = false;			this.viewPropBtn.active = true;
+			this.viewMethodBtn.active = false;
+			this.viewPropBtn.active = true;
 		}
 
 		override public function relayout() : void {
@@ -272,7 +274,8 @@ package cn.itamt.utils.inspector.ui {
 
 		/*
 		 * 查看某个显示对象的方法(如果传过来的对象为空，就用当前的对象)
-		 */				public function onInspectMethod(object : DisplayObject = null) : void {
+		 */		
+		public function onInspectMethod(object : DisplayObject = null) : void {
 			if(object != null) {
 				if(curTarget != object) {
 					curTarget = object;
@@ -291,7 +294,8 @@ package cn.itamt.utils.inspector.ui {
 		}
 
 		private function compateAccessorName(a : XML, b : XML) : Number {
-			var aN : String = String(a.@name);			var bN : String = String(b.@name);
+			var aN : String = String(a.@name);
+			var bN : String = String(b.@name);
 			
 			if(favProps.indexOf(aN) > favProps.indexOf(bN)) {
 				return -1;
@@ -381,7 +385,8 @@ package cn.itamt.utils.inspector.ui {
 			}
 			
 			var l : int = propList.length;
-			for(var i : int = 0;i < l;i++) {				var render : PropertyAccessorRender;
+			for(var i : int = 0;i < l;i++) {
+				var render : PropertyAccessorRender;
 				if(i < favProps.length) {
 					if(favProps.indexOf(String(propList[i].@name)) > -1) {
 						render = new PropertyAccessorRender(200, 20, true);

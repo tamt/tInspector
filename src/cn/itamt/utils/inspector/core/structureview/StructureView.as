@@ -10,6 +10,7 @@ package cn.itamt.utils.inspector.core.structureview {
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.PopupAlignMode;
+	import flash.geom.Point;
 
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -21,6 +22,14 @@ package cn.itamt.utils.inspector.core.structureview {
 	 * @author itamt@qq.com
 	 */
 	public class StructureView extends BaseInspectorPlugin {
+		private var _size:Point = new Point(250, 280);
+		public function set size(pt:Point):void {
+			_size = pt.clone();
+		}
+		public function get size():Point {
+			return _size;
+		}
+		
 		private var treeView : DisplayObjectTree;
 		private var panel : StructureViewPanel;
 
@@ -62,7 +71,7 @@ package cn.itamt.utils.inspector.core.structureview {
 		override public function onActive() : void {
 			super.onActive();
 			
-			this.panel = new StructureViewPanel(200, 200);
+			this.panel = new StructureViewPanel(size.x, size.y);
 			this.treeView = new DisplayObjectTree(this._inspector.stage, StructureElementView);
 			this.treeView.addEventListener(DisplayItemEvent.OVER, onOverElement, false, 0, true);
 			this.treeView.addEventListener(DisplayItemEvent.CLICK, onClickElement, false, 0, true);

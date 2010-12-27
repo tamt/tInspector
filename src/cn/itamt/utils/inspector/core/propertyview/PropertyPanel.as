@@ -52,7 +52,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 			return _owner;
 		}
 
-		public function PropertyPanel(w : Number = 240, h : Number = 170, owner : PropertyAccessorRender = null, favoritable : Boolean = true) {
+		public function PropertyPanel(w : Number = 250, h : Number = 190, owner : PropertyAccessorRender = null, favoritable : Boolean = true) {
 			super('Property', w, h);
 
 			_title.mouseEnabled = _title.mouseWheelEnabled = false;
@@ -64,8 +64,8 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 			renders = [];
 
-			this._minW = 240;
-			this._minH = 170;
+			this._minW = 250;
+			this._minH = 190;
 
 			list = new Sprite();
 			this.setContent(list);
