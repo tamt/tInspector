@@ -74,6 +74,8 @@ package cn.itamt.utils.inspector.firefox {
 		 * @param	controllerId	FI id, this id will be used as the LocalConnection id builded to communicate between tInspectorPreloader and tInspectorConsoleMonitor.swf
 		 */
 		private function setupController(controllerId : String) : void {
+			alert(controllerId);
+			
 			mConsoleConnName.CLIENT += "_" + controllerId;
 			
 			controller = new finspectorController();
