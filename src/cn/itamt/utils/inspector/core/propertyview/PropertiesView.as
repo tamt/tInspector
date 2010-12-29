@@ -10,6 +10,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.PopupAlignMode;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
+	import flash.geom.Point;
 
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -19,6 +20,14 @@ package cn.itamt.utils.inspector.core.propertyview {
 	 * @author itamt@qq.com
 	 */
 	public class PropertiesView extends BaseInspectorPlugin {
+		private var _size:Point = new Point(250, 280);
+		public function set size(pt:Point):void {
+			_size = pt.clone();
+		}
+		public function get size():Point {
+			return _size;
+		}
+		
 		private var panels : Array;
 
 		public function PropertiesView() {
@@ -60,7 +69,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 			
 			if(this.panels == null)this.panels = [];
 			
-			var panel : DisplayObjectPropertyPanel = new DisplayObjectPropertyPanel();
+			var panel : DisplayObjectPropertyPanel = new DisplayObjectPropertyPanel(size.x, size.y);
 			this.panels.push(panel);
 			InspectorPopupManager.popup(panel, PopupAlignMode.CENTER);
 			panel.addEventListener(Event.CLOSE, onClickClose, false, 0, true);
@@ -85,7 +94,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 						}
 					}
 				}
-				panel = new PropertyPanel(240, 170, accessor);
+				panel = new PropertyPanel(size.x, size.y, accessor);
 				this.panels.push(panel);
 				panel.addEventListener(Event.CLOSE, onClickClose, false, 0, true);
 				this._inspector.stage.addChild(panel);
@@ -128,7 +137,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 				}
 			}
 			
-			panel = new DisplayObjectPropertyPanel();
+			panel = new DisplayObjectPropertyPanel(size.x, size.y);
 			this.panels.push(panel);
 			
 			this._inspector.stage.addChild(panel);

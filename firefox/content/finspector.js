@@ -629,6 +629,10 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 
 	window.addEventListener('load', fInspector.onFirefoxLoad, false);
 	window.addEventListener('unload', fInspector.onFirefoxUnLoad, false);
+	
+	//将dom.ipc.plugins.enabled.npswf32.dll设置为false
+	let _prefService = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
+	_prefService.setBoolPref("dom.ipc.plugins.enabled.npswf32.dll", false);
 } else {
 	//it's Firefox 4!!
 	try {

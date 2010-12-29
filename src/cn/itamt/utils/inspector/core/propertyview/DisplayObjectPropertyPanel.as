@@ -14,11 +14,16 @@ package cn.itamt.utils.inspector.core.propertyview {
 	 */
 	public class DisplayObjectPropertyPanel extends PropertyPanel {
 		private var fullBtn : InspectorViewFullButton;
+		private var defaultSize:Point;
+		private var defaultFullSize:Point;
 
 		//收藏的属性
 		private static var favProps : Array = ["x", "y", "width", "height", "scaleX", "scaleY", "alpha", "rotation"];
 
-		public function DisplayObjectPropertyPanel(w : Number = 240, h : Number = 170, owner : PropertyAccessorRender = null) {
+		public function DisplayObjectPropertyPanel(w : Number = 250, h : Number = 280, owner : PropertyAccessorRender = null) {
+			this.defaultSize = new Point(w, h);
+			this.defaultFullSize = new Point(w, 400);
+			
 			super(w, h, owner);
 			
 			singletonBtn.normalMode = true;
@@ -28,7 +33,8 @@ package cn.itamt.utils.inspector.core.propertyview {
 			fullBtn.addEventListener(MouseEvent.CLICK, onClickFull);
 			addChild(fullBtn);
 			
-			this.addEventListener(PropertyEvent.FAV, this.onFavProperty);			this.addEventListener(PropertyEvent.DEL_FAV, this.onDelFavProperty);
+			this.addEventListener(PropertyEvent.FAV, this.onFavProperty);
+			this.addEventListener(PropertyEvent.DEL_FAV, this.onDelFavProperty);
 		}
 
 		override public function relayout() : void {
@@ -144,22 +150,22 @@ package cn.itamt.utils.inspector.core.propertyview {
 			if(!fullBtn.normalMode) {
 				if(this.resizeBtn.normalMode) {
 					if(_mSavedSize == null) {
-						_mSavedSize = new Point(this._width, 270);
+						_mSavedSize = new Point(this._width, defaultSize.y);
 					} else {
 						_mSavedSize = new Point(this._width, this.height);
 					}
-					if(_fSavedSize == null)_fSavedSize = new Point(this._width, 400);
+					if(_fSavedSize == null)_fSavedSize = new Point(this._width, defaultFullSize.y);
 					this.addChild(this.search);
 					if(this.resizeBtn.normalMode)this.resize(_fSavedSize.x, _fSavedSize.y);
 				}
 			} else {
 				if(this.resizeBtn.normalMode) {
 					if(_fSavedSize == null) {
-						_fSavedSize = new Point(this._width, 400);
+						_fSavedSize = new Point(this._width, defaultFullSize.y);
 					} else {
 						_fSavedSize = new Point(this._width, this.height);
 					}
-					if(_mSavedSize == null)_mSavedSize = new Point(this._width, 270);
+					if(_mSavedSize == null)_mSavedSize = new Point(this._width, defaultSize.y);
 					if(this.search.parent)this.search.parent.removeChild(this.search);
 					if(this.resizeBtn.normalMode)this.resize(_mSavedSize.x, _mSavedSize.y);
 				}
