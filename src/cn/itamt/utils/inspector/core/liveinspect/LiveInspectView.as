@@ -40,7 +40,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		// 用于变形
 		private var _tfm : TransformTool;
 		//用于3d变形
-		private var _tool3d:Transform3DTool;
+		private var _tool3d:Transform3DController;
 		//
 		private var inited : Boolean;
 
@@ -118,28 +118,6 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_tfm.setSkin(TransformTool.ROTATION_TOP_LEFT, new Sprite());
 			_tfm.setSkin(TransformTool.ROTATION_BOTTOM_RIGHT, new Sprite());
 			this.viewContainer.addChild(_tfm);
-			
-			//3d变形器
-			_tool3d = new Transform3DTool();
-			//设置tool3d各个control的鼠标样式
-			_tool3d.rotationTool.xCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_X));
-			_tool3d.rotationTool.yCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_Y));
-			_tool3d.rotationTool.zCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_Z));
-			_tool3d.rotationTool.regCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_REG));
-			_tool3d.rotationTool.pCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_R));
-			_tool3d.translationTool.xCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_X));
-			_tool3d.translationTool.yCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_Y));
-			_tool3d.translationTool.zCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_Z));
-			_tool3d.translationTool.regCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_REG));
-			_tool3d.scaleTool.cursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_S));
-			_tool3d.scaleTool.regCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_REG));
-			_tool3d.globalTranslationTool.cursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_GT));
-			
-			_tool3d.selectTool("scale");
-			_tool3d.selectTool("translation");
-			_tool3d.selectTool("rotation");
-			_tool3d.selectTool("global translation");
-			this.viewContainer.addChild(_tool3d);
 
 			// ------操作条------
 			_bar = new OperationBar();
@@ -159,6 +137,15 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_bar.addEventListener(OperationBar.PRESS_INFO, onPressInfo);
 			_bar.addEventListener(OperationBar.PRESS_FILTER, onPressFilter);
 			_bar.addEventListener(OperationBar.DB_CLICK_MOVE, onClickReset);
+			_bar.addEventListener(OperationBar.PRESS_TRANSFORM_3D, onClick3D);
+		}
+		
+		private function onClick3D(e:Event):void 
+		{
+			//3d变形器
+			_tool3d = new Transform3DController();
+			this.viewContainer.addChild(_tool3d);
+			_tool3d.target = this._inspector.getCurInspectTarget().displayObject;
 		}
 
 		/**
@@ -172,7 +159,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			inited = false;
 
 			if(this.viewContainer) {
-				this.viewContainer.removeChild(_tool3d);
+				if (this.viewContainer.contains(_tool3d)) this.viewContainer.removeChild(_tool3d);
 				
 				this.viewContainer.graphics.clear();
 				// this.viewContainer.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -190,7 +177,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 			target = null;
 			_tfm.target = null;
-			_tool3d.target = null;
+			if(_tool3d)_tool3d.target = null;
 
 			_mBtn.removeEventListener(MouseEvent.CLICK, onClickInspect);
 
@@ -220,7 +207,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			target = ele;
 			_tfm.target = null;
 			_tfm.target = target.displayObject;
-			_tool3d.target = target.displayObject;
+			if(_tool3d)_tool3d.target = target.displayObject;
 			update();
 
 			if(_bar.stage == null)

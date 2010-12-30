@@ -142,10 +142,14 @@ TODO LIST:
 	
 	
 	
-	tInspector 1.2		插件(Plugin)机制实现.
+	tInspector 1.2		插件(Plugin)机制实现.(OK)
 						AppStats面板增加"GC"按钮
 	
 	tInspector 1.3		增加Transform3DTool
+	tInspector 1.4		完善核心的功能。
+							1.inspect undo,redo
+							2.ControlBar在LiveInspect模式下，应该避开鼠标。
+							3.LiveInspect时操作rect不要挡住面板。
 	
 	//////////////////////////////////////////
 	tInspector 2.0		

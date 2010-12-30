@@ -30,6 +30,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		public static const UP_MOVE : String = 'up_move';
 		public static const DB_CLICK_MOVE : String = 'double_click_move';
 		public static const PRESS_FILTER : String = 'click_filter';
+		public static const PRESS_TRANSFORM_3D:String = 'click_transform_3d';
 		// 按钮
 		private var _moveBtn : InspectorViewMoveButton;
 		private var _pareBtn : InspectorViewParentButton;
@@ -97,6 +98,12 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_closeBtn.addEventListener(MouseEvent.CLICK, onClickCloseBtn);
 			_struBtn.addEventListener(MouseEvent.CLICK, onClickStruBtn);
 			_filterBtn.addEventListener(MouseEvent.CLICK, onClickFilterBtn);
+			_3dBtn.addEventListener(MouseEvent.CLICK, onClick3DBtn);
+		}
+		
+		private function onClick3DBtn(e:MouseEvent):void 
+		{
+			dispatchEvent(new Event(PRESS_TRANSFORM_3D));
 		}
 
 		/**

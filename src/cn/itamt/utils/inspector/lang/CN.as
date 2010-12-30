@@ -71,6 +71,10 @@ CopyUrl			=	复制
 FunctionSetting	=	功能选择
 PluginSelectorTip	=	设置之后请刷新网页
 Transform3D		=	3D变形（位移、旋转、缩放）
+TranslationLabel	=	移
+ScaleLabel		=	缩
+RotationLabel	=	旋
+ModeLabel		=	式
 ]]>
 					</lang>;
 		}
