@@ -70,6 +70,7 @@ OpenTip			=	open in new tab
 CopyUrlTip		=	copy the url
 FunctionSetting	=	Function Selector
 PluginSelectorTip	=	Refresh page after setting.
+Transform3D		=	transform DisplayObject in 3d
 ]]>
 					</lang>;
 		}

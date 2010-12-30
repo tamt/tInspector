@@ -50,10 +50,18 @@ package cn.itamt.utils.inspector.ui {
 		public static const INSPECT : String = 'inspector_inspect';
 		public static const FOLDER : String = "folder";
 		public static const HELP : String = "help";
+		//鼠标样式图片
+		public static const CURSOR_REG:String = "cursor_reg";
+		public static const CURSOR_X:String = "cursor_x";
+		public static const CURSOR_Y:String = "cursor_y";
+		public static const CURSOR_Z:String = "cursor_z";
+		public static const CURSOR_R:String = "cursor_rotation";
+		public static const CURSOR_GT:String = "cursor_global_translation";
+		public static const CURSOR_S:String = "cursor_scale";
 		//
 		private static var assetBmd : InspectorSymbolBmd;
 		private static var iconBmds : Array;
-		private static var icons : Array = [InspectorSymbolIcon.UNKNOWN, InspectorSymbolIcon.SPRITE, InspectorSymbolIcon.MOVIE_CLIP, InspectorSymbolIcon.BITMAP, InspectorSymbolIcon.SHAPE, InspectorSymbolIcon.TEXT_FIELD, InspectorSymbolIcon.LOADER, InspectorSymbolIcon.VIDEO, InspectorSymbolIcon.AVM1_MOVIE, InspectorSymbolIcon.STATIC_TEXT, InspectorSymbolIcon.MORPH_SHAPE, InspectorSymbolIcon.SIMPLE_BUTTON, InspectorSymbolIcon.STAGE, InspectorSymbolIcon.EXPAND, InspectorSymbolIcon.CLLOAPSE, InspectorSymbolIcon.BUG, InspectorSymbolIcon.FAVORITE, InspectorSymbolIcon.DELETE, InspectorSymbolIcon.LOGO, InspectorSymbolIcon.INSPECT, InspectorSymbolIcon.FOLDER, InspectorSymbolIcon.HELP];
+		private static var icons : Array = [InspectorSymbolIcon.UNKNOWN, InspectorSymbolIcon.SPRITE, InspectorSymbolIcon.MOVIE_CLIP, InspectorSymbolIcon.BITMAP, InspectorSymbolIcon.SHAPE, InspectorSymbolIcon.TEXT_FIELD, InspectorSymbolIcon.LOADER, InspectorSymbolIcon.VIDEO, InspectorSymbolIcon.AVM1_MOVIE, InspectorSymbolIcon.STATIC_TEXT, InspectorSymbolIcon.MORPH_SHAPE, InspectorSymbolIcon.SIMPLE_BUTTON, InspectorSymbolIcon.STAGE, InspectorSymbolIcon.EXPAND, InspectorSymbolIcon.CLLOAPSE, InspectorSymbolIcon.BUG, InspectorSymbolIcon.FAVORITE, InspectorSymbolIcon.DELETE, InspectorSymbolIcon.LOGO, InspectorSymbolIcon.INSPECT, InspectorSymbolIcon.FOLDER, InspectorSymbolIcon.HELP, CURSOR_REG, CURSOR_X, CURSOR_Z, CURSOR_Y, CURSOR_S, CURSOR_R, CURSOR_GT, CURSOR_REG];
 		// ['sprite', 'movie clip', 'bitmap', 'shape', 'textfield', 'loader', 'video', 'avm1movie', 'static text', 'morphshape', '+', '-'];
 		private static var types : Array;
 

@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.core.inspectfilter.FilterManagerButton;
+	import cn.itamt.utils.inspector.core.liveinspect.Inspector3DButton;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesViewButton;
 	import cn.itamt.utils.inspector.core.structureview.StructureViewButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
@@ -33,11 +34,13 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		private var _moveBtn : InspectorViewMoveButton;
 		private var _pareBtn : InspectorViewParentButton;
 		private var _childBtn : InspectorViewChildButton;
-		private var _broBtn : InspectorViewBrotherButton;		private var _prevBtn : InspectorViewPrevButton;
+		private var _broBtn : InspectorViewBrotherButton;
+		private var _prevBtn : InspectorViewPrevButton;
 		private var _infoBtn : PropertiesViewButton;
 		private var _filterBtn : FilterManagerButton;
 		private var _struBtn : StructureViewButton;
 		private var _closeBtn : InspectorViewCloseButton;
+		private var _3dBtn:Inspector3DButton;
 		// 布局
 		private var _paddings : Array = [10, 5, 10];
 		private var _btnGap : int = 5;
@@ -61,6 +64,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 									_infoBtn = new PropertiesViewButton, 
 									_struBtn = new StructureViewButton, 
 									_filterBtn = new FilterManagerButton,
+									_3dBtn = new Inspector3DButton,
 									_closeBtn = new InspectorViewCloseButton];
 			var btn : InspectorButton;
 			for(var i : int = 0;i < btns.length;i++) {
@@ -87,7 +91,8 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_moveBtn.addEventListener(MouseEvent.DOUBLE_CLICK, onDlickMoveBtn);
 			_pareBtn.addEventListener(MouseEvent.CLICK, onClickParentBtn);
 			_childBtn.addEventListener(MouseEvent.CLICK, onClickChildBtn);
-			_broBtn.addEventListener(MouseEvent.CLICK, onClickBrotherBtn);			_prevBtn.addEventListener(MouseEvent.CLICK, onClickPrevBtn);
+			_broBtn.addEventListener(MouseEvent.CLICK, onClickBrotherBtn);
+			_prevBtn.addEventListener(MouseEvent.CLICK, onClickPrevBtn);
 			_infoBtn.addEventListener(MouseEvent.CLICK, onClickInfoBtn);
 			_closeBtn.addEventListener(MouseEvent.CLICK, onClickCloseBtn);
 			_struBtn.addEventListener(MouseEvent.CLICK, onClickStruBtn);

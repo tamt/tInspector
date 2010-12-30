@@ -36,7 +36,11 @@ DelMark			=	删除
 StructurePanel	=	结构面板
 PropertyPanel	=	属性面板
 InspectorFilterManager = 设置查看类型
-FilterAllDisplayObject	=	所有显示对象FullScreen		=	全屏StartMouseInspect	=	鼠标查看StopMouseInspect	=	关闭鼠标查看InspectorOnOff	=	开/关tInspector
+FilterAllDisplayObject	=	所有显示对象
+FullScreen		=	全屏
+StartMouseInspect	=	鼠标查看
+StopMouseInspect	=	关闭鼠标查看
+InspectorOnOff	=	开/关tInspector
 ResetTransform	=	还原变形
 SearchBtnHelp	=	按Tab/Enter键
 AppStatsPanel	=	Flash Stats面板
@@ -66,6 +70,7 @@ Open			=	打开
 CopyUrl			=	复制
 FunctionSetting	=	功能选择
 PluginSelectorTip	=	设置之后请刷新网页
+Transform3D		=	3D变形（位移、旋转、缩放）
 ]]>
 					</lang>;
 		}
