@@ -25,6 +25,8 @@ package cn.itamt.utils.inspector.firefox {
 			Security.allowInsecureDomain("*");
 
 			this.visible = false;
+			
+			
 
 			if(ExternalInterface.available) {
 				if(!Capabilities.isDebugger) {
@@ -35,6 +37,8 @@ package cn.itamt.utils.inspector.firefox {
 					}
 					return;
 				}
+				
+				Debug.trace('[tInspectorConsoleMonitor]addCallback', 3);
 				//if(FlashPlayerEnvironment.isInFirefox()) {
 					ExternalInterface.addCallback('setupController', setupController);
 					
@@ -46,6 +50,8 @@ package cn.itamt.utils.inspector.firefox {
 					ExternalInterface.addCallback('selectPlugin', selectPlugin);
 					ExternalInterface.addCallback('rejectPlugin', rejectPlugin);
 				//}
+			}else {
+				throw new Error("[InspectorController]add call back failure");
 			}
 
 			
@@ -74,7 +80,7 @@ package cn.itamt.utils.inspector.firefox {
 		 * @param	controllerId	FI id, this id will be used as the LocalConnection id builded to communicate between tInspectorPreloader and tInspectorConsoleMonitor.swf
 		 */
 		private function setupController(controllerId : String) : void {
-			alert(controllerId);
+			Debug.trace("[tInspectorConsoleMonitor]setupController");
 			
 			mConsoleConnName.CLIENT += "_" + controllerId;
 			

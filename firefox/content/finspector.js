@@ -22,7 +22,9 @@ onFirefoxLoad : function(evt) {
 	fInspector.trace('onFirefoxLoad...');
 	fInspector.firefoxLoaded = true;
 
+	//TODO:这个时候tInspectorController可能还没有初始化完毕.
 	//setup the tInspectorConsoleMonitor.swf, and set the FI controller id.
+	fInspector.trace(document.getElementById('tInspectorController'));
 	document.getElementById('tInspectorController').setupController(fInspector.controllerId);
 
 	var fpVersion = fInspectorUtil.getFlashPluginVersion();
@@ -489,7 +491,8 @@ hideNeedDebuggerFP : function() {
 
 //for debug msg
 trace : function(obj) {
-	dump('\n' + obj);
+	//dump('\n' + obj);
+	alert('\n' + obj);
 },
 
 //let firefox open an tab.
