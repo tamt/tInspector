@@ -15,6 +15,7 @@
   <classpaths>
     <class path="src" />
     <class path="..\..\tamt2010\TransformTool3D\src" />
+    <class path="..\..\tcodes\claus-as3swf-1346cdb\src" />
   </classpaths>
   <!-- Build options -->
   <build>

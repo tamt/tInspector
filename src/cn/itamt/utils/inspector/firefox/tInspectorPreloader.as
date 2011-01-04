@@ -65,6 +65,7 @@
 					trace("add call back failure.");
 				}
 			} else {
+				throw new Error("ExternalInterface is not available");
 			}
 
 			if(stage) {

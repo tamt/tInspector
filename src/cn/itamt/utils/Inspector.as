@@ -132,7 +132,7 @@
 			}
 
 			this._root.addEventListener("allComplete", function(evt : Event):void {
-				trace("hello");
+				//trace("hello");
 			});
 
 			InspectorStageReference.referenceTo(this._stage);

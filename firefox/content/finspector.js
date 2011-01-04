@@ -18,12 +18,17 @@ setEnable : function(v) {
 		fInspector.showNeedDebuggerFP();
 	}
 },
+getControllerId:function(){
+	return fInspector.controllerId;
+},
 onFirefoxLoad : function(evt) {
 	fInspector.trace('onFirefoxLoad...');
 	fInspector.firefoxLoaded = true;
 
+	//TODO:这个时候tInspectorController可能还没有初始化完毕.
 	//setup the tInspectorConsoleMonitor.swf, and set the FI controller id.
-	document.getElementById('tInspectorController').setupController(fInspector.controllerId);
+	//fInspector.trace(document.getElementById('tInspectorController'));
+	//document.getElementById('tInspectorController').setupController(fInspector.controllerId);
 
 	var fpVersion = fInspectorUtil.getFlashPluginVersion();
 	if (fpVersion.major > 9) {
@@ -421,8 +426,8 @@ setPreloadSwf : function(file) {
 	if (data.indexOf(preloadSwfPath) >= 0) {
 		fInspector.trace('the PreloadSWF already be:' + file);
 	} else {
-		if (data.match(/PreloadSWF=.*\.swf/)) {
-			data = data.replace(/PreloadSWF=.*.swf/, preloadSwfPath);
+		if (data.match(/PreloadSWF=.*\.swf(^\s)*/)) {
+			data = data.replace(/PreloadSWF=.*.swf(^\s)*/, preloadSwfPath);
 			fInspector.trace('replace preloadswf path: ' + data);
 		} else {
 			if (data.slice(-1) == "\r" || data.slice(-1) == "\n") {
@@ -430,7 +435,7 @@ setPreloadSwf : function(file) {
 			} else {
 				data += '\r' + preloadSwfPath;
 			}
-			fInspector.trace('add preloadswf path successful.');
+			fInspector.trace('add preloadswf path successful: ' + data);
 		}
 
 		fInspectorFileIO.write(mmcfg, data);
@@ -489,7 +494,8 @@ hideNeedDebuggerFP : function() {
 
 //for debug msg
 trace : function(obj) {
-	dump('\n' + obj);
+	//dump('\n' + obj);
+	//alert('\n' + obj);
 },
 
 //let firefox open an tab.

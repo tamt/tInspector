@@ -2,12 +2,7 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.inspector.firefox.FlashPlayerEnvironment;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
-
-	import com.codeazur.as3swf.SWF;
-	import com.codeazur.as3swf.data.SWFRectangle;
-	import com.codeazur.as3swf.tags.ITag;
-	import com.codeazur.as3swf.tags.TagProductInfo;
-	import com.codeazur.as3swf.tags.TagSetBackgroundColor;
+	import flash.utils.ByteArray;
 
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
@@ -107,9 +102,9 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			return _stage.align;
 		}
 
-		protected var _size : SWFSize;
+		protected var _size : Rectangle;
 
-		public function get size() : SWFSize {
+		public function get size() : Rectangle {
 			return _size;
 		}
 
@@ -123,15 +118,14 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			return _compileDate;
 		}
 
-		public function get playerSize() : SWFSize {
+		public function get playerSize():Rectangle {
 			var rect : Rectangle = FlashPlayerEnvironment.getSwfSize();
 			if(rect == null)
 				return null;
-			var size : SWFSize = new SWFSize(rect.width, rect.height);
-			return size;
+			return rect.clone();
 		}
 
-		public function set playerSize(size : SWFSize) : void {
+		public function set playerSize(size:Rectangle) : void {
 			Debug.trace('[SWFInfo][playerSize]' + size.toString());
 			FlashPlayerEnvironment.setSwfSize(size.width, size.height);
 		}
@@ -143,52 +137,85 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			_url = _swfRoot.loaderInfo.url;
 			_version = _swfRoot.loaderInfo.swfVersion;
 			_playerVersion = Capabilities.version;
-
-			var swf : SWF = new SWF(swfRoot.loaderInfo.bytes);
-			var rect : SWFRectangle = swf.frameSize;
-			_size = new SWFSize((Number(rect.xmax) / 20 - Number(rect.xmin) / 20), (Number(rect.ymax) / 20 - Number(rect.ymin) / 20));
-
-			for each(var tag:ITag in swf.tags) {
-				if(tag is TagSetBackgroundColor) {
-					_bgcolor = (tag as TagSetBackgroundColor).color;
-				} else if(tag is TagProductInfo) {
-					_compileDate = (tag as TagProductInfo).compileDate;
-				}
-			}
-
+			
+			var ba:ByteArray = _swfRoot.loaderInfo.bytes;
+			var sd:SWFData2 = new SWFData2();
+			sd.writeBytes(ba);
+			sd.position = 0;
+			
+			//分析swf数据
+			this.parseSWF(sd);
+			
+			//
 			var t : int = FlashPlayerEnvironment.getSwfBgColor();
 			if(t >= 0)
 				_bgcolor = t;
 		}
-	}
-}
-
-class SWFSize {
-	protected var _width : Number;
-	protected var _height : Number;
-
-	public function SWFSize(width : Number, height : Number) : void {
-		_width = width;
-		_height = height;
-	}
-
-	public function toString() : String {
-		return _width + ", " + _height;
-	}
-
-	public function get width() : Number {
-		return _width;
-	}
-
-	public function set width(width : Number) : void {
-		_width = width;
-	}
-
-	public function get height() : Number {
-		return _height;
-	}
-
-	public function set height(height : Number) : void {
-		_height = height;
+		
+		private function parseSWF(swf:SWFData2):void {
+			var header:SWFHeader = new SWFHeader();
+			header.sign1 = swf.readUI8();
+			header.sign2 = swf.readUI8();
+			header.sign3 = swf.readUI8();
+			header.version = swf.readUI8();
+			header.fileLength = swf.readUI32();
+			header.frameSize = swf.readRECT();
+			header.frameRate = swf.readFIXED8();
+			header.frameCount = swf.readUI16();
+			
+			_size = new Rectangle(0, 0, header.frameSize.width / 20, header.frameSize.height / 20);
+			
+			//读取tag信息
+			var bgTagFinded:Boolean;
+			var productTagFinded:Boolean;
+			var hasMetaData:Boolean = false;
+			while (true) {
+				var tagTypeAndLength:uint = swf.readUI16();
+				var tagLength:uint = tagTypeAndLength & 0x003f;
+				var tagType:uint = tagTypeAndLength >> 6;
+				if (tagLength == 0x3f) {
+					// The SWF10 spec sez that this is a signed int.
+					// Shouldn't it be an unsigned int?
+					tagLength = swf.readSI32();
+				}
+				
+				var pos:uint = swf.position;
+				if (tagType == 0) {
+					break;
+				}else if (tagType == 69) {
+					//文件属性读取
+					var flags:uint = swf.readUI8();
+					hasMetadata = ((flags & 0x10) != 0);
+					trace("has meta data: " + hasMetaData);
+				}else if (tagType == 9) {
+					//背景颜色读取
+					_bgcolor = swf.readRGB();
+					bgTagFinded = true;
+				}else if (tagType == 41) {
+					trace("find a productinfo tag");
+					//产品信息读取
+					swf.readUI32();		//product id,
+					swf.readUI32();		//product edition
+					swf.readUI8();		//major version
+					swf.readUI8();		//minor version
+					swf.readUI32();		//minor build number
+					swf.readUI32();		//major build number
+					//编译日期读取
+					var sec:Number = swf.readUI32();
+					sec += swf.readUI32() * 4294967296;
+					this._compileDate = new Date(sec);
+					
+					productTagFinded = true;
+				}else if (!productTagFinded && hasMetaData && tagType == 77) {
+					var xml:XML = new XML(swf.readString());
+					productTagFinded = true;
+				}
+				
+				if (bgTagFinded && productTagFinded) {
+					break;
+				}
+				swf.position += tagLength;
+			}
+		}
 	}
 }
