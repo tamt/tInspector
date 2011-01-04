@@ -1,7 +1,13 @@
 package {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
+	import cn.itamt.utils.inspector.plugins.swfinfo.SWFData2;
+	import cn.itamt.utils.inspector.plugins.swfinfo.SWFHeader;
+	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
+	import cn.itamt.utils.inspector.plugins.swfinfo.SWFParser;
+	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.utils.ByteArray;
 
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -23,6 +29,20 @@ package {
 			//Inspector.getInstance().structureView.size = new Point(400, 400);
 			//Inspector.getInstance().propertiesView.size = new Point(400, 400);
 			Inspector.getInstance().pluginManager.registerPlugin(bar);
+			//Inspector.getInstance().pluginManager.registerPlugin(new SwfInfoView());
+			
+			this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
+		}
+		
+		private function onComplete(e:Event):void 
+		{
+			var ba:ByteArray = this.loaderInfo.bytes;
+			var sd:SWFData2 = new SWFData2();
+			sd.writeBytes(ba);
+			sd.position = 0;
+			var parser:SWFParser = new SWFParser();
+			var header:SWFHeader = parser.parseHeader(sd);
+			trace(header.toString());
 		}
 	}
 }
