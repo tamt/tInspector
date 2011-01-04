@@ -26,8 +26,6 @@ package cn.itamt.utils.inspector.firefox {
 
 			this.visible = false;
 			
-			
-
 			if(ExternalInterface.available) {
 				if(!Capabilities.isDebugger) {
 					try {
@@ -38,10 +36,12 @@ package cn.itamt.utils.inspector.firefox {
 					return;
 				}
 				
-				Debug.trace('[tInspectorConsoleMonitor]addCallback', 3);
+				var controllerId:String = ExternalInterface.call("fInspector.getControllerId")
+				setupController(controllerId);
+				//Debug.trace("Controller Id: " + controllerId);
+				//Debug.trace('[tInspectorConsoleMonitor]addCallback', 3);
 				//if(FlashPlayerEnvironment.isInFirefox()) {
 					ExternalInterface.addCallback('setupController', setupController);
-					
 					ExternalInterface.addCallback('startInspector', startInspector);
 					ExternalInterface.addCallback('stopInspector', stopInspector);
 					ExternalInterface.addCallback('toggleInspector', toggleInspector);
