@@ -17,9 +17,9 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			header.version = swf.readUI8();
 			header.fileLength = swf.readUI32();
 			header.frameSize = swf.readRECT();
-			header.frameRate = swf.readUI16();
+			header.frameRate = swf.readFIXED8();
 			header.frameCount = swf.readUI16();
-			
+
 			return header;
 		}
 	}

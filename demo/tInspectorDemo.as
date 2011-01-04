@@ -29,9 +29,9 @@ package {
 			//Inspector.getInstance().structureView.size = new Point(400, 400);
 			//Inspector.getInstance().propertiesView.size = new Point(400, 400);
 			Inspector.getInstance().pluginManager.registerPlugin(bar);
-			//Inspector.getInstance().pluginManager.registerPlugin(new SwfInfoView());
+			Inspector.getInstance().pluginManager.registerPlugin(new SwfInfoView());
 			
-			this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
+			//this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
 		}
 		
 		private function onComplete(e:Event):void 
