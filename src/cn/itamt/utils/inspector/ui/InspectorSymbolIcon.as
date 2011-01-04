@@ -58,10 +58,15 @@ package cn.itamt.utils.inspector.ui {
 		public static const CURSOR_R:String = "cursor_rotation";
 		public static const CURSOR_GT:String = "cursor_global_translation";
 		public static const CURSOR_S:String = "cursor_scale";
+		//transform 3d tool:
+		public static const TOOL3D_R:String = "3dtool_rotation";
+		public static const TOOL3D_S:String = "3dtool_scale";
+		public static const TOOL3D_T:String = "3dtool_translation";
+		public static const TOOL3D_M:String = "3dtool_mode";
 		//
 		private static var assetBmd : InspectorSymbolBmd;
 		private static var iconBmds : Array;
-		private static var icons : Array = [InspectorSymbolIcon.UNKNOWN, InspectorSymbolIcon.SPRITE, InspectorSymbolIcon.MOVIE_CLIP, InspectorSymbolIcon.BITMAP, InspectorSymbolIcon.SHAPE, InspectorSymbolIcon.TEXT_FIELD, InspectorSymbolIcon.LOADER, InspectorSymbolIcon.VIDEO, InspectorSymbolIcon.AVM1_MOVIE, InspectorSymbolIcon.STATIC_TEXT, InspectorSymbolIcon.MORPH_SHAPE, InspectorSymbolIcon.SIMPLE_BUTTON, InspectorSymbolIcon.STAGE, InspectorSymbolIcon.EXPAND, InspectorSymbolIcon.CLLOAPSE, InspectorSymbolIcon.BUG, InspectorSymbolIcon.FAVORITE, InspectorSymbolIcon.DELETE, InspectorSymbolIcon.LOGO, InspectorSymbolIcon.INSPECT, InspectorSymbolIcon.FOLDER, InspectorSymbolIcon.HELP, CURSOR_REG, CURSOR_X, CURSOR_Z, CURSOR_Y, CURSOR_S, CURSOR_R, CURSOR_GT, CURSOR_REG];
+		private static var icons : Array = [InspectorSymbolIcon.UNKNOWN, InspectorSymbolIcon.SPRITE, InspectorSymbolIcon.MOVIE_CLIP, InspectorSymbolIcon.BITMAP, InspectorSymbolIcon.SHAPE, InspectorSymbolIcon.TEXT_FIELD, InspectorSymbolIcon.LOADER, InspectorSymbolIcon.VIDEO, InspectorSymbolIcon.AVM1_MOVIE, InspectorSymbolIcon.STATIC_TEXT, InspectorSymbolIcon.MORPH_SHAPE, InspectorSymbolIcon.SIMPLE_BUTTON, InspectorSymbolIcon.STAGE, InspectorSymbolIcon.EXPAND, InspectorSymbolIcon.CLLOAPSE, InspectorSymbolIcon.BUG, InspectorSymbolIcon.FAVORITE, InspectorSymbolIcon.DELETE, InspectorSymbolIcon.LOGO, InspectorSymbolIcon.INSPECT, InspectorSymbolIcon.FOLDER, InspectorSymbolIcon.HELP, CURSOR_REG, CURSOR_X, CURSOR_Z, CURSOR_Y, CURSOR_R, CURSOR_GT, CURSOR_S, TOOL3D_R, TOOL3D_S, TOOL3D_T, TOOL3D_M];
 		// ['sprite', 'movie clip', 'bitmap', 'shape', 'textfield', 'loader', 'video', 'avm1movie', 'static text', 'morphshape', '+', '-'];
 		private static var types : Array;
 

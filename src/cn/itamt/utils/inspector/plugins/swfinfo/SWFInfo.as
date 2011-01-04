@@ -186,13 +186,12 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 					//文件属性读取
 					var flags:uint = swf.readUI8();
 					hasMetadata = ((flags & 0x10) != 0);
-					trace("has meta data: " + hasMetaData);
+					trace("[SWFInfo-parseSWF]has metadata: " + hasMetaData);
 				}else if (tagType == 9) {
 					//背景颜色读取
 					_bgcolor = swf.readRGB();
 					bgTagFinded = true;
 				}else if (tagType == 41) {
-					trace("find a productinfo tag");
 					//产品信息读取
 					swf.readUI32();		//product id,
 					swf.readUI32();		//product edition

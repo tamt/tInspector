@@ -19,7 +19,7 @@ package {
 	public class tInspectorDemo extends Sprite {
 		public function tInspectorDemo() {
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
-			this.stage.align = StageAlign.RIGHT;
+			//this.stage.align = StageAlign.RIGHT;
 			
 			var bar:ControlBar = new ControlBar();
 			this.addChild(bar);
