@@ -137,34 +137,28 @@ package cn.itamt.utils.inspector.core.liveinspect
 				
 				if (_tToolBtn.active) {
 					tool3d.selectTool(TransformToolMode.TRANSLATION);
-					//tool3d.deselectTool(TransformToolMode.ROTATION);
-					//tool3d.deselectTool(TransformToolMode.SCALE);
 				}else {
 					tool3d.deselectTool(TransformToolMode.TRANSLATION);
 				}
 				
 				if (_rToolBtn.active) {
 					tool3d.selectTool(TransformToolMode.ROTATION);
-					//tool3d.deselectTool(TransformToolMode.TRANSLATION);
-					//tool3d.deselectTool(TransformToolMode.SCALE);
 				}else {
 					tool3d.deselectTool(TransformToolMode.ROTATION);
 				}
 				
 				if (_sToolBtn.active) {
 					tool3d.selectTool(TransformToolMode.SCALE);
-					//tool3d.deselectTool(TransformToolMode.TRANSLATION);
-					//tool3d.deselectTool(TransformToolMode.ROTATION);
 				}else {
 					tool3d.deselectTool(TransformToolMode.SCALE);
 				}
 				
-				//if (!(_tToolBtn.active || _rToolBtn.active || _sToolBtn.active)) {
-					//tool3d.selectTool(TransformToolMode.ROTATION);
-					//_rToolBtn.active = true;
-				//}
+				if (!(_tToolBtn.active || _rToolBtn.active || _sToolBtn.active)) {
+					tool3d.selectTool(TransformToolMode.ROTATION);
+					_rToolBtn.active = true;
+				}
 				
-				trace("translation: " + _tToolBtn.active, "rotation: " + _rToolBtn.active, "scale: " + _sToolBtn.active);
+				//trace("translation: " + _tToolBtn.active, "rotation: " + _rToolBtn.active, "scale: " + _sToolBtn.active);
 				
 			}
 		}
