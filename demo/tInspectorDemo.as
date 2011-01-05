@@ -1,5 +1,6 @@
 package {
 	import cn.itamt.utils.Inspector;
+	import cn.itamt.utils.inspector.core.liveinspect.Transform3DController;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
 	import cn.itamt.utils.inspector.plugins.swfinfo.SWFData2;
 	import cn.itamt.utils.inspector.plugins.swfinfo.SWFHeader;
@@ -19,7 +20,7 @@ package {
 	public class tInspectorDemo extends Sprite {
 		public function tInspectorDemo() {
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
-			this.stage.align = StageAlign.RIGHT;
+			//this.stage.align = StageAlign.RIGHT;
 			
 			var bar:ControlBar = new ControlBar();
 			this.addChild(bar);
@@ -30,6 +31,7 @@ package {
 			//Inspector.getInstance().propertiesView.size = new Point(400, 400);
 			Inspector.getInstance().pluginManager.registerPlugin(bar);
 			Inspector.getInstance().pluginManager.registerPlugin(new SwfInfoView());
+			Inspector.getInstance().liveInspectView.use3DTransformer(new Transform3DController());
 			
 			//this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
 		}

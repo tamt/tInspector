@@ -142,21 +142,79 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			var sd:SWFData2 = new SWFData2();
 			sd.writeBytes(ba);
 			sd.position = 0;
-			var parser:SWFParser = new SWFParser();
-			var header:SWFHeader = parser.parseHeader(sd);
-			_size = new Rectangle(0, 0, header.frameSize.width/20, header.frameSize.height/20);
-
-			//for each(var tag:ITag in swf.tags) {
-				//if(tag is TagSetBackgroundColor) {
-					//_bgcolor = (tag as TagSetBackgroundColor).color;
-				//} else if(tag is TagProductInfo) {
-					//_compileDate = (tag as TagProductInfo).compileDate;
-				//}
-			//}
-
+			
+			//分析swf数据
+			this.parseSWF(sd);
+			
+			//
 			var t : int = FlashPlayerEnvironment.getSwfBgColor();
 			if(t >= 0)
 				_bgcolor = t;
+		}
+		
+		private function parseSWF(swf:SWFData2):void {
+			var header:SWFHeader = new SWFHeader();
+			header.sign1 = swf.readUI8();
+			header.sign2 = swf.readUI8();
+			header.sign3 = swf.readUI8();
+			header.version = swf.readUI8();
+			header.fileLength = swf.readUI32();
+			header.frameSize = swf.readRECT();
+			header.frameRate = swf.readFIXED8();
+			header.frameCount = swf.readUI16();
+			
+			_size = new Rectangle(0, 0, header.frameSize.width / 20, header.frameSize.height / 20);
+			
+			//读取tag信息
+			var bgTagFinded:Boolean;
+			var productTagFinded:Boolean;
+			var hasMetaData:Boolean = false;
+			while (true) {
+				var tagTypeAndLength:uint = swf.readUI16();
+				var tagLength:uint = tagTypeAndLength & 0x003f;
+				var tagType:uint = tagTypeAndLength >> 6;
+				if (tagLength == 0x3f) {
+					// The SWF10 spec sez that this is a signed int.
+					// Shouldn't it be an unsigned int?
+					tagLength = swf.readSI32();
+				}
+				
+				var pos:uint = swf.position;
+				if (tagType == 0) {
+					break;
+				}else if (tagType == 69) {
+					//文件属性读取
+					var flags:uint = swf.readUI8();
+					hasMetadata = ((flags & 0x10) != 0);
+					trace("[SWFInfo-parseSWF]has metadata: " + hasMetaData);
+				}else if (tagType == 9) {
+					//背景颜色读取
+					_bgcolor = swf.readRGB();
+					bgTagFinded = true;
+				}else if (tagType == 41) {
+					//产品信息读取
+					swf.readUI32();		//product id,
+					swf.readUI32();		//product edition
+					swf.readUI8();		//major version
+					swf.readUI8();		//minor version
+					swf.readUI32();		//minor build number
+					swf.readUI32();		//major build number
+					//编译日期读取
+					var sec:Number = swf.readUI32();
+					sec += swf.readUI32() * 4294967296;
+					this._compileDate = new Date(sec);
+					
+					productTagFinded = true;
+				}else if (!productTagFinded && hasMetaData && tagType == 77) {
+					var xml:XML = new XML(swf.readString());
+					productTagFinded = true;
+				}
+				
+				if (bgTagFinded && productTagFinded) {
+					break;
+				}
+				swf.position += tagLength;
+			}
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.core.inspectfilter.FilterManagerButton;
+	import cn.itamt.utils.inspector.core.liveinspect.Inspector3DButton;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesViewButton;
 	import cn.itamt.utils.inspector.core.structureview.StructureViewButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
@@ -29,15 +30,48 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		public static const UP_MOVE : String = 'up_move';
 		public static const DB_CLICK_MOVE : String = 'double_click_move';
 		public static const PRESS_FILTER : String = 'click_filter';
+		public static const PRESS_TRANSFORM_3D:String = 'click_transform_3d';
 		// 按钮
 		private var _moveBtn : InspectorViewMoveButton;
 		private var _pareBtn : InspectorViewParentButton;
 		private var _childBtn : InspectorViewChildButton;
-		private var _broBtn : InspectorViewBrotherButton;		private var _prevBtn : InspectorViewPrevButton;
+		private var _broBtn : InspectorViewBrotherButton;
+		private var _prevBtn : InspectorViewPrevButton;
 		private var _infoBtn : PropertiesViewButton;
 		private var _filterBtn : FilterManagerButton;
 		private var _struBtn : StructureViewButton;
 		private var _closeBtn : InspectorViewCloseButton;
+		private var _3dBtn:Inspector3DButton;
+		public function get tfm3dBtn():Inspector3DButton 
+		{
+			return _3dBtn;
+		}
+		
+		//是否显示3d工具按钮
+		private var _show3DBtn:Boolean;
+		public function get show3DBtn():Boolean 
+		{
+			return _show3DBtn;
+		}
+		
+		public function set show3DBtn(value:Boolean):void 
+		{
+			_show3DBtn = value;
+			if (_inited) {
+				var i:int = _btns.indexOf(_3dBtn);
+				if (_show3DBtn) {
+					if (i < 0)_btns.splice(_btns.length - 1, 0, _3dBtn);
+				}else {
+					if (i >= 0) {
+						if(contains(_3dBtn))removeChild(_3dBtn);
+						_btns.splice(i, 1);
+					}
+				}
+				relayout();
+			}
+		}
+
+		
 		// 布局
 		private var _paddings : Array = [10, 5, 10];
 		private var _btnGap : int = 5;
@@ -47,38 +81,29 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		public function get barHeight() : int {
 			return _height;
 		}
-
+		
+		private var _btns:Array;
+		private var _inited:Boolean;
+		
 		public function OperationBar() : void {
 		}
 
 		public function init() : void {
+			_inited = true;
 			// 按钮
-			var btns : Array = [	_moveBtn = new InspectorViewMoveButton, 
-									_pareBtn = new InspectorViewParentButton, 
-									_childBtn = new InspectorViewChildButton,
-									_prevBtn = new InspectorViewPrevButton, 
-									_broBtn = new InspectorViewBrotherButton, 
-									_infoBtn = new PropertiesViewButton, 
-									_struBtn = new StructureViewButton, 
-									_filterBtn = new FilterManagerButton,
-									_closeBtn = new InspectorViewCloseButton];
-			var btn : InspectorButton;
-			for(var i : int = 0;i < btns.length;i++) {
-				btn = btns[i] as InspectorButton;
-				addChild(btn);
-				if(i == 0) {
-					btn.x = _paddings[0] + i * _btnGap;
-				} else {
-					btn.x = _paddings[0] + i * (_btnGap + (btns[i - 1] as InspectorButton).width);
-				}
-				btn.y = _paddings[1];
-			}
-
-			// 背景
-			graphics.clear();
-			graphics.beginFill(0x393939);
-			graphics.drawRoundRectComplex(0, 0, _closeBtn.x + _closeBtn.width + 10, _height, 8, 8, 0, 8);
-			graphics.endFill();
+			_btns = [	_moveBtn = new InspectorViewMoveButton, 
+						_pareBtn = new InspectorViewParentButton, 
+						_childBtn = new InspectorViewChildButton,
+						_prevBtn = new InspectorViewPrevButton, 
+						_broBtn = new InspectorViewBrotherButton, 
+						_infoBtn = new PropertiesViewButton, 
+						_struBtn = new StructureViewButton, 
+						_filterBtn = new FilterManagerButton,
+						_closeBtn = new InspectorViewCloseButton];
+			
+			_3dBtn = new Inspector3DButton();
+			if (show3DBtn)_btns.splice(_btns.length - 1, 0, _3dBtn);
+			this.relayout();
 
 			_moveBtn.doubleClickEnabled = true;
 			_moveBtn.addEventListener(MouseEvent.CLICK, onClickMoveBtn);
@@ -87,11 +112,39 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_moveBtn.addEventListener(MouseEvent.DOUBLE_CLICK, onDlickMoveBtn);
 			_pareBtn.addEventListener(MouseEvent.CLICK, onClickParentBtn);
 			_childBtn.addEventListener(MouseEvent.CLICK, onClickChildBtn);
-			_broBtn.addEventListener(MouseEvent.CLICK, onClickBrotherBtn);			_prevBtn.addEventListener(MouseEvent.CLICK, onClickPrevBtn);
+			_broBtn.addEventListener(MouseEvent.CLICK, onClickBrotherBtn);
+			_prevBtn.addEventListener(MouseEvent.CLICK, onClickPrevBtn);
 			_infoBtn.addEventListener(MouseEvent.CLICK, onClickInfoBtn);
 			_closeBtn.addEventListener(MouseEvent.CLICK, onClickCloseBtn);
 			_struBtn.addEventListener(MouseEvent.CLICK, onClickStruBtn);
 			_filterBtn.addEventListener(MouseEvent.CLICK, onClickFilterBtn);
+			_3dBtn.addEventListener(MouseEvent.CLICK, onClick3DBtn);
+		}
+		
+		private function relayout():void 
+		{
+			var btn : InspectorButton;
+			for(var i : int = 0;i < _btns.length;i++) {
+				btn = _btns[i] as InspectorButton;
+				if(!contains(btn))addChild(btn);
+				if(i == 0) {
+					btn.x = _paddings[0] + i * _btnGap;
+				} else {
+					btn.x = _paddings[0] + i * (_btnGap + (_btns[i - 1] as InspectorButton).width);
+				}
+				btn.y = _paddings[1];
+			}
+			
+			// 背景
+			graphics.clear();
+			graphics.beginFill(0x393939);
+			graphics.drawRoundRectComplex(0, 0, _closeBtn.x + _closeBtn.width + 10, _height, 8, 8, 0, 8);
+			graphics.endFill();
+		}
+		
+		private function onClick3DBtn(e:MouseEvent):void 
+		{
+			dispatchEvent(new Event(PRESS_TRANSFORM_3D));
 		}
 
 		/**

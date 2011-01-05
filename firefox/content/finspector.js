@@ -25,11 +25,6 @@ onFirefoxLoad : function(evt) {
 	fInspector.trace('onFirefoxLoad...');
 	fInspector.firefoxLoaded = true;
 
-	//TODO:这个时候tInspectorController可能还没有初始化完毕.
-	//setup the tInspectorConsoleMonitor.swf, and set the FI controller id.
-	//fInspector.trace(document.getElementById('tInspectorController'));
-	//document.getElementById('tInspectorController').setupController(fInspector.controllerId);
-
 	var fpVersion = fInspectorUtil.getFlashPluginVersion();
 	if (fpVersion.major > 9) {
 		//set the "PreloadSWF" config in mm.cfg, remind that we add a "finspectorId" param to "tInspectorPreloader.swf", which will be used to communicate with FI.
