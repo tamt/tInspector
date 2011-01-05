@@ -70,7 +70,8 @@ package msc.controls.text {
 			_tf.multiline = false;
 			this.addChild(_tf);
 			
-			_tf.addEventListener(FocusEvent.FOCUS_IN, onFocusIn);			_tf.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
+			_tf.addEventListener(FocusEvent.FOCUS_IN, onFocusIn);
+			_tf.addEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
 		}
 
 		override public function relayout() : void {
@@ -79,8 +80,9 @@ package msc.controls.text {
 		}
 
 		override protected function destroy() : void {
-			_tf.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			_tf.removeEventListener(FocusEvent.FOCUS_IN, onFocusIn);			_tf.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
+			_tf.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyUp);
+			_tf.removeEventListener(FocusEvent.FOCUS_IN, onFocusIn);
+			_tf.removeEventListener(FocusEvent.FOCUS_OUT, onFocusOut);
 			_tf = null;
 			
 			super.destroy();
@@ -96,11 +98,11 @@ package msc.controls.text {
 		}
 
 		private function onFocusIn(evt : FocusEvent) : void {
-			_tf.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_tf.addEventListener(KeyboardEvent.KEY_DOWN, onKeyUp);
 		}
 
 		private function onFocusOut(evt : FocusEvent) : void {
-			_tf.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+			_tf.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyUp);
 		}
 
 		//////////////////////////////////////

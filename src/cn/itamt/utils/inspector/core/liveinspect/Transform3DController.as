@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.core.liveinspect 
 {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.plugins.tfm3d.ITransform3DController;
 	import cn.itamt.utils.inspector.ui.InspectorLabelButton;
 	import cn.itamt.utils.inspector.ui.InspectorSymbolBmd;
 	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
@@ -9,18 +10,21 @@ package cn.itamt.utils.inspector.core.liveinspect
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import transform3d.consts.Transform3DMode;
 	import transform3d.consts.TransformToolMode;
+	import transform3d.controls.Style;
 	import transform3d.events.TransformEvent;
+	import transform3d.toolbar.IToolButton;
 	import transform3d.toolbar.ToolBar;
-	import transform3d.toolbar.ToolButton;
 	import transform3d.Transform3DTool;
+	import transform3d.util.Util;
 	/**
-	 * ...
+	 * Transform3DTool controller
 	 * @author tamt
 	 */
-	public class Transform3DController extends Sprite
+	public class Transform3DController extends Sprite implements ITransform3DController
 	{
 		private var _tool3d:Transform3DTool;
 		private var _target:DisplayObject;
@@ -44,7 +48,7 @@ package cn.itamt.utils.inspector.core.liveinspect
 		
 		private function onRemoved(e:Event):void 
 		{
-			removeEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
+			//removeEventListener(Event.REMOVED_FROM_STAGE, onRemoved);
 			_bar.removeEventListener(MouseEvent.CLICK, onClickToolButton);
 			removeChild(_bar);
 			_tool3d.removeEventListener(TransformEvent.UPDATE, onTransformUpdate);
@@ -56,7 +60,7 @@ package cn.itamt.utils.inspector.core.liveinspect
 		
 		private function onAdded(e:Event):void 
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, onAdded);
+			//removeEventListener(Event.ADDED_TO_STAGE, onAdded);
 			
 			_tool3d = new Transform3DTool();
 			//设置tool3d各个control的鼠标样式
@@ -73,17 +77,27 @@ package cn.itamt.utils.inspector.core.liveinspect
 			_tool3d.scaleTool.regCursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_REG));
 			_tool3d.globalTranslationTool.cursor = new Bitmap(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.CURSOR_GT));
 			_tool3d.addEventListener(TransformEvent.UPDATE, onTransformUpdate);
+			//设置tool的颜色样式
+			_tool3d.scaleTool.style = new Style(0x0, 1, 0xffffff, 1, 1);
+			_tool3d.scaleTool.size = 7;
+			//默认使用tool3d的旋转工具
 			//_tool3d.selectTool("scale");
 			//_tool3d.selectTool("translation");
 			_tool3d.selectTool("rotation");
-			_tool3d.selectTool("global translation");
+			//_tool3d.selectTool("global translation");
+			
 			addChild(_tool3d);
 			
+			//操作菜单条
 			_bar = new ToolBar();
-			_tToolBtn = new TransformToolButton(InspectorLanguageManager.getStr("TranslationLabel"), false);
-			_sToolBtn = new TransformToolButton(InspectorLanguageManager.getStr("ScaleLabel"), false);
-			_rToolBtn = new TransformToolButton(InspectorLanguageManager.getStr("RotationLabel"), false);
-			_modeBtn = new TransformToolButton(InspectorLanguageManager.getStr("ModeLabel"), false);
+			_tToolBtn = new TransformToolButton(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.TOOL3D_T), false);
+			_sToolBtn = new TransformToolButton(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.TOOL3D_S), false);
+			_rToolBtn = new TransformToolButton(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.TOOL3D_R), false);
+			_modeBtn = new TransformToolButton(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.TOOL3D_M), false);
+			_tToolBtn.tip = InspectorLanguageManager.getStr("TranslationLabel");
+			_sToolBtn.tip = InspectorLanguageManager.getStr("ScaleLabel");
+			_rToolBtn.tip = InspectorLanguageManager.getStr("RotationLabel");
+			_modeBtn.tip = InspectorLanguageManager.getStr("ModeLabel");
 			_bar.addToolButton(_rToolBtn);
 			_bar.addToolButton(_sToolBtn);
 			_bar.addToolButton(_tToolBtn);
@@ -108,7 +122,7 @@ package cn.itamt.utils.inspector.core.liveinspect
 		 * @param	evt
 		 */
 		protected function onClickToolButton(evt:MouseEvent):void {
-			if (evt.target is ToolButton) {
+			if (evt.target is IToolButton) {
 				switch(evt.target) {
 					case _modeBtn:
 						if (_modeBtn.active) {
@@ -133,8 +147,6 @@ package cn.itamt.utils.inspector.core.liveinspect
 						break;
 				}
 				
-				trace("translation: " + _tToolBtn.active, "rotation: " + _rToolBtn.active, "scale: " + _sToolBtn.active);
-				
 				if (_tToolBtn.active) {
 					tool3d.selectTool(TransformToolMode.TRANSLATION);
 				}else {
@@ -157,18 +169,24 @@ package cn.itamt.utils.inspector.core.liveinspect
 					tool3d.selectTool(TransformToolMode.ROTATION);
 					_rToolBtn.active = true;
 				}
-				
-				//trace("translation: " + _tToolBtn.active, "rotation: " + _rToolBtn.active, "scale: " + _sToolBtn.active);
-				
 			}
 		}
 		
 		private function onTransformUpdate(e:TransformEvent = null):void 
 		{
-			var rect:Rectangle = tool3d.target.getBounds(this);
-			_bar.x = rect.x;
-			_bar.y = rect.bottom;
-			_bar.width = rect.width;
+			if(target){
+				var rect:Rectangle = tool3d.target.getBounds(this);
+				_bar.x = rect.x;
+				_bar.y = rect.bottom;
+				_bar.width = rect.width;
+			}
+			
+			dispatchEvent(new Event(Event.CHANGE));
+		}
+		
+		public function convertMX3DtoMX(mx3d:*):Matrix {
+			var mx:Matrix = Util.convertMX3DtoMX(mx3d);
+			return mx;
 		}
 		
 		public function get tool3d():Transform3DTool { return _tool3d; }

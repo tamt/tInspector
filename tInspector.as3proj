@@ -2,9 +2,9 @@
 <project>
   <!-- Output SWF options -->
   <output>
-    <movie disabled="True" />
+    <movie disabled="False" />
     <movie input="" />
-    <movie path="" />
+    <movie path="bin\tInspector.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
@@ -14,8 +14,8 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
-    <class path="..\..\tamt2010\TransformTool3D\src" />
-    <class path="..\..\tcodes\claus-as3swf-1346cdb\src" />
+    <class path="C:\Program Files\Hexagon Star Softworks\Alcon\debug\as3" />
+    <class path="..\Transform3DTool\src" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -25,7 +25,7 @@
     <option es="False" />
     <option locale="" />
     <option loadConfig="" />
-    <option optimize="False" />
+    <option optimize="True" />
     <option showActionScriptWarnings="True" />
     <option showBindingWarnings="True" />
     <option showInvalidCSS="True" />
@@ -61,7 +61,7 @@
   </rslPaths>
   <!-- Intrinsic Libraries -->
   <intrinsics>
-    <element path="Library\AS3\frameworks\FlashIDE" />
+    <!-- example: <element path="..." /> -->
   </intrinsics>
   <!-- Assets to embed into the output SWF -->
   <library>

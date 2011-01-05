@@ -103,6 +103,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 		protected var lrender : *;
 
 		protected function onSearch(evt : mTextEvent) : void {
+			
 			if(lrender) {
 				lrender.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
 				lrender = null;
@@ -115,10 +116,10 @@ package cn.itamt.utils.inspector.core.propertyview {
 				} else if(state == METHOD_STATE) {
 				}
 			} else if(evt.type == mTextEvent.ENTER) {
-				if(state == PROP_STATE) {
-					while(i < list.numChildren) {
+				if (state == PROP_STATE) {
+					while (i < list.numChildren) {
 						render = list.getChildAt(i++) as PropertyAccessorRender;
-						if(render.propName == evt.text) {
+						if (render.propName == evt.text) {
 							this.showContentArea(render.getBounds(render.parent));
 							lrender = render;
 							render.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER));

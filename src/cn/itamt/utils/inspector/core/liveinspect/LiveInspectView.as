@@ -4,13 +4,15 @@ package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.InspectTarget;
 	import cn.itamt.utils.inspector.events.InspectorFilterEvent;
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+	import cn.itamt.utils.inspector.plugins.tfm3d.ITransform3DController;
 	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
 	import flash.display.Bitmap;
-	import transform3d.Transform3DTool;
+	import flash.system.ApplicationDomain;
 
 	import com.senocular.display.TransformTool;
 
@@ -40,7 +42,19 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		// 用于变形
 		private var _tfm : TransformTool;
 		//用于3d变形
-		private var _tool3d:Transform3DController;
+		private var _tool3d:ITransform3DController;
+		public function use3DTransformer(tfm3dController:*):void 
+		{
+			if (!ApplicationDomain.currentDomain.hasDefinition("cn.itamt.utils.inspector.core.liveinspect.Transform3DController")) {
+				throw new Error(InspectorLanguageManager.getStr("Tfm3DNotFound"));
+				_tool3d = null;
+			}else {
+				_tool3d = tfm3dController;
+				if (_actived) {
+					_bar.show3DBtn = true;
+				}
+			}
+		}
 		//
 		private var inited : Boolean;
 
@@ -121,6 +135,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 			// ------操作条------
 			_bar = new OperationBar();
+			if (_tool3d)_bar.show3DBtn = true;
 			_bar.init();
 			// ------------------
 
@@ -142,10 +157,36 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		
 		private function onClick3D(e:Event):void 
 		{
-			//3d变形器
-			_tool3d = new Transform3DController();
-			this.viewContainer.addChild(_tool3d);
-			_tool3d.target = this._inspector.getCurInspectTarget().displayObject;
+			if (_tool3d) {
+				if(_bar.tfm3dBtn.active){
+					_bar.tfm3dBtn.active = false;
+					_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
+					_tool3d.target = null;
+					this.viewContainer.removeChild(_tool3d as DisplayObject);
+					
+					//
+					if (this.target.displayObject.transform.matrix == null) {
+						var mx:Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
+						this.target.displayObject.transform.matrix3D = null;
+						this.target.displayObject.transform.matrix = mx;
+					}
+					
+					this._tfm.target = this.target.displayObject;
+				}else {					
+					//3d变形器
+					_bar.tfm3dBtn.active = true;
+					_tool3d.addEventListener(Event.CHANGE, on3DTransform);
+					this.viewContainer.addChild(_tool3d as DisplayObject);
+					_tool3d.target = this._inspector.getCurInspectTarget().displayObject;
+					
+					this._tfm.target = null;
+				}
+			}
+		}
+		
+		private function on3DTransform(e:Event):void 
+		{
+			this.update();
 		}
 
 		/**
@@ -159,7 +200,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			inited = false;
 
 			if(this.viewContainer) {
-				if (this.viewContainer.contains(_tool3d)) this.viewContainer.removeChild(_tool3d);
+				if (_tool3d && this.viewContainer.contains(_tool3d as DisplayObject)) this.viewContainer.removeChild(_tool3d as DisplayObject);
 				
 				this.viewContainer.graphics.clear();
 				// this.viewContainer.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
@@ -177,7 +218,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 			target = null;
 			_tfm.target = null;
-			if(_tool3d)_tool3d.target = null;
+			
+			if (_tool3d) {
+				_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
+				_tool3d.target = null;
+			}
 
 			_mBtn.removeEventListener(MouseEvent.CLICK, onClickInspect);
 
@@ -190,6 +235,9 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_bar.removeEventListener(OperationBar.PRESS_NEXT, onPressPrevious);
 			_bar.removeEventListener(OperationBar.PRESS_STRUCTURE, onPressStructure);
 			_bar.removeEventListener(OperationBar.PRESS_INFO, onPressInfo);
+			_bar.removeEventListener(OperationBar.PRESS_FILTER, onPressFilter);
+			_bar.removeEventListener(OperationBar.DB_CLICK_MOVE, onClickReset);
+			_bar.removeEventListener(OperationBar.PRESS_TRANSFORM_3D, onClick3D);
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
@@ -206,16 +254,27 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		override public function onInspect(ele : InspectTarget) : void {
 			target = ele;
 			_tfm.target = null;
-			_tfm.target = target.displayObject;
-			if(_tool3d)_tool3d.target = target.displayObject;
+			
 			update();
 
 			if(_bar.stage == null)
 				this.viewContainer.addChild(_bar);
 			_bar.validate(target.displayObject);
 
+			if (_tool3d && _bar.tfm3dBtn.active) {
+				_tool3d.target = target.displayObject;
+			}else {
+				if (target.displayObject.transform.matrix) {
+					_tfm.target = target.displayObject;
+				}else {
+					if(_tool3d){
+						_bar.tfm3dBtn.active = true;
+						_tool3d.target = target.displayObject;
+					}
+				}
+			}
 			//
-		// DisplayObjectTool.swapToTop(this.viewContainer);
+			// DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
 		/**

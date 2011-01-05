@@ -71,10 +71,11 @@ CopyUrlTip		=	copy the url
 FunctionSetting	=	Function Selector
 PluginSelectorTip	=	Refresh page after setting.
 Transform3D		=	transform DisplayObject in 3d
-TranslationLabel	=	T
-ScaleLabel		=	S
-RotationLabel	=	R
-ModeLabel		=	M
+TranslationLabel	=	translate
+ScaleLabel		=	scale
+RotationLabel	=	rotate
+ModeLabel		=	mode(Global / Internal)
+Tfm3DNotFound	=	Transform3DController definition not found! T_T
 ]]>
 					</lang>;
 		}

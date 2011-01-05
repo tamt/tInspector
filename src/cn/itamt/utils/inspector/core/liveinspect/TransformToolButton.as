@@ -1,39 +1,62 @@
 package cn.itamt.utils.inspector.core.liveinspect 
 {
-	import cn.itamt.utils.inspector.ui.InspectorTextField;
+	import cn.itamt.utils.inspector.ui.InspectorButton;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
-	import flash.text.TextField;
-	import transform3d.toolbar.ToolButton;
+	import transform3d.toolbar.IToolButton;
 	
 	/**
-	 * ...
+	 * tool3d的选择按钮
 	 * @author tamt
 	 */
-	public class TransformToolButton extends ToolButton
+	public class TransformToolButton extends InspectorButton implements IToolButton
 	{
-		private var _label:String = "label";
+		private var _icon:BitmapData;
 		
-		public function TransformToolButton(label:String, active:Boolean) 
+		protected var _originUpState:DisplayObject;
+		protected var _originDownState:DisplayObject;
+		protected var _originOverState:DisplayObject;
+		
+		public function TransformToolButton(icon:BitmapData, active:Boolean) 
 		{
-			_label = label;
+			_icon = icon;
 			
-			this.downState = this._originDownState = buildState(0xffffff, 0x232323);
-			this.overState = this._originOverState = buildState(0, 0x9cc00);
-			this.upState = this._originUpState = buildState(0xffffff, 0x666666);
+			this._originDownState = buildState(0xffffff, 0x232323);
+			this._originOverState = buildState(0, 0x9cc00);
+			this._originUpState = buildState(0xffffff, 0x666666);
 			this.hitTestState = buildState();
 			
 			super();
 		}
 		
+		override public function set active(val:Boolean):void {
+			if (_originDownState == null)_originDownState = this.downState;
+			if (_originUpState == null)_originUpState = this.upState;
+			if (_originOverState == null)_originOverState = this.overState;
+			
+			//if (_active == val) return;
+			_active = val;
+			
+			if (_active) {
+				this.upState = this._originDownState;
+				this.overState = this._originOverState;
+				this.downState = this._originUpState;
+			}else {
+				this.upState = this._originUpState;
+				this.overState = this._originOverState;
+				this.downState = this._originDownState;
+			}
+		}
+		
 		protected function buildState(textColor:uint = 0xffffff, bgColor:uint = 0x000000) :DisplayObject {
 			var state : Sprite = new Sprite();
 
-			var tf :TextField = InspectorTextField.create(_label, textColor, 12);
-			tf.autoSize = 'left';
+			var tf :Bitmap = new Bitmap(_icon);
 
 			state.graphics.beginFill(bgColor);
-			state.graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
+			state.graphics.drawRect(0, 0, 20, 20);
 			state.graphics.endFill();
 
 			tf.x = state.width / 2 - tf.width / 2;
@@ -41,6 +64,18 @@ package cn.itamt.utils.inspector.core.liveinspect
 			state.addChild(tf);
 
 			return state;
+		}
+
+		override protected function buildOverState() : DisplayObject {
+			return this._originOverState;
+		}
+
+		override protected function buildDownState() : DisplayObject {
+			return this._originDownState;
+		}
+
+		override protected function buildUpState() : DisplayObject {
+			return this._originUpState;
 		}
 		
 	}
