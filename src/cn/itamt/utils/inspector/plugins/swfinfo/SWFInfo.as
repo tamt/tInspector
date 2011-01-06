@@ -129,6 +129,9 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			Debug.trace('[SWFInfo][playerSize]' + size.toString());
 			FlashPlayerEnvironment.setSwfSize(size.width, size.height);
 		}
+		
+		//是否含有meta数据
+		private var _hasMetaData:Boolean = false;
 
 		public function SWFInfo(swfRoot : DisplayObject) : void {
 			_swfRoot = swfRoot;
@@ -168,7 +171,6 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			//读取tag信息
 			var bgTagFinded:Boolean;
 			var productTagFinded:Boolean;
-			var hasMetaData:Boolean = false;
 			while (true) {
 				var tagTypeAndLength:uint = swf.readUI16();
 				var tagLength:uint = tagTypeAndLength & 0x003f;
@@ -185,8 +187,8 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 				}else if (tagType == 69) {
 					//文件属性读取
 					var flags:uint = swf.readUI8();
-					hasMetadata = ((flags & 0x10) != 0);
-					trace("[SWFInfo-parseSWF]has metadata: " + hasMetaData);
+					_hasMetaData = ((flags & 0x10) != 0);
+					trace("[SWFInfo-parseSWF]has metadata: " + _hasMetaData);
 				}else if (tagType == 9) {
 					//背景颜色读取
 					_bgcolor = swf.readRGB();
@@ -205,7 +207,7 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 					this._compileDate = new Date(sec);
 					
 					productTagFinded = true;
-				}else if (!productTagFinded && hasMetaData && tagType == 77) {
+				}else if (!productTagFinded && _hasMetaData && tagType == 77) {
 					var xml:XML = new XML(swf.readString());
 					productTagFinded = true;
 				}

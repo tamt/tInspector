@@ -1,5 +1,6 @@
 ﻿package cn.itamt.utils.inspector.firefox {
-	import cn.itamt.utils.inspector.core.liveinspect.Transform3DController;
+	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
+	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
 	import msc.console.mConsoleConnName;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
@@ -138,6 +139,7 @@
 
 		private function initInspector() : void {
 			log('[tInspectorPreloader][initInspector]');
+			
 
 			mConsole.init(true, FlashPlayerEnvironment.url);
 			mConsole.addDelegate(this);
@@ -181,7 +183,7 @@
 							}
 							break;
 						case InspectorPluginId.SWFINFO_VIEW:
-							//tInspector.pluginManager.registerPlugin(new SwfInfoView());
+							tInspector.pluginManager.registerPlugin(new SwfInfoView());
 							break;
 					}
 				}

@@ -41,6 +41,7 @@ package cn.itamt.utils.inspector.plugins.tfm3d
 		private var _removeBtn:TransformToolButton;
 		//工具条
 		private var _bar:ToolBar;
+		private var _originTargetTfmMX:Matrix;
 		
 		public function Transform3DController()
 		{
@@ -152,7 +153,15 @@ package cn.itamt.utils.inspector.plugins.tfm3d
 						_tToolBtn.active = _rToolBtn.active = false;
 						break;
 					case _removeBtn:
-						target.transform.matrix3D = null;
+						if(_originTargetTfmMX == null){
+							target.z = 0;
+							target.scaleX = target.scaleY = target.scaleZ = 0;
+							target.rotationX = target.rotationY = target.rotationZ = 0;
+							
+						}else {
+							target.transform.matrix3D = null;
+							target.transform.matrix = _originTargetTfmMX;
+						}
 						target = _target;
 						break;
 				}
@@ -206,6 +215,12 @@ package cn.itamt.utils.inspector.plugins.tfm3d
 		public function set target(value:DisplayObject):void 
 		{
 			_target = value;
+			
+			if(_target){
+				_originTargetTfmMX = _target.transform.matrix;
+			}else {
+				_originTargetTfmMX = null;
+			}
 			
 			if (_tool3d) {
 				_tool3d.target = target;

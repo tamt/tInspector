@@ -172,7 +172,7 @@ setupSwfsInDoc : function(doc) {
 			}
 
 			/**
-			 * [TODO:FlashInspector 0.2.2] swf.addEventListener("mouseover",
+			 * [TODO:FlashInspector 0.2.3] swf.addEventListener("mouseover",
 			 * fInspector.swfMouseEventHander, true);
 			 * swf.addEventListener("mouseout", fInspector.swfMouseEventHander,
 			 * true);
@@ -181,7 +181,7 @@ setupSwfsInDoc : function(doc) {
 	}
 },
 
-//[TODO:FlashInspector 0.2.2] ignore currently.
+//[TODO:FlashInspector 0.2.3] ignore currently.
 swfMouseEventHander : function(event) {
 	fInspector.trace("swf: " + event.type);
 	var swf = event.target;
@@ -200,7 +200,7 @@ swfMouseEventHander : function(event) {
 	}
 },
 
-//[TODO:FlashInspector 0.2.2] ignore currently.
+//[TODO:FlashInspector 0.2.3] ignore currently.
 showOperationBar : function(swf) {
 	var doc = swf.ownerDocument.defaultView.top.document;
 	var anchor = doc.getElementById(swf.id + "_operation_bar");
@@ -227,7 +227,7 @@ showOperationBar : function(swf) {
 	anchor.style.top = top + "px";
 },
 
-//[TODO:FlashInspector 0.2.2] ignore currently.
+//[TODO:FlashInspector 0.2.3] ignore currently.
 hideOperationBar : function(swf) {
 	var doc = swf.ownerDocument.defaultView.top.document;
 	var anchor = doc.getElementById(swf.id + "_operation_bar");
@@ -239,7 +239,7 @@ hideOperationBar : function(swf) {
 	}
 },
 
-//[TODO:FlashInspector 0.2.2] ignore currently.
+//[TODO:FlashInspector 0.2.3] ignore currently.
 operationBarMouseEventHandler : function(event) {
 	fInspector.trace("operationBar: " + event.type);
 	var swf = event.currentTarget.owner;
@@ -255,7 +255,7 @@ operationBarMouseEventHandler : function(event) {
 	}
 },
 
-//[TODO:FlashInspector 0.2.2] ignore currently.
+//[TODO:FlashInspector 0.2.3] ignore currently.
 onClickOperationIcon : function(event) {
 	var bar = event.currentTarget;
 	var doc = bar.ownerDocument.defaultView.top.document;

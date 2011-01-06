@@ -1,0 +1,2 @@
+Transform3DController并不是tInspector的plugin, 它是为LiveInspectView专用的扩展功能.
+之后若LiveInspectView设计插件机制, 再把Transform3DController编写为插件.
