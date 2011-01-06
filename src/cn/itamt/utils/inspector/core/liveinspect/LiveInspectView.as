@@ -45,7 +45,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		private var _tool3d:ITransform3DController;
 		public function use3DTransformer(tfm3dController:*):void 
 		{
-			if (!ApplicationDomain.currentDomain.hasDefinition("cn.itamt.utils.inspector.core.liveinspect.Transform3DController")) {
+			if (!ApplicationDomain.currentDomain.hasDefinition("cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController")) {
 				throw new Error(InspectorLanguageManager.getStr("Tfm3DNotFound"));
 				_tool3d = null;
 			}else {
@@ -159,29 +159,38 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		{
 			if (_tool3d) {
 				if(_bar.tfm3dBtn.active){
-					_bar.tfm3dBtn.active = false;
-					_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
-					_tool3d.target = null;
-					this.viewContainer.removeChild(_tool3d as DisplayObject);
-					
-					//
-					if (this.target.displayObject.transform.matrix == null) {
-						var mx:Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
-						this.target.displayObject.transform.matrix3D = null;
-						this.target.displayObject.transform.matrix = mx;
-					}
-					
-					this._tfm.target = this.target.displayObject;
+					this.switch2DTfmTool();
 				}else {					
-					//3d变形器
-					_bar.tfm3dBtn.active = true;
-					_tool3d.addEventListener(Event.CHANGE, on3DTransform);
-					this.viewContainer.addChild(_tool3d as DisplayObject);
-					_tool3d.target = this._inspector.getCurInspectTarget().displayObject;
-					
-					this._tfm.target = null;
+					this.switch3DTfmTool();
 				}
 			}
+		}
+		
+		private function switch2DTfmTool():void {
+			_bar.tfm3dBtn.active = false;
+			_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
+			_tool3d.target = null;
+			if(this.viewContainer.contains(_tool3d as DisplayObject))this.viewContainer.removeChild(_tool3d as DisplayObject);
+			
+			//
+			if (this.target.displayObject.transform.matrix == null) {
+				var mx:Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
+				this.target.displayObject.transform.matrix3D = null;
+				this.target.displayObject.transform.matrix = mx;
+			}
+			
+			this._tfm.target = this.target.displayObject;
+		}
+		
+		private function switch3DTfmTool():void {
+			//3d变形器
+			_bar.tfm3dBtn.active = true;
+			_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
+			_tool3d.addEventListener(Event.CHANGE, on3DTransform);
+			this.viewContainer.addChild(_tool3d as DisplayObject);
+			_tool3d.target = this._inspector.getCurInspectTarget().displayObject;
+			
+			this._tfm.target = null;
 		}
 		
 		private function on3DTransform(e:Event):void 
@@ -260,18 +269,15 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			if(_bar.stage == null)
 				this.viewContainer.addChild(_bar);
 			_bar.validate(target.displayObject);
-
-			if (_tool3d && _bar.tfm3dBtn.active) {
-				_tool3d.target = target.displayObject;
-			}else {
-				if (target.displayObject.transform.matrix) {
-					_tfm.target = target.displayObject;
-				}else {
-					if(_tool3d){
-						_bar.tfm3dBtn.active = true;
-						_tool3d.target = target.displayObject;
-					}
-				}
+			
+			if (target.displayObject.transform.matrix) {
+				//_tfm.target = target.displayObject;
+				//_tool3d.target = null;
+				this.switch2DTfmTool();
+			}else if (_tool3d) {
+				//_bar.tfm3dBtn.active = true;
+				//_tool3d.target = target.displayObject;
+				this.switch3DTfmTool();
 			}
 			//
 			// DisplayObjectTool.swapToTop(this.viewContainer);

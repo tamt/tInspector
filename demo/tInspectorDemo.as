@@ -1,6 +1,6 @@
 package {
 	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.core.liveinspect.Transform3DController;
+	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
 	import cn.itamt.utils.inspector.plugins.swfinfo.SWFData2;
 	import cn.itamt.utils.inspector.plugins.swfinfo.SWFHeader;

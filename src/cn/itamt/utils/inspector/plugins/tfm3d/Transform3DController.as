@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.core.liveinspect 
+package cn.itamt.utils.inspector.plugins.tfm3d 
 {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.plugins.tfm3d.ITransform3DController;
