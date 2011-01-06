@@ -12,7 +12,10 @@
 	<script type="application/x-javascript" src="chrome://finspector/content/Util.js" />
 	<script type="application/x-javascript" src="chrome://finspector/content/Io.js" />
 	<script type="application/x-javascript" src="chrome://finspector/content/htmlpareser.js" />
+	<!--
+	//[TODO:FlashInspector 0.2.3] ignore currently.
 	<script type="application/x-javascript" src="chrome://finspector/content/pngStr.js" />
+	-->
 	<script type="application/x-javascript" src="chrome://finspector/content/finspector.js" />
 	<window id="main-window">
 		<panel align="right" id="needFlashPlayerPanel"
