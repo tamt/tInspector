@@ -1,4 +1,5 @@
 ﻿package cn.itamt.utils.inspector.firefox {
+	import cn.itamt.utils.inspector.core.liveinspect.Transform3DController;
 	import msc.console.mConsoleConnName;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
@@ -146,6 +147,7 @@
 
 			tInspector = Inspector.getInstance();
 			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
+			tInspector.liveInspectView.use3DTransformer(new Transform3DController);
 			tInspector.pluginManager.registerPlugin(controlBar);
 			// 读取配置，注册相应的插件
 			var arr : Array = fInspectorConfig.getEnablePlugins();

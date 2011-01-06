@@ -75,7 +75,8 @@ TranslationLabel	=	translate
 ScaleLabel		=	scale
 RotationLabel	=	rotate
 ModeLabel		=	mode(Global / Internal)
-Tfm3DNotFound	=	Transform3DController definition not found! T_T
+Tfm3DNotFound	=	Transform3DController definition not found ! T_T
+RemoveTransform	=	remove transform
 ]]>
 					</lang>;
 		}

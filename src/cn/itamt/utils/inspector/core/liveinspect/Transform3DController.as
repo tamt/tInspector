@@ -37,6 +37,8 @@ package cn.itamt.utils.inspector.core.liveinspect
 		private var _rToolBtn:TransformToolButton;
 		//模式按钮
 		private var _modeBtn:TransformToolButton;
+		//
+		private var _removeBtn:TransformToolButton;
 		//工具条
 		private var _bar:ToolBar;
 		
@@ -81,6 +83,7 @@ package cn.itamt.utils.inspector.core.liveinspect
 			_tool3d.scaleTool.style = new Style(0x0, 1, 0xffffff, 1, 1);
 			_tool3d.scaleTool.size = 7;
 			//默认使用tool3d的旋转工具
+			_tool3d.rotationTool.showPRotateCtrl = false;
 			//_tool3d.selectTool("scale");
 			//_tool3d.selectTool("translation");
 			_tool3d.selectTool("rotation");
@@ -94,13 +97,16 @@ package cn.itamt.utils.inspector.core.liveinspect
 			_sToolBtn = new TransformToolButton(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.TOOL3D_S), false);
 			_rToolBtn = new TransformToolButton(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.TOOL3D_R), false);
 			_modeBtn = new TransformToolButton(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.TOOL3D_M), false);
+			_removeBtn = new TransformToolButton(InspectorSymbolIcon.getIcon(InspectorSymbolIcon.TOOL3D_REMOVE_TRANSFORM), false);
 			_tToolBtn.tip = InspectorLanguageManager.getStr("TranslationLabel");
 			_sToolBtn.tip = InspectorLanguageManager.getStr("ScaleLabel");
 			_rToolBtn.tip = InspectorLanguageManager.getStr("RotationLabel");
 			_modeBtn.tip = InspectorLanguageManager.getStr("ModeLabel");
+			_removeBtn.tip = InspectorLanguageManager.getStr("RemoveTransform");
 			_bar.addToolButton(_rToolBtn);
 			_bar.addToolButton(_sToolBtn);
 			_bar.addToolButton(_tToolBtn);
+			_bar.addToolButton(_removeBtn, "right");
 			_bar.addToolButton(_modeBtn, "right");
 			addChild(_bar);
 			
@@ -144,6 +150,10 @@ package cn.itamt.utils.inspector.core.liveinspect
 					case _sToolBtn:
 						_sToolBtn.active = !_sToolBtn.active;
 						_tToolBtn.active = _rToolBtn.active = false;
+						break;
+					case _removeBtn:
+						target.transform.matrix3D = null;
+						target = _target;
 						break;
 				}
 				

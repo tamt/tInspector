@@ -15,7 +15,7 @@
   <classpaths>
     <class path="src" />
     <class path="C:\Program Files\Hexagon Star Softworks\Alcon\debug\as3" />
-    <class path="..\Transform3DTool\src" />
+    <class path="..\..\tamt2010\TransformTool3D\src" />
   </classpaths>
   <!-- Build options -->
   <build>
