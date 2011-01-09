@@ -80,7 +80,7 @@ package msc.console {
 			_conn.client = this;
 
 			try {
-				_conn.connect(mConsoleConnName.CLIENT);
+				_conn.connect(mConsoleConnName.CONSOLE);
 			} catch(e : Error) {
 				return;
 			}
@@ -162,8 +162,8 @@ package msc.console {
 			if(_ids.indexOf(id) < 0) {
 				_ids.push(id);
 				_names.push(name);
-				Debug.trace('[mConsoleMonitor][buildConnection]' + mConsoleConnName.getConsoleConnName(id));
-				_conn.send(mConsoleConnName.getConsoleConnName(id), 'onBuildConnection');
+				Debug.trace('[mConsoleMonitor][buildConnection]' + mConsoleConnName.getClientName(id));
+				_conn.send(mConsoleConnName.getClientName(id), 'onBuildConnection');
 			}
 		}
 
@@ -175,8 +175,8 @@ package msc.console {
 			if(t >= 0) {
 				_ids.splice(t, 1);
 				_names.splice(t, 1);
-				Debug.trace('[mConsoleMonitor][deconstructConnection]' + mConsoleConnName.getConsoleConnName(id));
-				_conn.send(mConsoleConnName.getConsoleConnName(id), 'onDeconstructConnection');
+				Debug.trace('[mConsoleMonitor][deconstructConnection]' + mConsoleConnName.getClientName(id));
+				_conn.send(mConsoleConnName.getClientName(id), 'onDeconstructConnection');
 			}
 		}
 
@@ -217,8 +217,8 @@ package msc.console {
 			// _conn.send(mConsoleConnName.CONSOLE, 'executeCmdLine', fun);
 
 			for(var i : int = 0;i < _ids.length;i++) {
-				Debug.trace('[mConsoleMonitor][callFun]' + mConsoleConnName.getConsoleConnName(_ids[i]) + ', ' + fun);
-				_conn.send(mConsoleConnName.getConsoleConnName(_ids[i]), 'executeCmdLine', fun);
+				Debug.trace('[mConsoleMonitor][callFun]' + mConsoleConnName.getClientName(_ids[i]) + ', ' + fun);
+				_conn.send(mConsoleConnName.getClientName(_ids[i]), 'executeCmdLine', fun);
 			}
 		}
 

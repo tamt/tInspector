@@ -13,7 +13,7 @@
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
 	import cn.itamt.utils.inspector.plugins.stats.AppStats;
 
-	import msc.console.mConsole;
+	import msc.console.mConsoleClient;
 	import msc.console.mIConsoleDelegate;
 
 	import flash.display.DisplayObject;
@@ -39,7 +39,7 @@
 		private var gErrorKeeper : GlobalErrorKeeper;
 		private var findKiller : Boolean;
 		
-		private var finspectorId:String;
+		private var controllerId:String;
 
 		// 由finspector.js分配给的id, 用于与fInspector通信.
 		// private var swfId : String = '';
@@ -47,28 +47,16 @@
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 
-			finspectorId = loaderInfo.content.loaderInfo.parameters.finspectorId;
-			if(finspectorId) {
-				mConsoleConnName.CLIENT += "_" + finspectorId;
+			controllerId = loaderInfo.content.loaderInfo.parameters.finspectorId;
+			if(controllerId) {
+				mConsoleConnName.CONSOLE += controllerId;
 			}
+			
+			Debug.trace("tInspectorPreloader loaded, mConsoleId: " + controllerId);
 
 			controlBar = new ControlBar();
 
 			gErrorKeeper = new GlobalErrorKeeper();
-
-			if (ExternalInterface.available) {
-				try{
-					ExternalInterface.addCallback("connectController", connectController);
-					ExternalInterface.addCallback("disconnectController", disconnectController);
-					ExternalInterface.addCallback("setSwfId", setSwfId);
-					ExternalInterface.addCallback("startInspector", this.startInspector);
-					ExternalInterface.addCallback("stopInspector", this.stopInspector);
-				}catch (e:Error) {
-					trace("add call back failure.");
-				}
-			} else {
-				throw new Error("ExternalInterface is not available");
-			}
 
 			if(stage) {
 				init();
@@ -138,11 +126,10 @@
 		}
 
 		private function initInspector() : void {
-			log('[tInspectorPreloader][initInspector]');
-			
+			log('[tInspectorPreloader][initInspector]ConsoleId: ' + controllerId);
 
-			mConsole.init(true, FlashPlayerEnvironment.url);
-			mConsole.addDelegate(this);
+			mConsoleClient.init(true, FlashPlayerEnvironment.url);
+			mConsoleClient.addDelegate(this);
 			if(!ExternalInterface.available) {
 				connectController();
 			}
@@ -203,13 +190,13 @@
 		// // // //    /public   functions/////////////
 		// // // // // // // // // // // // // // // // // // //
 		public function connectController() : void {
-			Debug.trace('[tInspectorPreloader][connectController]');
-			mConsole.connectMonitor();
+			Debug.trace('[tInspectorPreloader][connectController]ConsoleId: ' + mConsoleConnName.CONSOLE);
+			mConsoleClient.connectMonitor();
 		}
 
 		public function disconnectController() : void {
 			Debug.trace('[tInspectorPreloader][disconnectController]');
-			mConsole.disconnectMonitor();
+			mConsoleClient.disconnectMonitor();
 		}
 
 		public function setSwfId(swfId : String) : void {

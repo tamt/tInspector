@@ -21,18 +21,18 @@ package cn.itamt.utils.inspector.firefox {
 			super.buildConnection(id, name);
 
 			if(enable) {
-				Debug.trace('[finspectorController][buildConnection]try call startInspector()');
-				_conn.send(mConsoleConnName.getConsoleConnName(id), 'executeCmdLine', "startInspector");
+				Debug.trace('[finspectorController][buildConnection: ' + id + ']try call startInspector()');
+				_conn.send(mConsoleConnName.getClientName(id), 'executeCmdLine', "startInspector");
 			} else {
-				Debug.trace('[finspectorController][buildConnection]try call stopInspector()');
-				_conn.send(mConsoleConnName.getConsoleConnName(id), 'executeCmdLine', "stopInspector");
+				Debug.trace('[finspectorController][buildConnection: ' + id + ']try call stopInspector()');
+				_conn.send(mConsoleConnName.getClientName(id), 'executeCmdLine', "stopInspector");
 			}
 		}
 
 		public function callInspectorFunBySwfUrl(fun : String, name : String = null):void {
 			var i : int = _names.indexOf(name);
 			if(i >= 0) {
-				_conn.send(mConsoleConnName.getConsoleConnName(_ids[i]), 'executeCmdLine', fun);
+				_conn.send(mConsoleConnName.getClientName(_ids[i]), 'executeCmdLine', fun);
 			}
 		}
 	}

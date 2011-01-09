@@ -41,7 +41,7 @@ package cn.itamt.utils.inspector.firefox {
 				//Debug.trace("Controller Id: " + controllerId);
 				//Debug.trace('[tInspectorConsoleMonitor]addCallback', 3);
 				//if(FlashPlayerEnvironment.isInFirefox()) {
-					ExternalInterface.addCallback('setupController', setupController);
+					//ExternalInterface.addCallback('setupController', setupController);
 					ExternalInterface.addCallback('startInspector', startInspector);
 					ExternalInterface.addCallback('stopInspector', stopInspector);
 					ExternalInterface.addCallback('toggleInspector', toggleInspector);
@@ -80,9 +80,9 @@ package cn.itamt.utils.inspector.firefox {
 		 * @param	controllerId	FI id, this id will be used as the LocalConnection id builded to communicate between tInspectorPreloader and tInspectorConsoleMonitor.swf
 		 */
 		private function setupController(controllerId : String) : void {
-			Debug.trace("[tInspectorConsoleMonitor]setupController");
+			mConsoleConnName.CONSOLE += controllerId;
 			
-			mConsoleConnName.CLIENT += "_" + controllerId;
+			Debug.trace("[tInspectorConsoleMonitor]setupController: " + mConsoleConnName.CONSOLE);
 			
 			controller = new finspectorController();
 			controller.visible = false;
