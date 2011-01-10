@@ -26,50 +26,51 @@ package cn.itamt.utils.inspector.firefox {
 
 			this.visible = false;
 			
-			if(ExternalInterface.available) {
-				if(!Capabilities.isDebugger) {
-					try {
-						Debug.trace('[tInspectorConsoleMonitor]fInspector.setEnable', 3);
-						ExternalInterface.call("fInspector.setEnable", false);
-					} catch(e : Error) {
+			try {
+				if(ExternalInterface.available) {
+					if(!Capabilities.isDebugger) {
+							Debug.trace('[tInspectorConsoleMonitor]fInspector.setEnable', 3);
+							ExternalInterface.call("fInspector.setEnable", false);
+						return;
 					}
-					return;
+					
+					var controllerId:String = ExternalInterface.call("fInspector.getControllerId")
+					setupController(controllerId);
+					//Debug.trace("Controller Id: " + controllerId);
+					//Debug.trace('[tInspectorConsoleMonitor]addCallback', 3);
+					//if(FlashPlayerEnvironment.isInFirefox()) {
+						//ExternalInterface.addCallback('setupController', setupController);
+						ExternalInterface.addCallback('startInspector', startInspector);
+						ExternalInterface.addCallback('stopInspector', stopInspector);
+						ExternalInterface.addCallback('toggleInspector', toggleInspector);
+						ExternalInterface.addCallback('toggleInspectorByUrl', toggleInspectorByUrl);
+						ExternalInterface.addCallback('clearAllConnections', clearAllConnections);
+						ExternalInterface.addCallback('selectPlugin', selectPlugin);
+						ExternalInterface.addCallback('rejectPlugin', rejectPlugin);
+					//}
+				}else {
+					throw new Error("[InspectorController]add call back failure");
 				}
-				
-				var controllerId:String = ExternalInterface.call("fInspector.getControllerId")
-				setupController(controllerId);
-				//Debug.trace("Controller Id: " + controllerId);
-				//Debug.trace('[tInspectorConsoleMonitor]addCallback', 3);
-				//if(FlashPlayerEnvironment.isInFirefox()) {
-					//ExternalInterface.addCallback('setupController', setupController);
-					ExternalInterface.addCallback('startInspector', startInspector);
-					ExternalInterface.addCallback('stopInspector', stopInspector);
-					ExternalInterface.addCallback('toggleInspector', toggleInspector);
-					ExternalInterface.addCallback('toggleInspectorByUrl', toggleInspectorByUrl);
-					ExternalInterface.addCallback('clearAllConnections', clearAllConnections);
-					ExternalInterface.addCallback('selectPlugin', selectPlugin);
-					ExternalInterface.addCallback('rejectPlugin', rejectPlugin);
-				//}
-			}else {
-				throw new Error("[InspectorController]add call back failure");
-			}
 
-			
-			var arr:Array;
-			if(fInspectorConfig.getPlugins() == null){
-				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
-				if(arr){
-					for(var i:int = 0; i<arr.length; i++){
-						ExternalInterface.call("fInspector.showCheckInspectorPlugin", arr[i], true);					
+				
+				var arr:Array;
+				if(fInspectorConfig.getPlugins() == null){
+					arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
+					if(arr){
+						for(var i:int = 0; i<arr.length; i++){
+							ExternalInterface.call("fInspector.showCheckInspectorPlugin", arr[i], true);					
+						}
 					}
+				}else{
+					arr = fInspectorConfig.getEnablePlugins();
+					if(arr){
+						for(var i:int = 0; i<arr.length; i++){
+							ExternalInterface.call("fInspector.showCheckInspectorPlugin", arr[i], true);					
+						}
+					}	
 				}
-			}else{
-				arr = fInspectorConfig.getEnablePlugins();
-				if(arr){
-					for(var i:int = 0; i<arr.length; i++){
-						ExternalInterface.call("fInspector.showCheckInspectorPlugin", arr[i], true);					
-					}
-				}	
+			} catch (e : Error) {
+				
 			}
 
 			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);

@@ -684,9 +684,9 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 		} catch (error) {
 			dump("can not get the addon install location.");
 		}
-	}else{
+	}else{		
 		fInspector.path = finspectorPath;
-				
+		
 		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 		fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
 
@@ -694,7 +694,11 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 			//fInspector.onFirefoxLoad(null);
 			fInspector.reloadAllPages();
 		}
-
+		
+		//把tInspectorController.swf加入
+		//var controller = document.getElementById("tInspectorController");
+		//alert(controller);
+		//controller.src = fInspector.getAddonFilePath("/content/tInspectorController.swf");
 	}
 	
 	window.addEventListener('load', fInspector.onFirefoxLoad, false);
