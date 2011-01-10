@@ -468,7 +468,7 @@ setPathFlashTrust : function(path) {
 	var data = fInspectorFileIO.read(cfg);
 	if (data.indexOf(path) < 0) {
 		fInspector.trace('add path::' + path + ':: to cfg.');
-		fInspectorFileIO.write(cfg, "\n" + path + "\n");
+		fInspectorFileIO.write(cfg, data + "\n" + path + "\n");
 	} else {
 		fInspector.trace('the path has been in cfg.');
 	}
