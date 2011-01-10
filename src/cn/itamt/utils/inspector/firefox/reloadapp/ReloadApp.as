@@ -4,7 +4,7 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 	import cn.itamt.utils.inspector.firefox.FlashPlayerEnvironment;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 
-	import msc.console.mConsole;
+	import msc.console.mConsoleClient;
 
 	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
@@ -22,9 +22,9 @@ package cn.itamt.utils.inspector.firefox.reloadapp {
 			if(ExternalInterface.available) {
 				if(FlashPlayerEnvironment.swfId) {
 					//ExternalInterface.call("fInspectorReloadSwf", FlashPlayerEnvironment.swfId);
-					mConsole.callMonitorProxyFun("reloadSwf", FlashPlayerEnvironment.swfId);
+					mConsoleClient.callMonitorProxyFun("reloadSwf", FlashPlayerEnvironment.swfId);
 				} else {
-					mConsole.callMonitorProxyFun("reloadSwfByUrl", FlashPlayerEnvironment.url);
+					mConsoleClient.callMonitorProxyFun("reloadSwfByUrl", FlashPlayerEnvironment.url);
 				}
 			}
 		}

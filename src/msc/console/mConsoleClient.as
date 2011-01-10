@@ -1,6 +1,5 @@
 package msc.console {
 	import cn.itamt.utils.Debug;
-
 	import flash.display.Shape;
 	import flash.events.AsyncErrorEvent;
 	import flash.events.SecurityErrorEvent;
@@ -8,28 +7,29 @@ package msc.console {
 	import flash.net.LocalConnection;
 	import flash.utils.describeType;
 
+
 	/**
 	 * 控制台，方便开发、调试的工具。
 	 * <code>
-	 * 	mConsole.init();
-	 * 	mConsole.addDelegate(new CustomConsoleCmdDelegate());
+	 * 	mConsoleClient.init();
+	 * 	mConsoleClient.addDelegate(new CustomConsoleCmdDelegate());
 	 * </code>
 	 * @author itamt@qq.com
 	 */
-	public class mConsole extends Shape {
+	public class mConsoleClient extends Shape {
 		// // // // // ////////////////////////////
 		// // // // // static    variables////////////
 		// // // // // ////////////////////////////
-		public static const VERSION : String = 'mConsole 1.0 beta';
+		public static const VERSION : String = 'mConsoleClient 1.0 beta';
 
-		private static var _instance : mConsole;
+		private static var _instance : mConsoleClient;
 
 		// // // // // ////////////////////////////
 		// // // // // static    functions////////////
 		// // // // // ////////////////////////////
 		public static function init(connectMonitor : Boolean = true, name : String = null) : void {
 			if(_instance == null) {
-				_instance = new mConsole(new SingletonEnforcer());
+				_instance = new mConsoleClient(new SingletonEnforcer());
 			}
 			_instance.init(connectMonitor, name);
 		}
@@ -98,7 +98,7 @@ package msc.console {
 		// // // // // ////////////////////////////
 		// // // // // //constructor///////////////
 		// // // // // ////////////////////////////
-		public function mConsole(se : SingletonEnforcer) {
+		public function mConsoleClient(se : SingletonEnforcer) {
 			if(se == null) {
 				throw new Error('Singleton!!');
 			}
@@ -110,14 +110,16 @@ package msc.console {
 		// // // // // private    functions///////////
 		// // // // // ////////////////////////////
 		private function onLogEvent(evt : mConsoleLogEvent) : void {
-			_conn.send(mConsoleConnName.CLIENT, 'addLogMessage', evt.log.msg, evt.log.type, id);
+			_conn.send(mConsoleConnName.CONSOLE, 'addLogMessage', evt.log.msg, evt.log.type, id);
 		}
 
 		private function onSecurityError(evt : SecurityErrorEvent) : void {
+			Debug.trace("[mConsoleClient][" + id + "]" + ", " + evt.type + ", " + evt.text);
 			dispatchEvent(new mConsoleLogEvent(new mConsoleLog(evt.text, mConsoleLogType.ERROR)));
 		}
 
 		private function onAsyncError(evt : AsyncErrorEvent) : void {
+			Debug.trace("[mConsoleClient][" + id + "]" + ", " + evt.type + ", " + evt.text);
 			dispatchEvent(new mConsoleLogEvent(new mConsoleLog(evt.text, mConsoleLogType.ERROR)));
 		}
 
@@ -126,9 +128,11 @@ package msc.console {
 				case "status":
 					break;
 				case "error":
+					Debug.trace("[mConsoleClient][" + id + "]" + ", " + event.level + ", " + event.code);
 					// dispatchEvent(new mConsoleLogEvent(new mConsoleLog('error: ' + event.code, mConsoleLogType.ERROR)));
 					break;
 				case "warning":
+					Debug.trace("[mConsoleClient][" + id + "]" + ", " + event.level + ", " + event.code);
 					// dispatchEvent(new mConsoleLogEvent(new mConsoleLog('warning: ' + event.code, mConsoleLogType.ERROR)));
 					break;
 				default:
@@ -172,8 +176,7 @@ package msc.console {
 			_conn.allowInsecureDomain("*");
 			_conn.allowDomain("*");
 			_conn.client = this;
-			_conn.connect(mConsoleConnName.getConsoleConnName(id));
-			Debug.trace('[mConsole][connectMonitor]' + mConsoleConnName.getConsoleConnName(id));
+			_conn.connect(mConsoleConnName.getClientName(id));
 			try {
 				// _conn.connect(mConsoleConnName.CONSOLE);
 			} catch(e : Error) {
@@ -183,28 +186,29 @@ package msc.console {
 			_conn.addEventListener(StatusEvent.STATUS, onStatus);
 			_conn.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			_conn.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
-			_conn.send(mConsoleConnName.CLIENT, 'buildConnection', id, this.name);
+			Debug.trace('[mConsoleClient][connectMonitor]monitor: ' + mConsoleConnName.CONSOLE + ', client: ' + mConsoleConnName.getClientName(id));
+			_conn.send(mConsoleConnName.CONSOLE, 'buildConnection', id, this.name);
 		}
 
 		public function disconnectMonitor() : void {
 			if(!_clientConnected)
 				return;
-			Debug.trace('[mConsole][disconnectMonitor]' + mConsoleConnName.getConsoleConnName(id));
-			_conn.send(mConsoleConnName.CLIENT, 'deconstructConnection', id);
+			Debug.trace('[mConsoleClient][disconnectMonitor]' + mConsoleConnName.getClientName(id));
+			_conn.send(mConsoleConnName.CONSOLE, 'deconstructConnection', id);
 		}
 
 		public function callMonitorProxyFun(fun : String, ...paras) : void {
 			if(!_clientConnected)
 				return;
-			Debug.trace('[mConsole][callMonitorProxyFun]');
-			_conn.send(mConsoleConnName.CLIENT, 'callProxyFun', fun, paras);
+			Debug.trace('[mConsoleClient][callMonitorProxyFun]');
+			_conn.send(mConsoleConnName.CONSOLE, 'callProxyFun', fun, paras);
 		}
 
 		/**
 		 * 供测试连接连接的API
 		 */
 		public function onBuildConnection() : void {
-			Debug.trace('[mConsole][onBuildConnection]' + mConsoleConnName.getConsoleConnName(id));
+			Debug.trace('[mConsoleClient][onBuildConnection]' + mConsoleConnName.getClientName(id));
 			_clientConnected = true;
 
 			dispatchEvent(new mConsoleLogEvent(new mConsoleLog(VERSION, mConsoleLogType.CONSOLE)));
@@ -213,7 +217,7 @@ package msc.console {
 			for each(var delegate:mIConsoleDelegate in _delegates) {
 				var xml : XML = describeType(delegate);
 				for each(var method:XML in xml.method) {
-					_conn.send(mConsoleConnName.CLIENT, 'addToCmdDictionary', String(method.@name), id);
+					_conn.send(mConsoleConnName.CONSOLE, 'addToCmdDictionary', String(method.@name), id);
 				}
 			}
 		}
@@ -222,7 +226,7 @@ package msc.console {
 			_clientConnected = false;
 			dispatchEvent(new mConsoleLogEvent(new mConsoleLog('deconstructConnection: ' + id, mConsoleLogType.CONSOLE)));
 
-			Debug.trace('[mConsole][onDeconstructConnection]' + mConsoleConnName.getConsoleConnName(id));
+			Debug.trace('[mConsoleClient][onDeconstructConnection]' + mConsoleConnName.getClientName(id));
 
 			_conn.close();
 			_conn.removeEventListener(StatusEvent.STATUS, onStatus);
@@ -243,7 +247,7 @@ package msc.console {
 					// 设置客户端词语字典
 					var xml : XML = describeType(delegate);
 					for each(var method:XML in xml.method) {
-						_conn.send(mConsoleConnName.CLIENT, 'addToCmdDictionary', String(method.@name), id);
+						_conn.send(mConsoleConnName.CONSOLE, 'addToCmdDictionary', String(method.@name), id);
 					}
 				}
 			}
@@ -253,7 +257,7 @@ package msc.console {
 		 * 这是供Monitor调用的接口：执行一条命令行
 		 */
 		public function executeCmdLine(cmdLineStr : String) : Boolean {
-			Debug.trace('[mConsole][executeCmdLine]' + cmdLineStr);
+			Debug.trace('[mConsoleClient][executeCmdLine]' + cmdLineStr);
 
 			var params : Array = cmdLineStr.split(" ");
 			var funName : String = params.shift();
