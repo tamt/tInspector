@@ -270,7 +270,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				this.viewContainer.addChild(_bar);
 			_bar.validate(target.displayObject);
 			
-			if (target.displayObject.transform.matrix) {
+			if (!DisplayObjectTool.isIn3D(target.displayObject)) {
 				//_tfm.target = target.displayObject;
 				//_tool3d.target = null;
 				this.switch2DTfmTool();
