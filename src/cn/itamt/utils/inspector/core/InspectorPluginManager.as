@@ -114,7 +114,7 @@ package cn.itamt.utils.inspector.core {
 					item.onActivePlugin(id);
 				}
 			} else {
-				trace(id + '没有注册，不能开启。使用Inspector.registerView来注册功能，然后再调用Inspector.activePlugin');
+				trace(id + '没有注册，不能开启。使用Inspector.registerPlugin来注册功能，然后再调用Inspector.activePlugin');
 			}
 		}
 

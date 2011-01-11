@@ -1,6 +1,7 @@
 package {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
 	import cn.itamt.utils.inspector.plugins.swfinfo.SWFData2;
@@ -35,7 +36,7 @@ package {
 			Inspector.getInstance().pluginManager.registerPlugin(new FlashFirebug());
 			Inspector.getInstance().liveInspectView.use3DTransformer(new Transform3DController());
 			
-			Inspector.getInstance().pluginManager.activePlugin("FlashFirebug");
+			Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
 			//this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
 		}
 		
