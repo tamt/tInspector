@@ -11,6 +11,9 @@ package cn.itamt.utils.inspector.ui {
 	 * @author itamt[at]qq.com
 	 */
 	public class InspectorIconButton extends InspectorButton {
+		protected var _w:Number = 16;
+		protected var _h:Number = 16;
+		
 		private var bmd : BitmapData;
 
 		public function InspectorIconButton(icon : String) {
@@ -18,17 +21,34 @@ package cn.itamt.utils.inspector.ui {
 
 			super();
 		}
+		
+		public function setSize(w:Number, h:Number):void {
+			_w = w;
+			_h = h;
+
+			if(!active) {
+				this.downState = buildDownState();
+				this.upState = buildUpState();
+				this.overState = buildOverState();
+				this.hitTestState = buildHitState();
+			} else {
+				this.downState = buildUpState();
+				this.upState = buildOverState();
+				this.overState = buildDownState();
+				this.hitTestState = buildHitState();
+			}
+		}
 
 		override protected function buildUpState() : DisplayObject {
 			var sp : Shape = new Shape();
 			var g : Graphics = sp.graphics;
 
 			g.beginFill(0xffffff, 0);
-			g.drawRoundRect(0, 0, 16, 16, 10, 10);
+			g.drawRoundRect(0, 0, _w, _h, 10, 10);
 			g.endFill();
 
-			g.beginBitmapFill(bmd, new Matrix(1, 0, 0, 1, (16 - bmd.width) / 2, (16 - bmd.height) / 2), false);
-			g.drawRect((16 - bmd.width) / 2, (16 - bmd.height) / 2, bmd.width, bmd.height);
+			g.beginBitmapFill(bmd, new Matrix(1, 0, 0, 1, (_w - bmd.width) / 2, (_h - bmd.height) / 2), false);
+			g.drawRect((_w - bmd.width) / 2, (_h - bmd.height) / 2, bmd.width, bmd.height);
 			g.endFill();
 
 			return sp;
@@ -39,11 +59,11 @@ package cn.itamt.utils.inspector.ui {
 			var g : Graphics = sp.graphics;
 
 			g.beginFill(0xcccccc, 0);
-			g.drawRoundRect(0, 0, 16, 16, 10, 10);
+			g.drawRoundRect(0, 0, _w, _h, 10, 10);
 			g.endFill();
 
-			g.beginBitmapFill(bmd, new Matrix(1, 0, 0, 1, (16 - bmd.width) / 2, (16 - bmd.height) / 2), false);
-			g.drawRect((16 - bmd.width) / 2, (16 - bmd.height) / 2, bmd.width, bmd.height);
+			g.beginBitmapFill(bmd, new Matrix(1, 0, 0, 1, (_w - bmd.width) / 2, (_h - bmd.height) / 2), false);
+			g.drawRect((_w - bmd.width) / 2, (_h - bmd.height) / 2, bmd.width, bmd.height);
 			g.endFill();
 
 			sp.filters = [new ColorMatrixFilter([0.3086, 0.6094, 0.0820, 0, 0, 0.3086, 0.6094, 0.0820, 0, 0, 0.3086, 0.6094, 0.0820, 0, 0, 0, 0, 0, 1, 0])];
@@ -55,13 +75,13 @@ package cn.itamt.utils.inspector.ui {
 			var sp : Shape = new Shape();
 			with(sp) {
 				graphics.beginFill(0xcccccc, 0);
-				graphics.drawRoundRect(0, 0, 16, 16, 10, 10);
+				graphics.drawRoundRect(0, 0, _w, _h, 10, 10);
 				graphics.endFill();
 			}
 
 			var g : Graphics = sp.graphics;
-			g.beginBitmapFill(bmd, new Matrix(1, 0, 0, 1, (16 - bmd.width) / 2, (16 - bmd.height) / 2), false);
-			g.drawRect((16 - bmd.width) / 2, (16 - bmd.height) / 2, bmd.width, bmd.height);
+			g.beginBitmapFill(bmd, new Matrix(1, 0, 0, 1, (_w - bmd.width) / 2, (_h - bmd.height) / 2), false);
+			g.drawRect((_w - bmd.width) / 2, (_h - bmd.height) / 2, bmd.width, bmd.height);
 			g.endFill();
 
 			return sp;

@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+
+<!-- Copyright (c) 2010, Roi M. (foxtab@gmail.com)
+   - All rights reserved.
+   - See License.txt for further details. -->
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+
+    <!-- FireFox -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+        <em:minVersion>3.0</em:minVersion>
+        <em:maxVersion>4.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <!-- Flock -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{a463f10c-3994-11da-9945-000d60ca027b}</em:id>
+        <em:minVersion>1.0</em:minVersion>
+        <em:maxVersion>2.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <em:id>{ef4e370e-d9f0-4e00-b93e-a4f274cfdd5a}</em:id>
+    <em:name>FoxTab</em:name>
+    <em:description>3D tab management - your top sites, tab flipping and recently closed tabs.</em:description>
+    <em:iconURL>chrome://foxtab/skin/images/foxtab_icon.png</em:iconURL>
+    <em:optionsURL>chrome://foxtab/content/options/options.xul</em:optionsURL>
+    <em:version>1.4.1</em:version>
+    <em:type>2</em:type>
+    <em:creator>Roi M.</em:creator>
+    <em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+
+    <em:translator>Alain Besancon (fr-FR)</em:translator>
+    <em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>
+    <em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator> 	
+	<em:translator>Jiipee (fi-FI)</em:translator>  
+	<em:translator>Haebaru (ja-JP)</em:translator>  
+	<em:translator>Jeffrey (nl-NL)</em:translator>  
+	<em:translator>Oscar Wei (zh-CN)</em:translator>  
+	<em:translator>Emad Elsiad (ar)</em:translator>  
+	<em:translator>PjotrC (de-DE)</em:translator>  
+	<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+	<em:translator>Joergen (da-DK)</em:translator>  
+	<em:translator>Omi (es-ES)</em:translator>  
+	<em:translator>nportales (es-MX)</em:translator>  
+	<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+	<em:translator>Glk63 (ru-RU)</em:translator>  
+	<em:translator>Darakanon (th-TH)</em:translator>  
+		
+    <!-- Localizations -->
+    <em:localized>
+      <Description>
+        <em:locale>fr-FR</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>Naviguer rapidement entre vos onglets grace a différentes interfaces interactives.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator>  		
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator>  
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator>  
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>
+
+    <em:localized>
+      <Description>
+        <em:locale>pl-PL</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>Szybkie przelaczanie pomiedzy otwarymi kartami za pomoca interkatywnego trybu przelaczania kart.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator>  
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator> 
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator>  
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>
+
+    <em:localized>
+      <Description>
+        <em:locale>vi-VN</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>3D tab management - your top sites, tab flipping and recently closed tabs.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator> 
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator>  
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator>  	
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>
+
+	
+    <em:localized>
+      <Description>
+        <em:locale>fi-FI</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>3D tab management - your top sites, tab flipping and recently closed tabs.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator> 
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator>  
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator>  
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>
+
+    <em:localized>
+      <Description>
+        <em:locale>ja-JP</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>3D tab management - your top sites, tab flipping and recently closed tabs.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator> 
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator>  
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator>  	
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>
+
+    <em:localized>
+      <Description>
+        <em:locale>nl-NL</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>3D tab management - your top sites, tab flipping and recently closed tabs.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator> 
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator>  
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator> 
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>
+
+    <em:localized>
+      <Description>
+        <em:locale>zh-CN</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>3D tab management - your top sites, tab flipping and recently closed tabs.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator> 
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator>  	
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator> 
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>	
+	
+    <em:localized>
+      <Description>
+        <em:locale>ar</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>3D tab management - your top sites, tab flipping and recently closed tabs.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator> 
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator>  	
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator>  
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>	
+	
+    <em:localized>
+      <Description>
+        <em:locale>de-DE</em:locale>
+        <em:name>FoxTab</em:name>
+        <em:description>3D tab management - your top sites, tab flipping and recently closed tabs.</em:description>
+		<em:creator>Roi M.</em:creator>
+		<em:homepageURL>http://www.foxtab.com/</em:homepageURL>
+		<em:translator>Alain Besancon (fr-FR)</em:translator>
+		<em:translator>Leszek(teo)Zyczkowski (pl-PL)</em:translator>    
+		<em:translator>NGUYEN-Manh Hung (vi-VN)</em:translator> 
+		<em:translator>Jiipee (fi-FI)</em:translator>  
+		<em:translator>Haebaru (ja-JP)</em:translator>  
+		<em:translator>Jeffrey (nl-NL)</em:translator>  
+		<em:translator>Oscar Wei (zh-CN)</em:translator>  	
+		<em:translator>Emad Elsiad (ar)</em:translator>  
+		<em:translator>PjotrC (de-DE)</em:translator> 
+		<em:translator>Chinrur Yang (zh-CNT)</em:translator>  
+		<em:translator>Joergen (da-DK)</em:translator>  
+		<em:translator>Omi (es-ES)</em:translator>  
+		<em:translator>nportales (es-MX)</em:translator>  
+		<em:translator>edgard.magalhaes (pt-BR)</em:translator>  
+		<em:translator>Glk63 (ru-RU)</em:translator>  
+		<em:translator>Darakanon (th-TH)</em:translator>  		
+      </Description>
+    </em:localized>	
+	
+  </Description>      
+</RDF>

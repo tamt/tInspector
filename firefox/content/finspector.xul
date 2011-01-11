@@ -10,6 +10,7 @@
 	</stringbundleset>
 	<script type="application/x-javascript" src="chrome://finspector/content/flashversion.js" />
 	<script type="application/x-javascript" src="chrome://finspector/content/Util.js" />
+	<script type="application/x-javascript" src="chrome://finspector/content/prefutils.js" />
 	<script type="application/x-javascript" src="chrome://finspector/content/Io.js" />
 	<script type="application/x-javascript" src="chrome://finspector/content/htmlpareser.js" />
 	<!--

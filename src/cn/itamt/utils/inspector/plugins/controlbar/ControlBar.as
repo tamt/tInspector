@@ -45,6 +45,7 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		}
 
 		private function keepTopest(event : Event) : void {
+			if (this.stage == null) return;
 			this.stage.invalidate();
 			var me : ControlBar = this;
 			addEventListener(Event.RENDER, function(evt : Event):void {

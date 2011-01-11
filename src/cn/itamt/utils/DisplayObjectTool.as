@@ -162,5 +162,18 @@ package cn.itamt.utils {
 				}
 			});
 		}
+		
+		public static function isIn3D(target:DisplayObject):Boolean {
+			var scope : DisplayObject = target;
+			while (scope) {
+				if (scope is Stage) {
+					return false;
+				} else {
+					if (scope.transform.matrix == null) return true;
+				}
+				scope = scope.parent as DisplayObject;
+			}
+			return false;
+		}
 	}
 }
