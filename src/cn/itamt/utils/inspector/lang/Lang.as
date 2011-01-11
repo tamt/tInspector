@@ -26,6 +26,7 @@ package cn.itamt.utils.inspector.lang {
 		protected var _builded : Boolean;
 
 		protected function build() : void {
+			_builded = true;
 			_data = {};
 			
 			var str : String = file.toString();

@@ -16,6 +16,6 @@ package cn.itamt.utils.inspector.plugins {
 		public static const FULL_SCREEN : String = 'FullScreen';
 		public static const RELOAD_APP : String = 'ReloadSwf';
 		public static const DOWNLOAD_ALL : String = 'DownloadAll';
-		public static const FLASH_FIREBUG : String = 'FLASH_FIREBUG';
+		public static const FLASH_FIREBUG : String = 'FlashFirebug';
 	}
 }

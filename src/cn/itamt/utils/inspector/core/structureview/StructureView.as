@@ -120,16 +120,18 @@ package cn.itamt.utils.inspector.core.structureview {
 			
 			this.target = $target;
 			
-			item = this.treeView.getDisplayItem(target.displayObject);
-			item.onInspect(true);
-			this.treeView.onInspect(target.displayObject);
-			this.panel.onInspect((target.displayObject));
-			
-			//面板滚动显示到当前目标对象的区域.
-			var view : StructureElementView;
-			view = this.treeView.getObjectRenderer(target.displayObject);
-			if(view) {
-				this.panel.showContentArea(view.getBounds(view.parent), 0);
+			if(this.target && this.target.displayObject){
+				item = this.treeView.getDisplayItem(target.displayObject);
+				item.onInspect(true);
+				this.treeView.onInspect(target.displayObject);
+				this.panel.onInspect((target.displayObject));
+				
+				//面板滚动显示到当前目标对象的区域.
+				var view : StructureElementView;
+				view = this.treeView.getObjectRenderer(target.displayObject);
+				if(view) {
+					this.panel.showContentArea(view.getBounds(view.parent), 0);
+				}
 			}
 			
 			//实现置顶

@@ -36,8 +36,8 @@ package {
 			Inspector.getInstance().pluginManager.registerPlugin(new FlashFirebug());
 			Inspector.getInstance().liveInspectView.use3DTransformer(new Transform3DController());
 			
-			Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
 			//this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
+			Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
 		}
 		
 		private function onComplete(e:Event):void 
