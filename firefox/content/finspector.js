@@ -578,12 +578,68 @@ checkInspectorPlugin:function(pluginCheckBox){
 				setTimeout(function(){pluginCheckBox.checked = false;}, 100);
 			}else{
 				document.getElementById('tInspectorController').selectPlugin(pluginId);
+				//注入FlashFirebug, 增加openTree功能
+				fInspector.injectFlashFirebug();
 			}
 		}else{
 			document.getElementById('tInspectorController').selectPlugin(pluginId);
 		}
 	}else{
 		document.getElementById('tInspectorController').rejectPlugin(pluginId);
+	}
+},
+
+injectFlashFirebug:function(){
+	try{
+		Firebug.FlashPanel.prototype.openTree = function(data)
+		{
+			var target = $FQuery("#base li[rel='"+(data.id)+"'] ",this.panelNode);
+			if(!$FQuery(target).hasClass("isOpened")){
+				$FQuery(target).addClass("isOpened");
+				$FQuery(target).children("ul").slideDown("fast");
+			}
+			
+			var absNameArr = (data.target).split(".");
+			var absName = "li[rel='"+(data.id)+"'] ";
+			var path = "";
+			if(data.target != 'root'){
+				for (var i=0;i<absNameArr.length;i++){
+					absName += "li[index='"+absNameArr[i]+"'] ";
+					
+					if(i>0){
+						var target = $FQuery(absName,this.panelNode);
+						if(target.length == 0){
+							Firebug.FlashModule.fromFlashFirebug({
+										command:"getTree",
+										target:path,
+										id:data.id
+									});
+							var _this = this;
+							
+							setTimeout(function(){_this.openTree(data)}, 200);
+							break;
+						}else{
+							if(i == absNameArr.length - 1){
+								$FQuery(".selected",this.panelNode).removeClass("selected");
+								$FQuery(target).children("a").addClass("selected");
+								
+								//TODO:把滚动条定位到该li的区域
+								if(this.panelNode.scrollTop - $FQuery(target).attr("offsetTop")<0){
+									this.panelNode.scrollTop = $FQuery(target).attr("offsetTop") + $FQuery(target).attr("clientHeight");
+								}else if(this.panelNode.scrollTop - $FQuery(target).attr("offsetTop")>this.panelNode.clientHeight){
+									this.panelNode.scrollTop = $FQuery(target).attr("offsetTop") - $FQuery(target).attr("clientHeight");
+								}
+							}
+						}
+						path += "." + absNameArr[i];
+					}else{
+						path += absNameArr[i];
+					}
+				}
+			}
+		}
+	}catch(error){
+		
 	}
 },
 
@@ -598,6 +654,10 @@ isFlashFirebugInstalled:function(){
 showCheckInspectorPlugin:function(pluginId, check){
 	var pluginCheckBox = document.getElementById("fInspectorPlugin_" + pluginId);
 	pluginCheckBox.checked = check;
+	if(pluginId == "FlashFirebug"){
+		//注入FlashFirebug, 增加openTree功能
+		if(check)fInspector.injectFlashFirebug();
+	}
 },
 
 //reload all pages
