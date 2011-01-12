@@ -616,18 +616,21 @@ injectFlashFirebug:function(){
 									});
 							var _this = this;
 							
-							setTimeout(function(){_this.openTree(data)}, 200);
+							setTimeout(function(){_this.openTree(data)}, 100);
 							break;
 						}else{
 							if(i == absNameArr.length - 1){
+								//设置为选中样式
 								$FQuery(".selected",this.panelNode).removeClass("selected");
 								$FQuery(target).children("a").addClass("selected");
 								
-								//TODO:把滚动条定位到该li的区域
+								//把滚动条定位到该li的区域
 								if(this.panelNode.scrollTop - $FQuery(target).attr("offsetTop")<0){
-									this.panelNode.scrollTop = $FQuery(target).attr("offsetTop") + $FQuery(target).attr("clientHeight");
+									var scrollTop = $FQuery(target).attr("offsetTop") + $FQuery(target).attr("clientHeight");
+									$FQuery(this.panelNode).animate({scrollTop:scrollTop}, 500);
 								}else if(this.panelNode.scrollTop - $FQuery(target).attr("offsetTop")>this.panelNode.clientHeight){
-									this.panelNode.scrollTop = $FQuery(target).attr("offsetTop") - $FQuery(target).attr("clientHeight");
+									var scrollTop = $FQuery(target).attr("offsetTop") - $FQuery(target).attr("clientHeight");
+									$FQuery(this.panelNode).animate({scrollTop:scrollTop}, 500);
 								}
 							}
 						}
