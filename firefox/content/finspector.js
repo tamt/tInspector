@@ -4,7 +4,7 @@
 
 var fInspector = {
 id : "finspector@itamt.org",
-path : "kiddingme?",
+path : "",
 isOn : true,
 enable : true,
 preTab : null,
@@ -22,6 +22,7 @@ getControllerId:function(){
 	return fInspector.controllerId;
 },
 onFirefoxLoad : function(evt) {
+	document.getElementById('tInspectorController').src = fInspector.getAddonFilePath("/content/tInspectorController.swf");
 	fInspector.trace('onFirefoxLoad...');
 	fInspector.firefoxLoaded = true;
 
@@ -589,6 +590,7 @@ checkInspectorPlugin:function(pluginCheckBox){
 	}
 },
 
+//向FlashFirebug注入脚本, 增强其功能.
 injectFlashFirebug:function(){
 	try{
 		Firebug.FlashPanel.prototype.openTree = function(data)
@@ -647,9 +649,11 @@ injectFlashFirebug:function(){
 },
 
 isFlashFirebugInstalled:function(){
-	if(FBL && Firebug && Firebug.FlashModule && Firebug.FlashModule.toFlashFirebug && Firebug.FlashModule.toFlashFirebug){
-		return true;
-	}
+	try{
+		if(FBL && Firebug && Firebug.FlashModule && Firebug.FlashModule.toFlashFirebug && Firebug.FlashModule.toFlashFirebug){
+			return true;
+		}
+	}catch(error){}
 	return false;
 },
 
@@ -713,6 +717,10 @@ onSecurityChange : function(aWebProgress, aRequest, aState) {
 
 
 if (Components.classes["@mozilla.org/extensions/manager;1"]) {
+	//tInspectorController
+	alert(document.getElementById('tInspectorController'));
+	//src="chrome://finspector/content/tInspectorController.swf"
+	
 	fInspector.path = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager).getInstallLocation(fInspector.id).getItemFile(fInspector.id, "install.rdf").parent.path;
 
 	fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
@@ -760,7 +768,10 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 		} catch (error) {
 			dump("can not get the addon install location.");
 		}
-	}else{		
+	}else{
+		//tInspectorController
+		alert(document.getElementById('tInspectorController'));
+		
 		fInspector.path = finspectorPath;
 		
 		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
@@ -770,11 +781,6 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 			//fInspector.onFirefoxLoad(null);
 			fInspector.reloadAllPages();
 		}
-		
-		//把tInspectorController.swf加入
-		//var controller = document.getElementById("tInspectorController");
-		//alert(controller);
-		//controller.src = fInspector.getAddonFilePath("/content/tInspectorController.swf");
 	}
 	
 	window.addEventListener('load', fInspector.onFirefoxLoad, false);
