@@ -439,7 +439,7 @@ setPreloadSwf : function(file) {
 
 //clear the "PreloadSWF" config in mm.cfg
 clearPreloadSwf : function(file) {
-	return;
+	//return;
 	var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 	if (!mmcfg.exists()) {
 		fInspector.trace('the mm.cfg file dose not exist, we donot need to clear the PreloadSWF config.');
@@ -568,10 +568,30 @@ checkInspectorPlugin:function(pluginCheckBox){
 	
 	//call tInspectorConsoleMonitor.swf store select/unselect plugin setting (to SharedObject).
 	if(!pluginCheckBox.checked){
-		document.getElementById('tInspectorController').selectPlugin(pluginId);
+		//direct to FlashFirebug add-on if it's not installed yet
+		if(pluginId == "FlashFirebug"){
+			if(!fInspector.isFlashFirebugInstalled()){
+				var stringBundle = document.getElementById("tips");
+				if(confirm(stringBundle.getString("NeedFlashFirebugGuide"))){
+					fInspector.openTab("https://addons.mozilla.org/en-US/firefox/addon/161670/");
+				}
+				setTimeout(function(){pluginCheckBox.checked = false;}, 100);
+			}else{
+				document.getElementById('tInspectorController').selectPlugin(pluginId);
+			}
+		}else{
+			document.getElementById('tInspectorController').selectPlugin(pluginId);
+		}
 	}else{
 		document.getElementById('tInspectorController').rejectPlugin(pluginId);
 	}
+},
+
+isFlashFirebugInstalled:function(){
+	if(FBL && Firebug && Firebug.FlashModule && Firebug.FlashModule.toFlashFirebug && Firebug.FlashModule.toFlashFirebug){
+		return true;
+	}
+	return false;
 },
 
 //called by tInspectorConsoleMonitor.swf (tInspectorController), after it read the plugin select setting from SharedObject.
@@ -584,13 +604,6 @@ showCheckInspectorPlugin:function(pluginId, check){
 reloadAllPages:function(){
 	var Application = Components.classes["@mozilla.org/fuel/application;1"].getService(Components.interfaces.fuelIApplication);
 	Application.restart();
-	/*
-	var num = gBrowser.browsers.length;
-	for (var i = 0; i < num; i++) {
-	  var b = gBrowser.getBrowserAtIndex(i);
-	  b.reload();
-	}
-	*/
 },
 
 

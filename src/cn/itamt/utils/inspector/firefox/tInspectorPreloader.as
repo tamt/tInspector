@@ -1,4 +1,5 @@
 ﻿package cn.itamt.utils.inspector.firefox {
+	import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
 	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
 	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
 	import msc.console.mConsoleConnName;
@@ -141,7 +142,7 @@
 			// 读取配置，注册相应的插件
 			var arr : Array = fInspectorConfig.getEnablePlugins();
 			if(arr == null) {
-				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
+				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW, InspectorPluginId.FLASH_FIREBUG];
 				for each (var pluginName : String in arr) {
 					fInspectorConfig.setEnablePlugin(pluginName);
 				}
@@ -171,6 +172,10 @@
 							break;
 						case InspectorPluginId.SWFINFO_VIEW:
 							tInspector.pluginManager.registerPlugin(new SwfInfoView());
+							break;
+						case InspectorPluginId.FLASH_FIREBUG:
+							tInspector.pluginManager.registerPlugin(new FlashFirebug());
+							//tInspector.pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
 							break;
 					}
 				}

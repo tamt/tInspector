@@ -70,6 +70,7 @@
 					<hbox><checkbox id="fInspectorPlugin_GlobalErrorKeeper" label="GlobalErrorKeeper" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('GlobalErrorKeeper');" class="fInspectorPluginGuideBtn"/></hbox>
 					<hbox><checkbox id="fInspectorPlugin_FullScreen" label="FullScreen" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('FullScreen');" class="fInspectorPluginGuideBtn"/></hbox>
 					<hbox><checkbox id="fInspectorPlugin_AppStatsPanel" label="AppStats" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('AppStatsPanel');" class="fInspectorPluginGuideBtn"/></hbox>
+					<hbox><checkbox id="fInspectorPlugin_FlashFirebug" label="FlashFirebug" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('FlashFirebug');" class="fInspectorPluginGuideBtn"/></hbox>
 				</vbox>
 			</groupbox>
 			<label value="&fInspectorPluginSelectorTip;"/>

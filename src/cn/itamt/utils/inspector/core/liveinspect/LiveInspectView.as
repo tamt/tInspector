@@ -112,6 +112,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_tfm = new TransformTool();
 			_tfm.addEventListener(TransformTool.TRANSFORM_TARGET, function(evt : Event):void {
 				update();
+				_inspector.updateInsectorView();
 			});
 			_tfm.addControl(new ResetTransofrmControl());
 			_tfm.raiseNewTargets = false;
