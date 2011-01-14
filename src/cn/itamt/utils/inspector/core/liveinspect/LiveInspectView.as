@@ -110,10 +110,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 			// 变形器
 			_tfm = new TransformTool();
-			_tfm.addEventListener(TransformTool.TRANSFORM_TARGET, function(evt : Event):void {
-				update();
-				_inspector.updateInsectorView();
-			});
+			_tfm.addEventListener(TransformTool.TRANSFORM_TARGET, onTransformTarget);
 			_tfm.addControl(new ResetTransofrmControl());
 			_tfm.raiseNewTargets = false;
 			_tfm.moveEnabled = false;
@@ -154,6 +151,12 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_bar.addEventListener(OperationBar.PRESS_FILTER, onPressFilter);
 			_bar.addEventListener(OperationBar.DB_CLICK_MOVE, onClickReset);
 			_bar.addEventListener(OperationBar.PRESS_TRANSFORM_3D, onClick3D);
+		}
+		
+		private function onTransformTarget(e:Event):void 
+		{
+			update();
+			_inspector.updateInsectorView();
 		}
 		
 		private function onClick3D(e:Event):void 
@@ -308,8 +311,10 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_bar.validate(target.displayObject);
 
 			if(target == this.target) {
-				_tfm.target = null;
-				_tfm.target = this.target.displayObject;
+				//_tfm.target = null;
+				//_tfm.target = this.target.displayObject;
+				//_tfm.
+				_tfm.draw();
 				update();
 			}
 		}

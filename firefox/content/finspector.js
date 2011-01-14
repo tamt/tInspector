@@ -4,7 +4,7 @@
 
 var fInspector = {
 id : "finspector@itamt.org",
-path : "kiddingme?",
+path : "",
 isOn : true,
 enable : true,
 preTab : null,
@@ -22,6 +22,7 @@ getControllerId:function(){
 	return fInspector.controllerId;
 },
 onFirefoxLoad : function(evt) {
+	document.getElementById('tInspectorController').src = fInspector.getAddonFilePath("/content/tInspectorController.swf");
 	fInspector.trace('onFirefoxLoad...');
 	fInspector.firefoxLoaded = true;
 
@@ -578,6 +579,8 @@ checkInspectorPlugin:function(pluginCheckBox){
 				setTimeout(function(){pluginCheckBox.checked = false;}, 100);
 			}else{
 				document.getElementById('tInspectorController').selectPlugin(pluginId);
+				//注入FlashFirebug, 增加openTree功能
+				fInspector.injectFlashFirebug();
 			}
 		}else{
 			document.getElementById('tInspectorController').selectPlugin(pluginId);
@@ -587,10 +590,70 @@ checkInspectorPlugin:function(pluginCheckBox){
 	}
 },
 
-isFlashFirebugInstalled:function(){
-	if(FBL && Firebug && Firebug.FlashModule && Firebug.FlashModule.toFlashFirebug && Firebug.FlashModule.toFlashFirebug){
-		return true;
+//向FlashFirebug注入脚本, 增强其功能.
+injectFlashFirebug:function(){
+	try{
+		Firebug.FlashPanel.prototype.openTree = function(data)
+		{
+			var target = $FQuery("#base li[rel='"+(data.id)+"'] ",this.panelNode);
+			if(!$FQuery(target).hasClass("isOpened")){
+				$FQuery(target).addClass("isOpened");
+				$FQuery(target).children("ul").slideDown("fast");
+			}
+			
+			var absNameArr = (data.target).split(".");
+			var absName = "li[rel='"+(data.id)+"'] ";
+			var path = "";
+			if(data.target != 'root'){
+				for (var i=0;i<absNameArr.length;i++){
+					absName += "li[index='"+absNameArr[i]+"'] ";
+					
+					if(i>0){
+						var target = $FQuery(absName,this.panelNode);
+						if(target.length == 0){
+							Firebug.FlashModule.fromFlashFirebug({
+										command:"getTree",
+										target:path,
+										id:data.id
+									});
+							var _this = this;
+							
+							setTimeout(function(){_this.openTree(data)}, 100);
+							break;
+						}else{
+							if(i == absNameArr.length - 1){
+								//设置为选中样式
+								$FQuery(".selected",this.panelNode).removeClass("selected");
+								$FQuery(target).children("a").addClass("selected");
+								
+								//把滚动条定位到该li的区域
+								if(this.panelNode.scrollTop - $FQuery(target).attr("offsetTop")<0){
+									var scrollTop = $FQuery(target).attr("offsetTop") + $FQuery(target).attr("clientHeight");
+									$FQuery(this.panelNode).animate({scrollTop:scrollTop}, 500);
+								}else if(this.panelNode.scrollTop - $FQuery(target).attr("offsetTop")>this.panelNode.clientHeight){
+									var scrollTop = $FQuery(target).attr("offsetTop") - $FQuery(target).attr("clientHeight");
+									$FQuery(this.panelNode).animate({scrollTop:scrollTop}, 500);
+								}
+							}
+						}
+						path += "." + absNameArr[i];
+					}else{
+						path += absNameArr[i];
+					}
+				}
+			}
+		}
+	}catch(error){
+		
 	}
+},
+
+isFlashFirebugInstalled:function(){
+	try{
+		if(FBL && Firebug && Firebug.FlashModule && Firebug.FlashModule.toFlashFirebug && Firebug.FlashModule.toFlashFirebug){
+			return true;
+		}
+	}catch(error){}
 	return false;
 },
 
@@ -598,6 +661,10 @@ isFlashFirebugInstalled:function(){
 showCheckInspectorPlugin:function(pluginId, check){
 	var pluginCheckBox = document.getElementById("fInspectorPlugin_" + pluginId);
 	pluginCheckBox.checked = check;
+	if(pluginId == "FlashFirebug"){
+		//注入FlashFirebug, 增加openTree功能
+		if(check)fInspector.injectFlashFirebug();
+	}
 },
 
 //reload all pages
@@ -650,6 +717,10 @@ onSecurityChange : function(aWebProgress, aRequest, aState) {
 
 
 if (Components.classes["@mozilla.org/extensions/manager;1"]) {
+	//tInspectorController
+	alert(document.getElementById('tInspectorController'));
+	//src="chrome://finspector/content/tInspectorController.swf"
+	
 	fInspector.path = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager).getInstallLocation(fInspector.id).getItemFile(fInspector.id, "install.rdf").parent.path;
 
 	fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
@@ -697,7 +768,10 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 		} catch (error) {
 			dump("can not get the addon install location.");
 		}
-	}else{		
+	}else{
+		//tInspectorController
+		alert(document.getElementById('tInspectorController'));
+		
 		fInspector.path = finspectorPath;
 		
 		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
@@ -707,11 +781,6 @@ if (Components.classes["@mozilla.org/extensions/manager;1"]) {
 			//fInspector.onFirefoxLoad(null);
 			fInspector.reloadAllPages();
 		}
-		
-		//把tInspectorController.swf加入
-		//var controller = document.getElementById("tInspectorController");
-		//alert(controller);
-		//controller.src = fInspector.getAddonFilePath("/content/tInspectorController.swf");
 	}
 	
 	window.addEventListener('load', fInspector.onFirefoxLoad, false);
