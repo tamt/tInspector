@@ -22,7 +22,6 @@ getControllerId:function(){
 	return fInspector.controllerId;
 },
 onFirefoxLoad : function(evt) {
-	document.getElementById('tInspectorController').src = fInspector.getAddonFilePath("/content/tInspectorController.swf");
 	fInspector.trace('onFirefoxLoad...');
 	fInspector.firefoxLoaded = true;
 
@@ -668,7 +667,7 @@ showCheckInspectorPlugin:function(pluginId, check){
 },
 
 //reload all pages
-reloadAllPages:function(){
+restartFirefox:function(){
 	var Application = Components.classes["@mozilla.org/fuel/application;1"].getService(Components.interfaces.fuelIApplication);
 	Application.restart();
 },
@@ -715,27 +714,36 @@ init:function(){
 	let _prefService = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
 	
 	if(_prefService.getBoolPref("extensions.flashinspector.installed")){
+		
+		var finspectorPath = (_prefService.getComplexValue("extensions.flashinspector.path", Components.interfaces.nsISupportsString).data);
+		
 		if (Components.classes["@mozilla.org/extensions/manager;1"]) {
+			//it's Firefox 3!!
 			fInspector.path = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager).getInstallLocation(fInspector.id).getItemFile(fInspector.id, "install.rdf").parent.path;
-
+			
+			
 			fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 			fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
-
-			window.addEventListener('load', fInspector.onFirefoxLoad, false);
-			window.addEventListener('unload', fInspector.onFirefoxUnLoad, false);
+			
+			if(fInspector.firefoxLoaded){
+				fInspector.restartFirefox();
+			}
 		} else {
 			//it's Firefox 4!!
-			var finspectorPath = (_prefService.getComplexValue("extensions.flashinspector.path", Components.interfaces.nsISupportsString).data);
 		
 			fInspector.path = finspectorPath;
 			fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 			fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
 		
-			window.addEventListener('load', fInspector.onFirefoxLoad, false);
-			window.addEventListener('unload', fInspector.onFirefoxUnLoad, false);
-		}	
+			if(fInspector.firefoxLoaded){
+				fInspector.restartFirefox();
+			}
+		}
+		
+		window.addEventListener('load', fInspector.onFirefoxLoad, false);
+		window.addEventListener('unload', fInspector.onFirefoxUnLoad, false);
 	}else{
-		//_prefService.setBoolPref("extensions.flashinspector.installed", true)
+		_prefService.setBoolPref("extensions.flashinspector.installed", true)
 		
 		//首次运行, 进行tInspectorController.swf的路径设置
 		if (Components.classes["@mozilla.org/extensions/manager;1"]) {
@@ -747,17 +755,20 @@ init:function(){
 			
 			fInspector.path = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager).getInstallLocation(fInspector.id).getItemFile(fInspector.id, "install.rdf").parent.path;
 			
-			_prefService.setComplexValue("extensions.flashinspector.path", Components.interfaces.nsISupportsString, fInspector.path);
+			var inspectorPath = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+			inspectorPath.data = fInspector.path;
+			_prefService.setComplexValue("extensions.flashinspector.path", Components.interfaces.nsISupportsString, inspectorPath);
 			
 			var xulPath = fInspector.getAddonFilePath("/content/finspector.xul");
 			
 			var xul = fInspectorFileIO.open(xulPath);
 			var data = fInspectorFileIO.read(xul);
-			
 			if(data.match(/%tInspectorController%/)){
 				data = data.replace(/%tInspectorController%/, "chrome://finspector/content/tInspectorController.swf");
 				fInspectorFileIO.write(xul, data);
 			}
+			
+			fInspector.restartFirefox();
 		}else{
 			//Firefox 4
 			//将dom.ipc.plugins.enabled.npswf32.dll设置为false
@@ -778,19 +789,26 @@ init:function(){
 					_prefService.setComplexValue("extensions.flashinspector.path", Components.interfaces.nsISupportsString, str);
 					//////////////////////////////////////////////////////////
 					
+					//把xul中的路径替换成真实路径//
+					var xulPath = fInspector.getAddonFilePath("/content/finspector.xul");
+					
+					var xul = fInspectorFileIO.open(xulPath);
+					var data = fInspectorFileIO.read(xul);
+					if(data.match(/%tInspectorController%/)){
+						data = data.replace(/%tInspectorController%/, "chrome://finspector/content/tInspectorController.swf");
+						fInspectorFileIO.write(xul, data);
+					}
+					////////////////////////////////
+					
 					fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
 					fInspector.setPathFlashTrust(fInspector.getAddonFilePath("/content/"));
-
-					fInspector.reloadAllPages();
+					
+					fInspector.restartFirefox();
 				});
 			} catch (error) {
 				dump("can not get the addon install location.");
 			}
 		}
-		
-		//tInspectorController
-		//alert(document.getElementById('tInspectorController'));
-		//src="chrome://finspector/content/tInspectorController.swf"
 	}
 }
 

@@ -79,7 +79,7 @@
 	<statusbar id="status-bar">
 		<box width="0">
 			<html:embed id="tInspectorController"
-				src="%tInspectorController%"
+				src="chrome://finspector/content/tInspectorController.swf"
 				allowScriptAccess="always" type="application/x-shockwave-flash"
 				allowfullscreen="true" menu="false" wmode="transparent" width="0"
 				height="0" style="width:0px;height:0px;" />
