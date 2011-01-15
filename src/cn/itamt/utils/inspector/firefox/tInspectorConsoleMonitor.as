@@ -70,7 +70,7 @@ package cn.itamt.utils.inspector.firefox {
 					}	
 				}
 			} catch (e : Error) {
-				
+				Debug.trace(e.message);
 			}
 
 			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);

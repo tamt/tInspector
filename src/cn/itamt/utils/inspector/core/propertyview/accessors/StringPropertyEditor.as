@@ -17,7 +17,7 @@ package cn.itamt.utils.inspector.core.propertyview.accessors {
 		override protected function onFocusIn(evt : FocusEvent) : void {
 			super.onFocusIn(evt);
 			
-			this.addEventListener(KeyboardEvent.KEY_UP, onPressEnter);
+			this.addEventListener(KeyboardEvent.KEY_UP, onPressEnter, false, int.MAX_VALUE);
 		}
 
 		override protected function onFocusOut(evt : FocusEvent) : void {
@@ -31,6 +31,7 @@ package cn.itamt.utils.inspector.core.propertyview.accessors {
 			if(evt.keyCode == 13) {
 				dispatchEvent(new PropertyEvent(PropertyEvent.UPDATE, true, true));
 			}
+			evt.stopImmediatePropagation();
 		}
 
 		override protected function onReadWrite() : void {
