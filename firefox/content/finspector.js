@@ -594,6 +594,9 @@ injectFlashFirebug:function(){
 	try{
 		Firebug.FlashPanel.prototype.openTree = function(data)
 		{
+			//把之前选中的 清除样式
+			$FQuery(".selected", this.panelNode).removeClass("selected");
+								
 			var target = $FQuery("#base li[rel='"+(data.id)+"'] ",this.panelNode);
 			if(!$FQuery(target).hasClass("isOpened")){
 				$FQuery(target).addClass("isOpened");
@@ -622,17 +625,13 @@ injectFlashFirebug:function(){
 						}else{
 							if(i == absNameArr.length - 1){
 								//设置为选中样式
-								$FQuery(".selected",this.panelNode).removeClass("selected");
+								target = $FQuery(target).first();
 								$FQuery(target).children("a").addClass("selected");
 								
 								//把滚动条定位到该li的区域
-								if(this.panelNode.scrollTop - $FQuery(target).attr("offsetTop")<0){
-									var scrollTop = $FQuery(target).attr("offsetTop") + $FQuery(target).attr("clientHeight");
-									$FQuery(this.panelNode).animate({scrollTop:scrollTop}, 500);
-								}else if(this.panelNode.scrollTop - $FQuery(target).attr("offsetTop")>this.panelNode.clientHeight){
-									var scrollTop = $FQuery(target).attr("offsetTop") - $FQuery(target).attr("clientHeight");
-									$FQuery(this.panelNode).animate({scrollTop:scrollTop}, 500);
-								}
+								var offset = $FQuery(target).offset();
+								offset.top += this.panelNode.scrollTop;
+								$FQuery(this.panelNode).animate({scrollTop:offset.top - this.panelNode.clientHeight/2}, 500);
 							}
 						}
 						path += "." + absNameArr[i];

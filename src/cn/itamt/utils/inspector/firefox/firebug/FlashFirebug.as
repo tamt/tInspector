@@ -93,6 +93,9 @@ package cn.itamt.utils.inspector.firefox.firebug
 		
 		override public function onUpdate(target : InspectTarget = null) : void {
 			Debug.trace("onUpdate: " + target);
+			
+			if (keepStatic) return;
+			
 			if (target == null) return;
 			if (_target == target.displayObject){
 				super.onUpdate(target);
