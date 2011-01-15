@@ -594,9 +594,6 @@ injectFlashFirebug:function(){
 	try{
 		Firebug.FlashPanel.prototype.openTree = function(data)
 		{
-			//把之前选中的 清除样式
-			$FQuery(".selected", this.panelNode).removeClass("selected");
-								
 			var target = $FQuery("#base li[rel='"+(data.id)+"'] ",this.panelNode);
 			if(!$FQuery(target).hasClass("isOpened")){
 				$FQuery(target).addClass("isOpened");
@@ -624,6 +621,9 @@ injectFlashFirebug:function(){
 							break;
 						}else{
 							if(i == absNameArr.length - 1){
+								//把之前选中的 清除样式
+								$FQuery(".selected", this.panelNode).removeClass("selected");
+								
 								//设置为选中样式
 								target = $FQuery(target).first();
 								$FQuery(target).children("a").addClass("selected");

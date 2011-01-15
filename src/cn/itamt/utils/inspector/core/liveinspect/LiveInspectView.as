@@ -311,9 +311,6 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_bar.validate(target.displayObject);
 
 			if(target == this.target) {
-				//_tfm.target = null;
-				//_tfm.target = this.target.displayObject;
-				//_tfm.
 				_tfm.draw();
 				update();
 			}

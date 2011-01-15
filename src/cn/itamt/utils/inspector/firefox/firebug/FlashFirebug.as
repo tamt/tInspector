@@ -9,6 +9,7 @@ package cn.itamt.utils.inspector.firefox.firebug
 	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
 	import flash.display.DisplayObject;
 	import flash.display.Stage;
+	import flash.external.ExternalInterface;
 	import ominds.Firebug;
 	
 	/**
@@ -50,8 +51,10 @@ package cn.itamt.utils.inspector.firefox.firebug
 			super.onActive();
 			
 			Debug.trace("connect FlashFirebug...");
-			Firebug.connect(_inspector.root);
-			if(Firebug.overlay && Firebug.overlay.parent)Firebug.overlay.parent.removeChild(Firebug.overlay);
+			if(ExternalInterface.available){
+				Firebug.connect(_inspector.root);
+				if (Firebug.overlay && Firebug.overlay.parent) Firebug.overlay.parent.removeChild(Firebug.overlay);
+			}
 		}
 
 		override public function onUnActive() : void {
