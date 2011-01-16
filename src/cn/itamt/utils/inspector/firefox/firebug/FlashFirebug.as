@@ -136,6 +136,7 @@ package cn.itamt.utils.inspector.firefox.firebug
 			if (viewContainer == null) {
 				viewContainer = new Sprite();
 				_inspector.stage.addChild(viewContainer);
+				viewContainer.mouseChildren = viewContainer.mouseEnabled = false;
 			}
 			
 			viewContainer.graphics.clear();
