@@ -175,7 +175,7 @@
 							break;
 						case InspectorPluginId.FLASH_FIREBUG:
 							tInspector.pluginManager.registerPlugin(new FlashFirebug());
-							tInspector.pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
+							//tInspector.pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
 							break;
 					}
 				}

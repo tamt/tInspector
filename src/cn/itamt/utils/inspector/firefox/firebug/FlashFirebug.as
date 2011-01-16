@@ -4,6 +4,7 @@ package cn.itamt.utils.inspector.firefox.firebug
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.InspectTarget;
+	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.ui.InspectorIconButton;
 	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
@@ -18,10 +19,13 @@ package cn.itamt.utils.inspector.firefox.firebug
 	 */
 	public class FlashFirebug extends BaseInspectorPlugin 
 	{
+		//only used by FlashFirebug.as
 		//这个变量的只能由Firebug.as进行修改,设置.
 		public var keepStatic:Boolean;
 		//当前查看对象
 		private var _target:DisplayObject;
+		//
+		private var _connected:Boolean = false;
 		
 		public function FlashFirebug() 
 		{
@@ -61,7 +65,7 @@ package cn.itamt.utils.inspector.firefox.firebug
 			super.onUnActive();
 			
 			keepStatic = false;
-			
+			_connected = false;
 		}
 		
 		/**
@@ -110,6 +114,13 @@ package cn.itamt.utils.inspector.firefox.firebug
 				}
 			}
 		}
+
+		/**
+		 * 当Inspector鼠标查看某个目标显示对象时
+		 */
+		override public function onLiveInspect(ele : InspectTarget) : void {
+			
+		}
 		
 		private function convertToFirebugTargetStr(target:DisplayObject):String {
 			var str:String = "";
@@ -132,6 +143,28 @@ package cn.itamt.utils.inspector.firefox.firebug
 				}
 			}
 			return str;
+		}
+		
+		/**
+		 * only called by FlashFirebug.as
+		 * connect FlashFirebug fail
+		 * 连接失败
+		 */
+		public function onConnectFail(afterTimes:int):void {
+			_connected = false;
+			_inspector.pluginManager.unactivePlugin(this.getPluginId());
+			
+			//show connect fail tip
+			this._icon.showTempTip(InspectorLanguageManager.getStr("ConnectFFBFail") + afterTimes);
+		}
+		
+		/**
+		 * only called by FlashFirebug.as
+		 * connect FlashFirebug success
+		 * 连接成功
+		 */
+		public function onConnectSuccess(afterTimes:int):void {
+			_connected = true;
 		}
 	}
 

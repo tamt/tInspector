@@ -342,7 +342,7 @@ injectSwf : function(element) {
 	var swf;
 	if ((element.tagName == "OBJECT" || element.tagName == "EMBED") && element.type == "application/x-shockwave-flash") {
 		swf = element;
-		fInspector("an swf element was inserted.");
+		fInspector.trace("an swf element was inserted.");
 		if (!swf.id) {
 			swf.id = "fInspectorSwf_" + (new Date()).getTime();
 		}
