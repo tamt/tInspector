@@ -1,5 +1,6 @@
 package {
 	import cn.itamt.utils.Inspector;
+	import cn.itamt.utils.inspector.core.propertyview.DisplayObjectPropertyPanel;
 	import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
@@ -38,6 +39,12 @@ package {
 			
 			//this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
 			Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
+			
+			//
+			var panel:DisplayObjectPropertyPanel = new DisplayObjectPropertyPanel();
+			panel.x = 100;
+			panel.y = 50;
+			addChild(panel);
 		}
 		
 		private function onComplete(e:Event):void 

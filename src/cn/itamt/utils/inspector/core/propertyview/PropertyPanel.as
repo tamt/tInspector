@@ -48,12 +48,18 @@ package cn.itamt.utils.inspector.core.propertyview {
 		protected var _owner : PropertyAccessorRender;
 		protected var favoritable : Boolean = true;
 
+		protected var _mSavedSize : Point;
+		protected var _fSavedSize : Point;
+
 		public function get owner() : PropertyAccessorRender {
 			return _owner;
 		}
 
 		public function PropertyPanel(w : Number = 250, h : Number = 190, owner : PropertyAccessorRender = null, favoritable : Boolean = true) {
 			super('Property', w, h);
+			
+			_mSavedSize = new Point(this._width, 270);
+			_fSavedSize = new Point(this._width, 400);
 
 			_title.mouseEnabled = _title.mouseWheelEnabled = false;
 
@@ -389,9 +395,6 @@ package cn.itamt.utils.inspector.core.propertyview {
 			}
 		}
 
-		protected var _mSavedSize : Point;
-		protected var _fSavedSize : Point;
-
 		/**
 		 * 当单击"查看完整属性按钮时".
 		 */
@@ -399,14 +402,9 @@ package cn.itamt.utils.inspector.core.propertyview {
 			if(evt)
 				evt.stopImmediatePropagation();
 			this.drawList();
+			
 			if(this.resizeBtn.normalMode) {
-				if(_fSavedSize == null) {
-					_fSavedSize = new Point(this._width, 400);
-				} else {
-					_fSavedSize = new Point(this._width, this.height);
-				}
-				if(_mSavedSize == null)
-					_mSavedSize = new Point(this._width, 270);
+				_fSavedSize = new Point(this._width, this.height);	
 				this.addChild(this.search);
 				if(this.resizeBtn.normalMode)
 					this.resize(_mSavedSize.x, _mSavedSize.y);
