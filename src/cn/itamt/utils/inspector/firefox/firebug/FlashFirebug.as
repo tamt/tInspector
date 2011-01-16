@@ -1,6 +1,7 @@
 package cn.itamt.utils.inspector.firefox.firebug 
 {
 	import cn.itamt.utils.Debug;
+	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.InspectTarget;
@@ -9,8 +10,10 @@ package cn.itamt.utils.inspector.firefox.firebug
 	import cn.itamt.utils.inspector.ui.InspectorIconButton;
 	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
 	import flash.display.DisplayObject;
+	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.external.ExternalInterface;
+	import flash.geom.Rectangle;
 	import ominds.Firebug;
 	
 	/**
@@ -37,7 +40,7 @@ package cn.itamt.utils.inspector.firefox.firebug
 			if (Firebug.overlay) {
 				return Firebug.overlay == child || Firebug.overlay.contains(child);
 			} else {
-				return false;
+				return super.contains(child);
 			}
 		}
 		
@@ -66,6 +69,11 @@ package cn.itamt.utils.inspector.firefox.firebug
 			
 			keepStatic = false;
 			_connected = false;
+			
+			if (viewContainer) {
+				viewContainer.graphics.clear();
+				if (viewContainer.parent) viewContainer.parent.removeChild(viewContainer);
+			}
 		}
 		
 		/**
@@ -113,13 +121,37 @@ package cn.itamt.utils.inspector.firefox.firebug
 					}
 				}
 			}
+			
+			this.drawTargetRect();
 		}
 
 		/**
 		 * 当Inspector鼠标查看某个目标显示对象时
 		 */
 		override public function onLiveInspect(ele : InspectTarget) : void {
+			this.drawTargetRect();
+		}
+		
+		private function drawTargetRect():void {
+			if (viewContainer == null) {
+				viewContainer = new Sprite();
+				_inspector.stage.addChild(viewContainer);
+			}
 			
+			viewContainer.graphics.clear();
+			
+			if (_inspector.getCurInspectTarget() && _inspector.getCurInspectTarget().displayObject) {
+				var rect:Rectangle = _inspector.getCurInspectTarget().displayObject.getBounds(viewContainer);
+				
+				viewContainer.graphics.lineStyle(4, 0xffffff, 1);
+				//viewContainer.graphics.beginFill(0x0, .4);
+				viewContainer.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
+				viewContainer.graphics.lineStyle(1, 0x0, 1);
+				viewContainer.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
+				//viewContainer.graphics.endFill();
+				
+				DisplayObjectTool.swapToTop(viewContainer);
+			}
 		}
 		
 		private function convertToFirebugTargetStr(target:DisplayObject):String {

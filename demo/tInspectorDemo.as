@@ -33,11 +33,11 @@ package {
 			//Inspector.getInstance().propertiesView.size = new Point(400, 400);
 			Inspector.getInstance().pluginManager.registerPlugin(bar);
 			Inspector.getInstance().pluginManager.registerPlugin(new SwfInfoView());
-			Inspector.getInstance().pluginManager.registerPlugin(new FlashFirebug());
+			//Inspector.getInstance().pluginManager.registerPlugin(new FlashFirebug());
 			Inspector.getInstance().liveInspectView.use3DTransformer(new Transform3DController());
 			
 			//this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
-			Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
+			//Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
 		}
 		
 		private function onComplete(e:Event):void 

@@ -208,6 +208,10 @@ package cn.itamt.utils.inspector.plugins.tfm3d
 			return mx;
 		}
 		
+		public function update():void {
+			_tool3d.update();
+		}
+		
 		public function get tool3d():Transform3DTool { return _tool3d; }
 		
 		public function get target():DisplayObject { return _target; }
@@ -218,14 +222,17 @@ package cn.itamt.utils.inspector.plugins.tfm3d
 			
 			if(_target){
 				_originTargetTfmMX = _target.transform.matrix;
+				if (_bar)_bar.visible = true;
 			}else {
 				_originTargetTfmMX = null;
+				if (_bar)_bar.visible = false;
 			}
 			
 			if (_tool3d) {
 				_tool3d.target = target;
 				onTransformUpdate();
 			}
+			
 		}
 		
 	}

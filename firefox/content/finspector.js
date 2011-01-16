@@ -77,9 +77,11 @@ onFirefoxUnLoad : function(evt) {
 
 toggleProgressListener : function(aWebProgress, aIsAdd) {
 	if (aIsAdd) {
-		aWebProgress.addProgressListener(fInspector.progressListener, aWebProgress.NOTIFY_ALL);
+		gBrowser.addTabsProgressListener(fInspector.progressListener);
+		//aWebProgress.addProgressListener(fInspector.progressListener, aWebProgress.NOTIFY_ALL);
 	} else {
-		aWebProgress.removeProgressListener(fInspector.progressListener);
+		gBrowser.removeTabsProgressListener(fInspector.progressListener);
+		//aWebProgress.removeProgressListener(fInspector.progressListener);
 	}
 },
 
@@ -681,10 +683,13 @@ QueryInterface : function(aIID) {
 
 onStateChange : function(aWebProgress, aRequest, aFlag, aStatus) {
 	var doc = aWebProgress.DOMWindow.document;
-	if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_START) && (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
+	const STATE_START = Components.interfaces.nsIWebProgressListener.STATE_START;
+	const STATE_STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
+	const IS_DOCUMENT = Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT;
+	if ((aFlag & STATE_START) && (aFlag & IS_DOCUMENT)) {
 		fInspector.trace("This fires when the load event is initiated");
 		fInspector.setPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId=" + fInspector.controllerId));
-	} else if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) && (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
+	} else if ((aFlag & STATE_STOP) && (aFlag & IS_DOCUMENT)) {
 		fInspector.trace("This fires when the load finishes");
 	}
 },

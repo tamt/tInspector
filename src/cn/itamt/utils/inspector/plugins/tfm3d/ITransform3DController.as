@@ -10,7 +10,9 @@ package cn.itamt.utils.inspector.plugins.tfm3d
 	 * @author tamt
 	 */
 	public interface ITransform3DController extends IDisplayObject, IEventDispatcher
-	{		
+	{
+		function update():void;
+		
 		function get target():DisplayObject;
 		
 		function set target(value:DisplayObject):void ;

@@ -297,6 +297,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 			target = ele;
 			_tfm.target = null;
+			if (_tool3d)_tool3d.target = null;
 			update(true);
 
 			if(_bar.stage)
@@ -310,8 +311,20 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		override public function onUpdate(target : InspectTarget = null) : void {
 			_bar.validate(target.displayObject);
 
-			if(target == this.target) {
-				_tfm.draw();
+			if (target == this.target) {
+				if(target.displayObject){
+					if (!DisplayObjectTool.isIn3D(target.displayObject)) {
+						if (_tfm) {
+							_tfm.moveNewTargets = true;
+							_tfm.target = target.displayObject;
+							_tfm.moveNewTargets = false;
+						}
+					}else {
+						if (_tool3d) {
+							_tool3d.update();
+						}
+					}
+				}
 				update();
 			}
 		}
