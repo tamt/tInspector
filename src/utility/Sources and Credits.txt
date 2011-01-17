@@ -1,0 +1,5 @@
+Sources and Credits
+--------------------
+wE've used the following AS3 Classes,as listed : 
+
+1- CharacterEntity : http://karoshiethos.com/2009/02/19/actionscript-xml-and-character-entities-solved/
