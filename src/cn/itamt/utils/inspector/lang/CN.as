@@ -78,6 +78,7 @@ ModeLabel		=	模式(全局/内部)
 Tfm3DNotFound	=	没有找到Transform3DController类 T_T
 RemoveTransform	=	清除3D变形
 Beta			=	β
+ConnectFFBFail	=	连接FlashFirebug失败,尝试次数:
 ]]>
 					</lang>;
 		}
