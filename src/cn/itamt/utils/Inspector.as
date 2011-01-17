@@ -78,10 +78,15 @@
 		}
 
 		private var _propertiesView : PropertiesView;
+		private var _curLiveInspectEle : InspectTarget;
 		private var _curInspectEle : InspectTarget;
 
 		public function getCurInspectTarget() : InspectTarget {
 			return _curInspectEle;
+		}
+		
+		public function getCurLiveInspectTarget() : InspectTarget {
+			return _curLiveInspectEle;
 		}
 
 		private var _inited : Boolean;
@@ -151,6 +156,7 @@
 			if(_isOn)
 				return;
 			_isOn = true;
+			_curLiveInspectEle = null;
 			_curInspectEle = null;
 
 			// 鼠標tip相关
@@ -180,7 +186,8 @@
 			if(!_isOn)
 				return;
 			_isOn = false;
-			_curInspectEle = null;
+			_curLiveInspectEle = null;
+			_curInspectEle = null
 
 			var plugins : Array = this.pluginManager.getPlugins();
 			for each(var view:IInspectorPlugin in plugins) {
@@ -222,7 +229,7 @@
 		 */
 		public function startLiveInspect() : void {
 			if(!_isLiveInspecting) {
-				_curInspectEle = null;
+				_curLiveInspectEle = null;
 
 				_isLiveInspecting = true;
 				this.stage.addEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
@@ -241,6 +248,8 @@
 		public function stopLiveInspect() : void {
 			_isLiveInspecting = false;
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
+			
+			_curLiveInspectEle = null;
 
 			var plugins : Array = this.pluginManager.getPlugins();
 			for each(var view:IInspectorPlugin in plugins) {
@@ -268,18 +277,18 @@
 		 * @param checkIsInspectorView	check whether the target is invalid(containded by any plugin)
 		 */
 		public function liveInspect(ele : DisplayObject, checkIsInspectorView : Boolean = true) : void {
-			if(_curInspectEle && _curInspectEle.displayObject == ele)
+			if(_curLiveInspectEle && _curLiveInspectEle.displayObject == ele)
 				return;
 			if(checkIsInspectorView)
 				if(isInspectView(ele))
 					return;
 
-			_curInspectEle = getInspectTarget(ele);
+			_curLiveInspectEle = getInspectTarget(ele);
 
 			var plugins : Array = this.pluginManager.getPlugins();
 			for each(var view:IInspectorPlugin in plugins) {
 				if(view.isActive)
-					view.onLiveInspect(_curInspectEle);
+					view.onLiveInspect(_curLiveInspectEle);
 			}
 		}
 

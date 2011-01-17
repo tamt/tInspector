@@ -82,6 +82,9 @@ package cn.itamt.utils.inspector.firefox.firebug
 		override public function onInspect(target : InspectTarget) : void {
 			super.onInspect(target);
 			
+			this.clearTargetRect()
+			this.drawTargetRect();
+			
 			if (keepStatic) return;
 			
 			_target = target.displayObject;
@@ -109,6 +112,9 @@ package cn.itamt.utils.inspector.firefox.firebug
 		override public function onUpdate(target : InspectTarget = null) : void {
 			Debug.trace("onUpdate: " + target);
 			
+			this.clearTargetRect()
+			this.drawTargetRect();
+			
 			if (keepStatic) return;
 			
 			if (target == null) return;
@@ -122,29 +128,67 @@ package cn.itamt.utils.inspector.firefox.firebug
 				}
 			}
 			
-			this.drawTargetRect();
 		}
 
 		/**
 		 * 当Inspector鼠标查看某个目标显示对象时
 		 */
 		override public function onLiveInspect(ele : InspectTarget) : void {
+			clearTargetRect();
+			if (ele != _inspector.getCurInspectTarget()) {
+				this.drawTargetRect(ele);
+				this.drawTargetRect(_inspector.getCurInspectTarget());
+			}else {
+				this.drawTargetRect(ele);
+			}
+		}
+
+		/**
+		 * 当Inspector鼠标查看某个目标显示对象时
+		 */
+		override public function onStopLiveInspect() : void {
+			this.clearTargetRect();
 			this.drawTargetRect();
 		}
+
+		/**
+		 * 当该InspectorView注册到Inspector时.
+		 */
+		override public function onActivePlugin(pluginId : String) : void {
+			if (isActive) {
+				this.drawTargetRect();
+			}
+		}
+
+		/**
+		 * 当该InspectorView从Inspector删除注册时
+		 */
+		override public function onUnActivePlugin(pluginId : String) : void {
+			if (isActive) {
+				this.clearTargetRect();
+			}
+		}
 		
-		private function drawTargetRect():void {
+		private function drawTargetRect(ele:InspectTarget = null):void {
 			if (viewContainer == null) {
 				viewContainer = new Sprite();
 				_inspector.stage.addChild(viewContainer);
 				viewContainer.mouseChildren = viewContainer.mouseEnabled = false;
 			}
 			
-			viewContainer.graphics.clear();
+			if (_inspector.pluginManager.getPluginById(InspectorPluginId.LIVE_VIEW).isActive) return;
 			
-			if (_inspector.getCurInspectTarget() && _inspector.getCurInspectTarget().displayObject) {
-				var rect:Rectangle = _inspector.getCurInspectTarget().displayObject.getBounds(viewContainer);
+			var color:uint = 0xffffff;
+			if (ele == null) {
+				ele = _inspector.getCurInspectTarget();
+			}
+			
+			if(ele && ele==_inspector.getCurInspectTarget())color = 0xff0000;
+			
+			if (ele && ele.displayObject) {
+				var rect:Rectangle = ele.displayObject.getBounds(viewContainer);
 				
-				viewContainer.graphics.lineStyle(4, 0xffffff, 1);
+				viewContainer.graphics.lineStyle(4, color, 1);
 				//viewContainer.graphics.beginFill(0x0, .4);
 				viewContainer.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
 				viewContainer.graphics.lineStyle(1, 0x0, 1);
@@ -152,6 +196,12 @@ package cn.itamt.utils.inspector.firefox.firebug
 				//viewContainer.graphics.endFill();
 				
 				DisplayObjectTool.swapToTop(viewContainer);
+			}
+		}
+		
+		private function clearTargetRect():void {
+			if (viewContainer) {
+				viewContainer.graphics.clear();
 			}
 		}
 		
