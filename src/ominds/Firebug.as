@@ -382,9 +382,10 @@
 
 			////////[tamt] FlashInspector extend ///////////
 			if (!data.callFromFI) {
+				var t:Boolean = (Inspector.getInstance().pluginManager.getPluginById(InspectorPluginId.FLASH_FIREBUG) as FlashFirebug).keepStatic;
 				(Inspector.getInstance().pluginManager.getPluginById(InspectorPluginId.FLASH_FIREBUG) as FlashFirebug).keepStatic = false;
 				Inspector.getInstance().inspect(selectedObject);
-				(Inspector.getInstance().pluginManager.getPluginById(InspectorPluginId.FLASH_FIREBUG) as FlashFirebug).keepStatic = true;
+				(Inspector.getInstance().pluginManager.getPluginById(InspectorPluginId.FLASH_FIREBUG) as FlashFirebug).keepStatic = t;
 			}
 			return;
 		}

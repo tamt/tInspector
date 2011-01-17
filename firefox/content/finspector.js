@@ -338,7 +338,7 @@ onDomNodeInserted : function(evt) {
 },
 
 injectSwf : function(element) {
-	return;
+	//return;
 	var swf;
 	if ((element.tagName == "OBJECT" || element.tagName == "EMBED") && element.type == "application/x-shockwave-flash") {
 		swf = element;
@@ -631,7 +631,9 @@ injectFlashFirebug:function(){
 								//把滚动条定位到该li的区域
 								var offset = $FQuery(target).offset();
 								offset.top += this.panelNode.scrollTop;
-								$FQuery(this.panelNode).animate({scrollTop:offset.top - this.panelNode.clientHeight/2}, 500);
+								if(offset.top<this.panelNode.scrollTop || offset.top >(this.panelNode.scrollTop + this.panelNode.clientHeight)){
+									$FQuery(this.panelNode).animate({scrollTop:offset.top - this.panelNode.clientHeight/2}, 500);
+								}
 							}
 						}
 						path += "." + absNameArr[i];
