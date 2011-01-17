@@ -203,7 +203,7 @@ package cn.itamt.utils.inspector.firefox.firebug
 				drawOn.graphics.lineStyle(4, color, 1);
 				drawOn.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
 				
-				if (ele == _inspector.getCurInspectTarget()) drawOn.graphics.beginFill(color, .5);
+				if (ele == _inspector.getCurInspectTarget()) drawOn.graphics.beginFill(color, .3);
 				drawOn.graphics.lineStyle(1, 0x0, 1);
 				drawOn.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
 				drawOn.graphics.endFill();
