@@ -310,8 +310,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		override public function onUpdate(target : InspectTarget = null) : void {
 			_bar.validate(target.displayObject);
 
-			if(target == this.target) {
-				_tfm.draw();
+			if (target == this.target) {
+				_tfm.moveNewTargets = true;
+				_tfm.target = target.displayObject;
+				_tfm.moveNewTargets = false;
+				//_tfm.draw();
 				update();
 			}
 		}
