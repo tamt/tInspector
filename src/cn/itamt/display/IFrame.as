@@ -20,7 +20,7 @@ package cn.itamt.display
 		
 		private var _src:String;
 		private var _id:String = "FlashIFrame";
-		private var _scrolling:String = "";
+		private var _scrolling:String = "no";
 		
 		public function IFrame(id:String, w:uint, h:uint)
 		{
@@ -57,6 +57,15 @@ package cn.itamt.display
 			return _h;
 		}
 		
+		override public function set visible(val:Boolean):void {
+			super.visible = val;
+			if (_builded) {
+				if (ExternalInterface.available) {
+					ExternalInterface.call(JSScripts.setVisible, _id, val);
+				}
+			}
+		}
+		
 		public function set scrollPosition(pos:Point):void {
 			_scrollPosition = pos;
 			if (_builded) {
@@ -73,6 +82,8 @@ package cn.itamt.display
 		override protected function onRemoved():void 
 		{
 			removeIFrame();
+			
+			this.stage.removeEventListener(Event.RESIZE, onStageResize);
 		}
 		
 		override protected function onAdded():void 
@@ -81,22 +92,41 @@ package cn.itamt.display
 			if (_src) buildIFrame();
 			
 			this.relayout();
+		
+			this.stage.addEventListener(Event.RESIZE, onStageResize);
 		}
 		
-		private function relayout():void {
+		private function onStageResize(e:Event):void 
+		{
+			this.relayout();
+		}
+		
+		public function relayout():void {
 			this.buildBg();
 			
-			_globalPosition = localToGlobal(new Point);
+			this.caculateGlobalPos();
+			Debug.trace(_builded + ", " + ExternalInterface.available + ", " + _globalPosition.x + ", " + _globalPosition.y);
 			
 			if (_builded) {
 				if (ExternalInterface.available) {
-					ExternalInterface.call(JSScripts.setPosition, _id, _globalPosition.x, _globalPosition.y);
+					ExternalInterface.call("setPosition", _id, _globalPosition.x, _globalPosition.y);
 					ExternalInterface.call(JSScripts.setSize, _id, _w, _h);
 				}
 			}
 		}
 		
+		private function caculateGlobalPos():void {
+			_globalPosition = localToGlobal(new Point);
+			Debug.trace("globalposition in Flash: " + _globalPosition.x + ", " + _globalPosition.y);
+			Debug.trace("stage offset: " + (this.stage.stageWidth - 1280) / 2 + ", " + (this.stage.stageHeight - 824)/2);
+			_globalPosition.x += (this.stage.stageWidth - 1280) / 2;
+			_globalPosition.x = _globalPosition.x;
+			_globalPosition.y += (this.stage.stageHeight - 824)/2;
+			_globalPosition.y = _globalPosition.y;
+		}
+		
 		private function buildBg():void {
+			return;
 			this.graphics.clear();
 			this.graphics.beginFill(0x0, .8);
 			this.graphics.drawRect(0, 0, _w, _h);
@@ -150,11 +180,12 @@ package cn.itamt.display
 			if (_builded) return;
 			_builded = true;
 			
-			_globalPosition = localToGlobal(new Point);
+			this.caculateGlobalPos();
 			
 			if (ExternalInterface.available) {
-				ExternalInterface.call(JSScripts.buildIFrame, _id);
-				ExternalInterface.call(JSScripts.setPosition, _id, _globalPosition.x, _globalPosition.y);
+				//ExternalInterface.call(JSScripts.buildIFrame, _id);
+				ExternalInterface.call("buildIFrame", _id);
+				ExternalInterface.call("setPosition", _id, _globalPosition.x, _globalPosition.y);
 				ExternalInterface.call(JSScripts.setSize, _id, _w, _h);
 				ExternalInterface.call(JSScripts.setScrolling, _id, _scrolling);
 			}
@@ -178,6 +209,13 @@ internal class JSScripts
 					iframe.style.position = "absolute";
 					iframe.style.zIndex = 2;
 					iframe.id = id;
+					iframe.frameborder = "no";
+					iframe.border = 0;
+					//border=0 name=ye_xy marginWidth=0 frameSpacing=0 marginHeight=0
+					iframe.marginWidth = 0;
+					iframe.marginHeight = 0;
+					iframe.frameSpacing = 0;
+					iframe.allowTransparency = true;
 					document.body.appendChild(iframe);
 				}
 				]]>
@@ -200,8 +238,8 @@ internal class JSScripts
 				<![CDATA[
 				function(id, x, y) {
 					var iframe = document.getElementById(id);
-					iframe.style.left = x;
-					iframe.style.top = y;
+					iframe.style.left = x + "%";
+					iframe.style.top = y + "%";
 				}
 				]]>
 		</script>
@@ -226,6 +264,23 @@ internal class JSScripts
 					var iframe = document.getElementById(id);
 					iframe.scrolling = scrolling;
 				}
+				]]>
+		</script>
+	);
+	
+	public static var setVisible:XML = new XML(
+		<script>
+				<![CDATA[
+				function(id, visible) {
+					var iframe = document.getElementById(id);
+					if (visible) {
+						iframe.style.display= "inline";
+					}else {
+						iframe.style.display = "none";
+					}
+				}
+				
+				
 				]]>
 		</script>
 	);

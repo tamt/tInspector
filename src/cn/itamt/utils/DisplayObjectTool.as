@@ -66,8 +66,10 @@ package cn.itamt.utils {
 				obj.stage.invalidate();
 				obj.stage.addEventListener(Event.RENDER, fun = function(evt : Event):void {
 					if(obj != null && obj.stage != null && fun != null) {
-						obj.stage.removeEventListener(Event.RENDER, fun);
-						obj.parent.setChildIndex(obj, obj.parent.numChildren - 1);
+						if (obj.stage) {
+							obj.stage.removeEventListener(Event.RENDER, fun);
+							obj.parent.setChildIndex(obj, obj.parent.numChildren - 1);
+						}
 					}
 				});
 			}
