@@ -16,6 +16,7 @@
     <class path="src" />
     <class path="C:\Program Files\Hexagon Star Softworks\Alcon\debug\as3" />
     <class path="..\Transform3DTool\src" />
+    <class path="..\..\TextLayoutFramework\textlayout_framework_470\textlayout_framework_470\libs" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -49,7 +50,7 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <!-- example: <element path="..." /> -->
+    <element path="E:\flash\TextLayoutFramework\textlayout_framework_470\textlayout_framework_470\libs\textLayout.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
