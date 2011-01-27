@@ -4,25 +4,31 @@
 <flex-config>
   <target-player>10.0.0</target-player>
   <compiler>
-    <define>
+    <define append="true">
       <name>CONFIG::debug</name>
-      <value>true</value>
-    </define>
-    <define>
-      <name>CONFIG::release</name>
       <value>false</value>
     </define>
-    <define>
+    <define append="true">
+      <name>CONFIG::release</name>
+      <value>true</value>
+    </define>
+    <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'2010-12-27'</value>
+      <value>'2011-1-27'</value>
     </define>
     <source-path append="true">
       <path-element>E:\flash\git\tInspector\src</path-element>
+      <path-element>C:\Program Files\Hexagon Star Softworks\Alcon\debug\as3</path-element>
+      <path-element>E:\flash\git\Transform3DTool\src</path-element>
+      <path-element>E:\flash\TextLayoutFramework\textlayout_framework_470\textlayout_framework_470\libs</path-element>
       <path-element>C:\Program Files\FlashDevelop\Library\AS3\classes</path-element>
     </source-path>
+    <library-path append="true">
+      <path-element>E:\flash\TextLayoutFramework\textlayout_framework_470\textlayout_framework_470\libs\textLayout.swc</path-element>
+    </library-path>
   </compiler>
   <file-specs>
-    <path-element>E:\flash\git\tInspector\src\Main.as</path-element>
+    <path-element>E:\flash\git\tInspector\demo\tInspectorDemo.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
   <default-frame-rate>30</default-frame-rate>
