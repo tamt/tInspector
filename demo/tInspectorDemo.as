@@ -1,7 +1,7 @@
 package {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.core.propertyview.DisplayObjectPropertyPanel;
-	import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
+	//import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
@@ -34,11 +34,11 @@ package {
 			//Inspector.getInstance().propertiesView.size = new Point(400, 400);
 			Inspector.getInstance().pluginManager.registerPlugin(bar);
 			Inspector.getInstance().pluginManager.registerPlugin(new SwfInfoView());
-			Inspector.getInstance().pluginManager.registerPlugin(new FlashFirebug());
+			//Inspector.getInstance().pluginManager.registerPlugin(new FlashFirebug());
 			Inspector.getInstance().liveInspectView.use3DTransformer(new Transform3DController());
 			
 			//this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
-			Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
+			//Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
 			
 			//
 			var panel:DisplayObjectPropertyPanel = new DisplayObjectPropertyPanel();
