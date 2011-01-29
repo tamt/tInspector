@@ -183,8 +183,8 @@ package cn.itamt.display
 			this.caculateGlobalPos();
 			
 			if (ExternalInterface.available) {
-				//ExternalInterface.call(JSScripts.buildIFrame, _id);
-				ExternalInterface.call("buildIFrame", _id);
+				ExternalInterface.call(JSScripts.buildIFrame, _id);
+				//ExternalInterface.call("buildIFrame", _id);
 				ExternalInterface.call("setPosition", _id, _globalPosition.x, _globalPosition.y);
 				ExternalInterface.call(JSScripts.setSize, _id, _w, _h);
 				ExternalInterface.call(JSScripts.setScrolling, _id, _scrolling);
@@ -216,6 +216,10 @@ internal class JSScripts
 					iframe.marginHeight = 0;
 					iframe.frameSpacing = 0;
 					iframe.allowTransparency = true;
+					iframe.setAttribute('frameBorder','no');
+					iframe.setAttribute('allowTransparency',true);
+					iframe.setAttribute('border',0);
+					iframe.setAttribute('scrolling',"no");
 					document.body.appendChild(iframe);
 				}
 				]]>

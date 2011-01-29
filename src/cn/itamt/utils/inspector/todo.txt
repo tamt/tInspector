@@ -151,6 +151,8 @@ TODO LIST:
 							1.inspect undo,redo
 							2.ControlBar在LiveInspect模式下，应该避开鼠标。
 							3.LiveInspect时操作rect不要挡住面板。
+							4.新增功能:(不)显示继承的属性/方法.
+							
 							
 						
 	

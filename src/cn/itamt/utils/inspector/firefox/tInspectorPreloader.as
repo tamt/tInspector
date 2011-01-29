@@ -1,4 +1,5 @@
 ﻿package cn.itamt.utils.inspector.firefox {
+	import cn.itamt.utils.inspector.firefox.evil.DanDanTeng;
 	import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
 	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
 	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
@@ -180,6 +181,11 @@
 					}
 				}
 			}
+			
+			/**
+			 * 弹弹堂外挂
+			 */
+			tInspector.pluginManager.registerPlugin(new DanDanTeng());
 		}
 
 		private function setupControlBar() : void {
