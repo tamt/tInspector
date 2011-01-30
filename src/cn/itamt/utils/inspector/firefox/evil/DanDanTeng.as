@@ -97,6 +97,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			if(_players){
 				for (var i:int = 0; i < _players.length; i++) {
 					if (!(_players[i] as DisplayObject).visible) {
+						Debug.trace("找到一个玩家隐身");
 						(_players[i] as DisplayObject).visible = true;
 					}
 				}
@@ -110,6 +111,9 @@ package cn.itamt.utils.inspector.firefox.evil
 		private function onSelectPlayer(e:Event):void 
 		{
 			Debug.trace("选择玩家: " + (e.target as DanDanTengPlayerItemRenderer).label);
+			var player:Sprite = (e.target as DanDanTengPlayerItemRenderer).data;
+			Debug.trace("对方位置:" + player.x + ", " + player.y);
+			Debug.trace("你的位置:" + (_localPlayer as Sprite).x + ", " + (_localPlayer as Sprite).y);
 		}
 		
 		private function updatePanel():void 
@@ -173,7 +177,6 @@ package cn.itamt.utils.inspector.firefox.evil
 			return findPlayerScopeCore(_inspector.stage);
 		}
 		
-		
 		private function findPlayerScopeCore(container:DisplayObjectContainer):DisplayObjectContainer{
 			var num : int = container.numChildren;
 			for (var i : int = 0; i < num; i++) {
@@ -197,16 +200,12 @@ package cn.itamt.utils.inspector.firefox.evil
 		}
 		
 		/**
-		 * public static function everyDisplayObject(container : Sprite, fun : Function) : void {
-			var num : int = container.numChildren;
-			for(var i : int = 0;i < num;i++) {
-				if(container.getChildAt(i) is Sprite) {
-					everyDisplayObject(container.getChildAt(i) as Sprite, fun);
-				}
-				fun.call(null, container.getChildAt(i));
-			}
-		}
+		 * 小地图上的玩家位置
 		 */
+		private function findSmallPlayers():void {
+			//SmallMapView
+			//SmallPlayer
+		}
 	}
 
 }
