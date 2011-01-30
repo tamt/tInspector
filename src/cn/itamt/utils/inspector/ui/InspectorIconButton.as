@@ -15,9 +15,19 @@ package cn.itamt.utils.inspector.ui {
 		protected var _h:Number = 16;
 		
 		private var bmd : BitmapData;
-
-		public function InspectorIconButton(icon : String) {
-			bmd = InspectorSymbolIcon.getIcon(icon);
+		
+		/**
+		 * @param	icon 字符串(从InspectorSymbolIcon中获取位图)或者位图数据
+		 */
+		public function InspectorIconButton(icon : * ) {
+			if(icon is String){
+				bmd = InspectorSymbolIcon.getIcon(icon);
+			}else if (icon is BitmapData) {
+				bmd = icon as BitmapData;
+			}
+			
+			_w = bmd.width;
+			_h = bmd.height;
 
 			super();
 		}

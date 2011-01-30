@@ -52,7 +52,8 @@ package cn.itamt.utils.inspector.popup {
 				needRevise = true;
 			}
 			
-			if(gpt.y > rect.bottom - dp.height) {				gpt.y = gpt.y - dp.height;
+			if(gpt.y > rect.bottom - dp.height) {
+				gpt.y = gpt.y - dp.height;
 				needRevise = true;
 			}
 			if(gpt.y < rect.top) {
@@ -72,7 +73,7 @@ package cn.itamt.utils.inspector.popup {
 		 * @param alignMode		popup时的对齐方式, 查看PopupAlignMode
 		 * @param keepTime		popup持续多久(毫秒)后,进行移除, 0代表不移除.
 		 */
-		public static function popup(dp : DisplayObject, alignMode : int = 1) : void {
+		public static function popup(dp : DisplayObject, alignMode : int = 9) : void {
 			if(_childs == null)_childs = [];
 			var t : int = _childs.indexOf(dp);
 			if(t >= 0) {
@@ -82,6 +83,8 @@ package cn.itamt.utils.inspector.popup {
 			
 			InspectorStageReference.addChild(dp);
 			
+			var stageBounds:Rectangle = InspectorStageReference.getStageBounds();
+					
 			switch(alignMode) {
 				case PopupAlignMode.SHOW_ALL:
 					reviseTipPanelPos(dp);
@@ -90,6 +93,12 @@ package cn.itamt.utils.inspector.popup {
 					InspectorStageReference.centerOnStage(dp);
 					break;
 				case PopupAlignMode.TL:
+					dp.x = stageBounds.left;
+					dp.y = stageBounds.top;
+					break;
+				case PopupAlignMode.TOP:
+					dp.x = stageBounds.left + stageBounds.width / 2 - dp.width / 2;
+					dp.y = stageBounds.top;
 					break;
 			}
 		}
