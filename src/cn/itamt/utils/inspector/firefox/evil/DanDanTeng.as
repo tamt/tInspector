@@ -96,9 +96,11 @@ package cn.itamt.utils.inspector.firefox.evil
 			Debug.trace("消除玩家隐身");
 			if(_players){
 				for (var i:int = 0; i < _players.length; i++) {
+					(_players[i] as DisplayObject).alpha = 1;
 					if (!(_players[i] as DisplayObject).visible) {
 						Debug.trace("找到一个玩家隐身");
 						(_players[i] as DisplayObject).visible = true;
+						//查找其字对象中visible为false
 					}
 				}
 			}
