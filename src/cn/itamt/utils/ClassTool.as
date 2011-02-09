@@ -1,4 +1,6 @@
-package cn.itamt.utils {
+﻿package cn.itamt.utils {
+	import flash.display.DisplayObject;
+	import flash.display.DisplayObjectContainer;
 	import flash.utils.Dictionary;
 	import flash.utils.describeType;
 	import flash.utils.getDefinitionByName;
@@ -80,6 +82,44 @@ package cn.itamt.utils {
 			} else {
 				return describeType(value);
 			}
+		}
+		
+		/**
+		 * 指定一个class的名称, 找到container这个class的实例.
+		 * @param	container
+		 * @param	className
+		 * @return
+		 */
+		public static function findDisplayObjectInstaceByClassName(container:DisplayObjectContainer, shortClassName:String):DisplayObject{
+			var num : int = container.numChildren;
+			for (var i : int = 0; i < num; i++) {
+				if (ClassTool.getShortClassName(container.getChildAt(i)) == shortClassName) {
+					return container.getChildAt(i);
+				}else if (container.getChildAt(i) is DisplayObjectContainer) {
+					var instance:DisplayObject = findDisplayObjectInstaceByClassName(container.getChildAt(i) as DisplayObjectContainer, shortClassName);
+					if (instance)return instance;
+				}
+			}
+			return null;
+		}
+		
+		/**
+		 * 指定一个class, 找到container这个class的实例.
+		 * @param	container
+		 * @param	className
+		 * @return
+		 */
+		public static function findDisplayObjectInstaceByClass(container:DisplayObjectContainer, clazz:*):DisplayObject{
+			var num : int = container.numChildren;
+			for (var i : int = 0; i < num; i++) {
+				if (container.getChildAt(i) is (clazz as Class)) {
+					return container.getChildAt(i);
+				}else if (container.getChildAt(i) is DisplayObjectContainer) {
+					var instance:DisplayObject = findDisplayObjectInstaceByClass(container.getChildAt(i) as DisplayObjectContainer, clazz);
+					if (instance)return instance;
+				}
+			}
+			return null;
 		}
 	}
 }

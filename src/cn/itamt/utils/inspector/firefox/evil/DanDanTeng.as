@@ -19,6 +19,7 @@ package cn.itamt.utils.inspector.firefox.evil
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.system.ApplicationDomain;
+	import flash.text.TextField;
 	
 	/**
 	 * 弹弹堂外挂
@@ -35,8 +36,32 @@ package cn.itamt.utils.inspector.firefox.evil
 		private var _localPlayerClassName:String = "game.objects.GameLocalPlayer";
 		private var _playersContainer:DisplayObjectContainer;
 		
+		//风力
+		private var _vaneViewClass:Class;
+		private var _vaneViewClassName:String = "game.view.VaneView";
+		//风向
+		private var _vaneDirectClass:Class;
+		private var _vaneDirectClassName:String = "asset.game.vaneAsset";
+		
+		//角度
+		private var _arrowViewClass:Class;
+		private var _arrowViewClassName:String = "game.view.arrow.ArrowView";
+		//发射方向, 1 <- . -> -1
+		private var _direction:int;
+		
+		//游戏主容器, GameView
+		private var _gameViewClass:Class;
+		private var _gameViewClassName:String = "game.view.GameView";
+		private var _gameView:DisplayObjectContainer;
+		
 		private var _players:Array;
 		private var _localPlayer:*;
+		//当前风力值
+		private var _wind:Number;
+		//风向, -1 <- . -> 1
+		private var _windDirection:int;
+		//发射角度
+		private var _angle:Number;
 		
 		public function DanDanTeng() 
 		{
@@ -75,16 +100,19 @@ package cn.itamt.utils.inspector.firefox.evil
 			_panel.addEventListener(Event.SELECT, onSelectPlayer);
 			_panel.addEventListener("anti_invisible", onAntiInvisible);
 			
+			_gameView = this.findGameView();
 			_playersContainer = findPlayerContainer();
 			if (_playersContainer) {
 				Debug.trace("查找GamePlayer所在容器:成功");
 				this.findPlayers();
+				this.findVaneValue();
+				this.findAngleValue();
 				this.updatePanel();
 			}else {
 				Debug.trace("查找GamePlayer所在容器:失败");
 			}
 			
-			InspectorPopupManager.popup(_panel, PopupAlignMode.TOP);
+			InspectorPopupManager.popup(_panel, PopupAlignMode.CENTER);
 		}
 		
 		/**
@@ -97,11 +125,16 @@ package cn.itamt.utils.inspector.firefox.evil
 			if(_players){
 				for (var i:int = 0; i < _players.length; i++) {
 					(_players[i] as DisplayObject).alpha = 1;
-					if (!(_players[i] as DisplayObject).visible) {
-						Debug.trace("找到一个玩家隐身");
+					//if (!(_players[i] as DisplayObject).visible) {
+						//Debug.trace("找到一个玩家隐身");
 						(_players[i] as DisplayObject).visible = true;
 						//查找其字对象中visible为false
-					}
+						var container:DisplayObjectContainer = (_players[i] as DisplayObjectContainer);
+						for (var j:int = 0; j < container.numChildren; j++) {
+							container.getChildAt(i).visible = true;
+							container.getChildAt(i).alpha = 1;
+						}
+					//}
 				}
 			}
 		}
@@ -130,6 +163,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			Debug.trace("关闭外挂");
 			_panel.removeEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.removeEventListener(Event.SELECT, onSelectPlayer);
+			_panel.removeEventListener(Event.SELECT, onSelectPlayer);
 			_panel.removeEventListener("anti_invisible", onAntiInvisible);
 			
 			InspectorPopupManager.remove(_panel);
@@ -146,6 +180,21 @@ package cn.itamt.utils.inspector.firefox.evil
 			
 		}
 		*/
+		private function findGameView():DisplayObjectContainer 
+		{
+			Debug.trace("查找GameView");
+			for (var i:int = 0; i < _inspector.stage.numChildren; i++) {
+				var domain:ApplicationDomain = _inspector.stage.getChildAt(i).loaderInfo.applicationDomain;
+				if (domain.hasDefinition(this._gameViewClassName)) {
+					_gameViewClass = domain.getDefinition(this._gameViewClassName) as Class;
+					var scope:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClass(_inspector.stage.getChildAt(i) as DisplayObjectContainer, _gameViewClass) as DisplayObjectContainer;
+					if (scope)return scope;
+					break;
+				}
+			}
+			
+			return ClassTool.findDisplayObjectInstaceByClass(_inspector.stage, _gameViewClass) as DisplayObjectContainer;
+		}
 		
 		private function findPlayers():void {
 			Debug.trace("查找GamePlayer");
@@ -167,9 +216,13 @@ package cn.itamt.utils.inspector.firefox.evil
 			for (var i:int = 0; i < _inspector.stage.numChildren; i++) {
 				var domain:ApplicationDomain = _inspector.stage.getChildAt(i).loaderInfo.applicationDomain;
 				if (domain.hasDefinition(this._playerClassName)) {
+					_gameView = _inspector.stage.getChildAt(i) as DisplayObjectContainer;
+					Debug.trace("找到游戏的根容器");
 					Debug.trace("找到了GamePlayer所在的程序域!");
 					_playerClass = domain.getDefinition(this._playerClassName) as Class;
 					_localPlayerClass = domain.getDefinition(this._localPlayerClassName) as Class;
+					_vaneViewClass = domain.getDefinition(this._vaneViewClassName) as Class;
+					_arrowViewClass = domain.getDefinition(this._arrowViewClassName) as Class;
 					var scope:DisplayObjectContainer = findPlayerScopeCore(_inspector.stage.getChildAt(i) as DisplayObjectContainer);
 					if (scope)return scope;
 					break;
@@ -208,6 +261,89 @@ package cn.itamt.utils.inspector.firefox.evil
 			//SmallMapView
 			//SmallPlayer
 		}
+		
+		/**
+		 * 返回当前风力值
+		 * @return
+		 */
+		private function findVaneValue():void {
+			_wind = NaN;
+			Debug.trace("查找VaneValue");
+			if (_gameView) {
+				var vaneView:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClass(_inspector.stage, _vaneViewClass) as DisplayObjectContainer;
+				if (vaneView) {
+					Debug.trace("找到VaneView对象");
+					var gradientText:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "GradientText") as DisplayObjectContainer;
+					if (gradientText) {
+						Debug.trace("找到VaneView.GradientText对象");
+						//var vaneText:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "FilterFrameText");
+						//if (vaneText) {
+							//Debug.trace("找到VaneView.GradientText.FilterFrameText对象");
+						_wind = Number(gradientText["text"]);
+						Debug.trace("当前风力值: " + _wind);
+						//}else {
+							//Debug.trace("没找到VaneView.GradientText对象");
+						//}
+					}else {
+						Debug.trace("没找到VaneView.GradientText对象");
+					}
+					
+					//取得风向
+					var direction:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "GradientText");
+					if(direction){
+						_windDirection = direction.scaleX > 0?1: -1;
+						Debug.trace("当前风向: " + _windDirection);
+					}else {
+						Debug.trace("没找到VaneView.vaneAsset对象");
+					}
+				}else {
+					Debug.trace("没找到VaneView对象");
+				}
+				
+			}else {
+				Debug.trace("_root为空");
+			}
+		}
+		
+		/**
+		 * 取得发射角度
+		 */
+		private function findAngleValue():void {
+			_angle = NaN;
+			if (_gameView) {
+				var arrowView:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClass(_inspector.stage, _arrowViewClass) as DisplayObjectContainer;
+				if (arrowView) {
+					Debug.trace("找到arrowView对象: " + arrowView.name);
+					var gradientText:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClassName(arrowView, "GradientText") as DisplayObjectContainer;
+					if (gradientText) {
+						Debug.trace("找到ArrowView.GradientText对象: " + gradientText.name);
+						//var vaneText:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "FilterFrameText");
+						//if (vaneText) {
+							//Debug.trace("找到VaneView.GradientText.FilterFrameText对象");
+						_angle = Number(gradientText["text"]);
+						Debug.trace("当前角度值: " + _angle);
+						//}else {
+							//Debug.trace("没找到VaneView.GradientText对象");
+						//}
+						
+						//取得发射方向
+						//_direction
+						var character:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(_localPlayer, "GameCharacter");
+						if (character) {
+							_direction = character.parent.scaleX;
+							Debug.trace("当前发射方向: " + _direction);
+						}else {
+							Debug.trace("获取发射方向失败");
+						}
+					}else {
+						Debug.trace("没找到ArrowView.GradientText对象");
+					}
+				}else {
+					Debug.trace("没找到ArrowView对象");
+				}
+			}else {
+				Debug.trace("_root为空");
+			}
+		}
 	}
-
 }
