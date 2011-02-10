@@ -1,5 +1,6 @@
 package cn.itamt.utils {
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
+	import flash.geom.Point;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -163,6 +164,13 @@ package cn.itamt.utils {
 					func.apply(null, args);
 				}
 			});
+		}
+		
+		/**
+		 * project 2d point from one coordinate to another
+		 */
+		public static function localToTarget(local:DisplayObject, pt:Point, target:DisplayObject):Point{
+			return target.globalToLocal(local.localToGlobal(pt));
 		}
 		
 		public static function isIn3D(target:DisplayObject):Boolean {

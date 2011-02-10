@@ -8,6 +8,7 @@ package cn.itamt.utils.inspector.firefox.evil
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import fl.controls.NumericStepper;
 	
 	/**
 	 * 弹弹堂操作面板
@@ -17,18 +18,27 @@ package cn.itamt.utils.inspector.firefox.evil
 	{
 		private var _status_tf:InspectorTextField;
 		private var _status:String = "";
+		private var _message_tf:InspectorTextField;
+		private var _message:String = "云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚云蒸霞蔚";
 		
 		private var _data : Array;
 		private var _listContainer:Sprite;
 		private var _itemRenderer:Class = DanDanTengPlayerItemRenderer;
 		private var _visibleBtn:InspectorLabelButton;
 		
+		public var energyRatio:NumericStepper;
+		
 		public function DanDanTengPanel() 
 		{
-			super("蛋蛋疼 -_-! ");
+			super("蛋蛋疼 -_-! ", 200, 200, true, false);
+			
+			_padding.bottom = 30;
 		
-			_status_tf = InspectorTextField.create(_status, 0xffffff, 14, 0, 0, "left");
+			_status_tf = InspectorTextField.create(_status, 0xffffff, 12, 0, 0, "left");
 			addChild(_status_tf);
+			
+			_message_tf = InspectorTextField.create(_message, 0xffffff, 12, 0, 0, "left");
+			//addChild(_message_tf);
 			
 			_listContainer = new Sprite();
 			this.setContent(_listContainer);
@@ -46,20 +56,34 @@ package cn.itamt.utils.inspector.firefox.evil
 		}
 		
 		override public function relayout():void {
+			drawMessage();
+			
+			_padding.bottom = _message_tf.height + 10 + _status_tf.height + 5;
+			
 			super.relayout();
 			
 			this._visibleBtn.x = _resizer.x - this._visibleBtn.width - 10;
-			this._visibleBtn.y = _height - _padding.bottom - this._visibleBtn.height;
+			this._visibleBtn.y = _height - 10 - this._visibleBtn.height;
 			
 			this.drawStatus();
+			
+			setChildIndex(energyRatio, this.numChildren - 1);
 		}
 		
 		private function drawStatus():void 
 		{
 			_status_tf.text = _status;
 			_status_tf.x = _padding.left;
-			_status_tf.y = _height - _padding.bottom - _status_tf.height;
+			_status_tf.y = _height - 10 - _status_tf.height;
 			_status_tf.width = _visibleBtn.x - _padding.left;
+		}
+		
+		private function drawMessage():void 
+		{
+			_message_tf.text = _message;
+			_message_tf.width = _width - _padding.left - _padding.bottom;
+			_message_tf.x = _padding.left;
+			_message_tf.y = _height - 10 - _status_tf.height - 5 - _message_tf.height;
 		}
 
 		private function drawContent() : void {
@@ -96,6 +120,17 @@ package cn.itamt.utils.inspector.firefox.evil
 		{
 			_status = value;
 			this.drawStatus();
+		}
+		
+		public function get message():String 
+		{
+			return _message;
+		}
+		
+		public function set message(value:String):void 
+		{
+			_message = value;
+			this.drawMessage();
 		}
 		
 		public function setListData(list:Array):void {

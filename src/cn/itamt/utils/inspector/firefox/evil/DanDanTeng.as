@@ -12,14 +12,19 @@ package cn.itamt.utils.inspector.firefox.evil
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 	import cn.itamt.utils.inspector.ui.InspectorIconButton;
 	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
+	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import cn.itamt.utils.inspector.firefox.evil.DanDanTengIcon;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
 	import flash.text.TextField;
+	import flash.utils.getTimer;
+	import msc.input.KeyCode;
 	
 	/**
 	 * 弹弹堂外挂
@@ -55,7 +60,7 @@ package cn.itamt.utils.inspector.firefox.evil
 		private var _gameView:DisplayObjectContainer;
 		
 		private var _players:Array;
-		private var _localPlayer:*;
+		private var _localPlayer:Sprite;
 		//当前风力值
 		private var _wind:Number;
 		//风向, -1 <- . -> 1
@@ -63,11 +68,18 @@ package cn.itamt.utils.inspector.firefox.evil
 		//发射角度
 		private var _angle:Number;
 		
+		private var _windRatios:Array = new Array;
+		private var _gs:Array = new Array;
+		
 		public function DanDanTeng() 
 		{
 		}
 		
 		override public function contains(child:DisplayObject) : Boolean {
+			if (super.contains(child)) {
+				return true;
+			}
+			
 			if(_panel) {
 				return _panel == child || _panel.contains(child);
 			} else {
@@ -107,12 +119,83 @@ package cn.itamt.utils.inspector.firefox.evil
 				this.findPlayers();
 				this.findVaneValue();
 				this.findAngleValue();
+				
+				_panel.setListData(_players);
 				this.updatePanel();
 			}else {
 				Debug.trace("查找GamePlayer所在容器:失败");
 			}
 			
 			InspectorPopupManager.popup(_panel, PopupAlignMode.CENTER);
+			
+			//轨迹线容器
+			this.viewContainer = new Sprite();
+			//_inspector.stage.addChild(this.viewContainer);
+			
+			//侦听键盘事件
+			_inspector.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, int.MIN_VALUE);
+		}
+		
+		/**
+		 * 侦听键盘事件
+		 * @param	e
+		 */
+		private function onKeyUp(e:KeyboardEvent):void 
+		{
+			//释放空格键时
+			if (e.keyCode == KeyCode.SPACEBAR) {
+				//
+				var energy:Number = findEnergyValue();
+				Debug.trace("力度值: " + energy);
+				//重新取得风力及角度
+				this.findVaneValue();
+				this.findAngleValue();
+				//画出轨迹线
+				//this.drawTrajectory(new Point(_localPlayer.x, _localPlayer.y), new Point(player.x, player.y));
+				
+				this.updatePanel();
+				
+				var time:int = getTimer();
+				_inspector.stage.addEventListener(MouseEvent.MOUSE_UP, function(evt:MouseEvent) {
+						_inspector.stage.removeEventListener(MouseEvent.MOUSE_UP, arguments.callee);
+						//
+						//var t:Number = ((getTimer() - time) / 1000);
+						var t:Number = getTimer() - time;
+						Debug.trace("时间:" + t);
+						var bomb:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(_inspector.stage, "SimpleBomb");
+						if (bomb) {
+							var bombPos:Point = bomb.localToGlobal(new Point());
+							var localPos:Point = _localPlayer.localToGlobal(new Point());
+							//var dx:Number = (bomb.x - _localPlayer.x);
+							//var dy:Number = (bomb.y - _localPlayer.y);
+							var dx:Number = (bombPos.x - localPos.x);
+							var dy:Number = (bombPos.y - localPos.y);
+							
+							var theta:Number = (_direction == -1?_angle:(180 - _angle)) * Math.PI / 180;
+							Debug.trace("炸弹位移: " + dx + ", " + dy);
+							
+							//计算这次采样取得的风力乘值.
+							var windRatio:Number = 2 * (dx - energy * Math.cos(theta) * t) / (_wind * _windDirection * t * t);
+							//计算所有采样风力乘值的平均值.
+							_windRatios.push(windRatio);
+							var wrSum:Number = 0;
+							for each(var num:Number in _windRatios) {
+								wrSum += num;
+							}
+							//Debug.trace("风力乘值: " + wrSum / _windRatios.length);
+							Debug.trace("风力乘值: " + windRatio);
+							
+							var g:Number = 2 * (dy + energy * Math.sin(theta) * t) / (t * t);
+							_gs.push(g);
+							var gSum:Number = 0;
+							for each(var gNum:Number in _gs) {
+								gSum += gNum;
+							}
+							//Debug.trace("重力加速度: " + gSum / _gs.length);
+							Debug.trace("重力加速度: " + g);
+						}
+					} );
+			}
 		}
 		
 		/**
@@ -147,14 +230,83 @@ package cn.itamt.utils.inspector.firefox.evil
 		{
 			Debug.trace("选择玩家: " + (e.target as DanDanTengPlayerItemRenderer).label);
 			var player:Sprite = (e.target as DanDanTengPlayerItemRenderer).data;
-			Debug.trace("对方位置:" + player.x + ", " + player.y);
-			Debug.trace("你的位置:" + (_localPlayer as Sprite).x + ", " + (_localPlayer as Sprite).y);
+			
+			if (player) {
+				Debug.trace("对方位置:" + player.x + ", " + player.y);
+				Debug.trace("你的位置:" + _localPlayer.x + ", " + _localPlayer.y);
+				
+				//重新取得风力及角度
+				this.findVaneValue();
+				this.findAngleValue();
+				//画出轨迹线
+				this.drawTrajectory(new Point(_localPlayer.x, _localPlayer.y), new Point(player.x, player.y));
+			}
+		}
+		
+		/**
+		 * 画弹道
+		 */
+		private function drawTrajectory(startPt:Point, endPt:Point):void 
+		{
+			if (!_localPlayer.parent.contains(viewContainer))_localPlayer.parent.addChild(viewContainer);
+			_localPlayer.parent.setChildIndex(viewContainer, _localPlayer.parent.numChildren - 1);
+			
+			viewContainer.graphics.clear();
+			viewContainer.graphics.lineStyle(5, 0x99cc00, 1);
+			viewContainer.graphics.moveTo(startPt.x, startPt.y);
+			
+			//推算初始速度值
+			var theta:Number = (_direction == -1?_angle:(180 - _angle)) * Math.PI / 180;
+			var f:Number = _windDirection * _wind / 4;
+			var g:Number = 0.15;
+			var A:Number = endPt.x - startPt.x;
+			var B:Number = endPt.y - startPt.y;
+			var C:Number = Math.cos(theta);
+			var D:Number = -Math.sin(theta);
+			var E:Number = .5 * f;
+			var F:Number = .5 * g;
+			var G:Number = (A * D - B * C) / (B * E-A * F);
+			//求出speed的值
+			//speed.value = Math.sqrt(A / (C * G + E * G * G));
+			var speed:Number = (Math.sqrt(A / (C * G + E * G * G)) + Math.sqrt(B / (D * G + F * G * G))) / 2;
+			
+			Debug.trace("计算所得的力度:" + speed);
+			
+			//画线
+			var finish:Boolean = false;
+			var t:int = 0;
+			var topest:Boolean = false;
+			var lx:Number, ly:Number;
+			while (!finish) {
+				var xt:Number = speed * Math.cos(theta) * t + .5 * f * t * t + startPt.x;
+				var yt:Number = -speed * Math.sin(theta) * t + .5 * g * t * t + startPt.y;
+				//trace(xt, yt);
+				
+				if (!topest && !isNaN(lx) && !isNaN(ly)) {
+					if (yt > ly)topest = true;
+				}
+				
+				t++;
+				
+				if (t > 200) {
+					finish = true;
+				}
+				
+				if (topest && yt>endPt.y) {
+					finish = true;
+				}
+				
+				viewContainer.graphics.lineTo(xt, yt);
+				
+				lx = xt;
+				ly = yt;
+			}
 		}
 		
 		private function updatePanel():void 
 		{
-			_panel.status = "共有" + (_players.length + 1) + "个玩家";
-			_panel.setListData(_players);
+			//_panel.status = "共有" + (_players.length + 1) + "个玩家";
+			_panel.status = "风力:" + (_wind * _windDirection) + ",角度:" + (_angle*_direction) + "°";
 		}
 		
 		override public function onUnActive():void {
@@ -168,6 +320,13 @@ package cn.itamt.utils.inspector.firefox.evil
 			
 			InspectorPopupManager.remove(_panel);
 			_panel = null;
+			
+			//轨迹线容器
+			if(this.viewContainer && this.viewContainer.parent)this.viewContainer.parent.removeChild(this.viewContainer);
+			this.viewContainer = null;
+			
+			//去除键盘事件侦听
+			_inspector.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, int.MIN_VALUE);
 		}
 		
 		private function unactiveThisPlugin(e:Event):void 
@@ -182,6 +341,8 @@ package cn.itamt.utils.inspector.firefox.evil
 		*/
 		private function findGameView():DisplayObjectContainer 
 		{
+			if (_gameViewClass == null) return null;
+			
 			Debug.trace("查找GameView");
 			for (var i:int = 0; i < _inspector.stage.numChildren; i++) {
 				var domain:ApplicationDomain = _inspector.stage.getChildAt(i).loaderInfo.applicationDomain;
@@ -202,7 +363,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			_players = new Array();
 			for (var i:int = 0; i < this._playersContainer.numChildren; i++) {
 				if (this._playersContainer.getChildAt(i) is _localPlayerClass) {
-					_localPlayer = this._playersContainer.getChildAt(i) as _localPlayerClass
+					_localPlayer = this._playersContainer.getChildAt(i) as Sprite;
 				}else if (this._playersContainer.getChildAt(i) is _playerClass) {
 					_players.push(this._playersContainer.getChildAt(i));
 				}
@@ -217,7 +378,6 @@ package cn.itamt.utils.inspector.firefox.evil
 				var domain:ApplicationDomain = _inspector.stage.getChildAt(i).loaderInfo.applicationDomain;
 				if (domain.hasDefinition(this._playerClassName)) {
 					_gameView = _inspector.stage.getChildAt(i) as DisplayObjectContainer;
-					Debug.trace("找到游戏的根容器");
 					Debug.trace("找到了GamePlayer所在的程序域!");
 					_playerClass = domain.getDefinition(this._playerClassName) as Class;
 					_localPlayerClass = domain.getDefinition(this._localPlayerClassName) as Class;
@@ -272,10 +432,8 @@ package cn.itamt.utils.inspector.firefox.evil
 			if (_gameView) {
 				var vaneView:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClass(_inspector.stage, _vaneViewClass) as DisplayObjectContainer;
 				if (vaneView) {
-					Debug.trace("找到VaneView对象");
 					var gradientText:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "GradientText") as DisplayObjectContainer;
 					if (gradientText) {
-						Debug.trace("找到VaneView.GradientText对象");
 						//var vaneText:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "FilterFrameText");
 						//if (vaneText) {
 							//Debug.trace("找到VaneView.GradientText.FilterFrameText对象");
@@ -289,9 +447,9 @@ package cn.itamt.utils.inspector.firefox.evil
 					}
 					
 					//取得风向
-					var direction:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "GradientText");
-					if(direction){
-						_windDirection = direction.scaleX > 0?1: -1;
+					var tmp:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "vaneAsset");
+					if(tmp){
+						_windDirection = tmp.scaleX > 0?1: -1;
 						Debug.trace("当前风向: " + _windDirection);
 					}else {
 						Debug.trace("没找到VaneView.vaneAsset对象");
@@ -313,10 +471,8 @@ package cn.itamt.utils.inspector.firefox.evil
 			if (_gameView) {
 				var arrowView:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClass(_inspector.stage, _arrowViewClass) as DisplayObjectContainer;
 				if (arrowView) {
-					Debug.trace("找到arrowView对象: " + arrowView.name);
 					var gradientText:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClassName(arrowView, "GradientText") as DisplayObjectContainer;
 					if (gradientText) {
-						Debug.trace("找到ArrowView.GradientText对象: " + gradientText.name);
 						//var vaneText:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(vaneView, "FilterFrameText");
 						//if (vaneText) {
 							//Debug.trace("找到VaneView.GradientText.FilterFrameText对象");
@@ -344,6 +500,16 @@ package cn.itamt.utils.inspector.firefox.evil
 			}else {
 				Debug.trace("_root为空");
 			}
+		}
+		
+		private function findEnergyValue():Number {
+			var energyView:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClassName(_inspector.stage, "EnergyView") as DisplayObjectContainer;
+			if (energyView) {
+				var bar:DisplayObject = energyView.getChildAt(2);
+				if (bar) return bar.width;
+			}
+			
+			return NaN;
 		}
 	}
 }

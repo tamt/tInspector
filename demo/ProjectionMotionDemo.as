@@ -70,7 +70,8 @@ package
 			var F:Number = .5 * this.g;
 			var G:Number = (A * D - B * C) / (B * E-A * F);
 			
-			speed.value = Math.sqrt(A / (C * G + E * G * G));
+			//speed.value = Math.sqrt(A / (C * G + E * G * G));
+			speed.value = (Math.sqrt(A / (C * G + E * G * G)) + Math.sqrt(B / (D * G + F * G * G)))/2;
 		}
 		
 		private function onDown(e:MouseEvent):void 
@@ -99,6 +100,11 @@ package
 				}
 				
 				t++;
+				
+				if (t > 200) {
+					finish = true;
+				}
+				
 				if (topest && yt>endPt_btn.y) {
 					finish = true;
 				}

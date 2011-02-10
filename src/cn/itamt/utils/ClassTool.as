@@ -109,7 +109,9 @@
 		 * @param	className
 		 * @return
 		 */
-		public static function findDisplayObjectInstaceByClass(container:DisplayObjectContainer, clazz:*):DisplayObject{
+		public static function findDisplayObjectInstaceByClass(container:DisplayObjectContainer, clazz:*):DisplayObject {
+			if (clazz == null) return null;
+			
 			var num : int = container.numChildren;
 			for (var i : int = 0; i < num; i++) {
 				if (container.getChildAt(i) is (clazz as Class)) {
