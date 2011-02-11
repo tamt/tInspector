@@ -17,7 +17,11 @@
     <class path="C:\Program Files\Hexagon Star Softworks\Alcon\debug\as3" />
     <class path="..\Transform3DTool\src" />
     <class path="..\..\TextLayoutFramework\textlayout_framework_470\textlayout_framework_470\libs" />
+<<<<<<< HEAD
     <class path="..\..\alecmce-as3geometry-d2c2fdb\src" />
+=======
+    <class path="..\..\as3geometry\src" />
+>>>>>>> e677950a4bd23b5705e3afff31b970af663f9d85
   </classpaths>
   <!-- Build options -->
   <build>
