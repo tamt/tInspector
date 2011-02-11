@@ -70,6 +70,7 @@ package cn.itamt.utils.inspector.firefox.evil
 		
 		private var _windRatios:Array = new Array;
 		private var _gs:Array = new Array;
+		private var _yRanges:Array = new Array;
 		
 		public function DanDanTeng() 
 		{
@@ -177,7 +178,6 @@ package cn.itamt.utils.inspector.firefox.evil
 										Debug.trace("发射延迟: " + fireTime);
 										_inspector.stage.removeEventListener(Event.ENTER_FRAME, arguments.callee);
 										
-													
 										//var bombPos:Point = bomb.localToGlobal(new Point());
 										//var localPos:Point = _localPlayer.localToGlobal(new Point());
 										var dx:Number = (bomb.x - _localPlayer.x);
@@ -208,10 +208,20 @@ package cn.itamt.utils.inspector.firefox.evil
 										//Debug.trace("重力加速度: " + gSum / _gs.length);
 										Debug.trace("重力加速度: " + g);
 										
-										
-										
-										
+										//计算最高点
+										_inspector.stage.addEventListener(Event.ENTER_FRAME, function(evt:Event):void {
+												if (!bomb.stage)_inspector.stage.removeEventListener(Event.ENTER_FRAME, arguments.callee);
+												if (ly > bomb.y) {
+													_inspector.stage.removeEventListener(Event.ENTER_FRAME, arguments.callee);
+													Debug.trace("计算所得Y最高位移是: " + (bomb.y - _localPlayer.y));
+													var yRange:Number = bomb.y - _localPlayer.y;
+													var vy0:Number = energy * Math.sin(theta);
+													Debug.trace("利用最高位移计算所得重力加速度: " + (Math.sin(2 * theta) * vy0 * vy0 / yRange));
+												}
+												ly = bomb.y;
+											} );
 									}
+									
 									lx = bomb.x;
 									ly = bomb.y;
 								} );
