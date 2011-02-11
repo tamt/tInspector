@@ -160,39 +160,61 @@ package cn.itamt.utils.inspector.firefox.evil
 						_inspector.stage.removeEventListener(MouseEvent.MOUSE_UP, arguments.callee);
 						//
 						//var t:Number = ((getTimer() - time) / 1000);
-						var t:Number = getTimer() - time;
+						var t:Number = getTimer() - time;						
 						Debug.trace("时间:" + t);
 						var bomb:DisplayObject = ClassTool.findDisplayObjectInstaceByClassName(_inspector.stage, "SimpleBomb");
 						if (bomb) {
-							var bombPos:Point = bomb.localToGlobal(new Point());
-							var localPos:Point = _localPlayer.localToGlobal(new Point());
-							//var dx:Number = (bomb.x - _localPlayer.x);
-							//var dy:Number = (bomb.y - _localPlayer.y);
-							var dx:Number = (bombPos.x - localPos.x);
-							var dy:Number = (bombPos.y - localPos.y);
-							
-							var theta:Number = (_direction == -1?_angle:(180 - _angle)) * Math.PI / 180;
-							Debug.trace("炸弹位移: " + dx + ", " + dy);
-							
-							//计算这次采样取得的风力乘值.
-							var windRatio:Number = 2 * (dx - energy * Math.cos(theta) * t) / (_wind * _windDirection * t * t);
-							//计算所有采样风力乘值的平均值.
-							_windRatios.push(windRatio);
-							var wrSum:Number = 0;
-							for each(var num:Number in _windRatios) {
-								wrSum += num;
-							}
-							//Debug.trace("风力乘值: " + wrSum / _windRatios.length);
-							Debug.trace("风力乘值: " + windRatio);
-							
-							var g:Number = 2 * (dy + energy * Math.sin(theta) * t) / (t * t);
-							_gs.push(g);
-							var gSum:Number = 0;
-							for each(var gNum:Number in _gs) {
-								gSum += gNum;
-							}
-							//Debug.trace("重力加速度: " + gSum / _gs.length);
-							Debug.trace("重力加速度: " + g);
+							var fireTime:Number = getTimer();
+							var lx:Number = bomb.x;
+							var ly:Number = bomb.y;
+							_inspector.stage.addEventListener(Event.ENTER_FRAME, function(evt:Event):void {
+									if(!bomb.visible || !bomb.stage) _inspector.stage.removeEventListener(Event.ENTER_FRAME, arguments.callee);
+									if (bomb.x == lx && bomb.y == ly) {
+										Debug.trace("还有没发射");
+									}else {
+										fireTime = getTimer() - fireTime;
+										t -= fireTime;
+										Debug.trace("发射延迟: " + fireTime);
+										_inspector.stage.removeEventListener(Event.ENTER_FRAME, arguments.callee);
+										
+													
+										//var bombPos:Point = bomb.localToGlobal(new Point());
+										//var localPos:Point = _localPlayer.localToGlobal(new Point());
+										var dx:Number = (bomb.x - _localPlayer.x);
+										var dy:Number = (bomb.y - _localPlayer.y);
+										//var dx:Number = (bombPos.x - localPos.x);
+										//var dy:Number = (bombPos.y - localPos.y);
+										
+										var theta:Number = (_direction == -1?_angle:(180 - _angle)) * Math.PI / 180;
+										Debug.trace("炸弹位移: " + dx + ", " + dy);
+										
+										//计算这次采样取得的风力乘值.
+										var windRatio:Number = 2 * (dx - energy * Math.cos(theta) * t) / (_wind * _windDirection * t * t);
+										//计算所有采样风力乘值的平均值.
+										_windRatios.push(windRatio);
+										var wrSum:Number = 0;
+										for each(var num:Number in _windRatios) {
+											wrSum += num;
+										}
+										//Debug.trace("风力乘值: " + wrSum / _windRatios.length);
+										Debug.trace("风力乘值: " + windRatio);
+										
+										var g:Number = 2 * (dy + energy * Math.sin(theta) * t) / (t * t);
+										_gs.push(g);
+										var gSum:Number = 0;
+										for each(var gNum:Number in _gs) {
+											gSum += gNum;
+										}
+										//Debug.trace("重力加速度: " + gSum / _gs.length);
+										Debug.trace("重力加速度: " + g);
+										
+										
+										
+										
+									}
+									lx = bomb.x;
+									ly = bomb.y;
+								} );
 						}
 					} );
 			}
@@ -258,7 +280,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			//推算初始速度值
 			var theta:Number = (_direction == -1?_angle:(180 - _angle)) * Math.PI / 180;
 			var f:Number = _windDirection * _wind / 4;
-			var g:Number = 0.15;
+			var g:Number = 0.14*1000/_inspector.stage.frameRate;
 			var A:Number = endPt.x - startPt.x;
 			var B:Number = endPt.y - startPt.y;
 			var C:Number = Math.cos(theta);
@@ -269,6 +291,11 @@ package cn.itamt.utils.inspector.firefox.evil
 			//求出speed的值
 			//speed.value = Math.sqrt(A / (C * G + E * G * G));
 			var speed:Number = (Math.sqrt(A / (C * G + E * G * G)) + Math.sqrt(B / (D * G + F * G * G))) / 2;
+			
+			var tag:DisplayObject = this.findEnergyTag();
+			if (tag) {
+				tag.x = speed*3 + 84;
+			}
 			
 			Debug.trace("计算所得的力度:" + speed);
 			
@@ -315,7 +342,6 @@ package cn.itamt.utils.inspector.firefox.evil
 			Debug.trace("关闭外挂");
 			_panel.removeEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.removeEventListener(Event.SELECT, onSelectPlayer);
-			_panel.removeEventListener(Event.SELECT, onSelectPlayer);
 			_panel.removeEventListener("anti_invisible", onAntiInvisible);
 			
 			InspectorPopupManager.remove(_panel);
@@ -326,7 +352,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			this.viewContainer = null;
 			
 			//去除键盘事件侦听
-			_inspector.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, int.MIN_VALUE);
+			_inspector.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 		}
 		
 		private function unactiveThisPlugin(e:Event):void 
@@ -510,6 +536,20 @@ package cn.itamt.utils.inspector.firefox.evil
 			}
 			
 			return NaN;
+		}
+		
+		/**
+		 * 标识力度的三角箭头
+		 * @return
+		 */
+		private function findEnergyTag():DisplayObject {
+			var energyView:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClassName(_inspector.stage, "EnergyView") as DisplayObjectContainer;
+			if (energyView) {
+				var bar:DisplayObject = energyView.getChildAt(4);
+				if (bar) return bar;
+			}
+			
+			return null;
 		}
 	}
 }

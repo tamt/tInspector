@@ -25,6 +25,7 @@ package cn.itamt.utils.inspector.firefox.evil
 		private var _listContainer:Sprite;
 		private var _itemRenderer:Class = DanDanTengPlayerItemRenderer;
 		private var _visibleBtn:InspectorLabelButton;
+		private var _selectedItem:DanDanTengPlayerItemRenderer;
 		
 		public var energyRatio:NumericStepper;
 		
@@ -47,6 +48,22 @@ package cn.itamt.utils.inspector.firefox.evil
 			_visibleBtn.tip = "显示隐身的玩家";
 			addChild(_visibleBtn);
 			_visibleBtn.addEventListener(MouseEvent.CLICK, onClickVisible);
+			
+			//选择某一项时
+			addEventListener(Event.SELECT, onSelectItem);
+		}
+		
+		private function onSelectItem(e:Event):void 
+		{
+			if (_data) {
+				if(_selectedItem)_selectedItem.enable = false;
+				var item:DanDanTengPlayerItemRenderer = e.target as DanDanTengPlayerItemRenderer;
+				//if (item && item != _selectedItem) {
+				if (item) {
+					_selectedItem = item;
+					_selectedItem.enable = true;
+				}
+			}
 		}
 		
 		private function onClickVisible(e:MouseEvent):void 
