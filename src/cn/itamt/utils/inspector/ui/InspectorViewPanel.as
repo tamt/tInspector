@@ -311,6 +311,7 @@ package cn.itamt.utils.inspector.ui {
 		 * 绘制背景
 		 */
 		private function drawBG() : void {
+			this.setChildIndex(this.bg, 0);
 			this.bg.graphics.clear();
 			this.bg.graphics.lineStyle(2, 0x888888);
 			this.bg.graphics.beginFill(InspectorColorStyle.DEFAULT_BG/*, .95*/);

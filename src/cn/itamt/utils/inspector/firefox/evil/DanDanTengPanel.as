@@ -9,6 +9,7 @@ package cn.itamt.utils.inspector.firefox.evil
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import fl.controls.NumericStepper;
+
 	
 	/**
 	 * 弹弹堂操作面板
@@ -28,6 +29,8 @@ package cn.itamt.utils.inspector.firefox.evil
 		private var _selectedItem:DanDanTengPlayerItemRenderer;
 		
 		public var energyRatio:NumericStepper;
+		public var windRatio:NumericStepper;
+		public var gravity:NumericStepper;
 		
 		public function DanDanTengPanel() 
 		{
@@ -85,6 +88,8 @@ package cn.itamt.utils.inspector.firefox.evil
 			this.drawStatus();
 			
 			setChildIndex(energyRatio, this.numChildren - 1);
+			setChildIndex(windRatio, this.numChildren - 1);
+			setChildIndex(gravity, this.numChildren - 1);
 		}
 		
 		private function drawStatus():void 

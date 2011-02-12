@@ -61,6 +61,7 @@ package cn.itamt.utils.inspector.firefox.evil
 		
 		private var _players:Array;
 		private var _localPlayer:Sprite;
+		private var _player:Sprite;
 		//当前风力值
 		private var _wind:Number;
 		//风向, -1 <- . -> 1
@@ -71,6 +72,13 @@ package cn.itamt.utils.inspector.firefox.evil
 		private var _windRatios:Array = new Array;
 		private var _gs:Array = new Array;
 		private var _yRanges:Array = new Array;
+		
+		//重力加速度
+		private var _gravity:Number = 0.15;
+		//風力乘值
+		private var _windRatio:Number = 0.25;
+		//力度乘值
+		private var _energyRatio:Number = 3;
 		
 		public function DanDanTeng() 
 		{
@@ -112,6 +120,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			_panel.addEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.addEventListener(Event.SELECT, onSelectPlayer);
 			_panel.addEventListener("anti_invisible", onAntiInvisible);
+			_panel.addEventListener(Event.CHANGE, onRatioValueChange);
 			
 			_gameView = this.findGameView();
 			_playersContainer = findPlayerContainer();
@@ -135,6 +144,22 @@ package cn.itamt.utils.inspector.firefox.evil
 			
 			//侦听键盘事件
 			_inspector.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, int.MIN_VALUE);
+		}
+		
+		private function onRatioValueChange(e:Event):void 
+		{
+			_energyRatio = _panel.energyRatio.value;
+			_windRatio = _panel.windRatio.value;
+			_gravity = _panel.gravity.value;
+			
+			if(_localPlayer && _player){
+				//重新画线
+				//重新取得风力及角度
+				this.findVaneValue();
+				this.findAngleValue();
+				//画出轨迹线
+				this.drawTrajectory(new Point(_localPlayer.x, _localPlayer.y), new Point(_player.x, _player.y));
+			}
 		}
 		
 		/**
@@ -261,17 +286,18 @@ package cn.itamt.utils.inspector.firefox.evil
 		private function onSelectPlayer(e:Event):void 
 		{
 			Debug.trace("选择玩家: " + (e.target as DanDanTengPlayerItemRenderer).label);
-			var player:Sprite = (e.target as DanDanTengPlayerItemRenderer).data;
+			_player = null;
+			_player = (e.target as DanDanTengPlayerItemRenderer).data;
 			
-			if (player) {
-				Debug.trace("对方位置:" + player.x + ", " + player.y);
+			if (_player) {
+				Debug.trace("对方位置:" + _player.x + ", " + _player.y);
 				Debug.trace("你的位置:" + _localPlayer.x + ", " + _localPlayer.y);
 				
 				//重新取得风力及角度
 				this.findVaneValue();
 				this.findAngleValue();
 				//画出轨迹线
-				this.drawTrajectory(new Point(_localPlayer.x, _localPlayer.y), new Point(player.x, player.y));
+				this.drawTrajectory(new Point(_localPlayer.x, _localPlayer.y), new Point(_player.x, _player.y));
 			}
 		}
 		
@@ -289,8 +315,8 @@ package cn.itamt.utils.inspector.firefox.evil
 			
 			//推算初始速度值
 			var theta:Number = (_direction == -1?_angle:(180 - _angle)) * Math.PI / 180;
-			var f:Number = _windDirection * _wind / 4;
-			var g:Number = 0.14*1000/_inspector.stage.frameRate;
+			var f:Number = _windDirection * _wind * _windRatio;
+			var g:Number = _gravity*1000/_inspector.stage.frameRate;
 			var A:Number = endPt.x - startPt.x;
 			var B:Number = endPt.y - startPt.y;
 			var C:Number = Math.cos(theta);
@@ -304,7 +330,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			
 			var tag:DisplayObject = this.findEnergyTag();
 			if (tag) {
-				tag.x = speed*3 + 84;
+				tag.x = speed * _energyRatio + 84;
 			}
 			
 			Debug.trace("计算所得的力度:" + speed);
@@ -343,7 +369,11 @@ package cn.itamt.utils.inspector.firefox.evil
 		private function updatePanel():void 
 		{
 			//_panel.status = "共有" + (_players.length + 1) + "个玩家";
-			_panel.status = "风力:" + (_wind * _windDirection) + ",角度:" + (_angle*_direction) + "°";
+			_panel.status = "风力:" + (_wind * _windDirection) + ",角度:" + (_angle * _direction) + "°";
+			
+			_panel.energyRatio.value = _energyRatio;
+			_panel.windRatio.value = _windRatio;
+			_panel.gravity.value = _gravity;
 		}
 		
 		override public function onUnActive():void {
