@@ -132,6 +132,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			_panel.addEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.addEventListener(Event.SELECT, onSelectPlayer);
 			_panel.addEventListener("anti_invisible", onAntiInvisible);
+			_panel.addEventListener("fire_ddt", onFirebyDDT);
 			_panel.addEventListener(Event.CHANGE, onRatioValueChange);
 			
 			_gameView = this.findGameView();
@@ -156,6 +157,12 @@ package cn.itamt.utils.inspector.firefox.evil
 			
 			//侦听键盘事件
 			_inspector.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, int.MIN_VALUE);
+		}
+		
+		private function onFirebyDDT(e:Event):void 
+		{
+			//发射炮有
+			//_localPlayer.info.dispatchEvent();
 		}
 		
 		private function onRatioValueChange(e:Event):void 
@@ -304,12 +311,23 @@ package cn.itamt.utils.inspector.firefox.evil
 					}else if (obj is String) {
 						//Debug.trace("str: " + obj);
 					}else if (obj is Event) {
-						//Debug.trace("event: " + obj.type);
+						Debug.trace("event: " + obj.type);
 						if (obj.type == "sendShootAction") {
+							Debug.trace("类型：" + getQualifiedClassName((sample as NewObjectSample).type));
+							Debug.trace("evt.target: " + getQualifiedClassName(obj.target));
+							if (obj.target is DisplayObject) {
+								if ((obj.target as DisplayObject).stage) {
+									_inspector.liveInspect(obj.target as DisplayObject);
+								}else {
+									Debug.trace("sendShootAction's target not in display list");
+								}
+							}else {
+								Debug.trace("sendShootAction's target is not a DisplayObject.");
+							}
 							Debug.trace("============send shoot action=================");
 							var names:Object = getMemberNames(obj, true);
 							for each(var qname:QName in names) {
-								//Debug.trace(qname.localName + ", " + qname.toString());
+								Debug.trace(qname.localName + ", " + qname.toString());
 							}
 							//value old paras
 							Debug.trace("old: " + obj.old + ", value: " + obj.value + ", paras: " + obj.paras);

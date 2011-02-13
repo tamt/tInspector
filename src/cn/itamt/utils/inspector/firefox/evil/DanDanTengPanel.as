@@ -26,6 +26,7 @@ package cn.itamt.utils.inspector.firefox.evil
 		private var _listContainer:Sprite;
 		private var _itemRenderer:Class = DanDanTengPlayerItemRenderer;
 		private var _visibleBtn:InspectorLabelButton;
+		private var _fireBtn:InspectorLabelButton;
 		private var _selectedItem:DanDanTengPlayerItemRenderer;
 		
 		public var energyRatio:NumericStepper;
@@ -52,8 +53,19 @@ package cn.itamt.utils.inspector.firefox.evil
 			addChild(_visibleBtn);
 			_visibleBtn.addEventListener(MouseEvent.CLICK, onClickVisible);
 			
+			_fireBtn = new InspectorLabelButton("发射");
+			_fireBtn.tip = "按照外挂计算的数值发射";
+			addChild(_fireBtn);
+			_fireBtn.addEventListener(MouseEvent.CLICK, onClickFire);
+			
 			//选择某一项时
 			addEventListener(Event.SELECT, onSelectItem);
+		}
+		
+		private function onClickFire(e:MouseEvent):void 
+		{
+			e.stopImmediatePropagation();
+			dispatchEvent(new Event("fire_ddt"));
 		}
 		
 		private function onSelectItem(e:Event):void 
