@@ -2,6 +2,7 @@ package cn.itamt.utils.inspector.firefox.evil
 {
 	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.Debug;
+	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterManager;
@@ -18,11 +19,22 @@ package cn.itamt.utils.inspector.firefox.evil
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.sampler.getMemberNames;
+	import flash.sampler.getSampleCount;
+	import flash.sampler.getSamples;
+	import flash.sampler.NewObjectSample;
+	import flash.sampler.pauseSampling;
+	import flash.sampler.Sample;
+	import flash.sampler.startSampling;
+	import flash.sampler.stopSampling;
 	import flash.system.ApplicationDomain;
 	import flash.text.TextField;
+	import flash.utils.ByteArray;
+	import flash.utils.getQualifiedClassName;
 	import flash.utils.getTimer;
 	import msc.input.KeyCode;
 	
@@ -162,14 +174,26 @@ package cn.itamt.utils.inspector.firefox.evil
 			}
 		}
 		
+		private function checkKeyboardEventHandler(target:DisplayObject):void {
+			//if (_inspector.isInspectView(target)) return;
+			if (target is IEventDispatcher) {
+				if (target.hasEventListener(KeyboardEvent.KEY_UP)) {
+					//Debug.trace("侦听了鼠标事件：" + target.toString());
+				}
+			}
+		}
+		
 		/**
 		 * 侦听键盘事件
 		 * @param	e
 		 */
 		private function onKeyUp(e:KeyboardEvent):void 
 		{
+			
 			//释放空格键时
 			if (e.keyCode == KeyCode.SPACEBAR) {
+				//查找侦听了键盘事件的对象
+				//DisplayObjectTool.everyDisplayObject(_inspector.stage, checkKeyboardEventHandler);
 				//
 				var energy:Number = findEnergyValue();
 				Debug.trace("力度值: " + energy);
@@ -177,7 +201,7 @@ package cn.itamt.utils.inspector.firefox.evil
 				this.findVaneValue();
 				this.findAngleValue();
 				//画出轨迹线
-				//this.drawTrajectory(new Point(_localPlayer.x, _localPlayer.y), new Point(player.x, player.y));
+				this.drawTrajectory(new Point(_localPlayer.x, _localPlayer.y), new Point(_player.x, _player.y));
 				
 				this.updatePanel();
 				
@@ -252,7 +276,63 @@ package cn.itamt.utils.inspector.firefox.evil
 								} );
 						}
 					} );
+				
+				DisplayObjectTool.callLater(finishSampling, null, 1);
+				Debug.trace("开始采样！！！！！！！！！！！！");
+				//采样
+				startSampling();
 			}
+		}
+		
+		private function finishSampling():void {
+			Debug.trace("结束采样~~~~~~~~~~~~~~~~~~");
+			pauseSampling();
+			Debug.trace("采样数目：" + getSampleCount());
+			var samples:Object = getSamples();
+			for each(var sample:Sample in samples) {
+				if (sample is NewObjectSample) {
+					//Debug.trace("类型：" + getQualifiedClassName((sample as NewObjectSample).type));
+					//if ((sample as NewObjectSample).object.toString) {
+					//Debug.trace(String((sample as NewObjectSample).object));	
+					//}
+					var obj:* = (sample as NewObjectSample).object;
+					if (obj is Point) {
+						Debug.trace("point: " + obj.x + ", " + obj.y);
+						this.viewContainer.graphics.beginFill(0xfff000, .8);
+						this.viewContainer.graphics.drawCircle(obj.x, obj.y, 10);
+						this.viewContainer.graphics.endFill();
+					}else if (obj is String) {
+						//Debug.trace("str: " + obj);
+					}else if (obj is Event) {
+						//Debug.trace("event: " + obj.type);
+						if (obj.type == "sendShootAction") {
+							Debug.trace("============send shoot action=================");
+							var names:Object = getMemberNames(obj, true);
+							for each(var qname:QName in names) {
+								//Debug.trace(qname.localName + ", " + qname.toString());
+							}
+							//value old paras
+							Debug.trace("old: " + obj.old + ", value: " + obj.value + ", paras: " + obj.paras);
+							Debug.trace("=============================================");
+						}
+					}else if (obj is ByteArray) {
+						Debug.trace("bytearray");
+					}else if (obj is Array) {
+						Debug.trace((obj as Array).toString());
+					}else if (obj is Number || obj is int || obj is uint) {
+						Debug.trace("num: " + obj);
+					}
+					//if (sample.stack && sample.stack is Array) {
+						//var str:String = "";
+						//for (var i:int = 0; i < sample.stack.length; i++) {
+							//str += sample.stack[i].name;
+						//}
+					//}
+					//Debug.trace(str);
+				}
+			}
+			
+			stopSampling();
 		}
 		
 		/**
