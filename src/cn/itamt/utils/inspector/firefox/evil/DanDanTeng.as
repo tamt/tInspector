@@ -34,6 +34,8 @@ package cn.itamt.utils.inspector.firefox.evil
 	import flash.system.ApplicationDomain;
 	import flash.text.TextField;
 	import flash.utils.ByteArray;
+	import flash.utils.describeType;
+	import flash.utils.getDefinitionByName;
 	import flash.utils.getQualifiedClassName;
 	import flash.utils.getTimer;
 	import msc.input.KeyCode;
@@ -70,6 +72,8 @@ package cn.itamt.utils.inspector.firefox.evil
 		private var _gameViewClass:Class;
 		private var _gameViewClassName:String = "game.view.GameView";
 		private var _gameView:DisplayObjectContainer;
+		
+		private var _gameDomain:ApplicationDomain;
 		
 		private var _players:Array;
 		private var _localPlayer:Sprite;
@@ -132,6 +136,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			_panel.addEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.addEventListener(Event.SELECT, onSelectPlayer);
 			_panel.addEventListener("anti_invisible", onAntiInvisible);
+			_panel.addEventListener("fire_ddt", onFirebyDDT);
 			_panel.addEventListener(Event.CHANGE, onRatioValueChange);
 			
 			_gameView = this.findGameView();
@@ -156,6 +161,31 @@ package cn.itamt.utils.inspector.firefox.evil
 			
 			//侦听键盘事件
 			_inspector.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, int.MIN_VALUE);
+		}
+		
+		private function onFirebyDDT(e:Event):void 
+		{
+			if(_gameDomain){
+				var livingEventClass:Class = _gameDomain.getDefinition("ddt.events.LivingEvent") as Class;
+				if(livingEventClass){
+					var livingEvent:* = new livingEventClass("sendShootAction", 900, 900);
+					Debug.trace(describeType(livingEvent).toXMLString());
+					
+					var tag:DisplayObject = this.findEnergyTag();
+					if (tag) {
+						tag.x = speed * _energyRatio + 84;
+					}
+					
+					//livingEvent.paras = 900;
+					//发射炮有
+					_localPlayer["localPlayer"].dispatchEvent(livingEvent);
+					//_localPlayer.info.dispatchEvent();
+				}else {
+					Debug.trace("livingEventClass为空");
+				}
+			}else {
+				Debug.trace("_gameDomain没有定义");
+			}
 		}
 		
 		private function onRatioValueChange(e:Event):void 
@@ -304,12 +334,23 @@ package cn.itamt.utils.inspector.firefox.evil
 					}else if (obj is String) {
 						//Debug.trace("str: " + obj);
 					}else if (obj is Event) {
-						//Debug.trace("event: " + obj.type);
+						Debug.trace("event: " + obj.type);
 						if (obj.type == "sendShootAction") {
+							Debug.trace("类型：" + getQualifiedClassName((sample as NewObjectSample).type));
+							Debug.trace("evt.target: " + getQualifiedClassName(obj.target));
+							if (obj.target is DisplayObject) {
+								if ((obj.target as DisplayObject).stage) {
+									_inspector.liveInspect(obj.target as DisplayObject);
+								}else {
+									Debug.trace("sendShootAction's target not in display list");
+								}
+							}else {
+								Debug.trace("sendShootAction's target is not a DisplayObject.");
+							}
 							Debug.trace("============send shoot action=================");
 							var names:Object = getMemberNames(obj, true);
 							for each(var qname:QName in names) {
-								//Debug.trace(qname.localName + ", " + qname.toString());
+								Debug.trace(qname.localName + ", " + qname.toString());
 							}
 							//value old paras
 							Debug.trace("old: " + obj.old + ", value: " + obj.value + ", paras: " + obj.paras);
@@ -463,6 +504,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			_panel.removeEventListener(Event.CLOSE, unactiveThisPlugin);
 			_panel.removeEventListener(Event.SELECT, onSelectPlayer);
 			_panel.removeEventListener("anti_invisible", onAntiInvisible);
+			_panel.removeEventListener("fire_ddt", onFirebyDDT);
 			
 			InspectorPopupManager.remove(_panel);
 			_panel = null;
@@ -523,6 +565,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			for (var i:int = 0; i < _inspector.stage.numChildren; i++) {
 				var domain:ApplicationDomain = _inspector.stage.getChildAt(i).loaderInfo.applicationDomain;
 				if (domain.hasDefinition(this._playerClassName)) {
+					_gameDomain = domain;
 					_gameView = _inspector.stage.getChildAt(i) as DisplayObjectContainer;
 					Debug.trace("找到了GamePlayer所在的程序域!");
 					_playerClass = domain.getDefinition(this._playerClassName) as Class;
