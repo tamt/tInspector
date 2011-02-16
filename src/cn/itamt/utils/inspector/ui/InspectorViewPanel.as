@@ -1,4 +1,5 @@
 package cn.itamt.utils.inspector.ui {
+	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.core.liveinspect.InspectorViewCloseButton;
 
@@ -98,6 +99,7 @@ package cn.itamt.utils.inspector.ui {
 			addChild(_title);
 
 			_contentContainer = new Sprite();
+			_contentContainer.mouseEnabled = false;
 			addChild(_contentContainer);
 
 			closeBtn = new InspectorViewCloseButton();
@@ -214,8 +216,8 @@ package cn.itamt.utils.inspector.ui {
 				_content.addEventListener(Event.RESIZE, onContentResize, false, 0, true);
 				_contentContainer.x = this._padding.left;
 				_contentContainer.y = this._padding.top;
-				_contentContainer.scrollRect = new Rectangle(0, 0, calculateContenAreaWidth(), this.calculateContenAreaHeight());
 				_contentContainer.addChild(_content);
+				this.setContentRenderArea(new Rectangle(0, 0, calculateContenAreaWidth(), this.calculateContenAreaHeight()));
 
 				if(inited)
 					this.relayout();
@@ -224,6 +226,13 @@ package cn.itamt.utils.inspector.ui {
 
 		public function getContent() : DisplayObject {
 			return _content;
+		}
+		
+		/**
+		 * 设置内容的渲染区域
+		 */
+		protected function setContentRenderArea(rect:Rectangle) {
+			_contentContainer.scrollRect = rect;
 		}
 
 		public function resize(w : Number, h : Number) : void {
@@ -294,9 +303,9 @@ package cn.itamt.utils.inspector.ui {
 				if(_scroller.stage == null)
 					addChild(_scroller);
 
-				_contentContainer.scrollRect = new Rectangle(rect.x, calculateScrollRectY(), calculateContenAreaWidth() - _scroller.width, this.calculateContenAreaHeight());
+				this.setContentRenderArea(new Rectangle(rect.x, calculateScrollRectY(), calculateContenAreaWidth() - _scroller.width, this.calculateContenAreaHeight()));
 			} else {
-				_contentContainer.scrollRect = new Rectangle(rect.x, 0, calculateContenAreaWidth(), this.calculateContenAreaHeight());
+				this.setContentRenderArea(new Rectangle(rect.x, 0, calculateContenAreaWidth(), this.calculateContenAreaHeight()));
 				if(_scroller) {
 					if(_scroller.stage)
 						removeChild(_scroller);
@@ -329,7 +338,7 @@ package cn.itamt.utils.inspector.ui {
 		private function onScroll(evt : Event = null) : void {
 			var rect : Rectangle = _contentContainer.scrollRect;
 			rect.y = calculateScrollRectY();
-			_contentContainer.scrollRect = rect;
+			this.setContentRenderArea(rect);
 		}
 
 		/**
@@ -383,7 +392,7 @@ package cn.itamt.utils.inspector.ui {
 				var t : Number = _content.height - calculateContenAreaHeight();
 				if(rect.y > t)
 					rect.y = t;
-				_contentContainer.scrollRect = rect;
+				this.setContentRenderArea(rect);
 				if(_scroller)
 					_scroller.value = 100 * rect.y / t;
 			}

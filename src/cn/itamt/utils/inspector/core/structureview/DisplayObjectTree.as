@@ -1,6 +1,9 @@
 package cn.itamt.utils.inspector.core.structureview {
+	import cn.itamt.utils.Debug;
+	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.ObjectPool;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
+	import flash.geom.Rectangle;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
@@ -18,7 +21,10 @@ package cn.itamt.utils.inspector.core.structureview {
 		private var _map : Dictionary;
 		private var _list : Sprite;
 		private var _itemRenderer : Class;
+		//逻辑渲染区域
+		private var _renderArea:Rectangle;
 		public var filterFun : Function;
+		public var lineHeight:Number;
 
 		/**
 		 * @param object				显示对象
@@ -40,9 +46,8 @@ package cn.itamt.utils.inspector.core.structureview {
 			addChild(this._list);
 
 			// 绘制
-			// this.buildTree(this._root);
 			this.initTree();
-			this.drawList();
+			//this.drawList();
 		}
 
 		/**
@@ -57,20 +62,6 @@ package cn.itamt.utils.inspector.core.structureview {
 				var container : DisplayObjectContainer = _root as DisplayObjectContainer;
 				for(var i : int = 0;i < container.numChildren;i++) {
 					addDisplayItem(getDisplayItem(container.getChildAt(i)));
-				}
-			}
-		}
-
-		/**
-		 * 创建显示结构树的数据.
-		 */
-		private function buildTree(object : DisplayObject) : void {
-			addDisplayItem(getDisplayItem(object));
-
-			if(object is DisplayObjectContainer) {
-				var container : DisplayObjectContainer = object as DisplayObjectContainer;
-				for(var i : int = 0;i < container.numChildren;i++) {
-					buildTree(container.getChildAt(i));
 				}
 			}
 		}
@@ -97,8 +88,8 @@ package cn.itamt.utils.inspector.core.structureview {
 					inspectDisplayItem(parent);
 				}
 			}
-			// buildTree(this._root);
-			// this.drawList();
+
+			dispatchEvent(new Event(Event.RESIZE));
 		}
 
 		/**
@@ -109,7 +100,8 @@ package cn.itamt.utils.inspector.core.structureview {
 			if(item.displayObject == this && this.contains(item.displayObject))
 				return;
 
-			if(_data.indexOf(item) < 0) {
+			if (_data.indexOf(item) < 0) {
+				if(filterFun != null)if(filterFun.apply(null, [item.displayObject]))return;
 				_data.push(item);
 			}
 		}
@@ -160,7 +152,8 @@ package cn.itamt.utils.inspector.core.structureview {
 			_list.graphics.clear();
 			_list.graphics.lineTo(0, 0);
 			while(_list.numChildren) {
-				ObjectPool.disposeObject(_list.removeChildAt(0), _itemRenderer);
+				//ObjectPool.disposeObject(_list.removeChildAt(0), _itemRenderer);
+				_list.removeChildAt(0);
 			}
 
 			var item : DisplayItemData;
@@ -168,20 +161,17 @@ package cn.itamt.utils.inspector.core.structureview {
 				item = _data[i];
 				if(item.displayObject.stage == null)
 					continue;
-				if(filterFun != null) {
-					if(filterFun.apply(null, [item.displayObject])) {
-						continue;
-					}
+				
+				if (_renderArea.contains(0, i*lineHeight)) {
+					var render : BaseDisplayItemView = new _itemRenderer();
+					//var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
+					render.setData(item);
+					render.x = 0;
+					//render.y = _list.height + 2;
+					render.y = i * lineHeight + 2;
+					_list.addChild(render);
 				}
-				// var render : BaseDisplayItemView = new _itemRenderer();
-				var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
-				render.setData(item);
-				render.x = 0;
-				render.y = _list.height + 2;
-				_list.addChild(render);
 			}
-
-			dispatchEvent(new Event(Event.RESIZE));
 		}
 
 		/**
@@ -212,6 +202,7 @@ package cn.itamt.utils.inspector.core.structureview {
 			}
 
 			this.drawList();
+			dispatchEvent(new Event(Event.RESIZE));
 		}
 
 		private function collapseDisplayItem(item : DisplayItemData) : void {
@@ -267,6 +258,35 @@ package cn.itamt.utils.inspector.core.structureview {
 			}
 
 			return null;
+		}
+		
+		private var _invalidate:Boolean = false;
+		public function set renderArea(rect:Rectangle):void 
+		{
+			_renderArea = rect;
+			_renderArea.top -= lineHeight + 2;
+			
+			if (!_invalidate) {
+				_invalidate = true;
+				DisplayObjectTool.callLater(renderList);
+				//this.stage.invalidate();// = true;
+				//this.stage.addEventListener(Event.RENDER, this.renderList);
+			}
+		}
+		
+		public function get renderArea():Rectangle {
+			return _renderArea;
+		}
+		
+		private function renderList():void {
+			_invalidate = false;
+			drawList();
+			//this.stage.removeEventListener(Event.RENDER, renderList);
+		
+		}
+		
+		override public function get height():Number {
+			return _data.length * (lineHeight + 2) - 2;
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package cn.itamt.utils.inspector.core.structureview {
 	import cn.itamt.utils.ClassTool;
+	import cn.itamt.utils.Debug;
+	import cn.itamt.utils.inspector.core.structureview.DisplayObjectTree;
 	import cn.itamt.utils.inspector.events.InspectEvent;
 	import cn.itamt.utils.inspector.output.DisplayObjectChildrenInfoOutputer;
 	import cn.itamt.utils.inspector.output.DisplayObjectInfoOutPuter;
@@ -10,6 +12,7 @@ package cn.itamt.utils.inspector.core.structureview {
 	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
 	import cn.itamt.utils.inspector.ui.InspectorViewRefreshButton;
 	import cn.itamt.utils.inspector.ui.Padding;
+	import flash.geom.Rectangle;
 
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -22,6 +25,8 @@ package cn.itamt.utils.inspector.core.structureview {
 	 * @author itamt@qq.com
 	 */
 	public class StructureViewPanel extends InspectorViewPanel {
+		private var _tree:DisplayObjectTree;
+		
 		public var statusOutputer : DisplayObjectInfoOutPuter;
 		private var _statusInfo : TextField;
 
@@ -40,7 +45,8 @@ package cn.itamt.utils.inspector.core.structureview {
 			_statusInfo.height = 20;
 			
 			var styleSheet : StyleSheet = new StyleSheet();
-			styleSheet.setStyle('a:hover', {textDecoration:"underline"});			styleSheet.setStyle('a', {color:"#99cc00"});
+			styleSheet.setStyle('a:hover', {textDecoration:"underline"});
+			styleSheet.setStyle('a', {color:"#99cc00"});
 			_title.styleSheet = styleSheet;
 			addChild(_statusInfo);
 			
@@ -116,6 +122,12 @@ package cn.itamt.utils.inspector.core.structureview {
 			
 			this.updateStatus();
 		}
+		
+		public function setTreeView(treeView:DisplayObjectTree):void 
+		{
+			_tree = treeView;
+			this.setContent(_tree);
+		}
 
 		private function updateStatus() : void {
 			if(statusOutputer == null) {
@@ -123,6 +135,11 @@ package cn.itamt.utils.inspector.core.structureview {
 			}
 			this._statusInfo.htmlText = statusOutputer.output(_inspectObject);
 			this.drawStatus();
+		}
+		
+		override protected function setContentRenderArea(rect:Rectangle) {
+			super.setContentRenderArea(rect);
+			_tree.renderArea = rect;
 		}
 
 		/**

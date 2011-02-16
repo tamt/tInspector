@@ -73,6 +73,8 @@ package cn.itamt.utils.inspector.core.structureview {
 			
 			this.panel = new StructureViewPanel(size.x, size.y);
 			this.treeView = new DisplayObjectTree(this._inspector.stage, StructureElementView);
+			this.treeView.filterFun = _inspector.isInspectView;
+			this.treeView.lineHeight = 20;
 			this.treeView.addEventListener(DisplayItemEvent.OVER, onOverElement, false, 0, true);
 			this.treeView.addEventListener(DisplayItemEvent.CLICK, onClickElement, false, 0, true);
 			this.panel.addEventListener(MouseEvent.ROLL_OUT, onRollOutPanel, false, 0, true);
@@ -80,8 +82,7 @@ package cn.itamt.utils.inspector.core.structureview {
 			this.panel.addEventListener(TextEvent.LINK, onClickLinkTarget);
 			this.panel.addEventListener(InspectEvent.REFRESH, onRefresh, false, 0, true);
 			
-			this.treeView.filterFun = _inspector.isInspectView;
-			this.panel.setContent(treeView);
+			this.panel.setTreeView(treeView);
 			InspectorPopupManager.popup(this.panel, PopupAlignMode.CENTER);
 		}
 
@@ -239,7 +240,7 @@ package cn.itamt.utils.inspector.core.structureview {
 		 * 玩家单击关闭按钮时
 		 */
 		private function onClickClose(evt : Event) : void {
-			Debug.trace('[StructureView][onClickClose]');
+			//Debug.trace('[StructureView][onClickClose]');
 			this._inspector.pluginManager.unactivePlugin(InspectorPluginId.STRUCT_VIEW);
 		}
 

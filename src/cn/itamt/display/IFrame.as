@@ -29,6 +29,10 @@ package cn.itamt.display
 			_h = h;
 			
 			super();
+			
+			if (ExternalInterface.available) {
+				ExternalInterface.addCallback("onIFrameLoad", this.onIFrameLoad);
+			}
 		}
 		
 		override public function set x(val:Number):void {
@@ -195,6 +199,11 @@ package cn.itamt.display
 		{
 			_builded = false;
 		}
+		
+		private function onIFrameLoad(id:String):void {
+			Debug.trace("onIFrameLoad: " + id);
+			dispatchEvent(new Event(Event.COMPLETE, false, false));
+		}
 	}
 
 }
@@ -219,7 +228,20 @@ internal class JSScripts
 					iframe.setAttribute('frameBorder','no');
 					iframe.setAttribute('allowTransparency',true);
 					iframe.setAttribute('border',0);
-					iframe.setAttribute('scrolling',"no");
+					iframe.setAttribute('scrolling', "no");
+					
+					if(iframe.attachEvent){
+						iframe.attachEvent("onload", function() {
+							var swf = document.getElementById("flashcontent");
+							swf.onIFrameLoad(id);
+						});
+					} else {
+						iframe.onload = function(){
+							var swf = document.getElementById("flashcontent");
+							swf.onIFrameLoad(id);
+						};
+					}
+					
 					document.body.appendChild(iframe);
 				}
 				]]>
