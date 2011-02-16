@@ -149,15 +149,6 @@ package cn.itamt.utils.inspector.core.structureview {
 		 * 更新显示(绘制)
 		 */
 		public function drawList() : void {
-			/*
-			_list.graphics.clear();
-			_list.graphics.lineTo(0, 0);
-			while(_list.numChildren) {
-				//ObjectPool.disposeObject(_list.removeChildAt(0), _itemRenderer);
-				_list.removeChildAt(0);
-			}
-			*/
-
 			var item : DisplayItemData;
 			var j:int;
 			for(var i : int = 0;i < _data.length;i++) {
@@ -166,7 +157,6 @@ package cn.itamt.utils.inspector.core.structureview {
 					continue;
 				if (filterFun != null) if (filterFun.apply(null, [item.displayObject])) continue;
 				
-				//if (_renderArea.contains(0, i*lineHeight)) {
 				if (_renderArea.top - lineHeight < j * lineHeight && _renderArea.bottom > j * lineHeight) {
 					var render : BaseDisplayItemView;
 					if(j>=_list.numChildren){
@@ -175,10 +165,8 @@ package cn.itamt.utils.inspector.core.structureview {
 					}else {
 						render = _list.getChildAt(j) as BaseDisplayItemView;
 					}
-					//var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
 					render.setData(item);
 					render.x = 0;
-					//render.y = _list.height + 2;
 					render.y = j * lineHeight + 2;
 				}
 				j++;
@@ -283,8 +271,6 @@ package cn.itamt.utils.inspector.core.structureview {
 			if (!_invalidate) {
 				_invalidate = true;
 				DisplayObjectTool.callLater(renderList);
-				//this.stage.invalidate();// = true;
-				//this.stage.addEventListener(Event.RENDER, this.renderList);
 			}
 		}
 		
@@ -295,7 +281,6 @@ package cn.itamt.utils.inspector.core.structureview {
 		private function renderList():void {
 			_invalidate = false;
 			drawList();
-			//this.stage.removeEventListener(Event.RENDER, renderList);
 		}
 		
 		override public function get height():Number {
