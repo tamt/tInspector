@@ -95,6 +95,8 @@ package cn.itamt.utils.inspector.firefox.evil
 		private var _windRatio:Number = 0.25;
 		//力度乘值
 		private var _energyRatio:Number = 3;
+		//估算的力度
+		private var _estimateSpeed:Number;
 		
 		public function DanDanTeng() 
 		{
@@ -170,15 +172,30 @@ package cn.itamt.utils.inspector.firefox.evil
 				if(livingEventClass){
 					var livingEvent:* = new livingEventClass("sendShootAction", 900, 900);
 					Debug.trace(describeType(livingEvent).toXMLString());
+						
+					//重新取得风力及角度
+					this.findVaneValue();
+					this.findAngleValue();
+					//画出轨迹线
+					this.drawTrajectory(new Point(_localPlayer.x, _localPlayer.y), new Point(_player.x, _player.y));
+					//
+					this.findEnergyValue();
 					
-					var tag:DisplayObject = this.findEnergyTag();
-					if (tag) {
-						tag.x = speed * _energyRatio + 84;
-					}
+					_inspector.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, KeyCode.SPACEBAR, KeyCode.SPACEBAR, KeyCode.SPACEBAR));
+					_inspector.stage.addEventListener(Event.ENTER_FRAME, function(evt:Event):void {
+							if (Math.abs(_energyBar.width - _estimateSpeed * _energyRatio) < 5) {
+								_inspector.stage.removeEventListener(Event.ENTER_FRAME, arguments.callee);
+								_inspector.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_UP, true, true, KeyCode.SPACEBAR, KeyCode.SPACEBAR, KeyCode.SPACEBAR));
+							}
+							if (_energyBar.width > 1000) {
+								_inspector.stage.removeEventListener(Event.ENTER_FRAME, arguments.callee);
+							}
+						});
+					
 					
 					//livingEvent.paras = 900;
 					//发射炮有
-					_localPlayer["localPlayer"].dispatchEvent(livingEvent);
+					//_localPlayer["localPlayer"].dispatchEvent(livingEvent);
 					//_localPlayer.info.dispatchEvent();
 				}else {
 					Debug.trace("livingEventClass为空");
@@ -307,10 +324,10 @@ package cn.itamt.utils.inspector.firefox.evil
 						}
 					} );
 				
-				DisplayObjectTool.callLater(finishSampling, null, 1);
-				Debug.trace("开始采样！！！！！！！！！！！！");
+				//DisplayObjectTool.callLater(finishSampling, null, 1);
+				//Debug.trace("开始采样！！！！！！！！！！！！");
 				//采样
-				startSampling();
+				//startSampling();
 			}
 		}
 		
@@ -448,6 +465,7 @@ package cn.itamt.utils.inspector.firefox.evil
 			//求出speed的值
 			//speed.value = Math.sqrt(A / (C * G + E * G * G));
 			var speed:Number = (Math.sqrt(A / (C * G + E * G * G)) + Math.sqrt(B / (D * G + F * G * G))) / 2;
+			_estimateSpeed = speed;
 			
 			var tag:DisplayObject = this.findEnergyTag();
 			if (tag) {
@@ -691,10 +709,15 @@ package cn.itamt.utils.inspector.firefox.evil
 			}
 		}
 		
+		private var _energyBar:DisplayObject;
 		private function findEnergyValue():Number {
+			if (_energyBar && _energyBar.stage) {
+				return _energyBar.width;
+			}
 			var energyView:DisplayObjectContainer = ClassTool.findDisplayObjectInstaceByClassName(_inspector.stage, "EnergyView") as DisplayObjectContainer;
 			if (energyView) {
 				var bar:DisplayObject = energyView.getChildAt(2);
+				_energyBar = bar;
 				if (bar) return bar.width;
 			}
 			
