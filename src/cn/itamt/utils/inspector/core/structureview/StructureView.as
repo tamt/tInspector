@@ -73,7 +73,7 @@ package cn.itamt.utils.inspector.core.structureview {
 			
 			this.panel = new StructureViewPanel(size.x, size.y);
 			this.treeView = new DisplayObjectTree(this._inspector.stage, StructureElementView);
-			this.treeView.filterFun = _inspector.isInspectView;
+			//this.treeView.filterFun = _inspector.isInspectView;
 			this.treeView.lineHeight = 20;
 			this.treeView.addEventListener(DisplayItemEvent.OVER, onOverElement, false, 0, true);
 			this.treeView.addEventListener(DisplayItemEvent.CLICK, onClickElement, false, 0, true);
