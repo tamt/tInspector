@@ -214,10 +214,15 @@ internal class JSScripts
 		<script>
 				<![CDATA[
 				function(id, w, h) {
-					var iframe = document.createElement("iframe");
+					var iframe = document.getElementById(id);
+					if (iframe) {
+					}else {
+						iframe = document.createElement("iframe");
+						iframe.id = id;
+						document.body.appendChild(iframe);
+					}
 					iframe.style.position = "absolute";
 					iframe.style.zIndex = 2;
-					iframe.id = id;
 					iframe.frameborder = "no";
 					iframe.border = 0;
 					//border=0 name=ye_xy marginWidth=0 frameSpacing=0 marginHeight=0
@@ -242,7 +247,6 @@ internal class JSScripts
 						};
 					}
 					
-					document.body.appendChild(iframe);
 				}
 				]]>
 		</script>
