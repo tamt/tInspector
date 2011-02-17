@@ -1,6 +1,12 @@
 package {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.core.propertyview.DisplayObjectPropertyPanel;
+	import cn.itamt.utils.inspector.core.structureview.BaseDisplayItemView;
+	import cn.itamt.utils.inspector.core.structureview.DisplayItemData;
+	import cn.itamt.utils.inspector.core.structureview.StructureElementView;
+	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
+	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
+	import cn.itamt.utils.inspector.ui.list.InspectorListView;
 	//import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
@@ -21,41 +27,28 @@ package {
 	 * @author itamt@qq.com
 	 */
 	public class tInspectorDemo extends Sprite {
+		
+		var list:InspectorListView;
+		
 		public function tInspectorDemo() {
 			this.stage.scaleMode = StageScaleMode.NO_SCALE;
 			//this.stage.align = StageAlign.RIGHT;
 			
-			var bar:ControlBar = new ControlBar();
-			this.addChild(bar);
+			//Inspector.getInstance().init(this.stage);
 			
-			//使用tInspector只需初始化即可
-			Inspector.getInstance().init(this);
-			//Inspector.getInstance().structureView.size = new Point(400, 400);
-			//Inspector.getInstance().propertiesView.size = new Point(400, 400);
-			Inspector.getInstance().pluginManager.registerPlugin(bar);
-			Inspector.getInstance().pluginManager.registerPlugin(new SwfInfoView());
-			//Inspector.getInstance().pluginManager.registerPlugin(new FlashFirebug());
-			Inspector.getInstance().liveInspectView.use3DTransformer(new Transform3DController());
+			//var panel:InspectorViewPanel = new InspectorViewPanel();
+			//addChild(panel);
+			StructureElementView.outputerManager = new InspectorOutPuterManager();
 			
-			//this.loaderInfo.addEventListener(Event.COMPLETE, onComplete);
-			//Inspector.getInstance().pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
+			var list:InspectorListView = new InspectorListView(StructureElementView);
+			var arr:Array = [];
+			for (var i:int = 0; i < 20; i++) {
+				arr.push(new DisplayItemData(new Sprite()));
+			}
+			list.data = arr;
+			addChild(list);
 			
-			//
-			var panel:DisplayObjectPropertyPanel = new DisplayObjectPropertyPanel();
-			panel.x = 100;
-			panel.y = 50;
-			addChild(panel);
-		}
-		
-		private function onComplete(e:Event):void 
-		{
-			var ba:ByteArray = this.loaderInfo.bytes;
-			var sd:SWFData2 = new SWFData2();
-			sd.writeBytes(ba);
-			sd.position = 0;
-			var parser:SWFParser = new SWFParser();
-			var header:SWFHeader = parser.parseHeader(sd);
-			trace(header.toString());
+			//panel.setContent(list);
 		}
 	}
 }
