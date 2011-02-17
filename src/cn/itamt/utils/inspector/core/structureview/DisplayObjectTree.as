@@ -25,7 +25,9 @@ package cn.itamt.utils.inspector.core.structureview {
 		private var _renderArea:Rectangle;
 		public var filterFun : Function;
 		public var lineHeight:Number;
-
+		
+		private var _gap:Number = 2;
+		
 		/**
 		 * @param object				显示对象
 		 * @param itemRenderClass		显示对象树节点的渲染类
@@ -131,6 +133,7 @@ package cn.itamt.utils.inspector.core.structureview {
 				return;
 
 			if(_data.indexOf(item) < 0) {
+				if(filterFun != null)if(filterFun.apply(null, [item.displayObject]))return;
 				_data.splice(index, 0, item);
 			}
 		}
@@ -146,31 +149,53 @@ package cn.itamt.utils.inspector.core.structureview {
 
 		/**
 		 * 更新显示(绘制)
-		 * TODO:优化绘制.
 		 */
 		public function drawList() : void {
 			_list.graphics.clear();
 			_list.graphics.lineTo(0, 0);
-			while(_list.numChildren) {
+			//while(_list.numChildren) {
 				//ObjectPool.disposeObject(_list.removeChildAt(0), _itemRenderer);
-				_list.removeChildAt(0);
-			}
+				//_list.removeChildAt(0);
+			//}
 
 			var item : DisplayItemData;
+			var rendersNum:uint;
+			_validItems = 0;
 			for(var i : int = 0;i < _data.length;i++) {
 				item = _data[i];
 				if(item.displayObject.stage == null)
 					continue;
 				
-				if (_renderArea.contains(0, i*lineHeight)) {
-					var render : BaseDisplayItemView = new _itemRenderer();
+				//if (_renderArea.contains(0, _validItems * lineHeight)) {
+				if (_renderArea.top - lineHeight - _gap < _validItems * lineHeight && _renderArea.bottom > _validItems * lineHeight) {
+					var render : BaseDisplayItemView;
+					if (rendersNum < _list.numChildren) {
+						render = _list.getChildAt(rendersNum) as BaseDisplayItemView;
+						if (render == null) {
+							//render = new _itemRenderer();
+							render = ObjectPool.getObject(_itemRenderer);;
+							_list.addChild(render);
+						}
+					}else {
+						render = new _itemRenderer();
+						_list.addChild(render);
+					}
 					//var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
 					render.setData(item);
 					render.x = 0;
 					//render.y = _list.height + 2;
-					render.y = i * lineHeight + 2;
-					_list.addChild(render);
+					render.y = _validItems * lineHeight + 2;
+					//_list.addChild(render);
+					
+					rendersNum++;
 				}
+				
+				_validItems++;
+			}
+			
+			while (rendersNum < _list.numChildren) {
+				ObjectPool.disposeObject(_list.removeChildAt(_list.numChildren -1), _itemRenderer);
+				//_list.removeChildAt(_list.numChildren -1);
 			}
 		}
 
@@ -201,7 +226,7 @@ package cn.itamt.utils.inspector.core.structureview {
 					break;
 			}
 
-			this.drawList();
+			//this.drawList();
 			dispatchEvent(new Event(Event.RESIZE));
 		}
 
@@ -264,8 +289,8 @@ package cn.itamt.utils.inspector.core.structureview {
 		public function set renderArea(rect:Rectangle):void 
 		{
 			_renderArea = rect;
-			_renderArea.top -= lineHeight + 2;
-			
+			//this.drawList();
+			//return;
 			if (!_invalidate) {
 				_invalidate = true;
 				DisplayObjectTool.callLater(renderList);
@@ -285,8 +310,12 @@ package cn.itamt.utils.inspector.core.structureview {
 		
 		}
 		
+		/**
+		 * 
+		 */
+		private var _validItems:uint;
 		override public function get height():Number {
-			return _data.length * (lineHeight + 2) - 2;
+			return _validItems * (lineHeight + _gap) - _gap;
 		}
 	}
 }
