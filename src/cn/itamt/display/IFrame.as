@@ -214,35 +214,46 @@ internal class JSScripts
 		<script>
 				<![CDATA[
 				function(id, w, h) {
-					var iframe = document.createElement("iframe");
-					iframe.style.position = "absolute";
-					iframe.style.zIndex = 2;
-					iframe.id = id;
-					iframe.frameborder = "no";
-					iframe.border = 0;
-					//border=0 name=ye_xy marginWidth=0 frameSpacing=0 marginHeight=0
-					iframe.marginWidth = 0;
-					iframe.marginHeight = 0;
-					iframe.frameSpacing = 0;
-					iframe.allowTransparency = true;
-					iframe.setAttribute('frameBorder','no');
-					iframe.setAttribute('allowTransparency',true);
-					iframe.setAttribute('border',0);
-					iframe.setAttribute('scrolling', "no");
+					var iframe = document.getElementById(id);
+					if (iframe) {
+					}else {
+						iframe = document.createElement("iframe");
+						iframe.id = id;
+						iframe.style.position = "absolute";
+						iframe.style.zIndex = 2;
+						iframe.frameborder = "no";
+						iframe.border = 0;
+						//border=0 name=ye_xy marginWidth=0 frameSpacing=0 marginHeight=0
+						iframe.marginWidth = 0;
+						iframe.marginHeight = 0;
+						iframe.frameSpacing = 0;
+						iframe.allowTransparency = true;
+						iframe.setAttribute('frameBorder','no');
+						iframe.setAttribute('allowTransparency',true);
+						iframe.setAttribute('border',0);
+						iframe.setAttribute('scrolling', "no");
+						document.body.appendChild(iframe);
 					
+					}
+					var _document = document;
 					if(iframe.attachEvent){
 						iframe.attachEvent("onload", function() {
-							var swf = document.getElementById("flashcontent");
+							var swf = _document.getElementById("flashcontent");
 							swf.onIFrameLoad(id);
 						});
 					} else {
 						iframe.onload = function(){
-							var swf = document.getElementById("flashcontent");
+							var swf = _document.getElementById("flashcontent");
 							swf.onIFrameLoad(id);
 						};
 					}
 					
-					document.body.appendChild(iframe);
+					iframe.onreadystatechange = function() {
+						if (this.readyState) {
+							var swf = _document.getElementById("flashcontent");
+							swf.onIFrameLoad(id);
+						}
+					}
 				}
 				]]>
 		</script>

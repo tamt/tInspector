@@ -44,7 +44,8 @@ package cn.itamt.utils.inspector.core.structureview {
 		private function onAdded(evt : Event) : void {
 			if(inited)return;
 			inited = true;
-			_tf.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);			_tf.addEventListener(MouseEvent.CLICK, onClickItem);
+			_tf.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			_tf.addEventListener(MouseEvent.CLICK, onClickItem);
 			btn.addEventListener(MouseEvent.CLICK, onClickExpand);
 		}
 
@@ -81,11 +82,13 @@ package cn.itamt.utils.inspector.core.structureview {
 				btn.visible = false;
 			}
 			
-			//			symbol.bitmapData = InspectorSymbolIcon.getIcon(className);			symbol.bitmapData = InspectorSymbolIcon.getIconByClass(this._data.displayObject);
+			//			symbol.bitmapData = InspectorSymbolIcon.getIcon(className);
+			symbol.bitmapData = InspectorSymbolIcon.getIconByClass(this._data.displayObject);
 			
 			var level : int = DisplayObjectTool.getDisplayObjectLevel(_data.displayObject);
 			btn.x = level * 16;
-			symbol.x = btn.x + btn.width;			_tf.x = symbol.x + symbol.width;
+			symbol.x = btn.x + btn.width;
+			_tf.x = symbol.x + symbol.width;
 			
 			resetStyle();
 			
