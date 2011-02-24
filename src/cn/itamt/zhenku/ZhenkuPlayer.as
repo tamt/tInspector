@@ -31,7 +31,7 @@ package cn.itamt.zhenku
 		public var player_bg:MovieClip;
 		
 		private var _draingProgress:Boolean;
-		private var _video:Video;
+		private var _video:ZhenkuVideo;
 
 
 		public function ZhenkuPlayer() 
@@ -46,6 +46,7 @@ package cn.itamt.zhenku
 			
 			//音量控制
 			volume_controller.thumb_btn.addEventListener(MouseEvent.MOUSE_DOWN, onStartDragVolume);
+			volume_controller.drag_range.addEventListener(MouseEvent.CLICK, onClickVolumeRange);
 			
 			//进度条
 			progress_bar.addEventListener(MouseEvent.ROLL_OVER, onOverProgressBar);
@@ -53,6 +54,12 @@ package cn.itamt.zhenku
 			progress_thumb.addEventListener(MouseEvent.ROLL_OVER, onOverProgressThumb);
 			progress_thumb.addEventListener(MouseEvent.ROLL_OUT, onOutProgressThumb);
 			progress_bar.addEventListener(MouseEvent.CLICK, onClickProgressBar);
+			
+			//
+			_video = new ZhenkuVideo();
+			addChild(_video);
+			_video.play("rtmp://localhost/vod/mp4:sample1_1500kbps.f4v");
+			//rtmp:/vod/mp4:sample2_1000kbps.f4v
 		}
 		
 		override protected function onRemoved():void {
@@ -63,6 +70,7 @@ package cn.itamt.zhenku
 			volume_controller.thumb_btn.removeEventListener(MouseEvent.MOUSE_DOWN, onStartDragVolume);
 			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onStopDragVolume);
 			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDragingVolumeThumb);
+			volume_controller.drag_range.removeEventListener(MouseEvent.CLICK, onClickVolumeRange);
 			
 			//进度条
 			progress_bar.removeEventListener(MouseEvent.ROLL_OVER, onOverProgressBar);
@@ -203,6 +211,14 @@ package cn.itamt.zhenku
 			}
 			
 			volume_controller.volume_status.gotoAndStop(int(posPercent*4) + 1);
+		}
+		
+		private function onClickVolumeRange(e:MouseEvent):void 
+		{
+			volume_controller.thumb_btn.x = volume_controller.mouseX;
+			var posPercent:Number;
+			posPercent = (volume_controller.thumb_btn.x - volume_controller.drag_range.x) / volume_controller.drag_range.width;
+			volume_controller.volume_status.gotoAndStop(int(posPercent * 4) + 1);
 		}
 		
 		/////////////////////////////////////////////////
