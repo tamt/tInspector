@@ -1,6 +1,8 @@
 package cn.itamt.zhenku 
 {
 	import cn.itamt.display.tSprite;
+	import cn.itamt.zhenku.event.ZhenkuVideoEvent;
+	import cn.itamt.zhenku.util.Util;
 	import flash.display.SimpleButton;
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
@@ -58,8 +60,11 @@ package cn.itamt.zhenku
 			//
 			_video = new ZhenkuVideo();
 			addChild(_video);
-			_video.play("rtmp://localhost/vod/mp4:sample1_1500kbps.f4v");
-			//rtmp:/vod/mp4:sample2_1000kbps.f4v
+			_video.addEventListener(ZhenkuVideoEvent.START, onVideoEvent);
+			_video.addEventListener(ZhenkuVideoEvent.META_DATA, onVideoEvent);
+			_video.addEventListener(ZhenkuVideoEvent.PLAYING, onVideoEvent);
+			_video.x = video_bg.x;
+			_video.y = video_bg.y; 
 		}
 		
 		override protected function onRemoved():void {
@@ -83,12 +88,16 @@ package cn.itamt.zhenku
 			progress_thumb.addEventListener(MouseEvent.ROLL_OUT, onOutProgressThumb);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, onStopDragProgress);
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, onDragingProgress);
+		
+			_video.removeEventListener(ZhenkuVideoEvent.START, onVideoEvent);
+			_video.removeEventListener(ZhenkuVideoEvent.META_DATA, onVideoEvent);
+			_video.removeEventListener(ZhenkuVideoEvent.PLAYING, onVideoEvent);
 		}
 		
 		private function onOverProgressThumb(e:MouseEvent):void 
 		{
 			time_tip.visible = true;
-			time_tip.x = progress_thumb.x;
+			updateTimeTip(progress_thumb.x);
 		}
 		
 		private function onOutProgressThumb(e:MouseEvent):void 
@@ -123,7 +132,7 @@ package cn.itamt.zhenku
 				posPercent = (progress_thumb.x - progress_bar.x) / progress_bar.width;
 			}
 			
-			time_tip.x = progress_thumb.x;
+			updateTimeTip(progress_thumb.x);
 		}
 		
 		private function onStopDragProgress(e:MouseEvent):void 
@@ -138,7 +147,7 @@ package cn.itamt.zhenku
 		private function onOverProgressBar(e:MouseEvent):void 
 		{
 			time_tip.visible = true;
-			time_tip.x = this.mouseX;
+			updateTimeTip(this.mouseX);
 			progress_bar.addEventListener(MouseEvent.ROLL_OUT, onOutProgressBar);
 			stage.addEventListener(MouseEvent.MOUSE_MOVE, onMovingOnProgressBar);
 		}
@@ -156,7 +165,13 @@ package cn.itamt.zhenku
 		 */
 		private function onMovingOnProgressBar(e:MouseEvent):void 
 		{
-			time_tip.x = this.mouseX;
+			updateTimeTip(this.mouseX);
+		}
+		
+		private function updateTimeTip(xPos:Number):void {
+			var posPercent:Number = posPercent = (time_tip.x - progress_bar.x) / progress_bar.width; 
+			time_tip.x = xPos;
+			time_tip.time_tf.text = Util.time2Str(int(_video.duration * posPercent));
 		}
 		
 		/**
@@ -219,6 +234,19 @@ package cn.itamt.zhenku
 			var posPercent:Number;
 			posPercent = (volume_controller.thumb_btn.x - volume_controller.drag_range.x) / volume_controller.drag_range.width;
 			volume_controller.volume_status.gotoAndStop(int(posPercent * 4) + 1);
+		}
+	
+		private function onVideoEvent(evt:ZhenkuVideoEvent):void {
+			switch(evt.type) {
+				case ZhenkuVideoEvent.META_DATA:
+					play_status.time_tf.text = Util.time2Str(_video.time) + "/" + Util.time2Str(_video.duration);
+					break;
+				case ZhenkuVideoEvent.START:
+					break;
+				case ZhenkuVideoEvent.PLAYING:
+					play_status.time_tf.text = Util.time2Str(_video.time) + "/" + Util.time2Str(_video.duration);
+					break;
+			}
 		}
 		
 		/////////////////////////////////////////////////
