@@ -1,6 +1,7 @@
 package cn.itamt.zhenku 
 {
 	import cn.itamt.display.tSprite;
+	import cn.itamt.zhenku.event.ZhenkuErrorEvent;
 	import cn.itamt.zhenku.event.ZhenkuVideoEvent;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -10,6 +11,7 @@ package cn.itamt.zhenku
 	import flash.events.Event;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.media.SoundTransform;
 	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
@@ -28,16 +30,23 @@ package cn.itamt.zhenku
 		
 		private var _previewImg:BitmapData;
 		
-		private var _width:int;
-		private var _height:int;
+		private var _width:Number;
+		private var _height:Number;
 		
 		//视频持续的时间(毫秒)
 		private var _duration:uint = 0;
 		//视频当前的播放位置(毫秒)
 		private var _time:uint = 0;
+		//视频的大小
+		private var _bytesLoaded:uint;
+		private var _bytesTotal:uint;
+		//视频当前的音量
+		private var _volume:Number = 1;
 		
+		//第一次可播放
+		private var _firstPlayable:Boolean;
 		
-		public function ZhenkuVideo(w:int = 320, h:int = 240) 
+		public function ZhenkuVideo(w:Number = 320, h:Number = 240) 
 		{
 			super();
 			
@@ -71,6 +80,7 @@ package cn.itamt.zhenku
 			_connection = null;
 			
 			removeEventListener(Event.ENTER_FRAME, onPlaying);
+			removeEventListener(Event.ENTER_FRAME, onLoading);
 			
             _stream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
             _stream.removeEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
@@ -87,12 +97,23 @@ package cn.itamt.zhenku
 				case "NetConnection.Connect.Success":
 					connectStream();
 					break;
+				case "NetStream.Buffer.Full":
+					if (!_firstPlayable) {
+						_stream.pause();
+						_firstPlayable = true;
+					}
+					break;
+				case "NetStream.Seek.Notify":
+					if (_gotoTime) {
+						_time = _gotoTime;
+					}
+					dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.SEEK, false, true));
+					break;
 				case "NetStream.Play.StreamNotFound":
 					break;
 				case "NetStream.Play.Start":
 					_time = _stream.time;
-					dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.START, false, true));
-					addEventListener(Event.ENTER_FRAME, onPlaying);
+					//dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.START, false, true));
 					break;
 				case "NetStream.Play.Stop":
 					dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.STOP, false, true));
@@ -121,13 +142,23 @@ package cn.itamt.zhenku
 			_video.attachNetStream(_stream);
 			
 			//
-			this.play("video/sample.f4v");
+			this.addEventListener(Event.ENTER_FRAME, onLoading);
 		}
 		
 		private function onPlaying(e:Event):void 
 		{
 			_time = _stream.time * 1000;
 			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.PLAYING, false, true));
+		}
+		
+		private function onLoading(e:Event):void 
+		{
+			_bytesLoaded = _stream.bytesLoaded;
+			_bytesTotal = _stream.bytesTotal;
+			if (_bytesLoaded >= _bytesTotal) {
+				this.removeEventListener(Event.ENTER_FRAME, onLoading);
+			}
+			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.LOADING, false, true));
 		}
 		
 		private function onXMPData(obj:Object):void 
@@ -142,7 +173,8 @@ package cn.itamt.zhenku
 		
 		private function onSeekPoint(obj:Object):void 
 		{
-			
+			trace("/////////////////////////////onseekpoint/////////////////");
+			traceObj(obj);
 		}
 		
 		private function onPlayStatus(obj:Object):void 
@@ -167,7 +199,7 @@ package cn.itamt.zhenku
 		
 		private function onMetaData(obj:Object):void 
 		{
-			traceObj(obj);
+			//traceObj(obj);
 			//height: 352
 			//avclevel: 30
 			//audiocodecid: mp4a
@@ -182,6 +214,14 @@ package cn.itamt.zhenku
 			//seekpoints: [object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]
 			//videocodecid: avc1
 			//avcprofile: 100
+			//缩放到合适的尺寸(保持原始宽高比例)
+			var scale:Number = Math.max(obj.height / _height, obj.width / _width);
+			_video.height = obj.height/scale;
+			_video.width = obj.width/scale;
+			//居中
+			_video.y = (_height - _video.height) / 2;
+			_video.x = (_width - _video.width) / 2;
+			
 			_duration = obj.duration * 1000;
 			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.META_DATA, false, true));
 		}
@@ -202,14 +242,58 @@ package cn.itamt.zhenku
 			
 			if (_inited) {
 				//TODO:设置video的尺寸
+				//_video
+			}
+		}
+		
+		public function load(uri:String):void {
+			if (!_firstPlayable) {
+				_stream.play(uri);
+			}else {
+				stop();
+				_firstPlayable = false;
+				_stream.play(uri);
 			}
 		}
 		
 		/**
 		 * 播放
 		 */
-		public function play(url:String):void {
-			_stream.play(url);
+		public function play():void {
+			_stream.resume();
+			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.PLAY, false, true));
+			addEventListener(Event.ENTER_FRAME, onPlaying);
+		}
+		
+		/**
+		 * 停止播放视频
+		 */
+		public function stop():void 
+		{
+			_stream.close();
+			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.STOP, false, true));
+			removeEventListener(Event.ENTER_FRAME, onPlaying);
+		}
+		
+		/**
+		 * 暂停播放
+		 */
+		public function pause():void 
+		{
+			_stream.pause();
+			removeEventListener(Event.ENTER_FRAME, onPlaying);
+			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.PAUSE, false, true));
+		}
+		
+		private var _gotoTime:uint;
+		/**
+		 * 跳到某一时间
+		 * @param	pos
+		 */
+		public function goto(pos:uint):void 
+		{
+			_gotoTime = pos;
+			_stream.seek(pos/1000);
 		}
 		
 		private function traceObj(obj:*):void {
@@ -235,6 +319,38 @@ package cn.itamt.zhenku
 		public function get time():uint 
 		{
 			return _time;
+		}
+		
+		public function get bytesLoaded():uint 
+		{
+			return _bytesLoaded;
+		}
+		
+		public function get bytesTotal():uint 
+		{
+			return _bytesTotal;
+		}
+		
+		/**
+		 * 视频的音量
+		 */
+		public function get volume():Number 
+		{
+			return _volume;
+		}
+		
+		/**
+		 * 设置视频的音量
+		 */
+		public function set volume(value:Number):void 
+		{
+			_volume = value;
+			if (_stream) {
+				var sndTfm:SoundTransform = new SoundTransform();
+				sndTfm.volume = _volume;
+				_stream.soundTransform = sndTfm;
+			}
+			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.VOLUME, false, true));
 		}
 		
 	}
