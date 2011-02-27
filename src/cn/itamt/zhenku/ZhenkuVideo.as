@@ -23,6 +23,7 @@ package cn.itamt.zhenku
 	public class ZhenkuVideo extends tSprite
 	{
 		private var _connection:NetConnection;
+		private var _connClient:ConnectionClient;
 		private var _stream:NetStream;
 		private var _streamClient:StreamClient;
 		private var _video:Video;
@@ -70,7 +71,12 @@ package cn.itamt.zhenku
 			_connection = new NetConnection();
 			_connection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			_connection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			_connection.connect(null);
+			//_connection.connect(null);
+			//rtmp:/vod/mp4:sample2_1000kbps.f4v
+			_connection.connect("rtmp://localhost/vod/");
+			
+			_connClient = new ConnectionClient();
+			_connClient.onBWDone = this.onBWDone;
 		}
 		
 		override protected function onRemoved():void {
@@ -92,9 +98,10 @@ package cn.itamt.zhenku
 		
 		private function onNetStatus(e:NetStatusEvent):void 
 		{
-			trace(e.info.code);
+			//trace(e.info.code);
 			switch(e.info.code) {
 				case "NetConnection.Connect.Success":
+			trace("play stream");
 					connectStream();
 					break;
 				case "NetStream.Buffer.Full":
@@ -116,8 +123,9 @@ package cn.itamt.zhenku
 					//dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.START, false, true));
 					break;
 				case "NetStream.Play.Stop":
-					dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.STOP, false, true));
-					removeEventListener(Event.ENTER_FRAME, onPlaying);
+					this.stop();
+					//dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.STOP, false, true));
+					//removeEventListener(Event.ENTER_FRAME, onPlaying);
 					break;
 			}
 		}
@@ -137,7 +145,8 @@ package cn.itamt.zhenku
             _stream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
             _stream.addEventListener(AsyncErrorEvent.ASYNC_ERROR, onAsyncError);
 			_stream.client = _streamClient;
-			
+			//
+			_stream.play("rtmp://localhost/vod/mp4:sample2_1000kbps.f4v");
 			//_stream
 			_video.attachNetStream(_stream);
 			
@@ -226,6 +235,11 @@ package cn.itamt.zhenku
 			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.META_DATA, false, true));
 		}
 		
+		private function onBWDone(obj:Object):void 
+		{
+			//
+		}
+		
 		/**
 		 * 设置尺寸
 		 * @param	w
@@ -247,10 +261,10 @@ package cn.itamt.zhenku
 		}
 		
 		public function load(uri:String):void {
+			_uri = uri;
 			if (!_firstPlayable) {
 				_stream.play(uri);
 			}else {
-				stop();
 				_firstPlayable = false;
 				_stream.play(uri);
 			}
@@ -270,9 +284,11 @@ package cn.itamt.zhenku
 		 */
 		public function stop():void 
 		{
-			_stream.close();
+			//_stream.close();
 			dispatchEvent(new ZhenkuVideoEvent(ZhenkuVideoEvent.STOP, false, true));
 			removeEventListener(Event.ENTER_FRAME, onPlaying);
+			_firstPlayable = false;
+			load(_uri);
 		}
 		
 		/**
@@ -286,6 +302,7 @@ package cn.itamt.zhenku
 		}
 		
 		private var _gotoTime:uint;
+		private var _uri:String;
 		/**
 		 * 跳到某一时间
 		 * @param	pos
@@ -369,5 +386,12 @@ internal class StreamClient {
 	public var onSeekPoint:Function;
 	public var onTextData:Function;
 	public var onXMPData:Function;
+	
+}
+
+internal class ConnectionClient {
+	
+	//public function 
+	public var onBWDone:Function;
 	
 }
