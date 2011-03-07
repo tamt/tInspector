@@ -9,6 +9,8 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
+	import flash.events.MouseEvent;
+	import flash.ui.Mouse;
 
 	import flash.display.DisplayObject;
 	import flash.events.Event;
@@ -18,6 +20,7 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 	 */
 	public class SwfInfoView extends BaseInspectorPlugin {
 		private var panels : Array;
+		private var _showed:Boolean;
 		protected var panel : SwfInfoViewPanel;
 		protected var swf : SWFInfo;
 
@@ -60,6 +63,7 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			this.panel = new SwfInfoViewPanel(InspectorLanguageManager.getStr(InspectorPluginId.SWFINFO_VIEW));
 			this.panel.addEventListener(Event.CLOSE, onClickClose, false, 0, true);
 			this.panel.addEventListener(PropertyEvent.UPDATE, onPropertyUpdate);
+			this.panel.addEventListener("ClickShowMouse", onClickShowMouse);
 			this._inspector.stage.addChild(this.panel);
 			this.panel.onInspect(swf);
 			this.panels.push(this.panel);
@@ -67,6 +71,39 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			InspectorStageReference.centerOnStage(this.panel);
 			
 			this._inspector.stage.addEventListener(PropertyEvent.INSPECT, onInspectProperty);
+		}
+		
+		/**
+		 * 单击显示鼠标
+		 * @param	e
+		 */
+		private function onClickShowMouse(e:Event):void 
+		{
+			if (_showed) return;
+			_showed = true;
+			_inspector.stage.addEventListener(Event.ENTER_FRAME, keepMouseShow, false, int.MIN_VALUE);
+			_inspector.stage.addEventListener(MouseEvent.MOUSE_MOVE, keepMouseShow, false, int.MIN_VALUE);
+			_inspector.stage.addEventListener(Event.RENDER, showMouse);
+			
+		}
+		
+		/**
+		 * 保持鼠标显示
+		 * @param	e
+		 */
+		private function keepMouseShow(e:Event):void 
+		{
+			Mouse.show();
+			_inspector.stage.invalidate();
+		}
+		
+		/**
+		 * 显示鼠标
+		 * @param	e
+		 */
+		private function showMouse(e:Event):void 
+		{
+			Mouse.show();
 		}
 
 		private function onInspectProperty(evt : PropertyEvent) : void {
@@ -111,6 +148,18 @@ package cn.itamt.utils.inspector.plugins.swfinfo {
 			this.panel = null;
 			
 			super.onUnActive();
+		}
+
+		/**
+		 * 当Inspector关闭时
+		 */
+		override public function onTurnOff() : void {
+			_inspector.stage.removeEventListener(Event.ENTER_FRAME, keepMouseShow);
+			_inspector.stage.removeEventListener(Event.RENDER, showMouse);
+			_inspector.stage.removeEventListener(MouseEvent.MOUSE_MOVE, keepMouseShow);
+			_showed = false;
+			
+			super.onTurnOff();
 		}
 
 		/**
