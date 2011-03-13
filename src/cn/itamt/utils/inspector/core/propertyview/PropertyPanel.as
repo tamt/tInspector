@@ -11,6 +11,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
 	import cn.itamt.utils.inspector.ui.InspectorViewRefreshButton;
 	import cn.itamt.utils.inspector.ui.Padding;
+	import cn.itamt.utils.inspector.ui.list.InspectorListView;
 
 	import msc.events.mTextEvent;
 
@@ -25,7 +26,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 	 * @author itamt@qq.com
 	 */
 	public class PropertyPanel extends InspectorViewPanel {
-		protected var list : Sprite;
+		protected var list : InspectorListView;
 		protected var listMethod : Sprite;
 		protected var methodArray : Array;
 		protected var curTarget : *;
@@ -47,7 +48,6 @@ package cn.itamt.utils.inspector.core.propertyview {
 		protected var refreshBtn : InspectorViewRefreshButton;
 		protected var _owner : PropertyAccessorRender;
 		protected var favoritable : Boolean = true;
-
 		protected var _mSavedSize : Point;
 		protected var _fSavedSize : Point;
 
@@ -57,7 +57,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 		public function PropertyPanel(w : Number = 250, h : Number = 190, owner : PropertyAccessorRender = null, favoritable : Boolean = true) {
 			super('Property', w, h);
-			
+
 			_mSavedSize = new Point(this._width, 270);
 			_fSavedSize = new Point(this._width, 400);
 
@@ -73,7 +73,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 			this._minW = 250;
 			this._minH = 190;
 
-			list = new Sprite();
+			list = new InspectorListView(PropertyAccessorRender);
 			this.setContent(list);
 
 			// 单例面板模式/多面板模式
@@ -109,19 +109,18 @@ package cn.itamt.utils.inspector.core.propertyview {
 		protected var lrender : *;
 
 		protected function onSearch(evt : mTextEvent) : void {
-			
-			if(lrender) {
+			if (lrender) {
 				lrender.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
 				lrender = null;
 			}
 
 			var i : int = 0;
 			var render : *;
-			if(evt.type == mTextEvent.SELECT) {
-				if(state == PROP_STATE) {
-				} else if(state == METHOD_STATE) {
+			if (evt.type == mTextEvent.SELECT) {
+				if (state == PROP_STATE) {
+				} else if (state == METHOD_STATE) {
 				}
-			} else if(evt.type == mTextEvent.ENTER) {
+			} else if (evt.type == mTextEvent.ENTER) {
 				if (state == PROP_STATE) {
 					while (i < list.numChildren) {
 						render = list.getChildAt(i++) as PropertyAccessorRender;
@@ -132,10 +131,10 @@ package cn.itamt.utils.inspector.core.propertyview {
 							break;
 						}
 					}
-				} else if(state == METHOD_STATE) {
-					while(i < listMethod.numChildren) {
+				} else if (state == METHOD_STATE) {
+					while (i < listMethod.numChildren) {
 						render = listMethod.getChildAt(i++) as MethodRender;
-						if(render.propName == evt.text) {
+						if (render.propName == evt.text) {
 							this.showContentArea(render.getBounds(render.parent));
 							lrender = render;
 							render.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER));
@@ -147,7 +146,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 		}
 
 		protected function onClickRefresh(event : MouseEvent) : void {
-			if(this.curTarget) {
+			if (this.curTarget) {
 				this.onUpdate(this.curTarget);
 			}
 		}
@@ -155,7 +154,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 		// 查看对象的方法
 		protected function onViewMethod(event : MouseEvent) : void {
 			this.state = METHOD_STATE;
-			if(listMethod == null) {
+			if (listMethod == null) {
 				listMethod = new Sprite();
 			}
 			this.setContent(listMethod);
@@ -208,23 +207,23 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 			var excludeList : XMLList = xml..metadata.(@name == "Exclude");
 			var excludeArr : Array = [];
-			for each(var exclude:XML in excludeList) {
+			for each (var exclude:XML in excludeList) {
 				excludeArr.push(exclude.arg.(@key == "name").@value.toString());
 			}
 
 			this.propDict = "";
-			for each(var item:XML in tmp) {
-				if(excludeArr.indexOf(item.@name.toString()) >= 0) {
+			for each (var item:XML in tmp) {
+				if (excludeArr.indexOf(item.@name.toString()) >= 0) {
 					item.@exclude = true;
 				}
 
 				// -----------------------
-				if(object is Stage) {
+				if (object is Stage) {
 					// Flash Player的bug:Stage没有实现textSnapshot属性
-					if(item.@name == "textSnapshot")
+					if (item.@name == "textSnapshot")
 						continue;
 					// Flash Player的bug:Stage的width/height属性应该是Exclude的
-					if(item.@name == "width" || item.@name == "height") {
+					if (item.@name == "width" || item.@name == "height") {
 						item.@exclude = true;
 					}
 				}
@@ -243,10 +242,10 @@ package cn.itamt.utils.inspector.core.propertyview {
 		 * 查看某个显示对象的属性.
 		 */
 		public function onInspect(object : *) : void {
-			if(curTarget != object) {
+			if (curTarget != object) {
 				curTarget = object;
 				// 属性状态
-				if(this.state == PROP_STATE) {
+				if (this.state == PROP_STATE) {
 					this.onInspectProp(object);
 				} else {
 					// 方法状态
@@ -260,14 +259,14 @@ package cn.itamt.utils.inspector.core.propertyview {
 		}
 
 		override protected function drawTitle() : void {
-			if(this._owner) {
+			if (this._owner) {
 				var str : String = this._owner.propName;
 				var t : PropertyAccessorRender = this._owner;
-				while(t.owner) {
+				while (t.owner) {
 					t = t.owner;
 					str = t.propName + "." + str;
 				}
-				if(t.target is DisplayObject) {
+				if (t.target is DisplayObject) {
 					str = (t.target as DisplayObject).name + "." + str;
 				}
 				this._title.htmlText = "<font color=\"#99cc00\">" + str + "</font>";
@@ -278,7 +277,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 			_title.width = _title.textWidth + 4;
 
-			if(_title.width > refreshBtn.x - _padding.left - 3)
+			if (_title.width > refreshBtn.x - _padding.left - 3)
 				_title.width = refreshBtn.x - _padding.left - 3;
 		}
 
@@ -286,15 +285,15 @@ package cn.itamt.utils.inspector.core.propertyview {
 		 * 查看某个显示对象的方法(如果传过来的对象为空，就用当前的对象)
 		 */
 		public function onInspectMethod(object : * = null) : void {
-			if(object != null) {
-				if(curTarget != object) {
+			if (object != null) {
+				if (curTarget != object) {
 					curTarget = object;
 				}
 				var xml : XML = ClassTool.getDescribe(curTarget["constructor"]).factory[0];
 				var methods : XMLList = xml.method;
 				methodArray = [];
 				this.methDict = "";
-				for each(var method:XML in methods) {
+				for each (var method:XML in methods) {
 					methodArray.push(method);
 					this.methDict += (method.@name + " ");
 				}
@@ -307,9 +306,9 @@ package cn.itamt.utils.inspector.core.propertyview {
 			var aN : String = String(a.@name);
 			var bN : String = String(b.@name);
 
-			if(aN > bN) {
+			if (aN > bN) {
 				return 1;
-			} else if(aN < bN) {
+			} else if (aN < bN) {
 				return -1;
 			} else {
 				return 0;
@@ -325,7 +324,7 @@ package cn.itamt.utils.inspector.core.propertyview {
 			Debug.trace('[PropertyPanel][onPropertyUpdate]' + accessor.propName + ":" + editor.getValue());
 			curTarget[accessor.propName] = editor.getValue();
 
-			if(accessor.owner) {
+			if (accessor.owner) {
 				accessor.owner.editor.dispatchEvent(new PropertyEvent(PropertyEvent.UPDATE, true, true));
 			}
 		}
@@ -334,10 +333,10 @@ package cn.itamt.utils.inspector.core.propertyview {
 		 * 当指定对象的属性有更新时
 		 */
 		public function onUpdate(obj : *) : void {
-			if(obj == curTarget) {
+			if (obj == curTarget) {
 				var i : int = 0;
 				var render : PropertyAccessorRender;
-				while(i < list.numChildren) {
+				while (i < list.numChildren) {
 					render = list.getChildAt(i++) as PropertyAccessorRender;
 					render.update();
 				}
@@ -360,15 +359,17 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 		// 对象的属性重绘
 		protected function drawPropList() : void {
+			list.data = this.propList;
+			return;
 			list.graphics.clear();
 			list.graphics.lineTo(0, 0);
-			while(list.numChildren) {
+			while (list.numChildren) {
 				list.removeChildAt(0);
 			}
 
-			if(propList) {
+			if (propList) {
 				var l : int = propList.length;
-				for(var i : int = 0;i < l;i++) {
+				for (var i : int = 0;i < l;i++) {
 					var render : PropertyAccessorRender;
 					render = new PropertyAccessorRender(200, 20, false, this.owner, this.favoritable);
 					render.setXML(this.curTarget, propList[i]);
@@ -381,13 +382,14 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 		// 对象的方法重绘
 		protected function drawMethodList() : void {
+			return;
 			this.listMethod.graphics.clear();
 			listMethod.graphics.lineTo(0, 0);
-			while(listMethod.numChildren) {
+			while (listMethod.numChildren) {
 				listMethod.removeChildAt(0);
 			}
 			var length : int = this.methodArray.length;
-			for(var i : int = 0;i < length;i++) {
+			for (var i : int = 0;i < length;i++) {
 				var render : MethodRender = new MethodRender(210, 20);
 				render.setXML(this.curTarget, methodArray[i]);
 				render.y = listMethod.height + 2;
@@ -399,14 +401,14 @@ package cn.itamt.utils.inspector.core.propertyview {
 		 * 当单击"查看完整属性按钮时".
 		 */
 		protected function onClickFull(evt : MouseEvent = null) : void {
-			if(evt)
+			if (evt)
 				evt.stopImmediatePropagation();
 			this.drawList();
-			
-			if(this.resizeBtn.normalMode) {
-				_fSavedSize = new Point(this._width, this.height);	
+
+			if (this.resizeBtn.normalMode) {
+				_fSavedSize = new Point(this._width, this.height);
 				this.addChild(this.search);
-				if(this.resizeBtn.normalMode)
+				if (this.resizeBtn.normalMode)
 					this.resize(_mSavedSize.x, _mSavedSize.y);
 			}
 		}
@@ -419,10 +421,10 @@ package cn.itamt.utils.inspector.core.propertyview {
 		 * 单例/多面板 按钮.
 		 */
 		protected function onClickSingleton(evt : MouseEvent = null) : void {
-			if(evt)
+			if (evt)
 				evt.stopImmediatePropagation();
 			this.drawList();
-			if(singletonBtn.normalMode) {
+			if (singletonBtn.normalMode) {
 			} else {
 			}
 		}

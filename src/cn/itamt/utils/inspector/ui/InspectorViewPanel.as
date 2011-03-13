@@ -1,5 +1,4 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.core.liveinspect.InspectorViewCloseButton;
 
