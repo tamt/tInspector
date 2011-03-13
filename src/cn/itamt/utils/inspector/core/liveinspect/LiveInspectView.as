@@ -172,15 +172,18 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		
 		private function switch2DTfmTool():void {
 			_bar.tfm3dBtn.active = false;
-			_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
-			_tool3d.target = null;
-			if(this.viewContainer.contains(_tool3d as DisplayObject))this.viewContainer.removeChild(_tool3d as DisplayObject);
-			
-			//
-			if (this.target.displayObject.transform.matrix == null) {
-				var mx:Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
-				this.target.displayObject.transform.matrix3D = null;
-				this.target.displayObject.transform.matrix = mx;
+			if(_tool3d){
+				_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
+				_tool3d.target = null;
+				
+				if(this.viewContainer.contains(_tool3d as DisplayObject))this.viewContainer.removeChild(_tool3d as DisplayObject);
+				
+				//
+				if (this.target.displayObject.transform.matrix == null) {
+					var mx:Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
+					this.target.displayObject.transform.matrix3D = null;
+					this.target.displayObject.transform.matrix = mx;
+				}
 			}
 			
 			this._tfm.target = this.target.displayObject;
