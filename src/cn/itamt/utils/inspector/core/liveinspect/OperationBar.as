@@ -1,10 +1,11 @@
 package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.core.inspectfilter.FilterManagerButton;
-	import cn.itamt.utils.inspector.core.liveinspect.Inspector3DButton;
+	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesViewButton;
 	import cn.itamt.utils.inspector.core.structureview.StructureViewButton;
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
 	import flash.display.DisplayObject;
@@ -232,7 +233,8 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				_childBtn.enabled = false;
 			}
 
-			_filterBtn.active = Inspector.getInstance().filterManager.isFilterActiving(target['constructor'] as Class);
+			//_filterBtn.active = Inspector.getInstance().filterManager.isFilterActiving(target['constructor'] as Class);
+			_filterBtn.active = (Inspector.getInstance().pluginManager.getPluginById(InspectorPluginId.FILTER_VIEW) as InspectorFilterManager).isFilterActiving(target['constructor'] as Class);
 			if(_filterBtn.active) {
 				_filterBtn.tip = InspectorLanguageManager.getStr('SetFilterClass');
 			} else {

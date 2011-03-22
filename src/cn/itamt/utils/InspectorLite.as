@@ -1,10 +1,9 @@
-﻿package cn.itamt.utils {
+package cn.itamt.utils {
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.IInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspectorPluginManager;
 	import cn.itamt.utils.inspector.core.InspectTarget;
 	import cn.itamt.utils.inspector.core.InspectorPluginManager;
-	import cn.itamt.utils.inspector.core.inspectfilter.IInspectorFilterManager;
 	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterManager;
 	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesView;
@@ -17,7 +16,6 @@
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.system.ApplicationDomain;
@@ -25,14 +23,8 @@
 
 	/**
 	 * @author tamt
-	 * @example
-	 * 	<code>
-	 * 		_inspector = Inspector.getInstance();
-	 * 		_inspector.init(root);
-	 * 	</code>
-	 * @version 1.0 beta
 	 */
-	public class Inspector extends EventDispatcher implements IInspector {
+	public class InspectorLite implements IInspector {
 		public static const VERSION : String = '1.3';
 		private static var _instance : Inspector;
 		public static var APP_DOMAIN : ApplicationDomain;
@@ -51,9 +43,9 @@
 			return _stage;
 		}
 
-		private var _filterManager : IInspectorFilterManager;
+		private var _filterManager : InspectorFilterManager;
 
-		public function get filterManager() : IInspectorFilterManager {
+		public function get filterManager() : InspectorFilterManager {
 			return _filterManager;
 		}
 
@@ -355,12 +347,11 @@
 					if(target == null)
 						continue;
 					if(isInspectView(target)) {
-						return;
-//						if(liveInspectView.contains(target)) {
-//							continue;
-//						} else {
-//							return;
-//						}
+						if(liveInspectView.contains(target)) {
+							continue;
+						} else {
+							return;
+						}
 					}
 					while(target) {
 						if(_filterManager.checkInFilter(target)) {
@@ -378,6 +369,4 @@
 			}
 		}
 	}
-}
-class SingletonEnforcer {
 }
