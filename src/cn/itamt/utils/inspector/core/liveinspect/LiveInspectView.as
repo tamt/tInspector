@@ -11,6 +11,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.inspector.plugins.tfm3d.ITransform3DController;
 	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
+
 	import flash.display.Bitmap;
 	import flash.system.ApplicationDomain;
 
@@ -41,20 +42,21 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		private var _bar : OperationBar;
 		// 用于变形
 		private var _tfm : TransformTool;
-		//用于3d变形
-		private var _tool3d:ITransform3DController;
-		public function use3DTransformer(tfm3dController:*):void 
-		{
+		// 用于3d变形
+		private var _tool3d : ITransform3DController;
+
+		public function use3DTransformer(tfm3dController : *) : void {
 			if (!ApplicationDomain.currentDomain.hasDefinition("cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController")) {
 				throw new Error(InspectorLanguageManager.getStr("Tfm3DNotFound"));
 				_tool3d = null;
-			}else {
+			} else {
 				_tool3d = tfm3dController;
 				if (_actived) {
 					_bar.show3DBtn = true;
 				}
 			}
 		}
+
 		//
 		private var inited : Boolean;
 
@@ -64,9 +66,9 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			outputerManager = new InspectorOutPuterManager();
 		}
 
-		// ////////////////////////////////////
-		// ////////override interfaces/////////
-		// ////////////////////////////////////
+		// // // ////////////////////////////////
+		// // // ////override  interfaces/////////
+		// // // ////////////////////////////////
 		override public function getPluginId() : String {
 			return InspectorPluginId.LIVE_VIEW;
 		}
@@ -85,7 +87,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 			this._inspector.startLiveInspect();
 
-			if(inited)
+			if (inited)
 				return;
 			inited = true;
 
@@ -133,7 +135,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 			// ------操作条------
 			_bar = new OperationBar();
-			if (_tool3d)_bar.show3DBtn = true;
+			if (_tool3d) _bar.show3DBtn = true;
 			_bar.init();
 			// ------------------
 
@@ -152,53 +154,53 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_bar.addEventListener(OperationBar.DB_CLICK_MOVE, onClickReset);
 			_bar.addEventListener(OperationBar.PRESS_TRANSFORM_3D, onClick3D);
 		}
-		
-		private function onTransformTarget(e:Event):void 
-		{
+
+		private function onTransformTarget(e : Event) : void {
 			update();
 			_inspector.updateInsectorView();
 		}
-		
-		private function onClick3D(e:Event):void 
-		{
+
+		private function onClick3D(e : Event) : void {
 			if (_tool3d) {
-				if(_bar.tfm3dBtn.active){
+				if (_bar.tfm3dBtn.active) {
 					this.switch2DTfmTool();
-				}else {					
+				} else {
 					this.switch3DTfmTool();
 				}
 			}
 		}
-		
-		private function switch2DTfmTool():void {
+
+		private function switch2DTfmTool() : void {
 			_bar.tfm3dBtn.active = false;
-			_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
-			_tool3d.target = null;
-			if(this.viewContainer.contains(_tool3d as DisplayObject))this.viewContainer.removeChild(_tool3d as DisplayObject);
-			
-			//
-			if (this.target.displayObject.transform.matrix == null) {
-				var mx:Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
-				this.target.displayObject.transform.matrix3D = null;
-				this.target.displayObject.transform.matrix = mx;
+			if (_tool3d) {
+				_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
+				_tool3d.target = null;
+				if (this.viewContainer.contains(_tool3d as DisplayObject)) this.viewContainer.removeChild(_tool3d as DisplayObject);
+
+				//
+				if (this.target.displayObject.transform.matrix == null) {
+					var mx : Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
+					this.target.displayObject.transform.matrix3D = null;
+					this.target.displayObject.transform.matrix = mx;
+				}
+
 			}
 			
 			this._tfm.target = this.target.displayObject;
 		}
-		
-		private function switch3DTfmTool():void {
-			//3d变形器
+
+		private function switch3DTfmTool() : void {
+			// 3d变形器
 			_bar.tfm3dBtn.active = true;
 			_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
 			_tool3d.addEventListener(Event.CHANGE, on3DTransform);
 			this.viewContainer.addChild(_tool3d as DisplayObject);
 			_tool3d.target = this._inspector.getCurInspectTarget().displayObject;
-			
+
 			this._tfm.target = null;
 		}
-		
-		private function on3DTransform(e:Event):void 
-		{
+
+		private function on3DTransform(e : Event) : void {
 			this.update();
 		}
 
@@ -212,26 +214,26 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 			inited = false;
 
-			if(this.viewContainer) {
+			if (this.viewContainer) {
 				if (_tool3d && this.viewContainer.contains(_tool3d as DisplayObject)) this.viewContainer.removeChild(_tool3d as DisplayObject);
-				
+
 				this.viewContainer.graphics.clear();
 				// this.viewContainer.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-				if(this.viewContainer.stage) {
+				if (this.viewContainer.stage) {
 					this.viewContainer.stage.removeEventListener(Event.ENTER_FRAME, onMouseMove);
 					this.viewContainer.stage.removeChild(this.viewContainer);
 				}
-				if(this._mFrame.stage)
+				if (this._mFrame.stage)
 					this._mFrame.stage.removeChild(this._mFrame);
 			}
 
-			if(_des)
-				if(_des.parent)
+			if (_des)
+				if (_des.parent)
 					_des.parent.removeChild(_des);
 
 			target = null;
 			_tfm.target = null;
-			
+
 			if (_tool3d) {
 				_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
 				_tool3d.target = null;
@@ -254,7 +256,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		}
 
 		override public function contains(child : DisplayObject) : Boolean {
-			if(viewContainer) {
+			if (viewContainer) {
 				return viewContainer == child || viewContainer.contains(child) || _mFrame == child;
 			} else {
 				return false;
@@ -267,31 +269,31 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		override public function onInspect(ele : InspectTarget) : void {
 			target = ele;
 			_tfm.target = null;
-			
+
 			update();
 
-			if(_bar.stage == null)
+			if (_bar.stage == null)
 				this.viewContainer.addChild(_bar);
 			_bar.validate(target.displayObject);
-			
+
 			if (!DisplayObjectTool.isIn3D(target.displayObject)) {
-				//_tfm.target = target.displayObject;
-				//_tool3d.target = null;
+				// _tfm.target = target.displayObject;
+				// _tool3d.target = null;
 				this.switch2DTfmTool();
-			}else if (_tool3d) {
-				//_bar.tfm3dBtn.active = true;
-				//_tool3d.target = target.displayObject;
+			} else if (_tool3d) {
+				// _bar.tfm3dBtn.active = true;
+				// _tool3d.target = target.displayObject;
 				this.switch3DTfmTool();
 			}
 			//
-			// DisplayObjectTool.swapToTop(this.viewContainer);
+		// DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
 		/**
 		 * 当Inspector实时查看某个目标显示对象时
 		 */
 		override public function onLiveInspect(ele : InspectTarget) : void {
-			if(this.viewContainer.stage == null)
+			if (this.viewContainer.stage == null)
 				this._inspector.stage.addChild(this.viewContainer);
 			this._inspector.stage.addChild(this._mFrame);
 
@@ -299,7 +301,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_tfm.target = null;
 			update(true);
 
-			if(_bar.stage)
+			if (_bar.stage)
 				this.viewContainer.removeChild(_bar);
 			_bar.validate(target.displayObject);
 		}
@@ -314,20 +316,20 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				_tfm.moveNewTargets = true;
 				_tfm.target = target.displayObject;
 				_tfm.moveNewTargets = false;
-				//_tfm.draw();
+				// _tfm.draw();
 				update();
 			}
 		}
 
-		// ////////////////////////////////////
-		// ////////////////////////////////////
-		// ////////////////////////////////////
-		// ////////////////////////////////////
-		// ////////private functions///////////
-		// ////////////////////////////////////
-		// ////////////////////////////////////
-		// ////////////////////////////////////
-		// ////////////////////////////////////
+		// // // ////////////////////////////////
+		// // // ////////////////////////////////
+		// // // ////////////////////////////////
+		// // // ////////////////////////////////
+		// // // ////private  functions///////////
+		// // // ////////////////////////////////
+		// // // ////////////////////////////////
+		// // // ////////////////////////////////
+		// // // ////////////////////////////////
 		private var rect : Rectangle;
 		// 目标的注册点
 		private var reg : Point;
@@ -338,14 +340,14 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		 * 更新显示
 		 */
 		private function update(isLiveMode : Boolean = false) : void {
-			if(!contains(_des))
+			if (!contains(_des))
 				this.viewContainer.addChild(_des);
-			if(!contains(_mBtn))
+			if (!contains(_mBtn))
 				this.viewContainer.addChild(_mBtn);
 
 			rect = target.displayObject.getBounds(this.viewContainer.stage);
 			reg = target.displayObject.localToGlobal(new Point(0, 0));
-			if(target.displayObject.parent) {
+			if (target.displayObject.parent) {
 				parentReg = target.displayObject.parent.localToGlobal(new Point(0, 0));
 			} else {
 				parentReg = null;
@@ -356,7 +358,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_des.x = rect.x - .5;
 			_des.y = rect.y - _des.height + .5;
 
-			if(isLiveMode) {
+			if (isLiveMode) {
 				this.drawMbtn();
 				_mBtn.mouseChildren = _mBtn.mouseEnabled = true;
 			} else {
@@ -378,7 +380,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			this.viewContainer.stage.addEventListener(Event.ENTER_FRAME, onMouseMove);
 			lp = new Point(_tfm.mouseX, _tfm.mouseY);
 
-			if(this.viewContainer.parent)
+			if (this.viewContainer.parent)
 				DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
@@ -400,33 +402,33 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		}
 
 		private function onCloseBar(evt : Event = null) : void {
-			if(this.viewContainer.stage)
+			if (this.viewContainer.stage)
 				this.viewContainer.parent.removeChild(this.viewContainer);
-			if(this._mFrame.stage)
+			if (this._mFrame.stage)
 				this._mFrame.parent.removeChild(this._mFrame);
 			//
 			this._inspector.startLiveInspect();
 		}
 
 		private function onPressParent(evt : Event) : void {
-			if(target) {
-				if(target.displayObject.parent) {
+			if (target) {
+				if (target.displayObject.parent) {
 					this._inspector.inspect(target.displayObject.parent);
 				}
 			}
 		}
 
 		private function onPressChild(evt : Event) : void {
-			if(target) {
-				if(target.displayObject is DisplayObjectContainer) {
+			if (target) {
+				if (target.displayObject is DisplayObjectContainer) {
 					this._inspector.inspect((target.displayObject as DisplayObjectContainer).getChildAt(0));
 				}
 			}
 		}
 
 		private function onPressBrother(evt : Event) : void {
-			if(target) {
-				if(target.displayObject.parent) {
+			if (target) {
+				if (target.displayObject.parent) {
 					var container : DisplayObjectContainer = target.displayObject.parent;
 					var i : int = container.getChildIndex(target.displayObject);
 					var t : int = (++i) % (container.numChildren);
@@ -436,8 +438,8 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		}
 
 		private function onPressPrevious(evt : Event) : void {
-			if(target) {
-				if(target.displayObject.parent) {
+			if (target) {
+				if (target.displayObject.parent) {
 					var container : DisplayObjectContainer = target.displayObject.parent;
 					var i : int = container.getChildIndex(target.displayObject);
 					var t : int = (--i < 0) ? (container.numChildren - 1) : i;
@@ -450,9 +452,9 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		 * 单击重置时
 		 */
 		private function onClickReset(evt : Event) : void {
-			if(target) {
+			if (target) {
 				target.resetTarget();
-				if(_tfm) {
+				if (_tfm) {
 					_tfm.target = null;
 					_tfm.target = target.displayObject;
 				}
@@ -491,7 +493,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_mBtn.graphics.endFill();
 
 			// 父容器注册点十字形
-			if(parentReg) {
+			if (parentReg) {
 				_mBtn.graphics.lineStyle(2, 0x0000ff, 1, false, 'normal', 'square', 'miter');
 				_mBtn.graphics.moveTo(parentReg.x - 4, parentReg.y);
 				_mBtn.graphics.lineTo(parentReg.x + 4, parentReg.y);
