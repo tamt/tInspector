@@ -7,7 +7,7 @@ package cn.itamt.utils.inspector.ui.list
 	 */
 	public interface IListItemView 
 	{
-		function setData(data:*);
+		function setData(data:*):void;
 	}
 	
 }

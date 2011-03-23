@@ -79,6 +79,7 @@ Tfm3DNotFound	=	Transform3DController definition not found ! T_T
 RemoveTransform	=	remove transform
 Beta			=	β
 ConnectFFBFail	=	connect FlashFirebug fail, tried times:
+ShowMouse		=	show mouse
 ]]>
 					</lang>;
 		}

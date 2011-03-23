@@ -79,6 +79,7 @@ Tfm3DNotFound	=	没有找到Transform3DController类 T_T
 RemoveTransform	=	清除3D变形
 Beta			=	β
 ConnectFFBFail	=	连接FlashFirebug失败,尝试次数:
+ShowMouse		=	显示鼠标
 ]]>
 					</lang>;
 		}

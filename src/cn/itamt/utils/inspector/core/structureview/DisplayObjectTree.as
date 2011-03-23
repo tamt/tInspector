@@ -1,14 +1,13 @@
 package cn.itamt.utils.inspector.core.structureview {
-	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.ObjectPool;
 	import cn.itamt.utils.inspector.events.DisplayItemEvent;
-	import flash.geom.Rectangle;
 
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 
 	/**
@@ -21,13 +20,12 @@ package cn.itamt.utils.inspector.core.structureview {
 		private var _map : Dictionary;
 		private var _list : Sprite;
 		private var _itemRenderer : Class;
-		//逻辑渲染区域
-		private var _renderArea:Rectangle;
+		// 逻辑渲染区域
+		private var _renderArea : Rectangle;
 		public var filterFun : Function;
-		public var lineHeight:Number;
-		
-		private var _gap:Number = 2;
-		
+		public var lineHeight : Number;
+		private var _gap : Number = 2;
+
 		/**
 		 * @param object				显示对象
 		 * @param itemRenderClass		显示对象树节点的渲染类
@@ -36,7 +34,7 @@ package cn.itamt.utils.inspector.core.structureview {
 			_data = [];
 			_map = new Dictionary();
 
-			if(itemRenderClass == null) {
+			if (itemRenderClass == null) {
 				_itemRenderer = DisplayItemRenderer;
 			} else {
 				_itemRenderer = itemRenderClass;
@@ -49,7 +47,7 @@ package cn.itamt.utils.inspector.core.structureview {
 
 			// 绘制
 			this.initTree();
-			//this.drawList();
+			// this.drawList();
 		}
 
 		/**
@@ -60,9 +58,9 @@ package cn.itamt.utils.inspector.core.structureview {
 			itemData.isExpand = true;
 			addDisplayItem(itemData);
 
-			if(_root is DisplayObjectContainer) {
+			if (_root is DisplayObjectContainer) {
 				var container : DisplayObjectContainer = _root as DisplayObjectContainer;
-				for(var i : int = 0;i < container.numChildren;i++) {
+				for (var i : int = 0;i < container.numChildren;i++) {
 					addDisplayItem(getDisplayItem(container.getChildAt(i)));
 				}
 			}
@@ -79,12 +77,12 @@ package cn.itamt.utils.inspector.core.structureview {
 		private function inspectDisplayItem(item : DisplayItemData) : void {
 			var parent : DisplayItemData;
 			var parentObject : DisplayObjectContainer = item.displayObject.parent;
-			if(parentObject == null || item.displayObject == this._root) {
+			if (parentObject == null || item.displayObject == this._root) {
 				this.expandDisplayItem(item);
 			} else {
 				parent = getDisplayItem(parentObject);
 				parent.isExpand = true;
-				if(hasDisplayItem(parent)) {
+				if (hasDisplayItem(parent)) {
 					this.expandDisplayItem(parent);
 				} else {
 					inspectDisplayItem(parent);
@@ -99,11 +97,11 @@ package cn.itamt.utils.inspector.core.structureview {
 		 */
 		private function addDisplayItem(item : DisplayItemData) : void {
 			// 过滤显示
-			if(item.displayObject == this && this.contains(item.displayObject))
+			if (item.displayObject == this && this.contains(item.displayObject))
 				return;
 
 			if (_data.indexOf(item) < 0) {
-				if(filterFun != null)if(filterFun.apply(null, [item.displayObject]))return;
+				if (filterFun != null) if (filterFun.apply(null, [item.displayObject])) return;
 				_data.push(item);
 			}
 		}
@@ -120,7 +118,7 @@ package cn.itamt.utils.inspector.core.structureview {
 		 */
 		private function addDisplayItemAfter(item : DisplayItemData, afterItem : DisplayItemData) : void {
 			var t : int = _data.indexOf(afterItem);
-			if(t >= 0)
+			if (t >= 0)
 				addDisplayItemAt(t + 1, item);
 		}
 
@@ -129,11 +127,11 @@ package cn.itamt.utils.inspector.core.structureview {
 		 */
 		private function addDisplayItemAt(index : int, item : DisplayItemData) : void {
 			// 过滤显示
-			if(item.displayObject == this && this.contains(item.displayObject))
+			if (item.displayObject == this && this.contains(item.displayObject))
 				return;
 
-			if(_data.indexOf(item) < 0) {
-				if(filterFun != null)if(filterFun.apply(null, [item.displayObject]))return;
+			if (_data.indexOf(item) < 0) {
+				if (filterFun != null) if (filterFun.apply(null, [item.displayObject])) return;
 				_data.splice(index, 0, item);
 			}
 		}
@@ -143,7 +141,7 @@ package cn.itamt.utils.inspector.core.structureview {
 		 */
 		private function removeDisplayItem(item : DisplayItemData) : void {
 			var i : int = _data.indexOf(item);
-			if(i >= 0)
+			if (i >= 0)
 				_data.splice(i, 1);
 		}
 
@@ -153,49 +151,49 @@ package cn.itamt.utils.inspector.core.structureview {
 		public function drawList() : void {
 			_list.graphics.clear();
 			_list.graphics.lineTo(0, 0);
-			//while(_list.numChildren) {
-				//ObjectPool.disposeObject(_list.removeChildAt(0), _itemRenderer);
-				//_list.removeChildAt(0);
-			//}
+			// while(_list.numChildren) {
+			// ObjectPool.disposeObject(_list.removeChildAt(0), _itemRenderer);
+			// _list.removeChildAt(0);
+			// }
 
 			var item : DisplayItemData;
-			var rendersNum:uint;
+			var rendersNum : uint;
 			_validItems = 0;
-			for(var i : int = 0;i < _data.length;i++) {
+			for (var i : int = 0;i < _data.length;i++) {
 				item = _data[i];
-				if(item.displayObject.stage == null)
+				if (item.displayObject.stage == null)
 					continue;
-				
-				//if (_renderArea.contains(0, _validItems * lineHeight)) {
+
+				// if (_renderArea.contains(0, _validItems * lineHeight)) {
 				if (_renderArea.top - lineHeight - _gap < _validItems * lineHeight && _renderArea.bottom > _validItems * lineHeight) {
 					var render : BaseDisplayItemView;
 					if (rendersNum < _list.numChildren) {
 						render = _list.getChildAt(rendersNum) as BaseDisplayItemView;
 						if (render == null) {
-							//render = new _itemRenderer();
-							render = ObjectPool.getObject(_itemRenderer);;
+							// render = new _itemRenderer();
+							render = ObjectPool.getObject(_itemRenderer);
+							;
 							_list.addChild(render);
 						}
-					}else {
+					} else {
 						render = new _itemRenderer();
 						_list.addChild(render);
 					}
-					//var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
+					// var render : BaseDisplayItemView = ObjectPool.getObject(_itemRenderer);
 					render.setData(item);
 					render.x = 0;
-					//render.y = _list.height + 2;
 					render.y = _validItems * lineHeight + 2;
-					//_list.addChild(render);
-					
+					// _list.addChild(render);
+
 					rendersNum++;
 				}
-				
+
 				_validItems++;
 			}
-			
+
 			while (rendersNum < _list.numChildren) {
-				ObjectPool.disposeObject(_list.removeChildAt(_list.numChildren -1), _itemRenderer);
-				//_list.removeChildAt(_list.numChildren -1);
+				ObjectPool.disposeObject(_list.removeChildAt(_list.numChildren - 1), _itemRenderer);
+				// _list.removeChildAt(_list.numChildren -1);
 			}
 		}
 
@@ -203,7 +201,7 @@ package cn.itamt.utils.inspector.core.structureview {
 		 * 根据显示对象返回其对应在显示树中的数据类.
 		 */
 		public function getDisplayItem(object : DisplayObject) : DisplayItemData {
-			if(_map[object] == null) {
+			if (_map[object] == null) {
 				_map[object] = new DisplayItemData(object);
 				(_map[object] as DisplayItemData).addEventListener(DisplayItemEvent.EXPAND, onExpandCollapseItem);
 				(_map[object] as DisplayItemData).addEventListener(DisplayItemEvent.COLLAPSE, onExpandCollapseItem);
@@ -226,15 +224,15 @@ package cn.itamt.utils.inspector.core.structureview {
 					break;
 			}
 
-			//this.drawList();
+			// this.drawList();
 			dispatchEvent(new Event(Event.RESIZE));
 		}
 
 		private function collapseDisplayItem(item : DisplayItemData) : void {
-			if(item.hasChildren) {
-				if(item.displayObject is DisplayObjectContainer) {
+			if (item.hasChildren) {
+				if (item.displayObject is DisplayObjectContainer) {
 					var container : DisplayObjectContainer = item.displayObject as DisplayObjectContainer;
-					for(var i : int = 0;i < container.numChildren;i++) {
+					for (var i : int = 0;i < container.numChildren;i++) {
 						removeItemAndChilds(getDisplayItem(container.getChildAt(i)));
 					}
 				}
@@ -243,23 +241,23 @@ package cn.itamt.utils.inspector.core.structureview {
 
 		private function removeItemAndChilds(item : DisplayItemData) : void {
 			this.removeDisplayItem(item);
-			if(item.hasChildren) {
+			if (item.hasChildren) {
 				var container : DisplayObjectContainer = item.displayObject as DisplayObjectContainer;
-				for(var i : int = 0;i < container.numChildren;i++) {
+				for (var i : int = 0;i < container.numChildren;i++) {
 					removeItemAndChilds(getDisplayItem(container.getChildAt(i)));
 				}
 			}
 		}
 
 		private function expandDisplayItem(item : DisplayItemData) : void {
-			if(item.hasChildren) {
-				if(item.displayObject is DisplayObjectContainer) {
+			if (item.hasChildren) {
+				if (item.displayObject is DisplayObjectContainer) {
 					var container : DisplayObjectContainer = item.displayObject as DisplayObjectContainer;
 					var childItem : DisplayItemData;
-					for(var i : int = container.numChildren - 1;i >= 0;i--) {
+					for (var i : int = container.numChildren - 1;i >= 0;i--) {
 						childItem = getDisplayItem(container.getChildAt(i));
 						addDisplayItemAfter(childItem, item);
-						if(childItem.hasChildren && childItem.isExpand) {
+						if (childItem.hasChildren && childItem.isExpand) {
 							expandDisplayItem(childItem);
 						}
 					}
@@ -274,9 +272,9 @@ package cn.itamt.utils.inspector.core.structureview {
 			var render : BaseDisplayItemView;
 
 			var i : int = _list.numChildren;
-			while(i--) {
+			while (i--) {
 				render = _list.getChildAt(i) as BaseDisplayItemView;
-				if(render.data.displayObject == object) {
+				if (render.data.displayObject == object) {
 					return render as _itemRenderer;
 					break;
 				}
@@ -284,38 +282,53 @@ package cn.itamt.utils.inspector.core.structureview {
 
 			return null;
 		}
-		
-		private var _invalidate:Boolean = false;
-		public function set renderArea(rect:Rectangle):void 
-		{
+
+		private var _invalidate : Boolean = false;
+
+		public function set renderArea(rect : Rectangle) : void {
 			_renderArea = rect;
-			//this.drawList();
-			//return;
+			// this.drawList();
+			// return;
 			if (!_invalidate) {
 				_invalidate = true;
 				DisplayObjectTool.callLater(renderList);
-				//this.stage.invalidate();// = true;
-				//this.stage.addEventListener(Event.RENDER, this.renderList);
+				// this.stage.invalidate();// = true;
+				// this.stage.addEventListener(Event.RENDER, this.renderList);
 			}
 		}
-		
-		public function get renderArea():Rectangle {
+
+		public function get renderArea() : Rectangle {
 			return _renderArea;
 		}
-		
-		private function renderList():void {
+
+		private function renderList() : void {
 			_invalidate = false;
 			drawList();
-			//this.stage.removeEventListener(Event.RENDER, renderList);
-		
+			// this.stage.removeEventListener(Event.RENDER, renderList);
 		}
-		
+
 		/**
 		 * 
 		 */
-		private var _validItems:uint;
-		override public function get height():Number {
+		private var _validItems : uint;
+
+		override public function get height() : Number {
 			return _validItems * (lineHeight + _gap) - _gap;
+		}
+
+		/**
+		 * 
+		 */
+		public function getRendererBoundsByObject(displayObject : DisplayObject) : Rectangle {
+			var rect : Rectangle;
+			var item : DisplayItemData = this.getDisplayItem(displayObject);
+			if (item) {
+				var i : int = _data.indexOf(item);
+				if (i >= 0) {
+					rect = new Rectangle(0, i * lineHeight, 200, lineHeight);
+				}
+			}
+			return rect;
 		}
 	}
 }
