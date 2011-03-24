@@ -1,4 +1,5 @@
-package cn.itamt.utils.inspector.core.liveinspect {
+package cn.itamt.utils.inspector.core.liveinspect
+{
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
@@ -8,16 +9,20 @@ package cn.itamt.utils.inspector.core.liveinspect {
 	/**
 	 * @author tamt
 	 */
-	public class Inspector3DButton extends InspectorButton {
-		public function Inspector3DButton() : void {
+	public class Inspector3DButton extends InspectorButton
+	{
+		public function Inspector3DButton():void
+		{
 			super();
 
-			_tip = InspectorLanguageManager.getStr('Transform3D');
+			_tip=InspectorLanguageManager.getStr('Transform3D');
 		}
 
-		override protected function buildOverState() : DisplayObject {
-			var sp : Shape = new Shape();
-			with(sp) {
+		override protected function buildOverState():DisplayObject
+		{
+			var sp:Shape=new Shape();
+			with (sp)
+			{
 				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
@@ -35,9 +40,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildDownState() : DisplayObject {
-			var sp : Shape = new Shape();
-			with(sp) {
+		override protected function buildDownState():DisplayObject
+		{
+			var sp:Shape=new Shape();
+			with (sp)
+			{
 				// 背景
 				graphics.beginFill(0, 1);
 				graphics.drawRoundRect(0, 0, 23, 23, 10, 10);
@@ -55,9 +62,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildUpState() : DisplayObject {
-			var sp : Shape = new Shape();
-			with(sp) {
+		override protected function buildUpState():DisplayObject
+		{
+			var sp:Shape=new Shape();
+			with (sp)
+			{
 
 				// 背景
 				graphics.beginFill(0, 0);
@@ -76,9 +85,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			return sp;
 		}
 
-		override protected function buildUnenabledState() : DisplayObject {
-			var sp : Shape = new Shape();
-			with(sp) {
+		override protected function buildUnenabledState():DisplayObject
+		{
+			var sp:Shape=new Shape();
+			with (sp)
+			{
 
 				// 背景
 				graphics.beginFill(0, 0);

@@ -1,4 +1,5 @@
-package cn.itamt.utils.inspector.core.liveinspect {
+package cn.itamt.utils.inspector.core.liveinspect
+{
 	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.IInspector;
@@ -9,11 +10,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.inspector.output.InspectorOutPuterManager;
 	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
 	import cn.itamt.utils.inspector.plugins.tfm3d.ITransform3DController;
-	import cn.itamt.utils.inspector.ui.InspectorSymbolIcon;
 	import cn.itamt.utils.inspector.ui.InspectorTextField;
-
-	import flash.display.Bitmap;
-	import flash.system.ApplicationDomain;
 
 	import com.senocular.display.TransformTool;
 
@@ -26,98 +23,109 @@ package cn.itamt.utils.inspector.core.liveinspect {
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.system.ApplicationDomain;
 	import flash.text.TextField;
 
 	/**
 	 * @author tamt
 	 */
-	public class LiveInspectView extends BaseInspectorPlugin {
+	public class LiveInspectView extends BaseInspectorPlugin
+	{
 		// 显示信息文本
-		private var _des : TextField;
+		private var _des:TextField;
 		// 覆盖在查看对象之上的矩形按钮
-		private var _mBtn : Sprite;
+		private var _mBtn:Sprite;
 		// 显示查看对象区域的矩形(会一直置顶)
-		private var _mFrame : Shape;
+		private var _mFrame:Shape;
 		// 操作菜单条
-		private var _bar : OperationBar;
+		private var _bar:OperationBar;
 		// 用于变形
-		private var _tfm : TransformTool;
+		private var _tfm:TransformTool;
 		// 用于3d变形
-		private var _tool3d : ITransform3DController;
+		private var _tool3d:ITransform3DController;
 
-		public function use3DTransformer(tfm3dController : *) : void {
-			if (!ApplicationDomain.currentDomain.hasDefinition("cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController")) {
+		public function use3DTransformer(tfm3dController:*):void
+		{
+			if (!ApplicationDomain.currentDomain.hasDefinition("cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController"))
+			{
 				throw new Error(InspectorLanguageManager.getStr("Tfm3DNotFound"));
-				_tool3d = null;
-			} else {
-				_tool3d = tfm3dController;
-				if (_actived) {
-					_bar.show3DBtn = true;
+				_tool3d=null;
+			}
+			else
+			{
+				_tool3d=tfm3dController;
+				if (_actived)
+				{
+					_bar.show3DBtn=true;
 				}
 			}
 		}
 
 		//
-		private var inited : Boolean;
+		private var inited:Boolean;
 
-		public function LiveInspectView() : void {
+		public function LiveInspectView():void
+		{
 			super();
 
-			outputerManager = new InspectorOutPuterManager();
+			outputerManager=new InspectorOutPuterManager();
 		}
 
-		// // // ////////////////////////////////
-		// // // ////override  interfaces/////////
-		// // // ////////////////////////////////
-		override public function getPluginId() : String {
+		// // // // // ////////////////////////////
+		// // // // // override    interfaces/////////
+		// // // // // ////////////////////////////
+		override public function getPluginId():String
+		{
 			return InspectorPluginId.LIVE_VIEW;
 		}
 
-		override public function onRegister(inspector : IInspector) : void {
+		override public function onRegister(inspector:IInspector):void
+		{
 			super.onRegister(inspector);
 
-			_icon = new LiveInspectButton();
+			_icon=new LiveInspectButton();
 		}
 
 		/**
 		 * 当Inspector开启时
 		 */
-		override public function onActive() : void {
+		override public function onActive():void
+		{
 			super.onActive();
 
 			this._inspector.startLiveInspect();
 
 			if (inited)
 				return;
-			inited = true;
+			inited=true;
 
-			this.viewContainer = new Sprite();
-			this.viewContainer.mouseEnabled = false;
+			this.viewContainer=new Sprite();
+			this.viewContainer.mouseEnabled=false;
 
-			_des = InspectorTextField.create('', 0xffffff, 13);
-			_des.background = true;
-			_des.backgroundColor = 0x636C02;
-			_des.border = true;
-			_des.borderColor = 0x636C02;
-			_des.cacheAsBitmap = true;
-			_des.autoSize = 'left';
+			_des=InspectorTextField.create('', 0xffffff, 13);
+			_des.background=true;
+			_des.backgroundColor=0x636C02;
+			_des.border=true;
+			_des.borderColor=0x636C02;
+			_des.cacheAsBitmap=true;
+			_des.autoSize='left';
 			this.viewContainer.addChild(_des);
 
-			_mBtn = new Sprite();
-			_mBtn.buttonMode = true;
+			_mBtn=new Sprite();
+			_mBtn.buttonMode=true;
 			this.viewContainer.addChild(_mBtn);
 
 			// 显示查看对象区域的矩形(会一直置顶)
-			_mFrame = new Shape();
+			_mFrame=new Shape();
 
 			// 变形器
-			_tfm = new TransformTool();
+			_tfm=new TransformTool();
 			_tfm.addEventListener(TransformTool.TRANSFORM_TARGET, onTransformTarget);
 			_tfm.addControl(new ResetTransofrmControl());
-			_tfm.raiseNewTargets = false;
-			_tfm.moveEnabled = false;
+			_tfm.raiseNewTargets=false;
+			_tfm.moveEnabled=false;
 			// _tfm.moveNewTargets = true;
-			_tfm.outlineEnabled = false;
+			_tfm.outlineEnabled=false;
 			// _tfm.cursorsEnabled = false;
 			_tfm.setSkin(TransformTool.SCALE_TOP_LEFT, new Sprite());
 			_tfm.setSkin(TransformTool.SCALE_TOP_RIGHT, new Sprite());
@@ -134,8 +142,9 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			this.viewContainer.addChild(_tfm);
 
 			// ------操作条------
-			_bar = new OperationBar();
-			if (_tool3d) _bar.show3DBtn = true;
+			_bar=new OperationBar();
+			if (_tool3d)
+				_bar.show3DBtn=true;
 			_bar.init();
 			// ------------------
 
@@ -155,86 +164,88 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_bar.addEventListener(OperationBar.PRESS_TRANSFORM_3D, onClick3D);
 		}
 
-		private function onTransformTarget(e : Event) : void {
+		private function onTransformTarget(e:Event):void
+		{
 			update();
 			_inspector.updateInsectorView();
 		}
 
-		private function onClick3D(e : Event) : void {
-			if (_tool3d) {
-				if (_bar.tfm3dBtn.active) {
+		private function onClick3D(e:Event):void
+		{
+			if (_tool3d)
+			{
+				if (_bar.tfm3dBtn.active)
+				{
 					this.switch2DTfmTool();
-				} else {
+				}
+				else
+				{
 					this.switch3DTfmTool();
 				}
 			}
 		}
 
-		private function switch2DTfmTool() : void {
-			_bar.tfm3dBtn.active = false;
-<<<<<<< HEAD
-			if (_tool3d) {
+		private function switch2DTfmTool():void
+		{
+			_bar.tfm3dBtn.active=false;
+
+			if (_tool3d)
+			{
 				_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
-				_tool3d.target = null;
-				if (this.viewContainer.contains(_tool3d as DisplayObject)) this.viewContainer.removeChild(_tool3d as DisplayObject);
+				_tool3d.target=null;
+
+				if (this.viewContainer.contains(_tool3d as DisplayObject))
+					this.viewContainer.removeChild(_tool3d as DisplayObject);
 
 				//
-				if (this.target.displayObject.transform.matrix == null) {
-					var mx : Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
-					this.target.displayObject.transform.matrix3D = null;
-					this.target.displayObject.transform.matrix = mx;
+				if (this.target.displayObject.transform.matrix == null)
+				{
+					var mx:Matrix=_tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
+					this.target.displayObject.transform.matrix3D=null;
+					this.target.displayObject.transform.matrix=mx;
 				}
-
-=======
-			if(_tool3d){
-				_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
-				_tool3d.target = null;
-				
-				if(this.viewContainer.contains(_tool3d as DisplayObject))this.viewContainer.removeChild(_tool3d as DisplayObject);
-				
-				//
-				if (this.target.displayObject.transform.matrix == null) {
-					var mx:Matrix = _tool3d.convertMX3DtoMX(this.target.displayObject.transform.matrix3D);
-					this.target.displayObject.transform.matrix3D = null;
-					this.target.displayObject.transform.matrix = mx;
-				}
->>>>>>> 52abfbf7a878a8ed94d0f4b0f826805080a8404b
 			}
-			
-			this._tfm.target = this.target.displayObject;
+
+			this._tfm.target=this.target.displayObject;
 		}
 
-		private function switch3DTfmTool() : void {
+		private function switch3DTfmTool():void
+		{
 			// 3d变形器
-			_bar.tfm3dBtn.active = true;
+			_bar.tfm3dBtn.active=true;
 			_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
 			_tool3d.addEventListener(Event.CHANGE, on3DTransform);
 			this.viewContainer.addChild(_tool3d as DisplayObject);
-			_tool3d.target = this._inspector.getCurInspectTarget().displayObject;
+			_tool3d.target=this._inspector.getCurInspectTarget().displayObject;
 
-			this._tfm.target = null;
+			this._tfm.target=null;
 		}
 
-		private function on3DTransform(e : Event) : void {
+		private function on3DTransform(e:Event):void
+		{
 			this.update();
 		}
 
 		/**
 		 * 当Inspector关闭时
 		 */
-		override public function onUnActive() : void {
+		override public function onUnActive():void
+		{
 			super.onUnActive();
 
 			this._inspector.stopLiveInspect();
 
-			inited = false;
+			inited=false;
 
-			if (this.viewContainer) {
-				if (_tool3d && this.viewContainer.contains(_tool3d as DisplayObject)) this.viewContainer.removeChild(_tool3d as DisplayObject);
+			if (this.viewContainer)
+			{
+				if (_tool3d && this.viewContainer.contains(_tool3d as DisplayObject))
+					this.viewContainer.removeChild(_tool3d as DisplayObject);
 
 				this.viewContainer.graphics.clear();
 				// this.viewContainer.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-				if (this.viewContainer.stage) {
+				if (this.viewContainer.stage)
+				{
 					this.viewContainer.stage.removeEventListener(Event.ENTER_FRAME, onMouseMove);
 					this.viewContainer.stage.removeChild(this.viewContainer);
 				}
@@ -246,12 +257,13 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				if (_des.parent)
 					_des.parent.removeChild(_des);
 
-			target = null;
-			_tfm.target = null;
+			target=null;
+			_tfm.target=null;
 
-			if (_tool3d) {
+			if (_tool3d)
+			{
 				_tool3d.removeEventListener(Event.CHANGE, on3DTransform);
-				_tool3d.target = null;
+				_tool3d.target=null;
 			}
 
 			_mBtn.removeEventListener(MouseEvent.CLICK, onClickInspect);
@@ -270,10 +282,14 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_bar.removeEventListener(OperationBar.PRESS_TRANSFORM_3D, onClick3D);
 		}
 
-		override public function contains(child : DisplayObject) : Boolean {
-			if (viewContainer) {
+		override public function contains(child:DisplayObject):Boolean
+		{
+			if (viewContainer)
+			{
 				return viewContainer == child || viewContainer.contains(child) || _mFrame == child;
-			} else {
+			}
+			else
+			{
 				return false;
 			}
 		}
@@ -281,9 +297,10 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		/**
 		 * 当Inspector查看某个目标显示对象时.
 		 */
-		override public function onInspect(ele : InspectTarget) : void {
-			target = ele;
-			_tfm.target = null;
+		override public function onInspect(ele:InspectTarget):void
+		{
+			target=ele;
+			_tfm.target=null;
 
 			update();
 
@@ -291,29 +308,33 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				this.viewContainer.addChild(_bar);
 			_bar.validate(target.displayObject);
 
-			if (!DisplayObjectTool.isIn3D(target.displayObject)) {
+			if (!DisplayObjectTool.isIn3D(target.displayObject))
+			{
 				// _tfm.target = target.displayObject;
 				// _tool3d.target = null;
 				this.switch2DTfmTool();
-			} else if (_tool3d) {
+			}
+			else if (_tool3d)
+			{
 				// _bar.tfm3dBtn.active = true;
 				// _tool3d.target = target.displayObject;
 				this.switch3DTfmTool();
 			}
 			//
-		// DisplayObjectTool.swapToTop(this.viewContainer);
+			// DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
 		/**
 		 * 当Inspector实时查看某个目标显示对象时
 		 */
-		override public function onLiveInspect(ele : InspectTarget) : void {
+		override public function onLiveInspect(ele:InspectTarget):void
+		{
 			if (this.viewContainer.stage == null)
 				this._inspector.stage.addChild(this.viewContainer);
 			this._inspector.stage.addChild(this._mFrame);
 
-			target = ele;
-			_tfm.target = null;
+			target=ele;
+			_tfm.target=null;
 			update(true);
 
 			if (_bar.stage)
@@ -324,99 +345,113 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		/**
 		 * 需要更新某个显示对象时.
 		 */
-		override public function onUpdate(target : InspectTarget = null) : void {
+		override public function onUpdate(target:InspectTarget=null):void
+		{
 			_bar.validate(target.displayObject);
 
-			if (target == this.target) {
-				_tfm.moveNewTargets = true;
-				_tfm.target = target.displayObject;
-				_tfm.moveNewTargets = false;
+			if (target == this.target)
+			{
+				_tfm.moveNewTargets=true;
+				_tfm.target=target.displayObject;
+				_tfm.moveNewTargets=false;
 				// _tfm.draw();
 				update();
 			}
 		}
 
-		// // // ////////////////////////////////
-		// // // ////////////////////////////////
-		// // // ////////////////////////////////
-		// // // ////////////////////////////////
-		// // // ////private  functions///////////
-		// // // ////////////////////////////////
-		// // // ////////////////////////////////
-		// // // ////////////////////////////////
-		// // // ////////////////////////////////
-		private var rect : Rectangle;
+		// // // // // ////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // private    functions///////////
+		// // // // // ////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // ////////////////////////////
+		// // // // // ////////////////////////////
+		private var rect:Rectangle;
 		// 目标的注册点
-		private var reg : Point;
+		private var reg:Point;
 		// 目标父容器的注册点
-		private var parentReg : Point;
+		private var parentReg:Point;
 
 		/**
 		 * 更新显示
 		 */
-		private function update(isLiveMode : Boolean = false) : void {
+		private function update(isLiveMode:Boolean=false):void
+		{
 			if (!contains(_des))
 				this.viewContainer.addChild(_des);
 			if (!contains(_mBtn))
 				this.viewContainer.addChild(_mBtn);
 
-			rect = target.displayObject.getBounds(this.viewContainer.stage);
-			reg = target.displayObject.localToGlobal(new Point(0, 0));
-			if (target.displayObject.parent) {
-				parentReg = target.displayObject.parent.localToGlobal(new Point(0, 0));
-			} else {
-				parentReg = null;
+			rect=target.displayObject.getBounds(this.viewContainer.stage);
+			reg=target.displayObject.localToGlobal(new Point(0, 0));
+			if (target.displayObject.parent)
+			{
+				parentReg=target.displayObject.parent.localToGlobal(new Point(0, 0));
+			}
+			else
+			{
+				parentReg=null;
 			}
 
-			var outputer : DisplayObjectInfoOutPuter = outputerManager.getOutputerByInstance(target.displayObject);
-			_des.htmlText = outputer.output(target.displayObject);
-			_des.x = rect.x - .5;
-			_des.y = rect.y - _des.height + .5;
+			var outputer:DisplayObjectInfoOutPuter=outputerManager.getOutputerByInstance(target.displayObject);
+			_des.htmlText=outputer.output(target.displayObject);
+			_des.x=rect.x - .5;
+			_des.y=rect.y - _des.height + .5;
 
-			if (isLiveMode) {
+			if (isLiveMode)
+			{
 				this.drawMbtn();
-				_mBtn.mouseChildren = _mBtn.mouseEnabled = true;
-			} else {
+				_mBtn.mouseChildren=_mBtn.mouseEnabled=true;
+			}
+			else
+			{
 				this.drawMbtn(0, 0x636C02);
-				_mBtn.mouseChildren = _mBtn.mouseEnabled = false;
+				_mBtn.mouseChildren=_mBtn.mouseEnabled=false;
 			}
 
-			_bar.x = rect.x - .5;
-			_bar.y = _des.y - _bar.barHeight;
+			_bar.x=rect.x - .5;
+			_bar.y=_des.y - _bar.barHeight;
 		}
 
-		private function onClickInspect(evt : MouseEvent) : void {
+		private function onClickInspect(evt:MouseEvent):void
+		{
 			this._inspector.inspect(target.displayObject);
 		}
 
-		private var lp : Point;
+		private var lp:Point;
 
-		private function onStartMove(evt : Event) : void {
+		private function onStartMove(evt:Event):void
+		{
 			this.viewContainer.stage.addEventListener(Event.ENTER_FRAME, onMouseMove);
-			lp = new Point(_tfm.mouseX, _tfm.mouseY);
+			lp=new Point(_tfm.mouseX, _tfm.mouseY);
 
 			if (this.viewContainer.parent)
 				DisplayObjectTool.swapToTop(this.viewContainer);
 		}
 
-		private function onStopMove(evt : Event = null) : void {
+		private function onStopMove(evt:Event=null):void
+		{
 			this.viewContainer.stage.removeEventListener(Event.ENTER_FRAME, onMouseMove);
 		}
 
-		private function onMouseMove(evt : Event = null) : void {
-			var toolMatrix : Matrix = _tfm.toolMatrix;
-			toolMatrix.tx += _tfm.mouseX - lp.x;
-			toolMatrix.ty += _tfm.mouseY - lp.y;
-			_tfm.toolMatrix = toolMatrix;
+		private function onMouseMove(evt:Event=null):void
+		{
+			var toolMatrix:Matrix=_tfm.toolMatrix;
+			toolMatrix.tx+=_tfm.mouseX - lp.x;
+			toolMatrix.ty+=_tfm.mouseY - lp.y;
+			_tfm.toolMatrix=toolMatrix;
 			_tfm.apply();
 
-			lp.x = _tfm.mouseX;
-			lp.y = _tfm.mouseY;
+			lp.x=_tfm.mouseX;
+			lp.y=_tfm.mouseY;
 
 			this.update();
 		}
 
-		private function onCloseBar(evt : Event = null) : void {
+		private function onCloseBar(evt:Event=null):void
+		{
 			if (this.viewContainer.stage)
 				this.viewContainer.parent.removeChild(this.viewContainer);
 			if (this._mFrame.stage)
@@ -425,39 +460,51 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			this._inspector.startLiveInspect();
 		}
 
-		private function onPressParent(evt : Event) : void {
-			if (target) {
-				if (target.displayObject.parent) {
+		private function onPressParent(evt:Event):void
+		{
+			if (target)
+			{
+				if (target.displayObject.parent)
+				{
 					this._inspector.inspect(target.displayObject.parent);
 				}
 			}
 		}
 
-		private function onPressChild(evt : Event) : void {
-			if (target) {
-				if (target.displayObject is DisplayObjectContainer) {
+		private function onPressChild(evt:Event):void
+		{
+			if (target)
+			{
+				if (target.displayObject is DisplayObjectContainer)
+				{
 					this._inspector.inspect((target.displayObject as DisplayObjectContainer).getChildAt(0));
 				}
 			}
 		}
 
-		private function onPressBrother(evt : Event) : void {
-			if (target) {
-				if (target.displayObject.parent) {
-					var container : DisplayObjectContainer = target.displayObject.parent;
-					var i : int = container.getChildIndex(target.displayObject);
-					var t : int = (++i) % (container.numChildren);
+		private function onPressBrother(evt:Event):void
+		{
+			if (target)
+			{
+				if (target.displayObject.parent)
+				{
+					var container:DisplayObjectContainer=target.displayObject.parent;
+					var i:int=container.getChildIndex(target.displayObject);
+					var t:int=(++i) % (container.numChildren);
 					this._inspector.inspect(container.getChildAt(t));
 				}
 			}
 		}
 
-		private function onPressPrevious(evt : Event) : void {
-			if (target) {
-				if (target.displayObject.parent) {
-					var container : DisplayObjectContainer = target.displayObject.parent;
-					var i : int = container.getChildIndex(target.displayObject);
-					var t : int = (--i < 0) ? (container.numChildren - 1) : i;
+		private function onPressPrevious(evt:Event):void
+		{
+			if (target)
+			{
+				if (target.displayObject.parent)
+				{
+					var container:DisplayObjectContainer=target.displayObject.parent;
+					var i:int=container.getChildIndex(target.displayObject);
+					var t:int=(--i < 0) ? (container.numChildren - 1) : i;
 					this._inspector.inspect(container.getChildAt(t));
 				}
 			}
@@ -466,27 +513,31 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		/**
 		 * 单击重置时
 		 */
-		private function onClickReset(evt : Event) : void {
-			if (target) {
+		private function onClickReset(evt:Event):void
+		{
+			if (target)
+			{
 				target.resetTarget();
-				if (_tfm) {
-					_tfm.target = null;
-					_tfm.target = target.displayObject;
+				if (_tfm)
+				{
+					_tfm.target=null;
+					_tfm.target=target.displayObject;
 				}
 				this.update();
 			}
 		}
 
-		private function drawMbtn(alpha : Number = .2, bColor : uint = 0xff0000) : void {
+		private function drawMbtn(alpha:Number=.2, bColor:uint=0xff0000):void
+		{
 			_mBtn.graphics.clear();
 			_mBtn.graphics.lineStyle(2, bColor, 1, false, 'normal', 'square', 'miter');
 			_mBtn.graphics.beginFill(0xff0000, 0);
 
-			var tmp : Rectangle = this.target.displayObject.getBounds(this.target.displayObject);
-			var tl : Point = this.target.displayObject.localToGlobal(tmp.topLeft);
-			var tr : Point = this.target.displayObject.localToGlobal(new Point(tmp.right, tmp.top));
-			var bl : Point = this.target.displayObject.localToGlobal(new Point(tmp.left, tmp.bottom));
-			var br : Point = this.target.displayObject.localToGlobal(tmp.bottomRight);
+			var tmp:Rectangle=this.target.displayObject.getBounds(this.target.displayObject);
+			var tl:Point=this.target.displayObject.localToGlobal(tmp.topLeft);
+			var tr:Point=this.target.displayObject.localToGlobal(new Point(tmp.right, tmp.top));
+			var bl:Point=this.target.displayObject.localToGlobal(new Point(tmp.left, tmp.bottom));
+			var br:Point=this.target.displayObject.localToGlobal(tmp.bottomRight);
 			_mBtn.graphics.moveTo(tl.x, tl.y);
 			_mBtn.graphics.lineTo(tr.x, tr.y);
 			_mBtn.graphics.lineTo(br.x, br.y);
@@ -508,7 +559,8 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			_mBtn.graphics.endFill();
 
 			// 父容器注册点十字形
-			if (parentReg) {
+			if (parentReg)
+			{
 				_mBtn.graphics.lineStyle(2, 0x0000ff, 1, false, 'normal', 'square', 'miter');
 				_mBtn.graphics.moveTo(parentReg.x - 4, parentReg.y);
 				_mBtn.graphics.lineTo(parentReg.x + 4, parentReg.y);
@@ -533,21 +585,24 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		/**
 		 * 單擊查看顯示對象結構
 		 */
-		private function onPressStructure(evt : Event) : void {
+		private function onPressStructure(evt:Event):void
+		{
 			_inspector.pluginManager.activePlugin(InspectorPluginId.STRUCT_VIEW);
 		}
 
 		/**
 		 * 單擊查看詳細信息
 		 */
-		private function onPressInfo(evt : Event) : void {
+		private function onPressInfo(evt:Event):void
+		{
 			_inspector.pluginManager.activePlugin(InspectorPluginId.PROPER_VIEW);
 		}
 
 		/**
 		 * 單擊查看詳細信息
 		 */
-		private function onPressFilter(evt : Event) : void {
+		private function onPressFilter(evt:Event):void
+		{
 			// _inspector.setInspectFilter(this.target.displayObject['constructor'] as Class);
 			_inspector.stage.dispatchEvent(new InspectorFilterEvent(InspectorFilterEvent.CHANGE, this.target.displayObject['constructor'] as Class));
 		}
