@@ -49,29 +49,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		}
 		
 		//是否显示3d工具按钮
-		private var _show3DBtn:Boolean;
-		public function get show3DBtn():Boolean 
-		{
-			return _show3DBtn;
-		}
-		
-		public function set show3DBtn(value:Boolean):void 
-		{
-			_show3DBtn = value;
-			if (_inited) {
-				var i:int = _btns.indexOf(_3dBtn);
-				if (_show3DBtn) {
-					if (i < 0)_btns.splice(_btns.length - 1, 0, _3dBtn);
-				}else {
-					if (i >= 0) {
-						if(contains(_3dBtn))removeChild(_3dBtn);
-						_btns.splice(i, 1);
-					}
-				}
-				relayout();
-			}
-		}
-
+		private var _show3DBtn:Boolean, _showPropBtn:Boolean = true, _showStructBtn:Boolean = true, _showFilterBtn:Boolean = true;
 		
 		// 布局
 		private var _paddings : Array = [10, 5, 10];
@@ -97,11 +75,13 @@ package cn.itamt.utils.inspector.core.liveinspect {
 						_childBtn = new InspectorViewChildButton,
 						_prevBtn = new InspectorViewPrevButton, 
 						_broBtn = new InspectorViewBrotherButton, 
-						_infoBtn = new PropertiesViewButton, 
-						_struBtn = new StructureViewButton, 
-						_filterBtn = new FilterManagerButton,
 						_closeBtn = new InspectorViewCloseButton];
-			
+			_infoBtn = new PropertiesViewButton;
+			if(showPropBtn)_btns.splice(_btns.length - 1, 0, _infoBtn);
+			_struBtn = new StructureViewButton;
+			if(showStructBtn)_btns.splice(_btns.length - 1, 0, _struBtn);
+			_filterBtn = new FilterManagerButton;
+			if(showFilterBtn)_btns.splice(_btns.length - 1, 0, _filterBtn);
 			_3dBtn = new Inspector3DButton();
 			if (show3DBtn)_btns.splice(_btns.length - 1, 0, _3dBtn);
 			this.relayout();
@@ -241,5 +221,90 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				_filterBtn.tip = InspectorLanguageManager.getStr('unSetFilterClass');
 			}
 		}
+
+		public function get showPropBtn() : Boolean {
+			return _showPropBtn;
+		}
+
+		public function set showPropBtn(showPropBtn : Boolean) : void {
+			_showPropBtn = showPropBtn;
+
+			if (_inited) {
+				var i:int = _btns.indexOf(_infoBtn);
+				if (_showPropBtn) {
+					if (i < 0)_btns.splice(_btns.length - 1, 0, _infoBtn);
+				}else {
+					if (i >= 0) {
+						if(contains(_infoBtn))removeChild(_infoBtn);
+						_btns.splice(i, 1);
+					}
+				}
+				relayout();
+			}
+		}
+
+		public function get showStructBtn() : Boolean {
+			return _showStructBtn;
+		}
+
+		public function set showStructBtn(showStructBtn : Boolean) : void {
+			_showStructBtn = showStructBtn;
+
+			if (_inited) {
+				var i:int = _btns.indexOf(_struBtn);
+				if (_showStructBtn) {
+					if (i < 0)_btns.splice(_btns.length - 1, 0, _struBtn);
+				}else {
+					if (i >= 0) {
+						if(contains(_struBtn))removeChild(_struBtn);
+						_btns.splice(i, 1);
+					}
+				}
+				relayout();
+			}
+		}
+
+		public function get showFilterBtn() : Boolean {
+			return _showFilterBtn;
+		}
+
+		public function set showFilterBtn(showFilterBtn : Boolean) : void {
+			_showFilterBtn = showFilterBtn;
+			
+			if (_inited) {
+				var i:int = _btns.indexOf(_filterBtn);
+				if (_showFilterBtn) {
+					if (i < 0)_btns.splice(_btns.length - 1, 0, _filterBtn);
+				}else {
+					if (i >= 0) {
+						if(contains(_filterBtn))removeChild(_filterBtn);
+						_btns.splice(i, 1);
+					}
+				}
+				relayout();
+			}
+		}
+				public function get show3DBtn():Boolean 
+		{
+			return _show3DBtn;
+		}
+		
+		public function set show3DBtn(value:Boolean):void 
+		{
+			_show3DBtn = value;
+			if (_inited) {
+				var i:int = _btns.indexOf(_3dBtn);
+				if (_show3DBtn) {
+					if (i < 0)_btns.splice(_btns.length - 1, 0, _3dBtn);
+				}else {
+					if (i >= 0) {
+						if(contains(_3dBtn))removeChild(_3dBtn);
+						_btns.splice(i, 1);
+					}
+				}
+				relayout();
+			}
+		}
+		
 	}
 }

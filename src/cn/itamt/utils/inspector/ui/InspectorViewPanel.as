@@ -230,7 +230,7 @@ package cn.itamt.utils.inspector.ui {
 		/**
 		 * 设置内容的渲染区域
 		 */
-		protected function setContentRenderArea(rect:Rectangle) {
+		protected function setContentRenderArea(rect:Rectangle) :void{
 			_contentContainer.scrollRect = rect;
 		}
 
