@@ -80,6 +80,7 @@ RemoveTransform	=	remove transform
 Beta			=	β
 ConnectFFBFail	=	connect FlashFirebug fail, tried times:
 ShowMouse		=	show mouse
+FlashConsole	=	flash Console
 ]]>
 					</lang>;
 		}
