@@ -1,19 +1,15 @@
 package cn.itamt.dopin {
-	import OP.ObjectPool;
-
-	import cn.itamt.dopin.DopinCanvas;
-	import cn.itamt.dopin.DopinData;
 	import cn.itamt.dopin.events.DopinEvent;
 	import cn.itamt.dopin.events.DopinMouseEvent;
+	import cn.itamt.utils.ObjectPool;
 
 	import flash.display.Bitmap;
-	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.ui.Mouse;
-	import flash.ui.MouseCursor;		
+	import flash.ui.MouseCursor;
 
 	/**
 	 * TODO:通过Bmd的getPixel方法来实现响应鼠标. 给每个Dopin分配一个不同的唯一的颜色.
