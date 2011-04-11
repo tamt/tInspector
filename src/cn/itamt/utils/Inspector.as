@@ -6,7 +6,6 @@
 	import cn.itamt.utils.inspector.core.InspectorPluginManager;
 	import cn.itamt.utils.inspector.core.inspectfilter.IInspectorFilterManager;
 	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterManager;
-	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.InspectorTipsManager;
 	import cn.itamt.utils.inspector.ui.InspectorStageReference;
@@ -61,22 +60,6 @@
 			return _pluginMgr;
 		}
 
-//		private var _inspectView : LiveInspectView;
-
-		/**
-		 * get the reference to tInspector's LiveInspectView plugin.
-		 */
-//		public function get liveInspectView() : LiveInspectView {
-//			return _inspectView;
-//		}
-
-//		private var _structureView : StructureView;
-
-//		public function get structureView() : StructureView {
-//			return _structureView;
-//		}
-
-//		private var _propertiesView : PropertiesView;
 		private var _curLiveInspectEle : InspectTarget;
 		private var _curInspectEle : InspectTarget;
 
@@ -98,9 +81,6 @@
 				return;
 			}
 
-//			_inspectView = new LiveInspectView();
-//			_structureView = new StructureView();
-//			_propertiesView = new PropertiesView();
 			_filterManager = new InspectorFilterManager();
 
 			_pluginMgr = new InspectorPluginManager(this);
@@ -141,9 +121,6 @@
 
 			InspectorStageReference.referenceTo(this._stage);
 
-//			this.pluginManager.registerPlugin(_structureView);
-//			this.pluginManager.registerPlugin(_propertiesView);
-//			this.pluginManager.registerPlugin(_inspectView);
 			this.pluginManager.registerPlugin(_filterManager);
 		}
 
