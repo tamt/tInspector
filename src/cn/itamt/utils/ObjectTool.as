@@ -38,6 +38,7 @@ package cn.itamt.utils
 		 * @param from Object to copy properties from
 		 * @param into (optional) Object to copy into. If null, a new object is created.
 		 * @return A deep copy of the object
+		 * @see	https://github.com/darscan/robotlegs-extensions-Oil/blob/master/src/org/robotlegs/oil/utils/object/copyAllProperties.as
 		 */
 		public static function copyAllProperties(from:Object, into:Object=null):Object
 		{
