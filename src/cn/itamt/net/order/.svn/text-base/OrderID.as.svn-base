@@ -1,19 +1,21 @@
-package cn.itamt.net.order 
+package com.zhongCheng.order 
 {
-	import cn.itamt.net.order.model.OrderDataMap;
-	import cn.itamt.net.order.model.client.ChatData;
-	import cn.itamt.net.order.model.client.HeartData;
-	import cn.itamt.net.order.model.client.LoginData;
-	import cn.itamt.net.order.model.client.TransferData;
-	import cn.itamt.net.order.model.server.LoginResultData;
-	import cn.itamt.net.order.model.server.ServerChatData;
-	import cn.itamt.net.order.model.server.ServerChatResultData;
-	import cn.itamt.net.order.model.server.ServerHeartData;
-	import cn.itamt.net.order.model.server.ServerPlayerLeaveData;
-	import cn.itamt.net.order.model.server.ServerTransferData;
-	import cn.itamt.net.order.model.server.ServerTransferResultData;
+	import com.zhongCheng.order.encode.OrderEncoderMap;
+	import com.zhongCheng.order.model.client.ChatData;
+	import com.zhongCheng.order.model.client.HeartData;
+	import com.zhongCheng.order.model.client.LoginData;
+	import com.zhongCheng.order.model.client.TransferData;
+	import com.zhongCheng.order.model.OrderDataMap;
+	import com.zhongCheng.order.model.server.LoginResultData;
+	import com.zhongCheng.order.model.server.ServerChatData;
+	import com.zhongCheng.order.model.server.ServerChatResultData;
+	import com.zhongCheng.order.model.server.ServerHeartData;
+	import com.zhongCheng.order.model.server.ServerPlayerLeaveData;
+	import com.zhongCheng.order.model.server.ServerTransferData;
+	import com.zhongCheng.order.model.server.ServerTransferResultData;
 	/**
 	 * 指令ID常量
+	 * 详细文档见:svn://63.251.251.89/flash/doc/《我是大魔王》.Net服务端协议.doc
 	 * @author tamt
 	 */
 	public class OrderID 

@@ -1,0 +1,17 @@
+package com.zhongCheng.order.model.client 
+{
+	import com.zhongCheng.order.Order;
+	import flash.utils.ByteArray;
+	
+	/**
+	 * ...
+	 * @author tamt
+	 */
+	
+	public interface IClientOrderData
+	{
+		function encode():ByteArray;
+		//function get orderId():uint;
+	}
+	
+}

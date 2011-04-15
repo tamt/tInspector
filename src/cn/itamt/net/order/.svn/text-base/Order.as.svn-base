@@ -1,5 +1,6 @@
-package cn.itamt.net.order 
+package com.zhongCheng.order 
 {
+	import flash.utils.ByteArray;
 	/**
 	 * 指令
 	 * @author tamt

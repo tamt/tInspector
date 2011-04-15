@@ -1,0 +1,41 @@
+package com.zhongCheng.order.model.client 
+{
+	import cn.itamt.utils.Debug;
+	import com.zhongCheng.order.OrderByteArray;
+	import com.zhongCheng.order.OrderID;
+	import com.zhongCheng.util.GUID;
+	import flash.utils.ByteArray;
+	import flash.utils.getQualifiedClassName;
+	/**
+	 * 客户端转发游戏数据.
+	 * @author tamt
+	 */
+	public class TransferData implements IClientOrderData 
+	{
+		private var _name:String;
+		private var _dataId:uint;
+		private var _data:*;
+		
+		public function TransferData(name:String, data:*) 
+		{
+			_name = name;
+			_data = data;
+		}
+		
+		public function encode():ByteArray {
+			var ba:OrderByteArray = new OrderByteArray();
+			ba.writeByte(OrderByteArray.getStringLength(_name));
+			ba.writeString(_name);
+			_dataId = GUID.create();
+			ba.write32uint(_dataId);
+			var objBa:OrderByteArray = new OrderByteArray();
+			objBa.writeObject(_data);
+			objBa.compress();
+			//Debug.trace("编码数据: " + objBa.toString());
+			ba.write16int(objBa.length);
+			ba.writeBytes(objBa);
+			return ba;
+		}
+	}
+
+}
