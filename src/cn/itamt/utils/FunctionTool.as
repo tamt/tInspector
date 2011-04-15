@@ -9,6 +9,9 @@ package cn.itamt.utils
 	{
 
 		// bind (== partial)
+		/**
+		 * @see	http://rest-term.com/archives/2857/
+		 */
 		public static function bind(f:Function, ... args):Function
 		{
 			return function(... rest):* {
