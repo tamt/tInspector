@@ -17,7 +17,8 @@ package cn.itamt.utils.inspector.output {
 		public function output(source : DisplayObject) : String {
 			if(source == null)
 				return null;
-			return '[' + ClassTool.getShortClassName(source) + ']' + '<font color="#990000">[x:' + source.x.toFixed(2) + ', y: ' + source.y.toFixed(2) + ']</font><font color="#0000FF">[w: ' + source.width.toFixed(2) + ', h: ' + source.height.toFixed(2) + ']</font><font color="#FF9900">[r: ' + int(source.rotation) + '°]</font>';
+//			return '[' + ClassTool.getShortClassName(source) + ']' + '<font color="#990000">[x:' + source.x.toFixed(2) + ',y:' + source.y.toFixed(2) + ']</font><font color="#0000FF">[w:' + source.width.toFixed(2) + ',h:' + source.height.toFixed(2) + ']</font><font color="#FF9900">[r:' + int(source.rotation) + '°]</font>';
+			return '<font color="#ffffff">[' + ClassTool.getShortClassName(source) + ']' + '[x:' + source.x.toFixed(2) + ',y:' + source.y.toFixed(2) + '][w:' + source.width.toFixed(2) + ',h:' + source.height.toFixed(2) + '][r:' + int(source.rotation) + '°]</font>';
 		}
 	}
 }

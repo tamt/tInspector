@@ -137,7 +137,7 @@ package cn.itamt.utils.inspector.core.structureview {
 			this.drawStatus();
 		}
 		
-		override protected function setContentRenderArea(rect:Rectangle) {
+		override protected function setContentRenderArea(rect:Rectangle):void {
 			super.setContentRenderArea(rect);
 			_tree.renderArea = rect;
 		}

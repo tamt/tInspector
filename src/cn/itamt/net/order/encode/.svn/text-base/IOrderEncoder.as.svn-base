@@ -1,0 +1,13 @@
+package com.zhongCheng.order.encode 
+{
+	
+	/**
+	 * ...
+	 * @author tamt
+	 */
+	public interface IOrderEncoder 
+	{
+		
+	}
+	
+}

@@ -1,0 +1,14 @@
+package com.zhongCheng.order.model.server 
+{
+	import com.zhongCheng.order.Order;
+	
+	/**
+	 * ...
+	 * @author tamt
+	 */
+	public interface IServerOrderData 
+	{
+		function decode(order:Order):void;
+	}
+	
+}

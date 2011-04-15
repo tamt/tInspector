@@ -1,4 +1,5 @@
 package cn.itamt.utils.inspector.plugins.controlbar {
+	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.inspector.core.IInspector;
 	import cn.itamt.utils.inspector.core.IInspectorPlugin;
 	import cn.itamt.utils.inspector.core.InspectTarget;
@@ -165,14 +166,14 @@ package cn.itamt.utils.inspector.plugins.controlbar {
 		}
 
 		public function onActivePlugin(pluginId : String) : void {
-			var btn : InspectorButton = this._inspector.pluginManager.getPluginById(pluginId) as InspectorButton;
+			var btn : InspectorButton = this._inspector.pluginManager.getPluginById(pluginId).getPluginIcon() as InspectorButton;
 			if(btn) {
 				btn.active = true;
 			}
 		}
 
 		public function onUnActivePlugin(pluginId : String) : void {
-			var btn : InspectorButton = this._inspector.pluginManager.getPluginById(pluginId) as InspectorButton;
+			var btn : InspectorButton = this._inspector.pluginManager.getPluginById(pluginId).getPluginIcon() as InspectorButton;
 			if(btn) {
 				btn.active = false;
 			}

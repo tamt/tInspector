@@ -98,6 +98,7 @@ package cn.itamt.utils.inspector.core {
 		 * 开启Inspector的视图.
 		 */
 		public function activePlugin(id : String) : void {
+			Debug.trace("[InspectorPluginManager.activePlugin]" + id);
 			if(_plugins == null)return;
 			
 			var view : IInspectorPlugin = _plugins[id];
@@ -122,7 +123,7 @@ package cn.itamt.utils.inspector.core {
 		 * 关闭Inspector的视图.
 		 */
 		public function unactivePlugin(id : String) : void {
-			Debug.trace('[Inspector][unactiveView]');
+			Debug.trace('[InspectorPluginManager][unactivePlugin]' + id);
 			if(_plugins[id] != null) {
 				(_plugins[id] as IInspectorPlugin).onUnActive();
 			}

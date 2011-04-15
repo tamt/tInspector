@@ -66,10 +66,12 @@ package cn.itamt.utils.inspector.ui {
 		public static const TOOL3D_REMOVE_TRANSFORM:String = "3dtool_remove_transform";
 		//flash fire bug
 		public static const FIREBUG:String = "flash_firebug";
+		//flash console
+		public static const CONSOLE:String = "flash_console";
 		//
 		private static var assetBmd : InspectorSymbolBmd;
 		private static var iconBmds : Array;
-		private static var icons : Array = [InspectorSymbolIcon.UNKNOWN, InspectorSymbolIcon.SPRITE, InspectorSymbolIcon.MOVIE_CLIP, InspectorSymbolIcon.BITMAP, InspectorSymbolIcon.SHAPE, InspectorSymbolIcon.TEXT_FIELD, InspectorSymbolIcon.LOADER, InspectorSymbolIcon.VIDEO, InspectorSymbolIcon.AVM1_MOVIE, InspectorSymbolIcon.STATIC_TEXT, InspectorSymbolIcon.MORPH_SHAPE, InspectorSymbolIcon.SIMPLE_BUTTON, InspectorSymbolIcon.STAGE, InspectorSymbolIcon.EXPAND, InspectorSymbolIcon.CLLOAPSE, InspectorSymbolIcon.BUG, InspectorSymbolIcon.FAVORITE, InspectorSymbolIcon.DELETE, InspectorSymbolIcon.LOGO, InspectorSymbolIcon.INSPECT, InspectorSymbolIcon.FOLDER, InspectorSymbolIcon.HELP, CURSOR_REG, CURSOR_X, CURSOR_Z, CURSOR_Y, CURSOR_R, CURSOR_GT, CURSOR_S, TOOL3D_R, TOOL3D_S, TOOL3D_T, TOOL3D_M, TOOL3D_REMOVE_TRANSFORM, FIREBUG];
+		private static var icons : Array = [InspectorSymbolIcon.UNKNOWN, InspectorSymbolIcon.SPRITE, InspectorSymbolIcon.MOVIE_CLIP, InspectorSymbolIcon.BITMAP, InspectorSymbolIcon.SHAPE, InspectorSymbolIcon.TEXT_FIELD, InspectorSymbolIcon.LOADER, InspectorSymbolIcon.VIDEO, InspectorSymbolIcon.AVM1_MOVIE, InspectorSymbolIcon.STATIC_TEXT, InspectorSymbolIcon.MORPH_SHAPE, InspectorSymbolIcon.SIMPLE_BUTTON, InspectorSymbolIcon.STAGE, InspectorSymbolIcon.EXPAND, InspectorSymbolIcon.CLLOAPSE, InspectorSymbolIcon.BUG, InspectorSymbolIcon.FAVORITE, InspectorSymbolIcon.DELETE, InspectorSymbolIcon.LOGO, InspectorSymbolIcon.INSPECT, InspectorSymbolIcon.FOLDER, InspectorSymbolIcon.HELP, CURSOR_REG, CURSOR_X, CURSOR_Z, CURSOR_Y, CURSOR_R, CURSOR_GT, CURSOR_S, TOOL3D_R, TOOL3D_S, TOOL3D_T, TOOL3D_M, TOOL3D_REMOVE_TRANSFORM, FIREBUG, InspectorSymbolIcon.CONSOLE];
 		// ['sprite', 'movie clip', 'bitmap', 'shape', 'textfield', 'loader', 'video', 'avm1movie', 'static text', 'morphshape', '+', '-'];
 		private static var types : Array;
 

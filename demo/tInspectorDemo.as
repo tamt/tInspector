@@ -1,4 +1,5 @@
-package {
+package
+{
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
@@ -24,7 +25,7 @@ package {
 
 			var loader:Loader=new Loader();
 			loader.load(new URLRequest("http://www.1g1g.com/player/sendTwit.swf"));
-			addChild(loader);
+			//addChild(loader);
 			//
 			var sp:Sprite=new Sprite();
 			sp.graphics.lineStyle(1, 0x00);
@@ -33,20 +34,20 @@ package {
 			sp.graphics.endFill();
 			// addChild(sp);
 
-			var bar:ControlBar=new ControlBar();
-			addChild(bar);
+//			var bar:ControlBar=new ControlBar();
+//			addChild(bar);
 
-			Inspector.getInstance().init(this);
-			var liveInspect:LiveInspectView=new LiveInspectView();
+//			Inspector.getInstance().init(this);
+//			var liveInspect:LiveInspectView=new LiveInspectView();
 			// var property:PropertiesView = new PropertiesView();
 			// var struct:StructureView = new StructureView();
 
 			// Inspector.getInstance().pluginManager.registerPlugin(bar);
-			Inspector.getInstance().pluginManager.registerPlugin(liveInspect);
+//			Inspector.getInstance().pluginManager.registerPlugin(liveInspect);
 			// Inspector.getInstance().pluginManager.registerPlugin(property);
 			// Inspector.getInstance().pluginManager.registerPlugin(struct);
 
-			Inspector.getInstance().turnOn(liveInspect.getPluginId());
+//			Inspector.getInstance().turnOn(liveInspect.getPluginId());
 			// this.stage.align = StageAlign.RIGHT;
 		}
 	}

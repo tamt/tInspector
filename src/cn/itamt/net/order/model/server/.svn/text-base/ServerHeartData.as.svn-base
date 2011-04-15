@@ -1,0 +1,25 @@
+package com.zhongCheng.order.model.server 
+{
+	import com.zhongCheng.order.Order;
+	/**
+	 * ...
+	 * @author tamt
+	 */
+	public class ServerHeartData implements IServerOrderData 
+	{
+		
+		public function ServerHeartData() 
+		{
+			
+		}
+		
+		/* INTERFACE com.zhongCheng.order.model.server.IServerOrderData */
+		
+		public function decode(order:Order):void 
+		{
+			//
+		}
+		
+	}
+
+}

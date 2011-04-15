@@ -1,9 +1,8 @@
 package cn.itamt.net.order 
 {
-	import cn.itamt.utils.Debug;
 	import cn.itamt.net.tSocket;
-	import cn.itamt.net.order.Order;
-	import cn.itamt.net.order.OrderEvent;
+	import cn.itamt.utils.Debug;
+
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.IOErrorEvent;
@@ -22,7 +21,8 @@ package cn.itamt.net.order
 		private var _fragmentOrderLenData:ByteArray;
 		private var _fragmentOrderBody:ByteArray;
 		
-		private var _instance:OrderManager;
+		private static var _instance:OrderManager;
+		
 		public static function getInstance():OrderManager{
 			if (_instance == null)_instance = new OrderManager(new Singleton);
 			return _instance;
@@ -54,9 +54,9 @@ package cn.itamt.net.order
 		 * @param	host
 		 * @param	port
 		 */
-		public function connect(host:String, port:String):void {
+		public function connect(host:String, port:int):void {
 			if(_socket == null){
-				_socket = new DevilSocket();
+				_socket = new tSocket();
 				_socket.addEventListener(Event.CONNECT, onSocketStatus);
 				_socket.addEventListener(Event.CLOSE, onSocketStatus);
 				_socket.addEventListener(IOErrorEvent.IO_ERROR, onSocketStatus);
@@ -114,16 +114,16 @@ package cn.itamt.net.order
 					_fragmentOrderLenData.position = 0;
 					_fragmentOrderBody.position = 0;
 					
-					var body:ByteArray = new ByteArray();
+					var body:OrderByteArray = new OrderByteArray();
 					_fragmentOrderBody.readBytes(body, 0, _fragmentOrderBody.bytesAvailable);
-					var order:Order = new Order(_fragmentOrderIdData.readByte().toString(), length, body);
+					var order:Order = new Order(_fragmentOrderIdData.readByte(), length, body);
 					
 					_fragmentOrderBody.clear();
 					_fragmentOrderIdData.clear();
 					_fragmentOrderLenData.clear();
 					
 					//指发指令事件
-					dispatchEvent(new OrderEvent(order.id, order));
+					dispatchEvent(new OrderEvent(String(order.id), order));
 				}
 			}
 		}

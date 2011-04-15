@@ -1,4 +1,5 @@
 package cn.itamt.utils.inspector.core.liveinspect {
+	import cn.itamt.utils.inspector.ui.style.Style;
 	import cn.itamt.utils.Inspector;
 	import cn.itamt.utils.inspector.core.inspectfilter.FilterManagerButton;
 	import cn.itamt.utils.inspector.core.inspectfilter.InspectorFilterManager;
@@ -42,7 +43,8 @@ package cn.itamt.utils.inspector.core.liveinspect {
 		private var _filterBtn : FilterManagerButton;
 		private var _struBtn : StructureViewButton;
 		private var _closeBtn : InspectorViewCloseButton;
-		private var _3dBtn:Inspector3DButton;
+		private var _3dBtn : Inspector3DButton;
+		private var _style : Style;
 		public function get tfm3dBtn():Inspector3DButton 
 		{
 			return _3dBtn;
@@ -118,7 +120,7 @@ package cn.itamt.utils.inspector.core.liveinspect {
 			
 			// 背景
 			graphics.clear();
-			graphics.beginFill(0x393939);
+			graphics.beginFill(style.bgColor);
 			graphics.drawRoundRectComplex(0, 0, _closeBtn.x + _closeBtn.width + 10, _height, 8, 8, 0, 8);
 			graphics.endFill();
 		}
@@ -304,6 +306,14 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				}
 				relayout();
 			}
+		}
+
+		public function get style() : Style {
+			return _style;
+		}
+
+		public function set style(style : Style) : void {
+			_style = style;
 		}
 		
 	}
