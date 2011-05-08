@@ -9,6 +9,11 @@ package cn.itamt.display
 	
 	/**
 	 * iframe, 用于在Flash当"嵌入"网页
+         * <code>
+         *      var iframe=new IFrame("FlashIFrame", 800, 600);
+         *      addChild(iframe);
+         *      iframe.src = "http://www.itamt.com";
+         * </code>
 	 * @author tamt
 	 */
 	public class IFrame extends tSprite 
@@ -22,6 +27,11 @@ package cn.itamt.display
 		private var _id:String = "FlashIFrame";
 		private var _scrolling:String = "no";
 		
+                /**
+                 * @param id    该IFrame在网页中的id
+                 * @param w     该IFrame在网页中的宽
+                 * @param h     该IFrame在网页中的高
+                 */
 		public function IFrame(id:String, w:uint, h:uint)
 		{
 			_id = id;
