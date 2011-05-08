@@ -1,6 +1,6 @@
 package cn.itamt.display 
 {
-	import cn.itamt.utils.Debug;
+	//import cn.itamt.utils.Debug;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.external.ExternalInterface;
@@ -119,7 +119,7 @@ package cn.itamt.display
 			this.buildBg();
 			
 			this.caculateGlobalPos();
-			Debug.trace(_builded + ", " + ExternalInterface.available + ", " + _globalPosition.x + ", " + _globalPosition.y);
+			//Debug.trace(_builded + ", " + ExternalInterface.available + ", " + _globalPosition.x + ", " + _globalPosition.y);
 			
 			if (_builded) {
 				if (ExternalInterface.available) {
@@ -131,8 +131,8 @@ package cn.itamt.display
 		
 		private function caculateGlobalPos():void {
 			_globalPosition = localToGlobal(new Point);
-			Debug.trace("globalposition in Flash: " + _globalPosition.x + ", " + _globalPosition.y);
-			Debug.trace("stage offset: " + (this.stage.stageWidth - 1280) / 2 + ", " + (this.stage.stageHeight - 824)/2);
+			//Debug.trace("globalposition in Flash: " + _globalPosition.x + ", " + _globalPosition.y);
+			//Debug.trace("stage offset: " + (this.stage.stageWidth - 1280) / 2 + ", " + (this.stage.stageHeight - 824)/2);
 			_globalPosition.x += (this.stage.stageWidth - 1280) / 2;
 			_globalPosition.x = _globalPosition.x;
 			_globalPosition.y += (this.stage.stageHeight - 824)/2;
@@ -211,7 +211,7 @@ package cn.itamt.display
 		}
 		
 		private function onIFrameLoad(id:String):void {
-			Debug.trace("onIFrameLoad: " + id);
+			//Debug.trace("onIFrameLoad: " + id);
 			dispatchEvent(new Event(Event.COMPLETE, false, false));
 		}
 	}
