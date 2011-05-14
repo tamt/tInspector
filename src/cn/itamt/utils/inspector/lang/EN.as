@@ -81,6 +81,8 @@ Beta			=	β
 ConnectFFBFail	=	connect FlashFirebug fail, tried times:
 ShowMouse		=	show mouse
 FlashConsole	=	flash Console
+DEval			=	as3 eval
+runEval			=	run
 ]]>
 					</lang>;
 		}

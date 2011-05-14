@@ -67,21 +67,21 @@ package cn.itamt.utils.inspector.ui {
 			
 			_timer.reset();
 			_timer.start();
-			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, tmpTip));
+			if(this.tip)dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, tmpTip));
 		}
 
 		private function onRollOver(evt : MouseEvent) : void {
 			_timer.stop();
 			
 			addEventListener(MouseEvent.ROLL_OUT, onRollOut);
-			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
+			if(this.tip)dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
 		}
 
 		private function onTimerShowTip(evt : TimerEvent) : void {
 			_timer.removeEventListener(TimerEvent.TIMER, onTimerShowTip);
 
 			// 显示tip
-			dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
+			if(this.tip)dispatchEvent(new TipEvent(TipEvent.EVT_SHOW_TIP, this.tip));
 		}
 
 		private function onTimerRemoveTip(evt : TimerEvent = null) : void {

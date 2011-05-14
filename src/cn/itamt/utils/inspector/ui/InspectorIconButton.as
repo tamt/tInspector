@@ -96,6 +96,16 @@ package cn.itamt.utils.inspector.ui {
 
 			return sp;
 		}
+		
+		override protected function buildHitState() : DisplayObject {
+			var sp : Shape = new Shape();
+			with(sp) {
+				graphics.beginFill(0, 1);
+				graphics.drawRoundRect(0, 0, _w, _h, 10, 10);
+				graphics.endFill();
+			}
+			return sp;
+		}
 
 		public function dispose():void {
 			this.bmd = null;

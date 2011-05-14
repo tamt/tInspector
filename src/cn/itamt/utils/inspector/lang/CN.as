@@ -81,6 +81,8 @@ Beta			=	β
 ConnectFFBFail	=	连接FlashFirebug失败,尝试次数:
 ShowMouse		=	显示鼠标
 FlashConsole	=	控制台
+DEval			=	as3 eval
+runEval			=	运行
 ]]>
 					</lang>;
 		}
