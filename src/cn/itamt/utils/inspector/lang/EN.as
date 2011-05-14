@@ -83,6 +83,8 @@ ShowMouse		=	show mouse
 FlashConsole	=	flash Console
 DEval			=	as3 eval
 runEval			=	run
+autoLinkThis	=	auto link "this" reference
+autoLinkThisTip	=	auto link "this"(in eval code) reference to current inspect target.
 ]]>
 					</lang>;
 		}

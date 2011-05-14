@@ -47,21 +47,23 @@ package cn.itamt.utils.inspector.popup {
 			_tip.filters = [new GlowFilter(0x0, 1, 16, 16, 1)];
 			_tip.mouseEnabled = _tip.mouseChildren = false;
 
-			var _tf : TextField = InspectorTextField.create(evt.tip, 0xffffff, 15, 5, 0, 'left');
+			var _tf : TextField = InspectorTextField.create("", 0xffffff, 15, 5, 0, 'left');
+			_tf.multiline = true;
+			_tf.htmlText = evt.tip;
 			_tf.name = "tf";
-			_tf.y = 26 - _tf.height;
+			_tf.y = 6;//26 - _tf.height;
 			_tip.addChild(_tf);
 
 			var tipBg : Shape = new Shape();
 			tipBg.graphics.beginFill(0x000000);
-			tipBg.graphics.drawRoundRect(0, 26 - _tf.height, _tf.width + 10, _tf.height, 10, 10);
+			tipBg.graphics.drawRoundRect(0, 6, _tf.width + 10, _tf.height, 10, 10);
 			tipBg.graphics.endFill();
 			// /*
 			tipBg.graphics.beginFill(0x000000);
-			tipBg.graphics.moveTo(9, 26 - _tf.height);
-			tipBg.graphics.lineTo(15, 26 - _tf.height);
+			tipBg.graphics.moveTo(9, 6);
+			tipBg.graphics.lineTo(15, 6);
 			tipBg.graphics.lineTo(12, 0);
-			tipBg.graphics.lineTo(9, 26 - _tf.height);
+			tipBg.graphics.lineTo(9, 6);
 			tipBg.graphics.endFill();
 			// */
 			_tip.addChildAt(tipBg, 0);

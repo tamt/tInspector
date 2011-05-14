@@ -1,9 +1,9 @@
 package
 {
-	import cn.itamt.utils.inspector.plugins.deval.DEval;
 	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
+	import cn.itamt.utils.inspector.core.structureview.StructureView;
 	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
+	import cn.itamt.utils.inspector.plugins.deval.DEval;
 
 	import flash.display.Loader;
 	import flash.display.Sprite;
@@ -37,21 +37,29 @@ package
 
 			var bar:ControlBar=new ControlBar();
 			addChild(bar);
-			
+
 
 			Inspector.getInstance().init(this);
 //			var liveInspect:LiveInspectView=new LiveInspectView();
 			// var property:PropertiesView = new PropertiesView();
-			// var struct:StructureView = new StructureView();
+			var struct:StructureView=new StructureView();
+			var deval:DEval = new DEval();
 
+			Inspector.getInstance().pluginManager.registerPlugin(struct);
 			Inspector.getInstance().pluginManager.registerPlugin(bar);
-			Inspector.getInstance().pluginManager.registerPlugin(new DEval());
+			Inspector.getInstance().pluginManager.registerPlugin(deval);
+			
+			
+			Inspector.getInstance().turnOn();
+			
 //			Inspector.getInstance().pluginManager.registerPlugin(liveInspect);
 			// Inspector.getInstance().pluginManager.registerPlugin(property);
-			// Inspector.getInstance().pluginManager.registerPlugin(struct);
 
 //			Inspector.getInstance().turnOn(liveInspect.getPluginId());
 			// this.stage.align = StageAlign.RIGHT;
+			
+			Inspector.getInstance().pluginManager.activePlugin(struct.getPluginId());
+			Inspector.getInstance().pluginManager.activePlugin(deval.getPluginId());
 		}
 	}
 }

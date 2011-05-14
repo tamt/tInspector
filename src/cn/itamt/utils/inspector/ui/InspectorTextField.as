@@ -18,6 +18,7 @@ package cn.itamt.utils.inspector.ui {
 			var tfm : TextFormat = new TextFormat();
 			tfm.size = size;
 			tfm.align = align;
+			tfm.color = color;
 			
 			if(fontName == null) {
 				fontName = getNameOfFirstAvaliableFont(fonts);

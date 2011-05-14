@@ -61,6 +61,8 @@ package cn.itamt.utils.inspector.ui {
 			g.drawRect((_w - bmd.width) / 2, (_h - bmd.height) / 2, bmd.width, bmd.height);
 			g.endFill();
 
+			sp.filters = [new ColorMatrixFilter([0.3086, 0.6094, 0.0820, 0, 0, 0.3086, 0.6094, 0.0820, 0, 0, 0.3086, 0.6094, 0.0820, 0, 0, 0, 0, 0, 1, 0])];
+
 			return sp;
 		}
 
@@ -75,8 +77,6 @@ package cn.itamt.utils.inspector.ui {
 			g.beginBitmapFill(bmd, new Matrix(1, 0, 0, 1, (_w - bmd.width) / 2, (_h - bmd.height) / 2), false);
 			g.drawRect((_w - bmd.width) / 2, (_h - bmd.height) / 2, bmd.width, bmd.height);
 			g.endFill();
-
-			sp.filters = [new ColorMatrixFilter([0.3086, 0.6094, 0.0820, 0, 0, 0.3086, 0.6094, 0.0820, 0, 0, 0.3086, 0.6094, 0.0820, 0, 0, 0, 0, 0, 1, 0])];
 
 			return sp;
 		}

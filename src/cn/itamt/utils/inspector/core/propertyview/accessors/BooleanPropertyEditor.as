@@ -1,5 +1,5 @@
-package cn.itamt.utils.inspector.core.propertyview.accessors {
-	import cn.itamt.utils.Debug;
+package cn.itamt.utils.inspector.core.propertyview.accessors
+{
 	import cn.itamt.utils.inspector.events.PropertyEvent;
 	import cn.itamt.utils.inspector.ui.ToggleBooleanButton;
 

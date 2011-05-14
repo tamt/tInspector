@@ -83,6 +83,8 @@ ShowMouse		=	显示鼠标
 FlashConsole	=	控制台
 DEval			=	as3 eval
 runEval			=	运行
+autoLinkThis	=	自动链接this引用
+autoLinkThisTip	=	自动链接this<br>代码中的this将引用当前查看对象.
 ]]>
 					</lang>;
 		}

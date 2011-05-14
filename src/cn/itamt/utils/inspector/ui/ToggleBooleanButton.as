@@ -7,7 +7,7 @@ package cn.itamt.utils.inspector.ui {
 	/**
 	 * @author itamt@qq.com
 	 */
-	public class ToggleBooleanButton extends SimpleButton {
+	public class ToggleBooleanButton extends InspectorButton {
 		private var _value : Boolean;
 
 		public function set value(v : Boolean) : void {
