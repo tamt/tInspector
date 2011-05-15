@@ -1,15 +1,12 @@
 package cn.itamt.utils.inspector.plugins.deval
 {
+	import flash.display.DisplayObject;
+	import flash.events.Event;
 	import cn.itamt.utils.inspector.core.BaseInspectorPlugin;
 	import cn.itamt.utils.inspector.core.InspectTarget;
 	import cn.itamt.utils.inspector.popup.InspectorPopupManager;
 	import cn.itamt.utils.inspector.popup.PopupAlignMode;
-
 	import r1.deval.D;
-
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-
 	/**
 	 * D.eval插件，在as3中实现eval方法。可以动态运行代码。
 	 * @author tamt
@@ -53,6 +50,15 @@ package cn.itamt.utils.inspector.plugins.deval
 			{
 				panel.autoLinkThis=_autoThis;
 			}
+		}
+
+		override public function contains(child:DisplayObject):Boolean
+		{
+			if (panel && this.isShowPanel)
+			{
+				return child == panel || panel.contains(child);
+			}
+			return super.contains(child);
 		}
 
 		/**
@@ -144,7 +150,8 @@ package cn.itamt.utils.inspector.plugins.deval
 		 */
 		private function clickRunHandler(evt:Event):void
 		{
-			if(_autoThis){
+			if (_autoThis)
+			{
 				var _this:DisplayObject=target ? target.displayObject : null;
 				if (_this)
 				{
@@ -152,7 +159,9 @@ package cn.itamt.utils.inspector.plugins.deval
 					_this["constructor"].prototype.prototype=null;
 				}
 				D.eval(panel.input, null, _this);
-			}else{
+			}
+			else
+			{
 				D.eval(panel.input, null, null);
 			}
 		}
