@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
-
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
 	<Description about="urn:mozilla:install-manifest">
 		<em:name>FlashInspector</em:name>
-		<em:version>0.2.3</em:version>
-		<em:description>Inspect flash(swf)'s DisplayObject with mouse. Overview the swf's DisplayObject list. Set the inspect filter class when use mouse inspect.</em:description>
+		<em:version>0.2.4</em:version>
+		<em:description>Inspect element inside SWF like you inspect HTML with Firebug.</em:description>
 		<em:creator>tamt</em:creator>
 		<em:id>finspector@itamt.org</em:id>
 		<em:unpack>true</em:unpack>
@@ -16,11 +15,11 @@
 			<Description>
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>3.5</em:minVersion>
-				<em:maxVersion>4.0.*</em:maxVersion>
+				<em:maxVersion>5.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 		
 		<em:iconURL>chrome://finspector/skin/finspector_48.png</em:iconURL>
-		<em:homepageURL>http://www.itamt.org</em:homepageURL>
+		<em:homepageURL>http://www.itamt.com</em:homepageURL>
 	</Description>
 </RDF>

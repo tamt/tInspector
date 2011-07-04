@@ -1,4 +1,5 @@
-package cn.itamt.utils.inspector.core.propertyview {
+package cn.itamt.utils.inspector.core.propertyview
+{
 	import cn.itamt.utils.ClassTool;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.inspector.core.propertyview.accessors.BasePropertyEditor;
@@ -25,7 +26,8 @@ package cn.itamt.utils.inspector.core.propertyview {
 	 * 属性面板
 	 * @author itamt@qq.com
 	 */
-	public class PropertyPanel extends InspectorViewPanel {
+	public class PropertyPanel extends InspectorViewPanel
+	{
 		protected var list : InspectorListView;
 		protected var listMethod : Sprite;
 		protected var methodArray : Array;
@@ -51,11 +53,13 @@ package cn.itamt.utils.inspector.core.propertyview {
 		protected var _mSavedSize : Point;
 		protected var _fSavedSize : Point;
 
-		public function get owner() : PropertyAccessorRender {
+		public function get owner() : PropertyAccessorRender
+		{
 			return _owner;
 		}
 
-		public function PropertyPanel(w : Number = 250, h : Number = 190, owner : PropertyAccessorRender = null, favoritable : Boolean = true) {
+		public function PropertyPanel(w : Number = 250, h : Number = 190, owner : PropertyAccessorRender = null, favoritable : Boolean = true)
+		{
 			super('Property', w, h);
 
 			_mSavedSize = new Point(this._width, 270);
@@ -108,33 +112,48 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 		protected var lrender : *;
 
-		protected function onSearch(evt : mTextEvent) : void {
-			if (lrender) {
+		protected function onSearch(evt : mTextEvent) : void
+		{
+			if (lrender)
+			{
 				lrender.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OUT));
 				lrender = null;
 			}
 
 			var i : int = 0;
 			var render : *;
-			if (evt.type == mTextEvent.SELECT) {
-				if (state == PROP_STATE) {
-				} else if (state == METHOD_STATE) {
+			if (evt.type == mTextEvent.SELECT)
+			{
+				if (state == PROP_STATE)
+				{
 				}
-			} else if (evt.type == mTextEvent.ENTER) {
-				if (state == PROP_STATE) {
-					while (i < list.numChildren) {
+				else if (state == METHOD_STATE)
+				{
+				}
+			}
+			else if (evt.type == mTextEvent.ENTER)
+			{
+				if (state == PROP_STATE)
+				{
+					while (i < list.numChildren)
+					{
 						render = list.getChildAt(i++) as PropertyAccessorRender;
-						if (render.propName == evt.text) {
+						if (render.propName == evt.text)
+						{
 							this.showContentArea(render.getBounds(render.parent));
 							lrender = render;
 							render.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER));
 							break;
 						}
 					}
-				} else if (state == METHOD_STATE) {
-					while (i < listMethod.numChildren) {
+				}
+				else if (state == METHOD_STATE)
+				{
+					while (i < listMethod.numChildren)
+					{
 						render = listMethod.getChildAt(i++) as MethodRender;
-						if (render.propName == evt.text) {
+						if (render.propName == evt.text)
+						{
 							this.showContentArea(render.getBounds(render.parent));
 							lrender = render;
 							render.dispatchEvent(new MouseEvent(MouseEvent.ROLL_OVER));
@@ -145,16 +164,20 @@ package cn.itamt.utils.inspector.core.propertyview {
 			}
 		}
 
-		protected function onClickRefresh(event : MouseEvent) : void {
-			if (this.curTarget) {
+		protected function onClickRefresh(event : MouseEvent) : void
+		{
+			if (this.curTarget)
+			{
 				this.onUpdate(this.curTarget);
 			}
 		}
 
 		// 查看对象的方法
-		protected function onViewMethod(event : MouseEvent) : void {
+		protected function onViewMethod(event : MouseEvent) : void
+		{
 			this.state = METHOD_STATE;
-			if (listMethod == null) {
+			if (listMethod == null)
+			{
 				listMethod = new Sprite();
 			}
 			this.setContent(listMethod);
@@ -165,7 +188,8 @@ package cn.itamt.utils.inspector.core.propertyview {
 		}
 
 		// 查看对象的属性
-		protected function onViewProp(event : MouseEvent) : void {
+		protected function onViewProp(event : MouseEvent) : void
+		{
 			this.state = PROP_STATE;
 			this.setContent(list);
 			this.onInspectProp(this.curTarget);
@@ -174,7 +198,8 @@ package cn.itamt.utils.inspector.core.propertyview {
 			this.viewPropBtn.active = true;
 		}
 
-		override public function relayout() : void {
+		override public function relayout() : void
+		{
 			super.relayout();
 
 			// fullBtn.x = this.resizeBtn.x - this.fullBtn.width;
@@ -200,30 +225,36 @@ package cn.itamt.utils.inspector.core.propertyview {
 		/*
 		 * 查看某个对象的属性
 		 */
-		public function onInspectProp(object : *) : void {
+		public function onInspectProp(object : *) : void
+		{
 			var xml : XML = ClassTool.getDescribe(object["constructor"]).factory[0];
 			var tmp : XMLList = xml.accessor;
 			propList = [];
 
 			var excludeList : XMLList = xml..metadata.(@name == "Exclude");
 			var excludeArr : Array = [];
-			for each (var exclude:XML in excludeList) {
+			for each (var exclude:XML in excludeList)
+			{
 				excludeArr.push(exclude.arg.(@key == "name").@value.toString());
 			}
 
 			this.propDict = "";
-			for each (var item:XML in tmp) {
-				if (excludeArr.indexOf(item.@name.toString()) >= 0) {
+			for each (var item:XML in tmp)
+			{
+				if (excludeArr.indexOf(item.@name.toString()) >= 0)
+				{
 					item.@exclude = true;
 				}
 
 				// -----------------------
-				if (object is Stage) {
+				if (object is Stage)
+				{
 					// Flash Player的bug:Stage没有实现textSnapshot属性
 					if (item.@name == "textSnapshot")
 						continue;
 					// Flash Player的bug:Stage的width/height属性应该是Exclude的
-					if (item.@name == "width" || item.@name == "height") {
+					if (item.@name == "width" || item.@name == "height")
+					{
 						item.@exclude = true;
 					}
 				}
@@ -241,32 +272,43 @@ package cn.itamt.utils.inspector.core.propertyview {
 		/**
 		 * 查看某个显示对象的属性.
 		 */
-		public function onInspect(object : *) : void {
-			if (curTarget != object) {
+		public function onInspect(object : *) : void
+		{
+			if (curTarget != object)
+			{
 				curTarget = object;
 				// 属性状态
-				if (this.state == PROP_STATE) {
+				if (this.state == PROP_STATE)
+				{
 					this.onInspectProp(object);
-				} else {
+				}
+				else
+				{
 					// 方法状态
 					this.onInspectMethod(curTarget);
 				}
 
 				this.drawTitle();
-			} else {
+			}
+			else
+			{
 				onUpdate(object);
 			}
 		}
 
-		override protected function drawTitle() : void {
-			if (this._owner) {
+		override protected function drawTitle() : void
+		{
+			if (this._owner)
+			{
 				var str : String = this._owner.propName;
 				var t : PropertyAccessorRender = this._owner;
-				while (t.owner) {
+				while (t.owner)
+				{
 					t = t.owner;
 					str = t.propName + "." + str;
 				}
-				if (t.target is DisplayObject) {
+				if (t.target is DisplayObject)
+				{
 					str = (t.target as DisplayObject).name + "." + str;
 				}
 				this._title.htmlText = "<font color=\"#99cc00\">" + str + "</font>";
@@ -284,16 +326,20 @@ package cn.itamt.utils.inspector.core.propertyview {
 		/*
 		 * 查看某个显示对象的方法(如果传过来的对象为空，就用当前的对象)
 		 */
-		public function onInspectMethod(object : * = null) : void {
-			if (object != null) {
-				if (curTarget != object) {
+		public function onInspectMethod(object : * = null) : void
+		{
+			if (object != null)
+			{
+				if (curTarget != object)
+				{
 					curTarget = object;
 				}
 				var xml : XML = ClassTool.getDescribe(curTarget["constructor"]).factory[0];
 				var methods : XMLList = xml.method;
 				methodArray = [];
 				this.methDict = "";
-				for each (var method:XML in methods) {
+				for each (var method:XML in methods)
+				{
 					methodArray.push(method);
 					this.methDict += (method.@name + " ");
 				}
@@ -302,15 +348,21 @@ package cn.itamt.utils.inspector.core.propertyview {
 			}
 		}
 
-		protected function compateAccessorName(a : XML, b : XML) : Number {
+		protected function compateAccessorName(a : XML, b : XML) : Number
+		{
 			var aN : String = String(a.@name);
 			var bN : String = String(b.@name);
 
-			if (aN > bN) {
+			if (aN > bN)
+			{
 				return 1;
-			} else if (aN < bN) {
+			}
+			else if (aN < bN)
+			{
 				return -1;
-			} else {
+			}
+			else
+			{
 				return 0;
 			}
 		}
@@ -318,13 +370,15 @@ package cn.itamt.utils.inspector.core.propertyview {
 		/**
 		 * 侦听到单元格编辑器的属性更改事件.
 		 */
-		protected function onPropertyUpdate(evt : PropertyEvent) : void {
+		protected function onPropertyUpdate(evt : PropertyEvent) : void
+		{
 			var editor : BasePropertyEditor = evt.target as BasePropertyEditor;
 			var accessor : PropertyAccessorRender = editor.parent as PropertyAccessorRender;
 			Debug.trace('[PropertyPanel][onPropertyUpdate]' + accessor.propName + ":" + editor.getValue());
 			curTarget[accessor.propName] = editor.getValue();
 
-			if (accessor.owner) {
+			if (accessor.owner)
+			{
 				accessor.owner.editor.dispatchEvent(new PropertyEvent(PropertyEvent.UPDATE, true, true));
 			}
 		}
@@ -332,19 +386,24 @@ package cn.itamt.utils.inspector.core.propertyview {
 		/**
 		 * 当指定对象的属性有更新时
 		 */
-		public function onUpdate(obj : *) : void {
-			if (obj == curTarget) {
+		public function onUpdate(obj : *) : void
+		{
+			if (obj == curTarget)
+			{
 				var i : int = 0;
 				var render : PropertyAccessorRender;
-				while (i < list.numChildren) {
+				while (i < list.numChildren)
+				{
 					render = list.getChildAt(i++) as PropertyAccessorRender;
 					render.update();
 				}
 			}
 		}
 
-		protected function drawList() : void {
-			switch(this.state) {
+		protected function drawList() : void
+		{
+			switch(this.state)
+			{
 				case PROP_STATE:
 					this.drawPropList();
 					this.search.setWordDict(this.propDict);
@@ -358,18 +417,22 @@ package cn.itamt.utils.inspector.core.propertyview {
 		}
 
 		// 对象的属性重绘
-		protected function drawPropList() : void {
+		protected function drawPropList() : void
+		{
 			list.data = this.propList;
-			return;
+			// return;
 			list.graphics.clear();
 			list.graphics.lineTo(0, 0);
-			while (list.numChildren) {
+			while (list.numChildren)
+			{
 				list.removeChildAt(0);
 			}
 
-			if (propList) {
+			if (propList)
+			{
 				var l : int = propList.length;
-				for (var i : int = 0;i < l;i++) {
+				for (var i : int = 0;i < l;i++)
+				{
 					var render : PropertyAccessorRender;
 					render = new PropertyAccessorRender(200, 20, false, this.owner, this.favoritable);
 					render.setXML(this.curTarget, propList[i]);
@@ -381,15 +444,18 @@ package cn.itamt.utils.inspector.core.propertyview {
 		}
 
 		// 对象的方法重绘
-		protected function drawMethodList() : void {
-			return;
+		protected function drawMethodList() : void
+		{
+			// return;
 			this.listMethod.graphics.clear();
 			listMethod.graphics.lineTo(0, 0);
-			while (listMethod.numChildren) {
+			while (listMethod.numChildren)
+			{
 				listMethod.removeChildAt(0);
 			}
 			var length : int = this.methodArray.length;
-			for (var i : int = 0;i < length;i++) {
+			for (var i : int = 0;i < length;i++)
+			{
 				var render : MethodRender = new MethodRender(210, 20);
 				render.setXML(this.curTarget, methodArray[i]);
 				render.y = listMethod.height + 2;
@@ -400,12 +466,14 @@ package cn.itamt.utils.inspector.core.propertyview {
 		/**
 		 * 当单击"查看完整属性按钮时".
 		 */
-		protected function onClickFull(evt : MouseEvent = null) : void {
+		protected function onClickFull(evt : MouseEvent = null) : void
+		{
 			if (evt)
 				evt.stopImmediatePropagation();
 			this.drawList();
 
-			if (this.resizeBtn.normalMode) {
+			if (this.resizeBtn.normalMode)
+			{
 				_fSavedSize = new Point(this._width, this.height);
 				this.addChild(this.search);
 				if (this.resizeBtn.normalMode)
@@ -413,32 +481,40 @@ package cn.itamt.utils.inspector.core.propertyview {
 			}
 		}
 
-		public function getSingleMode() : Boolean {
+		public function getSingleMode() : Boolean
+		{
 			return singletonBtn.normalMode;
 		}
 
 		/**
 		 * 单例/多面板 按钮.
 		 */
-		protected function onClickSingleton(evt : MouseEvent = null) : void {
+		protected function onClickSingleton(evt : MouseEvent = null) : void
+		{
 			if (evt)
 				evt.stopImmediatePropagation();
 			this.drawList();
-			if (singletonBtn.normalMode) {
-			} else {
+			if (singletonBtn.normalMode)
+			{
+			}
+			else
+			{
 			}
 		}
 
-		public function getCurTarget() : * {
+		public function getCurTarget() : *
+		{
 			return this.curTarget;
 		}
 
-		override public function open() : void {
+		override public function open() : void
+		{
 			super.open();
 			this.viewMethodBtn.visible = this.viewPropBtn.visible = this.search.visible = true;
 		}
 
-		override public function hide() : void {
+		override public function hide() : void
+		{
 			super.hide();
 			this.viewMethodBtn.visible = this.viewPropBtn.visible = this.search.visible = false;
 		}

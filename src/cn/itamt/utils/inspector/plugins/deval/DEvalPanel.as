@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.plugins.deval
+﻿package cn.itamt.utils.inspector.plugins.deval
 {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 	import cn.itamt.utils.inspector.ui.InspectorLabelButton;

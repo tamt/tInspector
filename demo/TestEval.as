@@ -12,7 +12,7 @@ package
 	{
 		public function TestEval()
 		{
-			Object.prototype.prototype = null;
+			//Object.prototype.prototype = null;
 			D.eval("trace(this);", null, this);
 		}
 	}

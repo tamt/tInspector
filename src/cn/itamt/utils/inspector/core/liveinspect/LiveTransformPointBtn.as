@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.core.liveinspect {
+﻿package cn.itamt.utils.inspector.core.liveinspect {
 	import cn.itamt.utils.inspector.ui.InspectorButton;
 
 	import flash.display.DisplayObject;
@@ -19,11 +19,11 @@ package cn.itamt.utils.inspector.core.liveinspect {
 
 		public var lastMousePt : Point;
 
-		public function LiveTransformPointBtn(onMouseDown : Function = null, onMouseUp : Function = null, onDrag : Function = null) {
+		public function LiveTransformPointBtn(_onMouseDown:Function = null, _onMouseUp : Function = null, onDrag : Function = null) {
 			super();
 
-			downHandler = onMouseDown;
-			upHandler = onMouseUp;
+			downHandler = _onMouseDown;
+			upHandler = _onMouseUp;
 			dragHandler = onDrag;
 
 			this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
@@ -37,32 +37,34 @@ package cn.itamt.utils.inspector.core.liveinspect {
 				return;
 
 			inited = true;
-			this.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			this.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			this.addEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
+			this.stage.addEventListener(MouseEvent.MOUSE_UP, _onMouseUp);
 		}
 
 		private function onRemoved(evt : Event) : void {
 			inited = false;
-			this.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			this.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+			this.removeEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
+			this.stage.removeEventListener(MouseEvent.MOUSE_UP, _onMouseUp);
 		}
 
-		private function onMouseDown(evt : MouseEvent) : void {
+		private function _onMouseDown(evt:MouseEvent):void 
+		{
 			lastMousePt = new Point(evt.stageX, evt.stageY);
-			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, _onMouseMove);
 
 			if(this.downHandler != null)
 				this.downHandler.call(null, this);
 		}
 
-		private function onMouseUp(evt : MouseEvent) : void {
-			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+		private function _onMouseUp(evt:MouseEvent):void
+		{
+			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, _onMouseMove);
 
 			if(this.downHandler != null)
 				this.upHandler.call(null, this);
 		}
 
-		private function onMouseMove(evt : MouseEvent) : void {
+		private function _onMouseMove(evt : MouseEvent) : void {
 			if(this.dragHandler != null)
 				this.dragHandler.call(null, this);
 

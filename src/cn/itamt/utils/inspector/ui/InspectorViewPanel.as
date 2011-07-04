@@ -1,4 +1,4 @@
-package cn.itamt.utils.inspector.ui {
+﻿package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.DisplayObjectTool;
 	import cn.itamt.utils.inspector.core.liveinspect.InspectorViewCloseButton;
 
@@ -125,7 +125,7 @@ package cn.itamt.utils.inspector.ui {
 				if(inited)
 					return;
 				inited = true;
-				bg.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				bg.addEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
 				this.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseup);
 				this.addEventListener(MouseEvent.MOUSE_UP, onMouseup);
 
@@ -138,7 +138,7 @@ package cn.itamt.utils.inspector.ui {
 		private function onRemoved(evt : Event) : void {
 			if(evt.target == this) {
 				inited = false;
-				bg.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+				bg.removeEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown);
 				this.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseup);
 				this.removeEventListener(MouseEvent.MOUSE_UP, onMouseup);
 
@@ -169,7 +169,7 @@ package cn.itamt.utils.inspector.ui {
 			this.resize(this._virtualResizer.x, this._virtualResizer.y);
 		}
 
-		protected function onMouseDown(evt : MouseEvent) : void {
+		protected function _onMouseDown(evt : MouseEvent) : void {
 			this.cacheAsBitmap = true;
 			var rect : Rectangle = InspectorStageReference.getStageBounds();
 			this.startDrag(false, new Rectangle(rect.left - mouseX, rect.top - mouseY, rect.width, rect.height));

@@ -244,7 +244,7 @@
 					return true;
 				}
 			}
-			return false;
+			return InspectorPopupManager.contains(target);
 		}
 
 		/**
@@ -253,8 +253,9 @@
 		 * @param checkIsInspectorView	check whether the target is invalid(containded by any plugin)
 		 */
 		public function liveInspect(ele : DisplayObject, checkIsInspectorView : Boolean = true) : void {
-			if(_curLiveInspectEle && _curLiveInspectEle.displayObject == ele)
-				return;
+			// bug: this (if) cause the live overlay not shown until overlay another object
+			//if(_curLiveInspectEle && _curLiveInspectEle.displayObject == ele) return;
+			
 			if(checkIsInspectorView)
 				if(isInspectView(ele))
 					return;

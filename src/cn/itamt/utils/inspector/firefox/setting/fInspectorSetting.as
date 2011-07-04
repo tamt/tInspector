@@ -45,7 +45,7 @@ package cn.itamt.utils.inspector.firefox.setting {
 
 			var arr:Array;
 			if(fInspectorConfig.getPlugins() == null) {
-				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW, InspectorPluginId.FLASH_FIREBUG];
+				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
 				fInspectorConfig.setPlugins(arr);
 				for each (var pluginName : String in arr) {
 					fInspectorConfig.setEnablePlugin(pluginName);
