@@ -60,7 +60,7 @@
 		</panel>
 		-->
 		<panel align="right" id="fInspectorSetting"
-			style="border-style: none; padding:10px; font-size:12px;" width="200">
+			style="border-style: none; padding:10px; font-size:12px;" width="220">
 			<groupbox>
 				<caption label="&fInspectorPluginSelector;"></caption>
 				<vbox style="">
@@ -71,8 +71,9 @@
 					<hbox><checkbox id="fInspectorPlugin_FullScreen" label="FullScreen" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('FullScreen');" class="fInspectorPluginGuideBtn"/></hbox>
 					<hbox><checkbox id="fInspectorPlugin_AppStatsPanel" label="AppStats" checked="false" onclick="fInspector.checkInspectorPlugin(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('AppStatsPanel');" class="fInspectorPluginGuideBtn"/></hbox>
 				</vbox>
+				<label value="&fInspectorPluginSelectorTip;"/>
 			</groupbox>
-			<label value="&fInspectorPluginSelectorTip;"/>
+			<hbox><checkbox id="fInspectorInjectMode_Global" label="&fInspectorInjectMode_Global;" checked="false" onclick="fInspector.toggleInjectModeGlobal(this);"/><image onclick="fInspector.showFlashInspectorPluginGuide('InjectModeGlobal');" class="fInspectorPluginGuideBtn"/></hbox>
 		</panel>
 	</popupset>
 	<statusbar id="status-bar">

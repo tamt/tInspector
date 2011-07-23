@@ -2,11 +2,13 @@
 //----------------------------[fInspector definition]-----------------------------
 //--------------------------------------------------------------------------------
 
-var fInspector = {	id : "finspector@itamt.org",
+var fInspector = {
+	id : "finspector@itamt.org",
 	path : "",
 	isOn : true,
 	enable : true,
 	preTab : null,
+	isInjectGlobal : false,
 	// there may be several Firefox instances, each Firefox's FI controller has
 	// an id.
 	controllerId : new Date().getTime().toString(),
@@ -331,10 +333,12 @@ var fInspector = {	id : "finspector@itamt.org",
 		fInspector.setupSwfsInDoc(doc);
 
 		// clear "PreloadSwf" config in mm.cfg
-		fInspector
-				.clearPreloadSwf(fInspector
-						.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-								+ fInspector.controllerId));
+		if (!fInspector.isInjectGlobal) {
+			fInspector
+					.clearPreloadSwf(fInspector
+							.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
+									+ fInspector.controllerId));
+		}
 	},
 
 	/**
@@ -405,6 +409,27 @@ var fInspector = {	id : "finspector@itamt.org",
 			// fInspector.reloadSwfElement(swf);
 		} else {
 		}
+	},
+
+	// 在所有FlashPlayer中注入FlashInspector.
+	toggleInjectModeGlobal : function(owner) {
+		fInspector.isInjectGlobal = !document
+				.getElementById("fInspectorInjectMode_Global").checked;
+		
+		//往FlasPlayer注入FI.
+		if (fInspector.isInjectGlobal) {
+			fInspector
+					.setPreloadSwf(fInspector
+							.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
+									+ fInspector.controllerId));
+		}
+
+		// 写入配置
+		let
+		_prefService = Cc["@mozilla.org/preferences-service;1"]
+				.getService(Ci.nsIPrefBranch);
+		_prefService
+				.setBoolPref("extensions.flashinspector.injectGlobal", true);
 	},
 
 	toggleInspector : function(event) {
@@ -483,7 +508,7 @@ var fInspector = {	id : "finspector@itamt.org",
 
 	// clear the "PreloadSWF" config in mm.cfg
 	clearPreloadSwf : function(file) {
-		//		return;
+		// return;
 		var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 		if (!mmcfg.exists()) {
 			fInspector
@@ -759,8 +784,7 @@ var fInspector = {	id : "finspector@itamt.org",
 		Application.restart();
 	},
 
-
-progressListener : {
+	progressListener : {
 		QueryInterface : function(aIID) {
 			if (aIID.equals(Components.interfaces.nsIWebProgressListener)
 					|| aIID
@@ -810,6 +834,9 @@ progressListener : {
 		let
 		_prefService = Cc["@mozilla.org/preferences-service;1"]
 				.getService(Ci.nsIPrefBranch);
+
+		fInspector.isInjectGlobal = _prefService
+				.getBoolPref("extensions.flashinspector.injectGlobal");
 
 		if (_prefService.getBoolPref("extensions.flashinspector.installed")) {
 

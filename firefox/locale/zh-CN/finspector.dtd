@@ -4,3 +4,4 @@
 <!ENTITY fInspectorPluginSelector "功能选择">
 <!ENTITY fInspectorPluginSelectorTip "设置之后请刷新网页">
 <!ENTITY needDebuggerFlashPlayer "FlashInspector需要Flash Player 9+(Debugger Version)插件，请先安装。">
+<!ENTITY fInspectorInjectMode_Global "全局使用FlashInspector">

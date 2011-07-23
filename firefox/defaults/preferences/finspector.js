@@ -7,3 +7,4 @@
 //
 pref("extensions.flashinspector.path", "defaultvalue"); //fInspector安装的路径
 pref("extensions.flashinspector.installed", false);
+pref("extensions.flashinspector.injectGlobal", false);
