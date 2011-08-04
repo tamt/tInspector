@@ -3,3 +3,8 @@ locale	finspector	en-US		locale/en-US/
 locale  finspector zh-CN       locale/zh-CN/
 skin finspector classic/1.0 skin/
 overlay chrome://browser/content/browser.xul chrome://finspector/content/finspector.xul
+
+# Component registration
+component {0A538808-BE5D-11E0-9450-F4304924019B} components/FIContentPolicy.js
+contract @fi.itamt.com/helloworld;1 {0A538808-BE5D-11E0-9450-F4304924019B}
+category content-policy FIContentPolicy @fi.itamt.com/helloworld;1

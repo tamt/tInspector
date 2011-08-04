@@ -415,8 +415,8 @@ var fInspector = {
 	toggleInjectModeGlobal : function(owner) {
 		fInspector.isInjectGlobal = !document
 				.getElementById("fInspectorInjectMode_Global").checked;
-		
-		//往FlasPlayer注入FI.
+
+		// 往FlasPlayer注入FI.
 		if (fInspector.isInjectGlobal) {
 			fInspector
 					.setPreloadSwf(fInspector
@@ -428,8 +428,8 @@ var fInspector = {
 		let
 		_prefService = Cc["@mozilla.org/preferences-service;1"]
 				.getService(Ci.nsIPrefBranch);
-		_prefService
-				.setBoolPref("extensions.flashinspector.injectGlobal", true);
+		_prefService.setBoolPref("extensions.flashinspector.injectGlobal",
+				fInspector.isInjectGlobal);
 	},
 
 	toggleInspector : function(event) {
@@ -437,6 +437,8 @@ var fInspector = {
 		if (event.button == 2) {
 			document.getElementById("fInspectorSetting").openPopup(
 					document.getElementById("finspectorBtnImg"), "before_end");
+
+			document.getElementById("fInspectorInjectMode_Global").checked = fInspector.isInjectGlobal;
 			// if(fInspectorUtil.OS == fInspectorUtil.MAC){
 			// document.getElementById("fInspectorSetting_mac").openPopup(document.getElementById("finspectorBtnImg"),
 			// "before_end");
@@ -984,6 +986,19 @@ var fInspector = {
 				}
 			}
 		}
+		try {
+			var t = Components.classes['@fi.itamt.com/helloworld;1']
+					.getService(Components.interfaces.nsIContentPolicy).wrappedJSObject;
+			alert(t.hello());
+//			t.shouldLoad = function(contentType, contentLocation,
+//					requestOrigin, insecNode, mimeTypeGuess, extra) {
+//				
+//				return nsIContentPolicy.ACCEPT;
+//			}
+		} catch (anError) {
+			alert("ERROR: " + anError);
+		}
+
 	}
 
 };
