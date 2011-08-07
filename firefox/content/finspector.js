@@ -32,20 +32,8 @@ var fInspector = {
 			// set the "PreloadSWF" config in mm.cfg, remind that we add a
 			// "finspectorId" param to "tInspectorPreloader.swf", which will be
 			// used to communicate with FI.
-			fInspector
-					.setPreloadSwf(fInspector
-							.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-									+ fInspector.controllerId));
 			fInspector.setPathFlashTrust(fInspector
 					.getAddonFilePath("/content/"));
-
-			// listen the web load init event.
-			fInspector.toggleProgressListener(gBrowser.webProgress, true);
-
-			gBrowser.tabContainer.addEventListener("TabOpen",
-					fInspector.handleEvent, false);
-			gBrowser.tabContainer.addEventListener("TabClose",
-					fInspector.handleEvent, false);
 
 			gBrowser.addEventListener("DOMContentLoaded", function(event) {
 				var doc = event.originalTarget;
@@ -78,38 +66,7 @@ var fInspector = {
 
 	// when firefox close
 	onFirefoxUnLoad : function(evt) {
-		fInspector
-				.clearPreloadSwf(fInspector
-						.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-								+ fInspector.controllerId));
-
-		fInspector.toggleProgressListener(gBrowser.webProgress, false);
-
-		gBrowser.tabContainer.removeEventListener("TabOpen",
-				fInspector.handleEvent, false);
-		gBrowser.tabContainer.removeEventListener("TabClose",
-				fInspector.handleEvent, false);
-	},
-
-	toggleProgressListener : function(aWebProgress, aIsAdd) {
-		if (aIsAdd) {
-			aWebProgress.addProgressListener(fInspector.progressListener,
-					aWebProgress.NOTIFY_ALL);
-		} else {
-			aWebProgress.removeProgressListener(fInspector.progressListener);
-		}
-	},
-
-	handleEvent : function(aEvent) {
-		let
-		tab = aEvent.target;
-		let
-		webProgress = gBrowser.getBrowserForTab(tab).webProgress;
-		// fInspector.toggleProgressListener(webProgress,
-		// ("TabOpen" == aEvent.type));
-
-		// fInspector.toggleProgressListener(gBrowser.webProgress, webProgress,
-		// ("TabOpen" == aEvent.type));
+		fInspector.clearPreloadSwf();
 	},
 
 	onTabSelect : function(evt) {
@@ -151,24 +108,6 @@ var fInspector = {
 		fInspector.trace("try setup swfs");
 
 		var tabDoc = doc;
-		// you can inject some js functions here, to used by
-		// tInspectorPreloader.swf
-		// if (!doc.getElementById("finspector_js_injector")) {
-		// var script = tabDoc.createElement("script");
-		// script.setAttribute("type", "text/javascript");
-		// script.setAttribute("language", "JavaScript");
-		// script.id = "finspector_js_injector";
-		// script.innerHTML = "function fInspectorReloadSwf(swfId){var swfEle =
-		// document.getElementById(swfId);var visibility =
-		// swfEle.style.visibility;swfEle.style.visibility = \"none\";var pos =
-		// swfEle.style.position;swfEle.style.position = (pos == \"fixed\" ?
-		// \"relative\" : \"fixed\");setTimeout(function()
-		// {swfEle.style.position = pos;swfEle.style.visibility =
-		// visibility;setTimeout(function()
-		// {try{swfEle.setSwfId(swfId);}catch(error){}}, 300);}, 0);}";
-		// tabDoc.body.appendChild(script);
-		// }
-
 		// change the swf attributes, like:allowscriptaccess, allowfullscreen.
 		var swfs = fInspector.getSwfElements(doc);
 		fInspector.trace(swfs.length + " swf(s) was found in this page.");
@@ -196,108 +135,8 @@ var fInspector = {
 
 					fInspector.trace("swf injected.");
 				}
-
-				/**
-				 * [TODO:FlashInspector 0.2.3] swf.addEventListener("mouseover",
-				 * fInspector.swfMouseEventHander, true);
-				 * swf.addEventListener("mouseout",
-				 * fInspector.swfMouseEventHander, true);
-				 */
 			}
 		}
-	},
-
-	// [TODO:FlashInspector 0.2.3] ignore currently.
-	swfMouseEventHander : function(event) {
-		fInspector.trace("swf: " + event.type);
-		var swf = event.target;
-		if (event.type == "mouseover") {
-			if (swf != fInspector.currTarget) {
-				fInspector.currTarget = swf;
-				fInspector.showOperationBar(swf);
-			}
-		} else if (event.type == "mouseout") {
-			fInspector.currTarget = null;
-			setTimeout(function() {
-				fInspector.trace("curr target: " + fInspector.currTarget + ", "
-						+ swf);
-				if (fInspector.currTarget != swf)
-					fInspector.hideOperationBar(swf);
-			}, 200);
-		}
-	},
-
-	// [TODO:FlashInspector 0.2.3] ignore currently.
-	showOperationBar : function(swf) {
-		var doc = swf.ownerDocument.defaultView.top.document;
-		var anchor = doc.getElementById(swf.id + "_operation_bar");
-		if (!anchor) {
-			anchor = doc.createElement("a");
-			anchor.setAttribute("title", "Inspect swf");
-			anchor.setAttribute("id", swf.id + "_operation_bar");
-			anchor.style.position = "absolute";
-			anchor.addEventListener("mouseover",
-					fInspector.operationBarMouseEventHandler, true);
-			anchor.addEventListener("mouseout",
-					fInspector.operationBarMouseEventHandler, true);
-			anchor.addEventListener("click", fInspector.onClickOperationIcon,
-					true);
-			anchor.innerHTML = '<img src="data:image/png;base64,' + fInspectorPngStr
-					.getIcon("pngInspectorIcon") + '"/>';
-			anchor.owner = swf;
-			doc.documentElement.appendChild(anchor);
-		}
-
-		var rect = fInspectorUtil.getElementPosition(swf);
-
-		let
-		left = rect.left;
-		let
-		top = rect.top - 16;
-		anchor.style.left = left + "px";
-		anchor.style.top = top + "px";
-	},
-
-	// [TODO:FlashInspector 0.2.3] ignore currently.
-	hideOperationBar : function(swf) {
-		var doc = swf.ownerDocument.defaultView.top.document;
-		var anchor = doc.getElementById(swf.id + "_operation_bar");
-		if (anchor) {
-			anchor.removeEventListener("mouseover",
-					fInspector.operationBarMouseEventHandler, false);
-			anchor.removeEventListener("mouseout",
-					fInspector.operationBarMouseEventHandler, false);
-			anchor.removeEventListener("click",
-					fInspector.onClickOperationIcon, false);
-			doc.documentElement.removeChild(anchor);
-		}
-	},
-
-	// [TODO:FlashInspector 0.2.3] ignore currently.
-	operationBarMouseEventHandler : function(event) {
-		fInspector.trace("operationBar: " + event.type);
-		var swf = event.currentTarget.owner;
-		if (event.type == "mouseover") {
-			fInspector.currTarget = swf;
-		} else if (event.type == "mouseout") {
-			fInspector.currTarget = null;
-			setTimeout(function() {
-				fInspector.trace("curr target: " + fInspector.currTarget + ", "
-						+ swf);
-				if (fInspector.currTarget != swf)
-					fInspector.hideOperationBar(swf);
-			}, 200);
-		}
-	},
-
-	// [TODO:FlashInspector 0.2.3] ignore currently.
-	onClickOperationIcon : function(event) {
-		var bar = event.currentTarget;
-		var doc = bar.ownerDocument.defaultView.top.document;
-		var swf = doc.getElementById(bar.id.slice(0, -14));
-		var swf_url = swf.data;
-		document.getElementById('tInspectorController').toggleInspectorByUrl(
-				swf_url);
 	},
 
 	setSwfIdPersist : function(swf, num) {
@@ -334,10 +173,7 @@ var fInspector = {
 
 		// clear "PreloadSwf" config in mm.cfg
 		if (!fInspector.isInjectGlobal) {
-			fInspector
-					.clearPreloadSwf(fInspector
-							.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-									+ fInspector.controllerId));
+			fInspector.clearPreloadSwf();
 		}
 	},
 
@@ -405,7 +241,7 @@ var fInspector = {
 				swf.setAttribute("allowscriptaccess", "always");
 				swf.setAttribute("allowfullscreen", "true");
 			}
-
+			
 			// fInspector.reloadSwfElement(swf);
 		} else {
 		}
@@ -418,10 +254,7 @@ var fInspector = {
 
 		// 往FlasPlayer注入FI.
 		if (fInspector.isInjectGlobal) {
-			fInspector
-					.setPreloadSwf(fInspector
-							.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-									+ fInspector.controllerId));
+			fInspector.setPreloadSwf();
 		}
 
 		// 写入配置
@@ -439,11 +272,6 @@ var fInspector = {
 					document.getElementById("finspectorBtnImg"), "before_end");
 
 			document.getElementById("fInspectorInjectMode_Global").checked = fInspector.isInjectGlobal;
-			// if(fInspectorUtil.OS == fInspectorUtil.MAC){
-			// document.getElementById("fInspectorSetting_mac").openPopup(document.getElementById("finspectorBtnImg"),
-			// "before_end");
-			// }else{
-			// }
 		}
 
 		// the mouseup event is not trigger by left-click
@@ -477,9 +305,12 @@ var fInspector = {
 	},
 
 	// set file path to "PreloadSWF" in mm.cfg
-	setPreloadSwf : function(file) {
+	setPreloadSwf : function() {
 		// if (!fInspector.enable)
 		// return;
+		var file = fInspector
+		.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
+				+ fInspector.controllerId)
 
 		var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 		if (!mmcfg.exists()) {
@@ -509,8 +340,11 @@ var fInspector = {
 	},
 
 	// clear the "PreloadSWF" config in mm.cfg
-	clearPreloadSwf : function(file) {
-		// return;
+	clearPreloadSwf : function() {
+		var file = fInspector
+		.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
+				+ fInspector.controllerId);
+		
 		var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 		if (!mmcfg.exists()) {
 			fInspector
@@ -567,7 +401,7 @@ var fInspector = {
 	trace : function(obj) {
 		var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
 				.getService(Components.interfaces.nsIConsoleService);
-		consoleService.logStringMessage(obj);
+		// consoleService.logStringMessage(obj);
 		// alert('\n' + obj);
 	},
 
@@ -657,113 +491,12 @@ var fInspector = {
 		// call tInspectorConsoleMonitor.swf store select/unselect plugin
 		// setting (to SharedObject).
 		if (!pluginCheckBox.checked) {
-			// direct to FlashFirebug add-on if it's not installed yet
-			if (pluginId == "FlashFirebug") {
-				if (!fInspector.isFlashFirebugInstalled()) {
-					var stringBundle = document.getElementById("tips");
-					if (confirm(stringBundle.getString("NeedFlashFirebugGuide"))) {
-						fInspector
-								.openTab("https://addons.mozilla.org/en-US/firefox/addon/161670/");
-					}
-					setTimeout(function() {
-						pluginCheckBox.checked = false;
-					}, 100);
-				} else {
-					document.getElementById('tInspectorController')
-							.selectPlugin(pluginId);
-					// 注入FlashFirebug, 增加openTree功能
-					fInspector.injectFlashFirebug();
-				}
-			} else {
-				document.getElementById('tInspectorController').selectPlugin(
+			document.getElementById('tInspectorController').selectPlugin(
 						pluginId);
-			}
 		} else {
 			document.getElementById('tInspectorController').rejectPlugin(
 					pluginId);
 		}
-	},
-
-	// 向FlashFirebug注入脚本, 增强其功能.
-	injectFlashFirebug : function() {
-		try {
-			Firebug.FlashPanel.prototype.openTree = function(data) {
-				var target = $FQuery("#base li[rel='" + (data.id) + "'] ",
-						this.panelNode);
-				if (!$FQuery(target).hasClass("isOpened")) {
-					$FQuery(target).addClass("isOpened");
-					$FQuery(target).children("ul").slideDown("fast");
-				}
-
-				var absNameArr = (data.target).split(".");
-				var absName = "li[rel='" + (data.id) + "'] ";
-				var path = "";
-				if (data.target != 'root') {
-					for ( var i = 0; i < absNameArr.length; i++) {
-						absName += "li[index='" + absNameArr[i] + "'] ";
-
-						if (i > 0) {
-							var target = $FQuery(absName, this.panelNode);
-							if (target.length == 0) {
-								Firebug.FlashModule.fromFlashFirebug( {
-									command : "getTree",
-									target : path,
-									id : data.id
-								});
-								var _this = this;
-
-								setTimeout(function() {
-									_this.openTree(data)
-								}, 100);
-								break;
-							} else {
-								if (i == absNameArr.length - 1) {
-									// 把之前选中的 清除样式
-									$FQuery(".selected", this.panelNode)
-											.removeClass("selected");
-
-									// 设置为选中样式
-									target = $FQuery(target).first();
-									$FQuery(target).children("a").addClass(
-											"selected");
-
-									// 把滚动条定位到该li的区域
-									var offset = $FQuery(target).offset();
-									offset.top += this.panelNode.scrollTop;
-									if (offset.top < this.panelNode.scrollTop
-											|| offset.top > (this.panelNode.scrollTop + this.panelNode.clientHeight)) {
-										$FQuery(this.panelNode)
-												.animate(
-														{
-															scrollTop : offset.top
-																	- this.panelNode.clientHeight
-																	/ 2
-														}, 500);
-									}
-								}
-							}
-							path += "." + absNameArr[i];
-						} else {
-							path += absNameArr[i];
-						}
-					}
-				}
-			}
-		} catch (error) {
-
-		}
-	},
-
-	isFlashFirebugInstalled : function() {
-		try {
-			if (FBL && Firebug && Firebug.FlashModule
-					&& Firebug.FlashModule.toFlashFirebug
-					&& Firebug.FlashModule.toFlashFirebug) {
-				return true;
-			}
-		} catch (error) {
-		}
-		return false;
 	},
 
 	// called by tInspectorConsoleMonitor.swf (tInspectorController), after it
@@ -772,11 +505,6 @@ var fInspector = {
 		var pluginCheckBox = document.getElementById("fInspectorPlugin_"
 				+ pluginId);
 		pluginCheckBox.checked = check;
-		if (pluginId == "FlashFirebug") {
-			// 注入FlashFirebug, 增加openTree功能
-			if (check)
-				fInspector.injectFlashFirebug();
-		}
 	},
 
 	// reload all pages
@@ -784,52 +512,6 @@ var fInspector = {
 		var Application = Components.classes["@mozilla.org/fuel/application;1"]
 				.getService(Components.interfaces.fuelIApplication);
 		Application.restart();
-	},
-
-	progressListener : {
-		QueryInterface : function(aIID) {
-			if (aIID.equals(Components.interfaces.nsIWebProgressListener)
-					|| aIID
-							.equals(Components.interfaces.nsISupportsWeakReference)
-					|| aIID.equals(Components.interfaces.nsISupports))
-				return this;
-			throw Components.results.NS_NOINTERFACE;
-		},
-
-		onStateChange : function(aWebProgress, aRequest, aFlag, aStatus) {
-			var doc = aWebProgress.DOMWindow.document;
-			if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_START)
-					&& (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
-				fInspector.trace("This fires when the load event is initiated");
-				fInspector
-						.setPreloadSwf(fInspector
-								.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-										+ fInspector.controllerId));
-			} else if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP)
-					&& (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
-				fInspector.trace("This fires when the load finishes");
-			}
-		},
-
-		onLocationChange : function(aProgress, aRequest, aURI) {
-			// This fires when the location bar changes; i.e load event is
-			// confirmed
-			// or when the user switches tabs. If you use myListener for more
-			// than
-			// one
-			// tab/window,
-			// use aProgress.DOMWindow to obtain the tab/window which triggered
-			// the
-			// change.
-		},
-
-		onProgressChange : function(aWebProgress, aRequest, curSelf, maxSelf,
-				curTot, maxTot) {
-		},
-		onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage) {
-		},
-		onSecurityChange : function(aWebProgress, aRequest, aState) {
-		}
 	},
 
 	init : function() {
@@ -853,10 +535,6 @@ var fInspector = {
 						.getInstallLocation(fInspector.id).getItemFile(
 								fInspector.id, "install.rdf").parent.path;
 
-				fInspector
-						.setPreloadSwf(fInspector
-								.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-										+ fInspector.controllerId));
 				fInspector.setPathFlashTrust(fInspector
 						.getAddonFilePath("/content/"));
 
@@ -867,10 +545,6 @@ var fInspector = {
 				// it's Firefox 4!!
 
 				fInspector.path = finspectorPath;
-				fInspector
-						.setPreloadSwf(fInspector
-								.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-										+ fInspector.controllerId));
 				fInspector.setPathFlashTrust(fInspector
 						.getAddonFilePath("/content/"));
 
@@ -971,11 +645,6 @@ var fInspector = {
 											fInspectorFileIO.write(xul, data);
 										}
 										// //////////////////////////////
-
-										fInspector
-												.setPreloadSwf(fInspector
-														.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-																+ fInspector.controllerId));
 										fInspector.setPathFlashTrust(fInspector
 												.getAddonFilePath("/content/"));
 
@@ -986,19 +655,26 @@ var fInspector = {
 				}
 			}
 		}
+
+		// 添加swf加载侦听
 		try {
-			var t = Components.classes['@fi.itamt.com/helloworld;1']
+			fInspector.swfWatcher = Components.classes['@fi.itamt.com/helloworld;1']
 					.getService(Components.interfaces.nsIContentPolicy).wrappedJSObject;
-			alert(t.hello());
-//			t.shouldLoad = function(contentType, contentLocation,
-//					requestOrigin, insecNode, mimeTypeGuess, extra) {
-//				
-//				return nsIContentPolicy.ACCEPT;
-//			}
+			fInspector.swfWatcher.addListener(fInspector.onShouldLoadSWF);
 		} catch (anError) {
 			alert("ERROR: " + anError);
 		}
 
+	},
+
+	swfWatcher : {},
+
+	onShouldLoadSWF : function() {
+		try {
+			var node = fInspector.swfWatcher.currSwfNode;
+			fInspector.setPreloadSwf();
+		} catch (e) {
+		}
 	}
 
 };
