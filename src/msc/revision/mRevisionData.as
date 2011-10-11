@@ -29,7 +29,7 @@ package msc.revision {
 		public function setRevCompressedStr(str : String) : void {
 			this.compressedStr = str;
 			
-			//			Debug.trace('[mRevisionData][setRevCompressedStr]' + str);
+			//			trace('[mRevisionData][setRevCompressedStr]' + str);
 			var arr : Array = str.split('\n');
 			var i : int = arr.length;
 			while(i--) {
@@ -61,13 +61,13 @@ package msc.revision {
 							fileRevDict[p + fs[j]] = r;
 							revFileDict[r] = p + fs[j];
 							
-//							Debug.trace(r + "::" + (p + fs[j]));
+//							trace(r + "::" + (p + fs[j]));
 						}
 					}
 				}
 			}
 			
-//			Debug.trace('========================================');
+//			trace('========================================');
 		}
 
 		/**
