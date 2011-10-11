@@ -194,6 +194,55 @@ getFlashPluginVersion : function() {
 	}
 
 	return version;
+},
+
+//https://addons.mozilla.org/en-US/firefox/files/browse/126475/file/chrome/flashblock.jar/content/flashblock/flashblock.js#top
+getTargetURI : function(node) {
+	var targetURI;
+	try {
+		// Get object URI in the same way as
+		// nsObjectLoadingContent::LoadObject()
+		var relativeURI;
+		switch (node.localName.toLowerCase()) {
+		case "object":
+			relativeURI = node.getAttribute("data")
+					|| node.getAttribute("src") || "";
+			if (!relativeURI) {
+				var params = node.getElementsByTagName("param");
+
+				for ( var ii = 0; ii < params.length; ii++) {
+					var name = params[ii].getAttribute("name");
+					switch (name) {
+					case "movie":
+					case "src":
+						relativeURI = params[ii].getAttribute("value");
+						break;
+					}
+				}
+			}
+			break;
+		case "embed":
+			relativeURI = node.getAttribute("src") || "";
+			break;
+		}
+
+		var ios = Components.classes["@mozilla.org/network/io-service;1"]
+				.getService(Components.interfaces.nsIIOService);
+		var baseURI = ios.newURI(node.baseURI, null, null);
+		var codeBase = node.getAttribute("codebase");
+		if (codeBase) {
+			try {
+				baseURI = ios.newURI(codeBase,
+						node.ownerDocument.characterSet, baseURI);
+			} catch (e) {
+			} // Ignore invalid codebase attribute
+		}
+		targetURI = ios.newURI(relativeURI,
+				node.ownerDocument.characterSet, baseURI);
+	} catch (e) {
+		Components.utils.reportError(e);
+	}
+	return targetURI;
 }
 
 };

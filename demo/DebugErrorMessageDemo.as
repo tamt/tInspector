@@ -1,6 +1,5 @@
 ﻿package  
 {
-	import cn.itamt.utils.Debug;
 	import flash.display.Sprite;
 	import fl.controls.Button;
 	import flash.events.Event;
@@ -8,6 +7,8 @@
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
+	import flash.display.Loader;
+	import flash.net.URLRequest;
 	
 	/**
 	 * ...
@@ -30,11 +31,11 @@
 			
 			//侦听全局异常.
 			if (this.root.loaderInfo.hasOwnProperty("uncaughtErrorEvents")) {
-				Debug.trace("has uncaughtErrorEvents");
-				//IEventDispatcher(this.stage.loaderInfo["uncaughtErrorEvents"]).addEventListener("uncaughtError", uncaughtErrorHandler);
-				IEventDispatcher(this.loaderInfo["uncaughtErrorEvents"]).addEventListener("uncaughtError", uncaughtErrorHandler);
+				//Debug.trace("has uncaughtErrorEvents");
 				//IEventDispatcher(this.loaderInfo["uncaughtErrorEvents"]).addEventListener("uncaughtError", uncaughtErrorHandler);
 			}
+			
+			//(addChild(new Loader()) as Loader).load(new URLRequest("http://www.tudou.com/v/nxiyH88XKC0/v.swf"));
 		}
 
 		function onClickError(evt:MouseEvent):void {
