@@ -4,8 +4,8 @@
 
 	<Description about="urn:mozilla:install-manifest">
 		<em:name>FlashInspector</em:name>
-		<em:version>0.2.4</em:version>
-		<em:description>Inspect element inside SWF like you inspect HTML with Firebug.</em:description>
+		<em:version>0.2.5</em:version>
+		<em:description>Inspect element inside SWF like Firebug.</em:description>
 		<em:creator>tamt</em:creator>
 		<em:id>finspector@itamt.org</em:id>
 		<em:unpack>true</em:unpack>

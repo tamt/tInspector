@@ -1,67 +1,16 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 
-<project name="finspector" default="dist">
-	<property name="src.dir" value="." />
-	<property name="dist.dir" value="dist" />
-	<property name="app.name" value="finspector" />
-	<property name="app.id" value="${app.name}" /> <!-- extension id like: xxx@xxx.com -->
-	<property name="ff.dir" value="C:\Program Files\Mozilla Firefox" />
-
-	<condition property="ff.present">
-		<and>
-			<isset property="ff.dir" />
-			<available file="${ff.dir}" type="dir" />
-		</and>
-	</condition>
-	
-	<target name="chrome">
-		<mkdir dir="${dist.dir}" />
-		<zip destfile="${dist.dir}/${app.name}.jar">
-			<fileset dir="${src.dir}">
-				<include name="content/**" />
-				<include name="locale/**" />
-				<include name="skin/**" />
-				<exclude name="**/.*" />
-				<exclude name="**/CVS/**" />
-			</fileset>
-		</zip>
+<project name="FlashInspector" default="build" basedir=".">
+	<description>Build .xpi file by Christopher Ditto for distribution/installation of a Firefox extension.</description>
+	<property name="app.name" value="FlashInspector" />
+	<property name="app.version" value="0.2.5" />
+	<property name="build.dir" value="${basedir}/build" />
+	<target name="build" description="Generate the distribution">
+		<delete dir="${build.dir}" />
+		<copy todir="${build.dir}">
+			<fileset dir="${basedir}" includes="locale/,defaults/,chrome.manifest,install.rdf,content/finspector.js,content/finspector.xml,content/finspector.xul,content/Io.js,content/prefutils.js,content/Util.js,content/tInspectorConsoleMonitor.swf,content/tInspectorPreloader.swf,skin/finspector_16.png,skin/finspector_48.png,skin/finspector_gray_16.png,skin/finspector.css,info_gray.gif,info.gif" />
+		</copy>
+		<zip destfile="${app.name}_${app.version}.xpi" basedir="${build.dir}" />
+		<delete dir="${build.dir}" />
 	</target>
-
-	<target name="test.chrome" depends="chrome" if="ff.present">
-		<!-- copy to chrome directory -->
-		<copy file="${dist.dir}/${app.name}.jar" todir="${ff.dir}/chrome/chrome" overwrite="true" />
-		<copy file="${src.dir}/chrome.manifest" tofile="${ff.dir}/chrome/${app.name}.manifest" overwrite="true" />
-	</target>
-	
-	<!-- copy to extensions directory -->
-	<!--
-	<target name="test.ext" depends="chrome" if="ff.present">
-		<copy file="${dist.dir}/${app.name}.jar" todir="${ff.dir}/extensions/${app.id}/chrome" overwrite="true" />
-		<copy file="${src.dir}/chrome.manifest" todir="${ff.dir}/extensions/${app.id}" overwrite="true" />
-	</target>
-	-->
-	
-	<target name="dist" depends="chrome">
-		<zip destfile="${dist.dir}/${app.name}.xpi">
-			<zipfileset file="${dist.dir}/${app.name}.jar" prefix="chrome"/>
-			<fileset dir="${src.dir}">
-				<include name="chrome.manifest" />
-				<include name="install.rdf" />
-				<include name="defaults/**" />
-				<exclude name="**/.*" />
-				<exclude name="**/CVS/**" />
-			</fileset>
-		</zip>
-	</target>
-	
-	<target name="clean">
-		<delete dir="${dist.dir}" />
-	</target>
-
-	<target name="clean.ff"  if="ff.present">
-		<delete dir="${ff.dir}/extensions/${app.id}" failonerror="false" />
-		<delete file="${ff.dir}/chrome/${app.name}.manifest" failonerror="false" />
-		<delete file="${ff.dir}/chrome/chrome/${app.name}.jar" failonerror="false" />
-	</target>
-
 </project>
