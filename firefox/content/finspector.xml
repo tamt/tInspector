@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<bindings xmlns="http://www.mozilla.org/xbl" xmlns:html="http://www.w3.org/1999/xhtml">
+
+	<binding id="flash">
+		<implementation>
+			<constructor>
+        <![CDATA[
+        
+//From Jesse's XPCNativeWrapper: http://mavra.perilith.com/~luser/content/native.js
+function nativeMethod(untrustedObject, methodName)
+{
+  // happier stack traces and faster multiple calls
+  var fun = Components.lookupMethod(untrustedObject, methodName);
+  
+  return function()
+  {
+    return fun.apply(untrustedObject, arguments);
+  }
+}
+
+var createElement = nativeMethod(document, "createElementNS");
+
+var current = this;
+document.QueryInterface(Components.interfaces.nsIDOMDocument);
+
+		var swf = current;
+		if (!swf.id) {
+			swf.id = "fInspectorSwf_" + (new Date()).getTime();
+		}
+		if (!swf.src
+				|| swf.src != 'chrome://finspector/content/tInspectorConsoleMonitor.swf') {
+			if (swf.tagName.toUpperCase() == 'OBJECT') {
+				// 判断是不是有<param name="allowScriptAccess" value="always" /> 和
+				// <param name="allowFullScreen" value="true" />
+				var childs = swf.childNodes;
+				var needAppendScriptAccess = true;
+				var needAppendFullScreen = true;
+				for ( var i = 0; i < childs.length; i++) {
+					var param = childs[i];
+					if (param.name.toUpperCase() == "ALLOWSCRIPTACCESS") {
+						swf.appendChild(param);
+						param.value = "always";
+						needAppendScriptAccess = false;
+					}
+					if (param.name.toUpperCase() == "ALLOWFULLSCREEN") {
+						param.value = "true";
+						needAppendFullScreen = false;
+					}
+				}
+
+				if (needAppendFullScreen) {
+					param = createElement("http://www.w3.org/1999/xhtml", "param");
+					param.name = "allowFullScreen";
+					param.value = "true";
+					swf.appendChild(param);
+				}
+				if (needAppendScriptAccess) {
+					param = createElement("http://www.w3.org/1999/xhtml", "param");
+					param.name = "allowScriptAccess";
+					param.value = "always";
+					swf.appendChild(param);
+				}
+
+			} else if (swf.tagName.toUpperCase() == 'EMBED') {
+				swf.setAttribute("allowscriptaccess", "always");
+				swf.setAttribute("allowfullscreen", "true");
+			}
+		}
+		
+event = document.createEvent("UIEvents");
+if(event) {
+	event.initEvent("flashblockCheckLoad", true, true);
+	current.dispatchEvent(event);
+}
+return;
+        ]]>
+			</constructor>
+		</implementation>
+	</binding>
+</bindings>

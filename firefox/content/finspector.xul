@@ -78,8 +78,8 @@
 	</popupset>
 	<statusbar id="status-bar">
 		<box width="0">
-			<html:embed id="tInspectorController"
-				src="chrome://finspector/content/tInspectorController.swf"
+			<html:embed id="tInspectorConsoleMonitor"
+				src="chrome://finspector/content/tInspectorConsoleMonitor.swf"
 				allowScriptAccess="always" type="application/x-shockwave-flash"
 				allowfullscreen="true" menu="false" wmode="transparent" width="0"
 				height="0" style="width:0px;height:0px;" />
