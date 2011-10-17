@@ -1,4 +1,5 @@
-package msc.console {
+package msc.console
+{
 	import cn.itamt.utils.Debug;
 
 	import msc.display.mSprite;
@@ -19,13 +20,13 @@ package msc.console {
 	 * 控制台界面。
 	 * @author itamt[at]qq.com
 	 */
-	public class mConsoleMonitor extends mSprite {
+	public class mConsoleMonitor extends mSprite
+	{
 		public static const VERSION : String = 'mConsoleMonitor 1.0 beta';
-		// // // // // ////////////////////////////
-		// // // // // private    functions///////////
-		// // // // // ////////////////////////////
+		// // // // // // //////////////////////////
+		// // // // //     private    functions///////////
+		// // // // // // //////////////////////////
 		protected var _conn : LocalConnection;
-
 		// 信息、命令历史文本区
 		protected var _log : mConsoleHistoryView;
 		// 命令输入文本框
@@ -34,22 +35,23 @@ package msc.console {
 		protected var _initStageW : Number, _initStageH : Number;
 		protected var _ids : Array;
 		protected var _names : Array;
-
 		//
 		public var proxy : *;
 
-		// // // // // ////////////////////////////
-		// // // // // //constructor///////////////
-		// // // // // ////////////////////////////
-		public function mConsoleMonitor() {
+		// // // // // // //////////////////////////
+		// // // // // // constructor///////////////
+		// // // // // // //////////////////////////
+		public function mConsoleMonitor()
+		{
 			_ids = [];
 			_names = [];
 		}
 
-		// // // // // ////////////////////////////
-		// // // // // //override    funcions/////////
-		// // // // // ////////////////////////////
-		override protected function init() : void {
+		// // // // // // //////////////////////////
+		// // // // // // override     funcions/////////
+		// // // // // // //////////////////////////
+		override protected function init() : void
+		{
 			super.init();
 
 			_initStageW = this.stage.stageWidth;
@@ -79,9 +81,12 @@ package msc.console {
 			_conn.allowDomain("*");
 			_conn.client = this;
 
-			try {
+			try
+			{
 				_conn.connect(mConsoleConnName.CONSOLE);
-			} catch(e : Error) {
+			}
+			catch(e : Error)
+			{
 				return;
 			}
 
@@ -98,7 +103,8 @@ package msc.console {
 			this.stage.focus = this._cmd.textField;
 		}
 
-		override public function relayout() : void {
+		override public function relayout() : void
+		{
 			_log.setPos(5, 5);
 			_cmd.setPos(5, this.stage.stageHeight - _cmd.height - 5);
 
@@ -106,7 +112,8 @@ package msc.console {
 			_cmd.setSize(this.stage.stageWidth - 10);
 		}
 
-		override protected function destroy() : void {
+		override protected function destroy() : void
+		{
 			_log = null;
 			_cmd = null;
 			_conn = null;
@@ -114,11 +121,13 @@ package msc.console {
 			super.destroy();
 		}
 
-		// // // // // ////////////////////////////
-		// // // // // private    functions///////////
-		// // // // // ////////////////////////////
-		private function onStatus(event : StatusEvent) : void {
-			switch (event.level) {
+		// // // // // // //////////////////////////
+		// // // // //     private    functions///////////
+		// // // // // // //////////////////////////
+		private function onStatus(event : StatusEvent) : void
+		{
+			switch (event.level)
+			{
 				case "status":
 					break;
 				case "error":
@@ -127,39 +136,47 @@ package msc.console {
 			}
 		}
 
-		private function onSecurityError(evt : SecurityErrorEvent) : void {
+		private function onSecurityError(evt : SecurityErrorEvent) : void
+		{
 			addLog(new mConsoleLog(evt.text, mConsoleLogType.ERROR));
 		}
 
-		private function onAsyncError(evt : AsyncErrorEvent) : void {
+		private function onAsyncError(evt : AsyncErrorEvent) : void
+		{
 			addLog(new mConsoleLog(evt.text, mConsoleLogType.ERROR));
 		}
 
-		private function onStageResize(evt : Event) : void {
+		private function onStageResize(evt : Event) : void
+		{
 			this.relayout();
 		}
 
-		private function onCmdEnter(evt : mTextEvent) : void {
-			if(evt.text == '' || evt.text == null)
+		private function onCmdEnter(evt : mTextEvent) : void
+		{
+			if (evt.text == '' || evt.text == null)
 				return;
 
 			this.callFun(evt.text);
 		}
 
-		private function onKeyUp(evt : KeyboardEvent) : void {
-			if(evt.keyCode == KeyCode.DELETE) {
+		private function onKeyUp(evt : KeyboardEvent) : void
+		{
+			if (evt.keyCode == KeyCode.DELETE)
+			{
 				_log.clear();
 			}
 		}
 
-		// // // // // ////////////////////////////
+		// // // // // // //////////////////////////
 		// // // //    /public   functions/////////////
-		// // // // // ////////////////////////////
+		// // // // // // //////////////////////////
 		/**
 		 * 连接某个Console
 		 */
-		public function buildConnection(id : String, name : String = null) : void {
-			if(_ids.indexOf(id) < 0) {
+		public function buildConnection(id : String, name : String = null) : void
+		{
+			if (_ids.indexOf(id) < 0)
+			{
 				_ids.push(id);
 				_names.push(name);
 				Debug.trace('[mConsoleMonitor][buildConnection]' + mConsoleConnName.getClientName(id));
@@ -170,9 +187,11 @@ package msc.console {
 		/**
 		 * 解除跟某个Console的连接
 		 */
-		public function deconstructConnection(id : String) : void {
+		public function deconstructConnection(id : String) : void
+		{
 			var t : int = _ids.indexOf(id);
-			if(t >= 0) {
+			if (t >= 0)
+			{
 				_ids.splice(t, 1);
 				_names.splice(t, 1);
 				Debug.trace('[mConsoleMonitor][deconstructConnection]' + mConsoleConnName.getClientName(id));
@@ -183,8 +202,10 @@ package msc.console {
 		/**
 		 * 解除所有到Console的连接
 		 */
-		public function deconstructAllConnections() : void {
-			for each(var id:String in _ids) {
+		public function deconstructAllConnections() : void
+		{
+			for each (var id:String in _ids)
+			{
 				deconstructConnection(id);
 			}
 		}
@@ -192,44 +213,56 @@ package msc.console {
 		/**
 		 * 把一个(cmd)单词加入input字典中
 		 */
-		public function addToCmdDictionary(word : String, id : String) : void {
+		public function addToCmdDictionary(word : String, id : String) : void
+		{
 			_cmd.addToDictionary(word);
 		}
 
 		/**
 		 * 往控制台文本里增加一条
 		 */
-		public function addLog(log : mConsoleLog) : void {
+		public function addLog(log : mConsoleLog) : void
+		{
 			_log.appendHtmlText(mConsoleLogStyle.buildLogStyleStr(log));
 			_log.fixDefaultTextFormat();
 			_log.scrollVBottom();
+
+			Debug.trace('[mConsoleMonitor.addLog]' + log.time + ': ' + log.msg);
 		}
 
-		public function addLogMessage(msg : String, type : uint = 1, id : String = null) : void {
+		public function addLogMessage(msg : String, type : uint = 1, id : String = null) : void
+		{
 			addLog(new mConsoleLog(msg, type));
 		}
 
 		/**
 		 * 调用mConsole的方法
 		 */
-		public function callFun(fun : String, id : String = null) : void {
+		public function callFun(fun : String, id : String = null) : void
+		{
 			addLog(new mConsoleLog(fun));
 			// _conn.send(mConsoleConnName.CONSOLE, 'executeCmdLine', fun);
 
-			for(var i : int = 0;i < _ids.length;i++) {
+			for (var i : int = 0;i < _ids.length;i++)
+			{
 				Debug.trace('[mConsoleMonitor][callFun]' + mConsoleConnName.getClientName(_ids[i]) + ', ' + fun);
 				_conn.send(mConsoleConnName.getClientName(_ids[i]), 'executeCmdLine', fun);
 			}
 		}
 
-		public function callProxyFun(fun : String, ...paras) : void {
+		public function callProxyFun(fun : String, ...paras) : void
+		{
 			Debug.trace('[mConsoleMonitor][callProxyFun]' + fun);
-			if(proxy) {
-				if(!proxy['hasOwnProperty'](fun))
+			if (proxy)
+			{
+				if (!proxy['hasOwnProperty'](fun))
 					return;
-				try {
+				try
+				{
 					(proxy[fun] as Function).apply(proxy, paras);
-				} catch(e : Error) {
+				}
+				catch(e : Error)
+				{
 				}
 			}
 		}

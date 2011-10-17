@@ -8,7 +8,7 @@
 	<target name="build" description="Generate the distribution">
 		<delete dir="${build.dir}" />
 		<copy todir="${build.dir}">
-			<fileset dir="${basedir}" includes="locale/,defaults/,chrome.manifest,install.rdf,content/finspector.js,content/finspector.xml,content/finspector.xul,content/Io.js,content/prefutils.js,content/Util.js,content/tInspectorConsoleMonitor.swf,content/tInspectorPreloader.swf,skin/finspector_16.png,skin/finspector_48.png,skin/finspector_gray_16.png,skin/finspector.css,info_gray.gif,info.gif" />
+			<fileset dir="${basedir}" includes="locale/,defaults/,chrome.manifest,install.rdf,content/finspector.js,content/finspector.xml,content/finspector.xul,content/Io.js,content/prefutils.js,content/Util.js,content/tInspectorConsoleMonitor.swf,content/tInspectorPreloader.swf,skin/finspector_16.png,skin/finspector_48.png,skin/finspector_gray_16.png,skin/finspector.css,skin/info_gray.gif,skin/info.gif" />
 		</copy>
 		<zip destfile="${app.name}_${app.version}.xpi" basedir="${build.dir}" />
 		<delete dir="${build.dir}" />

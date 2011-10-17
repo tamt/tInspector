@@ -1,5 +1,6 @@
 ﻿package cn.itamt.utils.inspector.firefox
 {
+	import cn.itamt.utils.inspector.plugins.deval.DEval;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesView;
 	import cn.itamt.utils.inspector.core.structureview.StructureView;
 	import cn.itamt.utils.Debug;
@@ -53,12 +54,13 @@
 			Security.allowInsecureDomain("*");
 
 			controllerId = loaderInfo.content.loaderInfo.parameters.finspectorId;
+
+			Debug.trace("tInspectorPreloader loaded, mConsoleId: " + controllerId);
+
 			if (controllerId)
 			{
 				mConsoleConnName.CONSOLE += controllerId;
 			}
-
-			Debug.trace("tInspectorPreloader loaded, mConsoleId: " + controllerId);
 
 			controlBar = new ControlBar();
 
@@ -126,7 +128,7 @@
 			{
 				if (loaderInfo.url)
 				{
-					if ((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.url.indexOf("fInspectorSetting.swf") == -1) && (loaderInfo.url.indexOf("tInspectorController.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") )
+					if (!inIgnoreList(loaderInfo.url) && (loaderInfo.contentType == "application/x-shockwave-flash") )
 					{
 						if (FlashPlayerEnvironment.url == null)
 							FlashPlayerEnvironment.url = loaderInfo.url;
@@ -147,6 +149,22 @@
 					}
 				}
 			}
+		}
+
+		/**
+		 * 一个文件(url)是不是在白名单中
+		 */
+		private function inIgnoreList(url : String) : Boolean
+		{
+			var ignoreList : Array = ["tInspectorPreloader.swf", "fInspectorSetting.swf", "tInspectorController.swf", "tInspectorConsoleMonitor.swf"];
+			for each (var item:String in ignoreList)
+			{
+				if (url.indexOf(item) >= 0)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		private function initInspector() : void
@@ -212,6 +230,9 @@
 							break;
 						case InspectorPluginId.SWFINFO_VIEW:
 							tInspector.pluginManager.registerPlugin(new SwfInfoView());
+							break;
+						case "DEval":
+							tInspector.pluginManager.registerPlugin(new DEval());
 							break;
 					}
 				}
