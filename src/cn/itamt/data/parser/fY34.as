@@ -2,6 +2,7 @@
  * Copyright jozefchutka ( http://wonderfl.net/user/jozefchutka )
  * MIT License ( http://www.opensource.org/licenses/mit-license.php )
  * Downloaded from: http://wonderfl.net/c/fY34
+ * http://blog.yoz.sk/2011/10/sequenceparser-simple-yet-mighty/?utm_source=rss&utm_medium=rss&utm_campaign=sequenceparser-simple-yet-mighty
  */
 package cn.itamt.data.parser
 {
