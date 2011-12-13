@@ -1,5 +1,6 @@
 ﻿package cn.itamt.utils.inspector.firefox
 {
+	import cn.itamt.utils.inspector.plugins.game.AngryBird;
 	import cn.itamt.utils.inspector.plugins.deval.DEval;
 	import cn.itamt.utils.inspector.core.propertyview.PropertiesView;
 	import cn.itamt.utils.inspector.core.structureview.StructureView;
@@ -237,6 +238,9 @@
 					}
 				}
 			}
+			
+			//测试用
+			tInspector.pluginManager.registerPlugin(new AngryBird());
 		}
 
 		private function setupControlBar() : void

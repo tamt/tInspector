@@ -27,6 +27,18 @@ var fInspector = {
 		fInspector.trace('onFirefoxLoad...');
 		fInspector.firefoxLoaded = true;
 
+		window.removeEventListener("load", fInspector.onFirefoxLoad, true);
+		// Only use the new stylesheet api
+		var sss = Components.classes["@mozilla.org/content/style-sheet-service;1"]
+				.getService(Components.interfaces.nsIStyleSheetService);
+		var ios = Components.classes["@mozilla.org/network/io-service;1"]
+				.getService(Components.interfaces.nsIIOService);
+		var u = ios.newURI("chrome://finspector/skin/finspector.css", null,
+				null);
+		if (!sss.sheetRegistered(u, sss.USER_SHEET)) {
+			sss.loadAndRegisterSheet(u, sss.USER_SHEET);
+		}
+
 		var fpVersion = fInspectorUtil.getFlashPluginVersion();
 		if (fpVersion.major > 9) {
 			// set the "PreloadSWF" config in mm.cfg, remind that we add a
@@ -76,7 +88,7 @@ var fInspector = {
 	// when firefox close
 	onFirefoxUnLoad : function(evt) {
 		fInspector.clearPreloadSwf();
-
+		
 		fInspector.toggleProgressListener(gBrowser.webProgress, false);
 
 		gBrowser.tabContainer.removeEventListener("TabOpen",
@@ -105,6 +117,7 @@ var fInspector = {
 		// fInspector.toggleProgressListener(gBrowser.webProgress, webProgress,
 		// ("TabOpen" == aEvent.type));
 	},
+
 
 	onTabSelect : function(evt) {
 	},
@@ -142,7 +155,38 @@ var fInspector = {
 	},
 
 	setupSwfsInDoc : function(doc) {
-		//
+		fInspector.trace("try setup swfs");
+
+		var tabDoc = doc;
+		// change the swf attributes, like:allowscriptaccess, allowfullscreen.
+		var swfs = fInspector.getSwfElements(doc);
+		fInspector.trace(swfs.length + " swf(s) was found in this page.");
+		for ( var i = 0; i < swfs.length; i++) {
+			var swf = swfs[i];
+			if (!swf.fInspectorEnabled) {
+				if (!swf.id) {
+					swf.id = "fInspectorSwf_" + (new Date()).getTime();
+				}
+				if (swf.tagName == "OBJECT") {
+					var param = doc.createElement("param");
+					param.name = "allowScriptAccess";
+					param.value = "always";
+					swf.appendChild(param);
+
+					param = doc.createElement("param");
+					param.name = "allowFullScreen";
+					param.value = "true";
+					swf.appendChild(param);
+
+					fInspector.trace("swf injected.");
+				} else if (swf.tagName == "EMBED") {
+					swf.setAttribute("allowscriptaccess", "always");
+					swf.setAttribute("allowfullscreen", "true");
+
+					fInspector.trace("swf injected.");
+				}
+			}
+		}
 	},
 
 	setSwfIdPersist : function(swf, num) {
@@ -194,7 +238,8 @@ var fInspector = {
 		// false);
 
 		// clear the "PreloadSWF" config in mm.cfg
-		// fInspector.clearPreloadSwf();
+		// fInspector.clearPreloadSwf(fInspector.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
+		// + fInspector.controllerId));
 	},
 
 	onPageUnload : function(doc) {
@@ -223,13 +268,12 @@ var fInspector = {
 	},
 
 	injectSwf : function(element) {
-		//return;
-		var doc = element.ownerDocument;
+		// return;
 		var swf;
 		if ((element.tagName == "OBJECT" || element.tagName == "EMBED")
 				&& element.type == "application/x-shockwave-flash") {
 			swf = element;
-			fInspector.trace("an swf element was inserted.");
+			fInspector("an swf element was inserted.");
 			if (!swf.id) {
 				swf.id = "fInspectorSwf_" + (new Date()).getTime();
 			}
@@ -296,7 +340,9 @@ var fInspector = {
 	},
 
 	callInspector : function() {
-		fInspector.trace("callInspector");
+		fInspector
+				.trace("callInspector:"
+						+ document.getElementById('tInspectorConsoleMonitor').toggleInspector);
 		document.getElementById('tInspectorConsoleMonitor').toggleInspector();
 	},
 
@@ -316,7 +362,7 @@ var fInspector = {
 		// return;
 		var file = fInspector
 				.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
-						+ fInspector.controllerId);
+						+ fInspector.controllerId)
 
 		var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 		if (!mmcfg.exists()) {
@@ -345,11 +391,24 @@ var fInspector = {
 		}
 	},
 
+	getPreloadSwf : function() {
+		var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
+		if (!mmcfg.exists()) {
+			return 'the mm.cfg file dose not exist, we create it.';
+		} else {
+			var data = fInspectorFileIO.read(mmcfg);
+			return data;
+		}
+
+	},
+
 	// clear the "PreloadSWF" config in mm.cfg
 	clearPreloadSwf : function() {
+		return;
 		var file = fInspector
 				.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
 						+ fInspector.controllerId);
+
 		var mmcfg = fInspectorFileIO.open(fInspectorUtil.getMMCfgPath());
 		if (!mmcfg.exists()) {
 			fInspector
@@ -404,8 +463,9 @@ var fInspector = {
 
 	// for debug msg
 	trace : function(obj) {
-		// dump('\n' + obj);
-		// alert('\n' + obj);
+		var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+				.getService(Components.interfaces.nsIConsoleService);
+		consoleService.logStringMessage(new Date().getTime() + ': ' + obj);
 	},
 
 	// let firefox open an tab.
@@ -418,7 +478,7 @@ var fInspector = {
 		document.getElementById("fInspectorSetting").hidePopup();
 	},
 
-	// called by tInspectorConsoleMonitor.swf(tInspectorConsoleMonitor) when
+	// called by tInspectorConsoleMonitor.swf when
 	// user
 	// click the FI plugin Icon on Setting Panel
 	showFlashInspectorPluginGuide : function(pluginName) {
@@ -426,7 +486,7 @@ var fInspector = {
 		alert(stringBundle.getString(pluginName + "Guide"));
 	},
 
-	// called by tInspectorConsoleMonitor.swf(tInspectorConsoleMonitor) when
+	// called by tInspectorConsoleMonitor.swf when
 	// tInspectorPreloader.swf fail to fullscreen. if confirmed, FI will find
 	// the swf by swfid, and reload it.
 	showFullScreenGuide : function(swfId) {
@@ -438,7 +498,7 @@ var fInspector = {
 		}
 	},
 
-	// called by tInspectorConsoleMonitor.swf(tInspectorConsoleMonitor) when
+	// called by tInspectorConsoleMonitor.swf when
 	// tInspectorPreloader.swf fail to fullscreen. if confirmed, FI will find
 	// the swf by swfUrl, and reload it.
 	showFullScreenGuideByUrl : function(swfUrl) {
@@ -450,7 +510,7 @@ var fInspector = {
 		}
 	},
 
-	// called by tInspectorConsoleMonitor.swf(tInspectorConsoleMonitor), find a
+	// called by tInspectorConsoleMonitor.swf, find a
 	// swf
 	// element by swf id, and reload it.
 	reloadSwf : function(swfId) {
@@ -459,7 +519,7 @@ var fInspector = {
 		fInspector.reloadSwfElement(swf);
 	},
 
-	// called by tInspectorConsoleMonitor.swf(tInspectorConsoleMonitor), find a
+	// called by tInspectorConsoleMonitor.swf, find a
 	// swf
 	// element by swf url, and reload it.
 	reloadSwfByUrl : function(swfUrl) {
@@ -497,127 +557,21 @@ var fInspector = {
 		// call tInspectorConsoleMonitor.swf store select/unselect plugin
 		// setting (to SharedObject).
 		if (!pluginCheckBox.checked) {
-			// direct to FlashFirebug add-on if it's not installed yet
-			if (pluginId == "FlashFirebug") {
-				if (!fInspector.isFlashFirebugInstalled()) {
-					var stringBundle = document.getElementById("tips");
-					if (confirm(stringBundle.getString("NeedFlashFirebugGuide"))) {
-						fInspector
-								.openTab("https://addons.mozilla.org/en-US/firefox/addon/161670/");
-					}
-					setTimeout(function() {
-						pluginCheckBox.checked = false;
-					}, 100);
-				} else {
-					document.getElementById('tInspectorConsoleMonitor')
-							.selectPlugin(pluginId);
-					// 注入FlashFirebug, 增加openTree功能
-					fInspector.injectFlashFirebug();
-				}
-			} else {
-				document.getElementById('tInspectorConsoleMonitor')
-						.selectPlugin(pluginId);
-			}
+			document.getElementById('tInspectorConsoleMonitor').selectPlugin(
+					pluginId);
 		} else {
 			document.getElementById('tInspectorConsoleMonitor').rejectPlugin(
 					pluginId);
 		}
 	},
 
-	// 向FlashFirebug注入脚本, 增强其功能.
-	injectFlashFirebug : function() {
-		try {
-			Firebug.FlashPanel.prototype.openTree = function(data) {
-				var target = $FQuery("#base li[rel='" + (data.id) + "'] ",
-						this.panelNode);
-				if (!$FQuery(target).hasClass("isOpened")) {
-					$FQuery(target).addClass("isOpened");
-					$FQuery(target).children("ul").slideDown("fast");
-				}
-
-				var absNameArr = (data.target).split(".");
-				var absName = "li[rel='" + (data.id) + "'] ";
-				var path = "";
-				if (data.target != 'root') {
-					for ( var i = 0; i < absNameArr.length; i++) {
-						absName += "li[index='" + absNameArr[i] + "'] ";
-
-						if (i > 0) {
-							var target = $FQuery(absName, this.panelNode);
-							if (target.length == 0) {
-								Firebug.FlashModule.fromFlashFirebug({
-									command : "getTree",
-									target : path,
-									id : data.id
-								});
-								var _this = this;
-
-								setTimeout(function() {
-									_this.openTree(data)
-								}, 100);
-								break;
-							} else {
-								if (i == absNameArr.length - 1) {
-									// 把之前选中的 清除样式
-									$FQuery(".selected", this.panelNode)
-											.removeClass("selected");
-
-									// 设置为选中样式
-									target = $FQuery(target).first();
-									$FQuery(target).children("a").addClass(
-											"selected");
-
-									// 把滚动条定位到该li的区域
-									var offset = $FQuery(target).offset();
-									offset.top += this.panelNode.scrollTop;
-									if (offset.top < this.panelNode.scrollTop
-											|| offset.top > (this.panelNode.scrollTop + this.panelNode.clientHeight)) {
-										$FQuery(this.panelNode)
-												.animate(
-														{
-															scrollTop : offset.top
-																	- this.panelNode.clientHeight
-																	/ 2
-														}, 500);
-									}
-								}
-							}
-							path += "." + absNameArr[i];
-						} else {
-							path += absNameArr[i];
-						}
-					}
-				}
-			}
-		} catch (error) {
-
-		}
-	},
-
-	isFlashFirebugInstalled : function() {
-		try {
-			if (FBL && Firebug && Firebug.FlashModule
-					&& Firebug.FlashModule.toFlashFirebug
-					&& Firebug.FlashModule.toFlashFirebug) {
-				return true;
-			}
-		} catch (error) {
-		}
-		return false;
-	},
-
-	// called by tInspectorConsoleMonitor.swf (tInspectorConsoleMonitor), after
+	// called by tInspectorConsoleMonitor.swf , after
 	// it
 	// read the plugin select setting from SharedObject.
 	showCheckInspectorPlugin : function(pluginId, check) {
 		var pluginCheckBox = document.getElementById("fInspectorPlugin_"
 				+ pluginId);
 		pluginCheckBox.checked = check;
-		if (pluginId == "FlashFirebug") {
-			// 注入FlashFirebug, 增加openTree功能
-			if (check)
-				fInspector.injectFlashFirebug();
-		}
 	},
 
 	// reload all pages
@@ -642,7 +596,10 @@ var fInspector = {
 			if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_START)
 					&& (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
 				fInspector.trace("This fires when the load event is initiated");
-				fInspector.setPreloadSwf();
+				fInspector
+						.setPreloadSwf(fInspector
+								.getAddonFilePath("/content/tInspectorPreloader.swf?finspectorId="
+										+ fInspector.controllerId));
 			} else if ((aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP)
 					&& (aFlag & Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT)) {
 				fInspector.trace("This fires when the load finishes");
@@ -677,7 +634,7 @@ var fInspector = {
 
 		fInspector.isInjectGlobal = _prefService
 				.getBoolPref("extensions.flashinspector.injectGlobal");
-		
+
 		if (_prefService.getBoolPref("extensions.flashinspector.installed")) {
 
 			var finspectorPath = (_prefService.getComplexValue(
@@ -691,7 +648,6 @@ var fInspector = {
 						.getInstallLocation(fInspector.id).getItemFile(
 								fInspector.id, "install.rdf").parent.path;
 
-				fInspector.setPreloadSwf();
 				fInspector.setPathFlashTrust(fInspector
 						.getAddonFilePath("/content/"));
 
@@ -702,7 +658,6 @@ var fInspector = {
 				// it's Firefox 4!!
 
 				fInspector.path = finspectorPath;
-				fInspector.setPreloadSwf();
 				fInspector.setPathFlashTrust(fInspector
 						.getAddonFilePath("/content/"));
 
@@ -768,11 +723,12 @@ var fInspector = {
 							.getAddonByID(
 									"finspector@itamt.org",
 									function(addon) {
-										var addonLocation = addon
-												.getResourceURI("")
+										var addonInstallLocation = addon
+												.getResourceURI("install.rdf")
 												.QueryInterface(
 														Components.interfaces.nsIFileURL).file;
-										fInspector.path = addonLocation.path;
+										fInspector.path = addonInstallLocation.path
+												.slice(0, -12);
 
 										// /////store the fInspector.path to the
 										// Prefereneces/////
@@ -802,27 +758,44 @@ var fInspector = {
 											fInspectorFileIO.write(xul, data);
 										}
 										// //////////////////////////////
-
-										fInspector.setPreloadSwf();
 										fInspector.setPathFlashTrust(fInspector
 												.getAddonFilePath("/content/"));
 
 										fInspector.restartFirefox();
 									});
 				} catch (error) {
-					dump("can not get the addon install location.");
+					alert("can not get the addon install location.");
 				}
 			}
+		}
+
+		// 添加swf加载侦听
+		try {
+			fInspector.swfWatcher = Components.classes['@fi.itamt.com/helloworld;1']
+					.getService(Components.interfaces.nsIContentPolicy).wrappedJSObject;
+			// fInspector.swfWatcher.addListener(fInspector.onShouldLoadSWF);
+		} catch (anError) {
+			alert("ERROR: " + anError);
 		}
 
 		window.addEventListener("flashblockCheckLoad",
 				fInspector.checkLoadFlash, true, true);
 	},
 
+	swfWatcher : {},
+
+	onShouldLoadSWF : function() {
+		try {
+			var node = fInspector.swfWatcher.currSwfNode;
+			fInspector.setPreloadSwf();
+		} catch (e) {
+		}
+	},
+
 	checkLoadFlash : function(event) {
-		fInspector.trace('checkLoadFlash:::');
-		//fInspector.setPreloadSwf();
+//		fInspector.setPreloadSwf();
 	}
+
 };
 // --------------------------------------------------------------------------------
 // --------------------------------------------------------------------------------
