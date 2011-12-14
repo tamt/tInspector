@@ -32,8 +32,8 @@ FIContentPolicy.prototype = {
 		if (contentType == nsIContentPolicy.TYPE_OBJECT
 				&& mimeTypeGuess == 'application/x-shockwave-flash') {
 			// 通知侦听器
-//			 log('should load swf: ' + contentLocation + ', ' + requestOrigin
-//					+ ', ' + insecNode.localName + ', ' + extra);
+			 log('should load swf: ' + contentLocation + ', ' + requestOrigin
+					+ ', ' + insecNode.localName + ', ' + extra);
 			
 			for ( var i = 0; i < this.listeners.length; i++) {
 				this.currSwfNode = insecNode;

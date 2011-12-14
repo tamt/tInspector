@@ -8,7 +8,7 @@
         <![CDATA[
 var current = this;
 var parent = current.parentNode;
-        
+
 //From Jesse's XPCNativeWrapper: http://mavra.perilith.com/~luser/content/native.js
 function nativeMethod(untrustedObject, methodName)
 {
@@ -20,6 +20,13 @@ function nativeMethod(untrustedObject, methodName)
     return fun.apply(untrustedObject, arguments);
   }
 }
+
+function log(msg){
+//	var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
+//			.getService(Components.interfaces.nsIConsoleService);
+//	consoleService.logStringMessage(msg);
+}
+
 
 function getElementPosition(element)
 {
@@ -77,6 +84,7 @@ function getElementPosition(element)
     return rect;
 }
 
+document.QueryInterface(Components.interfaces.nsIDOMDocument);
 var createElement = nativeMethod(document, "createElementNS");
 
 //新建一个按钮,附在swf元素上
@@ -110,57 +118,121 @@ function createTriggerBtn(isStandalone) {
 	parent.insertBefore(btn, current);
 }
 
-//document.QueryInterface(Components.interfaces.nsIDOMDocument);
-
-		var swf = current;
-		if (!swf.id) {
-			swf.id = "fInspectorSwf_" + (new Date()).getTime();
-		}
-		if (!swf.src
-				|| swf.src != 'chrome://finspector/content/tInspectorConsoleMonitor.swf') {
-			if (swf.tagName.toUpperCase() == 'OBJECT') {
-				// 判断是不是有<param name="allowScriptAccess" value="always" /> 和
-				// <param name="allowFullScreen" value="true" />
-				
-				alert(swf.tagName);
-				var childs = swf.childNodes;
-				var needAppendScriptAccess = true;
-				var needAppendFullScreen = true;
-				for ( var i = 0; i < childs.length; i++) {
-					var param = childs[i];
-					if (param.name.toUpperCase() == "ALLOWSCRIPTACCESS") {
-						swf.appendChild(param);
-						param.value = "always";
-						needAppendScriptAccess = false;
-					}
-					if (param.name.toUpperCase() == "ALLOWFULLSCREEN") {
-						param.value = "true";
-						needAppendFullScreen = false;
-					}
-				}
-
-				if (needAppendFullScreen) {
-					param = createElement("http://www.w3.org/1999/xhtml", "param");
-					param.name = "allowFullScreen";
-					param.value = "true";
-					swf.appendChild(param);
-				}
-				if (needAppendScriptAccess) {
-					param = createElement("http://www.w3.org/1999/xhtml", "param");
-					param.name = "allowScriptAccess";
-					param.value = "always";
-					swf.appendChild(param);
-				}
-
-			} else if (swf.tagName.toUpperCase() == 'EMBED') {
-				swf.setAttribute("allowscriptaccess", "always");
-				swf.setAttribute("allowfullscreen", "true");
+var placeholder = createElement("http://www.w3.org/1999/xhtml", "div");
+placeholder.isStandalone = false;
+var swf = current;
+if (swf.id == "tInspectorConsoleMonitor") {
+	return;
+}else if(!swf.id){
+	swf.id = "fInspectorSwf_" + (new Date()).getTime();
+}
+if (!swf.src
+		|| swf.src != 'chrome://finspector/content/tInspectorConsoleMonitor.swf') {
+	if (swf.tagName.toUpperCase() == 'OBJECT') {
+		// 判断是不是有<param name="allowScriptAccess" value="always" /> 和
+		// <param name="allowFullScreen" value="true" />
+		
+		var childs = swf.childNodes;
+		var needAppendScriptAccess = true;
+		var needAppendFullScreen = true;
+		for ( var i = 0; i < childs.length; i++) {
+			var param = childs[i];
+			if (param.name.toUpperCase() == "ALLOWSCRIPTACCESS") {
+				swf.appendChild(param);
+				param.value = "always";
+				needAppendScriptAccess = false;
+			}
+			if (param.name.toUpperCase() == "ALLOWFULLSCREEN") {
+				param.value = "true";
+				needAppendFullScreen = false;
 			}
 		}
 
-if(current.src && current.src.indexOf('chrome://') == 0){
+		if (needAppendFullScreen) {
+			param = createElement("http://www.w3.org/1999/xhtml", "param");
+			param.name = "allowFullScreen";
+			param.value = "true";
+			swf.appendChild(param);
+		}
+		if (needAppendScriptAccess) {
+			param = createElement("http://www.w3.org/1999/xhtml", "param");
+			param.name = "allowScriptAccess";
+			param.value = "always";
+			swf.appendChild(param);
+		}
+
+	} else if (swf.tagName.toUpperCase() == 'EMBED') {
+		swf.setAttribute("allowscriptaccess", "always");
+		swf.setAttribute("allowfullscreen", "true");
+	}
+	
+	//暂时隐藏载
+	var fakeURI = "about:blank";
+	if (swf.hasAttribute("src") ||
+			(swf.hasAttribute("data") && !/application\/x-silverlight/.test(swf.getAttribute("data"))) ||
+			swf.hasAttribute("movie") ) {
+		var srcURI = swf.getAttribute("src") ||
+			swf.getAttribute("movie") ||
+			swf.getAttribute("data") ;
+		placeholder.title = srcURI;
+		if (swf.hasAttribute("src")) {
+			placeholder.setAttribute("srcAttribute", swf.getAttribute("src"));
+			swf.setAttribute("src", fakeURI);
+		}
+		if (swf.hasAttribute("data")) {
+			placeholder.setAttribute("dataAttribute", swf.getAttribute("data"));
+			swf.setAttribute("data", fakeURI);
+		}
+		if (swf.hasAttribute("movie")) {
+			placeholder.setAttribute("movieAttribute", swf.getAttribute("movie"));
+			swf.setAttribute("movie", fakeURI);
+		}
+	}
+	else {
+		var params = swf.getElementsByTagName("param");
+		for (var ii = 0; ii < params.length; ii++) {
+			if (params[ii].getAttribute("name") == "movie" &&
+				params[ii].hasAttribute("value")) {
+				placeholder.title = params[ii].value;
+				placeholder.movieParam = [ params[ii], placeholder.title ];
+				params[ii].value = fakeURI;
+				break;
+			}
+			if (params[ii].getAttribute("name") == "src" &&
+				params[ii].hasAttribute("value")) {
+				placeholder.title = params[ii].value;
+				placeholder.srcParam = [ params[ii], placeholder.title ];
+				params[ii].value = fakeURI;
+				break;
+			}
+			if (params[ii].getAttribute("name") == "source" &&
+				params[ii].hasAttribute("value")) {
+				placeholder.title = params[ii].value;
+				placeholder.sourceParam = [ params[ii], placeholder.title ];
+				params[ii].value = fakeURI;
+				break;
+			}
+		}
+	}
+}
+
+function loadSWF()
+{
+	swf.src=placeholder.title;
+}
+
+if(current.src && current.src.indexOf('chrome:') >= 0){
 }else{
-	createTriggerBtn(false);
+	document.QueryInterface(Components.interfaces.nsIDOMDocument);
+	event = document.createEvent("UIEvents");
+	if(event) {
+		event.initEvent("flashblockCheckLoad", true, true);
+		current.dispatchEvent(event);
+	}
+	
+	//延迟设置
+	var flashblockSetTimeout = nativeMethod(window, "setTimeout");
+	flashblockSetTimeout(loadSWF, 1000);
 }
         ]]>
 			</constructor>
