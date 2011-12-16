@@ -9,6 +9,7 @@ var fInspector = {
 	enable : true,
 	preTab : null,
 	isInjectGlobal : false,
+	operating:false,
 	// there may be several Firefox instances, each Firefox's FI controller has
 	// an id.
 	controllerId : new Date().getTime().toString(),
@@ -199,7 +200,7 @@ var fInspector = {
 
 		// 往FlasPlayer注入FI.
 		if (fInspector.isInjectGlobal) {
-			// fInspector.setPreloadSwf();
+//			 fInspector.setPreloadSwf();
 		}
 
 		// 写入配置
@@ -251,6 +252,10 @@ var fInspector = {
 
 	// set file path to "PreloadSWF" in mm.cfg
 	setPreloadSwf : function() {
+		if(fInspector.operating){
+			return;
+		}
+		fInspector.operating = true;
 		// if (!fInspector.enable)
 		// return;
 		var file = fInspector
@@ -282,6 +287,7 @@ var fInspector = {
 
 			fInspectorFileIO.write(mmcfg, data);
 		}
+		fInspector.operating = false;
 	},
 
 	// clear the "PreloadSWF" config in mm.cfg
@@ -661,14 +667,25 @@ var fInspector = {
 				}
 			}
 		}
-
+		
 		window.addEventListener("flashblockCheckLoad",
 				fInspector.checkLoadFlash, true, true);
+		window.addEventListener("flashblockCheckSwf",
+				fInspector.loadFlash, true, true);
 	},
 
 	checkLoadFlash : function(event) {
-		fInspector.trace('checkLoadFlash:::' +  event.target);
+		event.preventDefault();
+		event.stopPropagation();
+		fInspector.trace(new Date().getTime().toString() + 'checkLoadFlash:::' +  event.target);
 		fInspector.setPreloadSwf();
+//		setTimeout(fInspector.setPreloadSwf, 300);
+	},
+	
+	loadFlash:function(event){
+		event.preventDefault();
+		event.stopPropagation();
+		fInspector.trace(new Date().getTime().toString() + 'loadFlash:::' +  event.target);
 	}
 };
 // --------------------------------------------------------------------------------

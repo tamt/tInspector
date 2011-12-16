@@ -8,6 +8,10 @@
         <![CDATA[
 var current = this;
 var parent = current.parentNode;
+if(current.overrideCTV){
+	return;
+}
+current.overrideCTV = true;
 
 //From Jesse's XPCNativeWrapper: http://mavra.perilith.com/~luser/content/native.js
 function nativeMethod(untrustedObject, methodName)
@@ -84,6 +88,141 @@ function getElementPosition(element)
     return rect;
 }
 
+//创建一个替换swf的place holder
+function flashblockCreatePlaceholder(isStandalone) {
+	// Create placeholder
+	var flashblockCreateElement = nativeMethod(document, "createElementNS");
+	var placeholder = flashblockCreateElement("http://www.w3.org/1999/xhtml", "div");
+	placeholder.isStandalone = isStandalone;
+	return placeholder;
+}
+
+//把swf替换成place holder
+function flashblockShowPlaceholder() {
+	// Just in case the object has been moved away from under our feet during
+	// the timeout, re-assign the parent node. See bug 13680
+	// parent = current.parentNode;
+	var newParent = current.parentNode;
+	parent = newParent ? newParent : parent;
+
+	// Fix for Flashblock Bug 22168 (Node was not found" code: "8").
+	// if the LSB is 1, it means the nodes are unrelated (e.g. different window).
+	if (current.compareDocumentPosition(parent)&1)
+		return;
+
+	parent.insertBefore(placeholder, current);
+	if(placeholder.isStandalone) {
+		placeholder.flashblock = "frame";
+		if ("StopPlay" in current)
+			current.StopPlay();
+		if ("LoadMovie" in current)
+			current.LoadMovie(0, "");
+		current.prevWidth = current.width;
+		current.prevHeight = current.height;
+		current.width = current.height = 0;
+	} else {
+		placeholder.flashblock = "normal";
+		parent.removeChild(current); 
+	}
+}
+
+//显示swf
+function flashblockShowFlash() {
+	event = document.createEvent("UIEvents");
+	if(event) {
+		event.initEvent("flashblockLoadSwf", true, true);
+		placeholder.dispatchEvent(event);
+	}
+
+	var parent = placeholder.parentNode;
+	if(placeholder.flashblock == "frame") {
+		current.height = current.prevHeight;
+		current.width = current.prevWidth;
+		current.src = placeholder.title;
+		if ("LoadMovie" in current)
+			current.LoadMovie(0, current.src);
+	} else {
+		parent.insertBefore(current, placeholder);
+		if (placeholder.hasAttribute("srcAttribute")) {
+			current.setAttribute("src", placeholder.getAttribute("srcAttribute"));
+		}
+		if (placeholder.hasAttribute("movieAttribute")) {
+			current.setAttribute("movie", placeholder.getAttribute("movieAttribute"));
+		}
+		if (placeholder.hasAttribute("dataAttribute")) {
+			current.setAttribute("data", placeholder.getAttribute("dataAttribute"));
+		}
+		if (placeholder.movieParam) {
+			var mparam = placeholder.movieParam;
+			mparam[0].value = mparam[1];
+		}
+		if (placeholder.srcParam) {
+			var mparam = placeholder.srcParam;
+			mparam[0].value = mparam[1];
+		}
+		if (placeholder.sourceParam) {
+			var mparam = placeholder.sourceParam;
+			mparam[0].value = mparam[1];
+		}
+	}
+	parent.removeChild(placeholder);
+}
+
+//设置flashblock的title
+function flashblockSetTitle(current, placeholder, isStandalone) {
+	// non-null "about:blank" value to prevent OS/2 crashing
+	var fakeURI = "about:blank";
+	if (isStandalone) {
+		placeholder.title = current.src;
+		current.src = fakeURI;
+	}
+	else if (current.hasAttribute("src") ||
+			(current.hasAttribute("data") && !/application\/x-silverlight/.test(current.getAttribute("data"))) ||
+			current.hasAttribute("movie") ) {
+		var srcURI = current.getAttribute("src") ||
+			current.getAttribute("movie") ||
+			current.getAttribute("data") ;
+		placeholder.title = srcURI;
+		if (current.hasAttribute("src")) {
+			placeholder.setAttribute("srcAttribute", current.getAttribute("src"));
+			current.setAttribute("src", fakeURI);
+		}
+		if (current.hasAttribute("data")) {
+			placeholder.setAttribute("dataAttribute", current.getAttribute("data"));
+			current.setAttribute("data", fakeURI);
+		}
+		if (current.hasAttribute("movie")) {
+			placeholder.setAttribute("movieAttribute", current.getAttribute("movie"));
+			current.setAttribute("movie", fakeURI);
+		}
+	}
+	else {
+		var params = current.getElementsByTagName("param");
+		for (var ii = 0; ii < params.length; ii++) {
+			if (params[ii].getAttribute("name") == "movie" &&
+				params[ii].hasAttribute("value")) {
+				placeholder.title = params[ii].value;
+				placeholder.movieParam = [ params[ii], placeholder.title ];
+				params[ii].value = fakeURI;
+				break;
+			}
+			if (params[ii].getAttribute("name") == "src" &&
+				params[ii].hasAttribute("value")) {
+				placeholder.title = params[ii].value;
+				placeholder.srcParam = [ params[ii], placeholder.title ];
+				params[ii].value = fakeURI;
+				break;
+			}
+			if (params[ii].getAttribute("name") == "source" &&
+				params[ii].hasAttribute("value")) {
+				placeholder.title = params[ii].value;
+				placeholder.sourceParam = [ params[ii], placeholder.title ];
+				params[ii].value = fakeURI;
+				break;
+			}
+		}
+	}
+}
 document.QueryInterface(Components.interfaces.nsIDOMDocument);
 var createElement = nativeMethod(document, "createElementNS");
 
@@ -118,8 +257,6 @@ function createTriggerBtn(isStandalone) {
 	parent.insertBefore(btn, current);
 }
 
-var placeholder = createElement("http://www.w3.org/1999/xhtml", "div");
-placeholder.isStandalone = false;
 var swf = current;
 if (swf.id == "tInspectorConsoleMonitor") {
 	return;
@@ -165,64 +302,15 @@ if (!swf.src
 		swf.setAttribute("allowscriptaccess", "always");
 		swf.setAttribute("allowfullscreen", "true");
 	}
-	
-	//暂时隐藏载
-	var fakeURI = "about:blank";
-	if (swf.hasAttribute("src") ||
-			(swf.hasAttribute("data") && !/application\/x-silverlight/.test(swf.getAttribute("data"))) ||
-			swf.hasAttribute("movie") ) {
-		var srcURI = swf.getAttribute("src") ||
-			swf.getAttribute("movie") ||
-			swf.getAttribute("data") ;
-		placeholder.title = srcURI;
-		if (swf.hasAttribute("src")) {
-			placeholder.setAttribute("srcAttribute", swf.getAttribute("src"));
-			swf.setAttribute("src", fakeURI);
-		}
-		if (swf.hasAttribute("data")) {
-			placeholder.setAttribute("dataAttribute", swf.getAttribute("data"));
-			swf.setAttribute("data", fakeURI);
-		}
-		if (swf.hasAttribute("movie")) {
-			placeholder.setAttribute("movieAttribute", swf.getAttribute("movie"));
-			swf.setAttribute("movie", fakeURI);
-		}
-	}
-	else {
-		var params = swf.getElementsByTagName("param");
-		for (var ii = 0; ii < params.length; ii++) {
-			if (params[ii].getAttribute("name") == "movie" &&
-				params[ii].hasAttribute("value")) {
-				placeholder.title = params[ii].value;
-				placeholder.movieParam = [ params[ii], placeholder.title ];
-				params[ii].value = fakeURI;
-				break;
-			}
-			if (params[ii].getAttribute("name") == "src" &&
-				params[ii].hasAttribute("value")) {
-				placeholder.title = params[ii].value;
-				placeholder.srcParam = [ params[ii], placeholder.title ];
-				params[ii].value = fakeURI;
-				break;
-			}
-			if (params[ii].getAttribute("name") == "source" &&
-				params[ii].hasAttribute("value")) {
-				placeholder.title = params[ii].value;
-				placeholder.sourceParam = [ params[ii], placeholder.title ];
-				params[ii].value = fakeURI;
-				break;
-			}
-		}
-	}
-}
-
-function loadSWF()
-{
-	swf.src=placeholder.title;
 }
 
 if(current.src && current.src.indexOf('chrome:') >= 0){
 }else{
+
+	//创建一个placeholder
+	var isStandalone = ("src" in current && current.src == current.ownerDocument.location);
+	var placeholder = flashblockCreatePlaceholder(isStandalone);
+	
 	document.QueryInterface(Components.interfaces.nsIDOMDocument);
 	event = document.createEvent("UIEvents");
 	if(event) {
@@ -230,9 +318,15 @@ if(current.src && current.src.indexOf('chrome:') >= 0){
 		current.dispatchEvent(event);
 	}
 	
+	flashblockSetTitle(current, placeholder, isStandalone);
+	
 	//延迟设置
 	var flashblockSetTimeout = nativeMethod(window, "setTimeout");
-	flashblockSetTimeout(loadSWF, 1000);
+//	flashblockSetTimeout(flashblockShowPlaceholder, 0);
+	flashblockShowPlaceholder();
+	
+	//显示swf
+	flashblockSetTimeout(flashblockShowFlash, 1000);
 }
         ]]>
 			</constructor>
