@@ -1,12 +1,12 @@
-﻿package cn.itamt.utils.inspector.firefox
-{
-	import cn.itamt.utils.inspector.plugins.game.AngryBird;
-	import cn.itamt.utils.inspector.plugins.deval.DEval;
-	import cn.itamt.utils.inspector.core.propertyview.PropertiesView;
-	import cn.itamt.utils.inspector.core.structureview.StructureView;
+﻿package cn.itamt.utils.inspector.firefox {
+	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
+	import cn.itamt.utils.inspector.firefox.evil.DanDanTeng;
+	import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
+	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
+	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
+	import msc.console.mConsoleConnName;
 	import cn.itamt.utils.Debug;
 	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
 	import cn.itamt.utils.inspector.firefox.download.DownloadAll;
 	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadApp;
 	import cn.itamt.utils.inspector.firefox.setting.fInspectorConfig;
@@ -15,11 +15,8 @@
 	import cn.itamt.utils.inspector.plugins.fullscreen.FullScreen;
 	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
 	import cn.itamt.utils.inspector.plugins.stats.AppStats;
-	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
-	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
 
 	import msc.console.mConsoleClient;
-	import msc.console.mConsoleConnName;
 	import msc.console.mIConsoleDelegate;
 
 	import flash.display.DisplayObject;
@@ -36,8 +33,7 @@
 	/**
 	 * @author itamt[at]qq.com
 	 */
-	public class tInspectorPreloader extends Sprite implements mIConsoleDelegate
-	{
+	public class tInspectorPreloader extends Sprite implements mIConsoleDelegate {
 		public static var mainStage : Stage;
 		public static var mainRoot : DisplayObject;
 		private var controlBar : ControlBar;
@@ -45,46 +41,39 @@
 		private var tInspector : Inspector;
 		private var gErrorKeeper : GlobalErrorKeeper;
 		private var findKiller : Boolean;
-		private var controllerId : String;
+		
+		private var controllerId:String;
 
 		// 由finspector.js分配给的id, 用于与fInspector通信.
 		// private var swfId : String = '';
-		public function tInspectorPreloader()
-		{
+		public function tInspectorPreloader() {
 			Security.allowDomain("*");
 			Security.allowInsecureDomain("*");
 
 			controllerId = loaderInfo.content.loaderInfo.parameters.finspectorId;
-
-			Debug.trace("tInspectorPreloader loaded, mConsoleId: " + controllerId);
-
-			if (controllerId)
-			{
+			if(controllerId) {
 				mConsoleConnName.CONSOLE += controllerId;
 			}
+			
+			Debug.trace("tInspectorPreloader loaded, mConsoleId: " + controllerId);
 
 			controlBar = new ControlBar();
 
 			gErrorKeeper = new GlobalErrorKeeper();
 
-			if (stage)
-			{
+			if(stage) {
 				init();
-			}
-			else
-			{
+			} else {
 				this.addEventListener(Event.ADDED_TO_STAGE, onAdded);
 			}
 		}
 
-		private function onAdded(evt : Event) : void
-		{
+		private function onAdded(evt : Event) : void {
 			this.removeEventListener(Event.ADDED_TO_STAGE, onAdded);
 			init();
 		}
 
-		private function init() : void
-		{
+		private function init() : void {
 			// mainRoot = this.root;
 			mainStage = stage;
 
@@ -93,54 +82,41 @@
 			mainStage.addEventListener(Event.ADDED_TO_STAGE, onSthAdded, true);
 		}
 
-		private function watchGlobalError(evt : Event) : void
-		{
+		private function watchGlobalError(evt : Event) : void {
 			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
-			if (loaderInfo)
-			{
-				if (loaderInfo.url)
-				{
-					if (loaderInfo.contentType == "application/x-shockwave-flash")
-					{
-						if (gErrorKeeper && gErrorKeeper.isActive)
+			if(loaderInfo) {
+				if(loaderInfo.url) {
+					if(loaderInfo.contentType == "application/x-shockwave-flash") {
+						if(gErrorKeeper && gErrorKeeper.isActive)
 							gErrorKeeper.watch(loaderInfo);
 					}
 				}
 			}
 		}
 
-		private function onSthAdded(evt : Event) : void
-		{
+		private function onSthAdded(evt : Event) : void {
 			mainStage.removeEventListener(Event.ADDED_TO_STAGE, onSthAdded, true);
 
-			if (mainRoot != (evt.target as DisplayObject).root)
-			{
+			if(mainRoot != (evt.target as DisplayObject).root) {
 				mainRoot = (evt.target as DisplayObject).root;
 			}
 			setupControlBar();
 		}
 
-		private function allCompleteHandler(evt : Event) : void
-		{
+		private function allCompleteHandler(evt : Event) : void {
 			log('[tInspectorPreloader][allCompleteHandler]');
 
 			var loaderInfo : LoaderInfo = evt.target as LoaderInfo;
-			if (loaderInfo)
-			{
-				if (loaderInfo.url)
-				{
-					if (!inIgnoreList(loaderInfo.url) && (loaderInfo.contentType == "application/x-shockwave-flash") )
-					{
-						if (FlashPlayerEnvironment.url == null)
+			if(loaderInfo) {
+				if(loaderInfo.url) {
+					if((loaderInfo.url.indexOf("tInspectorPreloader.swf") == -1) && (loaderInfo.url.indexOf("fInspectorSetting.swf") == -1) && (loaderInfo.url.indexOf("tInspectorController.swf") == -1) && (loaderInfo.contentType == "application/x-shockwave-flash") ) {
+						if(FlashPlayerEnvironment.url == null)
 							FlashPlayerEnvironment.url = loaderInfo.url;
-						if (loaderInfo.content.hasOwnProperty("disableFlashInspector") && loaderInfo.content["disableFlashInspector"])
-						{
+						if(loaderInfo.content.hasOwnProperty("disableFlashInspector") && loaderInfo.content["disableFlashInspector"]) {
 							findKiller = true;
 							this.stopInspector();
-						}
-						else
-						{
-							if (findKiller)
+						} else {
+							if(findKiller)
 								return;
 							log(loaderInfo.url);
 							setupControlBar();
@@ -152,63 +128,32 @@
 			}
 		}
 
-		/**
-		 * 一个文件(url)是不是在白名单中
-		 */
-		private function inIgnoreList(url : String) : Boolean
-		{
-			var ignoreList : Array = ["tInspectorPreloader.swf", "fInspectorSetting.swf", "tInspectorController.swf", "tInspectorConsoleMonitor.swf"];
-			for each (var item:String in ignoreList)
-			{
-				if (url.indexOf(item) >= 0)
-				{
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private function initInspector() : void
-		{
+		private function initInspector() : void {
 			log('[tInspectorPreloader][initInspector]ConsoleId: ' + controllerId);
 
 			mConsoleClient.init(true, FlashPlayerEnvironment.url);
 			mConsoleClient.addDelegate(this);
-			if (!ExternalInterface.available)
-			{
+			if(!ExternalInterface.available) {
 				connectController();
 			}
 
 			tInspector = Inspector.getInstance();
 			tInspector.init(this.controlBar.stage.getChildAt(0) as DisplayObjectContainer);
-
-			// tInspector默认开启的插件:LiveInspectView, StructureView, PropertyView, ControlBar
-			var pluginLiveView : LiveInspectView = new LiveInspectView();
-			var pluginStrucView : StructureView = new StructureView();
-			var pluginPropertyView : PropertiesView = new PropertiesView();
-			pluginLiveView.use3DTransformer(new Transform3DController);
-			tInspector.pluginManager.registerPlugin(pluginLiveView);
-			tInspector.pluginManager.registerPlugin(pluginStrucView);
-			tInspector.pluginManager.registerPlugin(pluginPropertyView);
+			//tInspector.liveInspectView.use3DTransformer(new Transform3DController);
+			(tInspector.pluginManager.getPluginById(InspectorPluginId.LIVE_VIEW) as LiveInspectView).use3DTransformer(new Transform3DController);
 			tInspector.pluginManager.registerPlugin(controlBar);
-
 			// 读取配置，注册相应的插件
 			var arr : Array = fInspectorConfig.getEnablePlugins();
-			if (arr == null)
-			{
-				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
-				for each (var pluginName : String in arr)
-				{
+			if(arr == null) {
+				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW, InspectorPluginId.FLASH_FIREBUG];
+				for each (var pluginName : String in arr) {
 					fInspectorConfig.setEnablePlugin(pluginName);
 				}
 				fInspectorConfig.save();
 			}
-			if (arr)
-			{
-				for (var i : int = 0;i < arr.length;i++)
-				{
-					switch(arr[i])
-					{
+			if(arr) {
+				for(var i : int = 0;i < arr.length;i++) {
+					switch(arr[i]) {
 						case InspectorPluginId.APPSTATS_VIEW:
 							tInspector.pluginManager.registerPlugin(new AppStats());
 							break;
@@ -223,8 +168,7 @@
 							break;
 						case InspectorPluginId.GLOBAL_ERROR_KEEPER:
 							tInspector.pluginManager.registerPlugin(gErrorKeeper);
-							if (this.loaderInfo.hasOwnProperty("uncaughtErrorEvents"))
-							{
+							if(this.loaderInfo.hasOwnProperty("uncaughtErrorEvents")){
 								tInspector.pluginManager.activePlugin(InspectorPluginId.GLOBAL_ERROR_KEEPER);
 								gErrorKeeper.watch(this.loaderInfo);
 							}
@@ -232,26 +176,25 @@
 						case InspectorPluginId.SWFINFO_VIEW:
 							tInspector.pluginManager.registerPlugin(new SwfInfoView());
 							break;
-						case "DEval":
-							tInspector.pluginManager.registerPlugin(new DEval());
+						case InspectorPluginId.FLASH_FIREBUG:
+							tInspector.pluginManager.registerPlugin(new FlashFirebug());
+							//tInspector.pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
 							break;
 					}
 				}
 			}
 			
-			//测试用
-			tInspector.pluginManager.registerPlugin(new AngryBird());
+			/**
+			 * 弹弹堂外挂
+			 */
+			tInspector.pluginManager.registerPlugin(new DanDanTeng());
 		}
 
-		private function setupControlBar() : void
-		{
+		private function setupControlBar() : void {
 			this.controlBar.visible = false;
-			if (this.controlBar.stage == null)
-			{
+			if(this.controlBar.stage == null) {
 				mainStage.addChild(this.controlBar);
-			}
-			else
-			{
+			} else {
 				this.controlBar.stage.addChild(this.controlBar);
 			}
 		}
@@ -259,20 +202,17 @@
 		// // // // // // // // // // // // // // // // // // //
 		// // // //    /public   functions/////////////
 		// // // // // // // // // // // // // // // // // // //
-		public function connectController() : void
-		{
+		public function connectController() : void {
 			Debug.trace('[tInspectorPreloader][connectController]ConsoleId: ' + mConsoleConnName.CONSOLE);
 			mConsoleClient.connectMonitor();
 		}
 
-		public function disconnectController() : void
-		{
+		public function disconnectController() : void {
 			Debug.trace('[tInspectorPreloader][disconnectController]');
 			mConsoleClient.disconnectMonitor();
 		}
 
-		public function setSwfId(swfId : String) : void
-		{
+		public function setSwfId(swfId : String) : void {
 			Debug.trace('[tInspectorPreloader][setSwfId]' + swfId);
 			FlashPlayerEnvironment.swfId = swfId;
 		}
@@ -280,48 +220,38 @@
 		/**
 		 * 开启tInspector
 		 */
-		public function startInspector() : void
-		{
+		public function startInspector() : void {
 			log('[tInspectorPreloader][startInspector]');
-			if (!findKiller)
+			if(!findKiller)
 				this.controlBar.visible = true;
 		}
 
 		/**
 		 * 关闭tInspector
 		 */
-		public function stopInspector() : void
-		{
+		public function stopInspector() : void {
 			log('[tInspectorPreloader][stopInspector]');
 			this.controlBar.visible = false;
-			if (tInspector)
-			{
+			if(tInspector) {
 				tInspector.turnOff();
 			}
 		}
 
-		public function toggleInspector() : void
-		{
-			if (this.controlBar.visible)
-			{
+		public function toggleInspector() : void {
+			if(this.controlBar.visible) {
 				this.stopInspector();
-			}
-			else
-			{
+			} else {
 				this.startInspector();
 			}
 		}
 
-		public function log(str : String) : void
-		{
+		public function log(str : String) : void {
 			Debug.trace(str, 1);
 		}
 
-		public function dump(str : String) : void
-		{
+		public function dump(str : String) : void {
 			log("[client-->monitor]" + str);
-			if (ExternalInterface.available)
-			{
+			if(ExternalInterface.available) {
 				ExternalInterface.call("alert", "\n" + str);
 			}
 		}
@@ -332,12 +262,9 @@
 		// // // // // // // // // // // // // // // // // // // //                    /
 		private static var engine : MovieClip = new MovieClip();
 
-		public static function callLater(func : Function, args : Array = null, frame : int = 1) : void
-		{
-			engine.addEventListener(Event.ENTER_FRAME, function(event : Event) : void
-			{
-				if (--frame <= 0)
-				{
+		public static function callLater(func : Function, args : Array = null, frame : int = 1) : void {
+			engine.addEventListener(Event.ENTER_FRAME, function(event : Event):void {
+				if (--frame <= 0) {
 					engine.removeEventListener(Event.ENTER_FRAME, arguments.callee);
 					func.apply(null, args);
 				}

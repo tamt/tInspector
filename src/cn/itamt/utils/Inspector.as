@@ -208,7 +208,7 @@
 				_curLiveInspectEle = null;
 
 				_isLiveInspecting = true;
-				this.stage.addEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
+				this.stage.addEventListener(Event.ENTER_FRAME, enterFrameHandler);
 
 				var plugins : Array = this.pluginManager.getPlugins();
 				for each(var view:IInspectorPlugin in plugins) {
@@ -223,7 +223,7 @@
 		 */
 		public function stopLiveInspect() : void {
 			_isLiveInspecting = false;
-			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, enterFrameHandler);
+			this.stage.removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
 			
 			_curLiveInspectEle = null;
 
@@ -254,8 +254,8 @@
 		 */
 		public function liveInspect(ele : DisplayObject, checkIsInspectorView : Boolean = true) : void {
 			// bug: this (if) cause the live overlay not shown until overlay another object
-			//if(_curLiveInspectEle && _curLiveInspectEle.displayObject == ele) return;
-			
+			if(_curLiveInspectEle && _curLiveInspectEle.displayObject == ele) return;
+
 			if(checkIsInspectorView)
 				if(isInspectView(ele))
 					return;
@@ -328,7 +328,7 @@
 			if(l) {
 				while(l--) {
 					var target : DisplayObject = objs[l];
-					if(target == null)
+					if(target == null || !target.stage)
 						continue;
 					if(isInspectView(target)) {
 //						return;
@@ -339,7 +339,7 @@
 //							return;
 //						}
 					}
-					while(target) {
+					while(target && target.stage) {
 						if(_filterManager.checkInFilter(target)) {
 							liveInspect(target, false);
 							return;

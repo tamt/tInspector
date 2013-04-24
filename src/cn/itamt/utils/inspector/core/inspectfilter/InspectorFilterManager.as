@@ -74,7 +74,7 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 					_inspector.updateInsectorView();
 			}
 
-			_activeFilters.sort(comapreClass);
+			_activeFilters.sort(ClassTool.comapreClass);
 		}
 
 		/**
@@ -98,37 +98,12 @@ package cn.itamt.utils.inspector.core.inspectfilter {
 				if (_inspector != null)
 					_inspector.updateInsectorView();
 
-				_activeFilters.sort(comapreClass);
+				_activeFilters.sort(ClassTool.comapreClass);
 			}
 
 			if (_activeFilters.length == 0) {
 				_activeFilters = null;
 			}
-		}
-
-		private function comapreClass(a : Class, b : Class) : int {
-			if (a == b)
-				return 0;
-
-			// 判断a是否是b的基类
-			var c : Class = b;
-			while (c = ClassTool.getParentClassOf(c)) {
-				if (c == Object) {
-					// 判断b是否是a的基类
-					c = a;
-					while (c = ClassTool.getParentClassOf(c)) {
-						if (c == Object) {
-							return 0;
-						} else if (b == c) {
-							return -1;
-						}
-					}
-				} else if (a == c) {
-					return 1;
-				}
-			}
-
-			return 0;
 		}
 
 		/**

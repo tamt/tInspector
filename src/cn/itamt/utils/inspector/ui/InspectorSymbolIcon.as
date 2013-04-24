@@ -1,5 +1,6 @@
 package cn.itamt.utils.inspector.ui {
-	import cn.itamt.utils.ClassTool;
+import cn.itamt.utils.ClassTool;
+import cn.itamt.utils.ClassTool;
 
 	import flash.display.AVM1Movie;
 	import flash.display.Bitmap;
@@ -78,7 +79,7 @@ package cn.itamt.utils.inspector.ui {
 		public static function getIconByClass(clazz : *) : BitmapData {
 			if(types == null) {
 				types = [Sprite, MovieClip, Bitmap, Shape, TextField, Loader, Video, AVM1Movie, StaticText, MorphShape, SimpleButton, Stage, DisplayObject];
-				types.sort(comapreClass);
+				types.sort(ClassTool.comapreClass);
 			}
 
 			var bmd : BitmapData;
@@ -97,31 +98,6 @@ package cn.itamt.utils.inspector.ui {
 			bmd = getIcon(className);
 			// }
 			return bmd;
-		}
-
-		private static function comapreClass(a : Class, b : Class) : int {
-			if(a == b)
-				return 0;
-
-			// 判断a是否是b的基类
-			var c : Class = b;
-			while(c = ClassTool.getParentClassOf(c)) {
-				if(c == Object) {
-					// 判断b是否是a的基类
-					c = a;
-					while(c = ClassTool.getParentClassOf(c)) {
-						if(c == Object) {
-							return 0;
-						} else if(b == c) {
-							return -1;
-						}
-					}
-				} else if(a == c) {
-					return 1;
-				}
-			}
-
-			return 0;
 		}
 
 		/**

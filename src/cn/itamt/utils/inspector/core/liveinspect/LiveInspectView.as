@@ -516,7 +516,6 @@ package cn.itamt.utils.inspector.core.liveinspect
 		 */
 		private function onClickReset(evt:Event):void
 		{
-			trace('onClickReset::' + evt.type);
 			if (target)
 			{
 				target.resetTarget();
@@ -591,7 +590,7 @@ package cn.itamt.utils.inspector.core.liveinspect
 		{
 			_inspector.pluginManager.activePlugin(InspectorPluginId.STRUCT_VIEW);
 		}
-		
+
 		/**
 		 * 單擊查看詳細信息
 		 */
