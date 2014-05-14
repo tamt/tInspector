@@ -1,36 +1,34 @@
 ﻿package cn.itamt.utils.inspector.firefox {
-	import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
-	import cn.itamt.utils.inspector.firefox.evil.DanDanTeng;
-	import cn.itamt.utils.inspector.firefox.firebug.FlashFirebug;
-	import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
-	import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
-	import msc.console.mConsoleConnName;
-	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.Inspector;
-	import cn.itamt.utils.inspector.firefox.download.DownloadAll;
-	import cn.itamt.utils.inspector.firefox.reloadapp.ReloadApp;
-	import cn.itamt.utils.inspector.firefox.setting.fInspectorConfig;
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
-	import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
-	import cn.itamt.utils.inspector.plugins.fullscreen.FullScreen;
-	import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
-	import cn.itamt.utils.inspector.plugins.stats.AppStats;
+import cn.itamt.utils.Debug;
+import cn.itamt.utils.Inspector;
+import cn.itamt.utils.inspector.core.liveinspect.LiveInspectView;
+import cn.itamt.utils.inspector.firefox.download.DownloadAll;
+import cn.itamt.utils.inspector.firefox.reloadapp.ReloadApp;
+import cn.itamt.utils.inspector.firefox.setting.fInspectorConfig;
+import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+import cn.itamt.utils.inspector.plugins.controlbar.ControlBar;
+import cn.itamt.utils.inspector.plugins.fullscreen.FullScreen;
+import cn.itamt.utils.inspector.plugins.gerrorkeeper.GlobalErrorKeeper;
+import cn.itamt.utils.inspector.plugins.stats.AppStats;
+import cn.itamt.utils.inspector.plugins.swfinfo.SwfInfoView;
+import cn.itamt.utils.inspector.plugins.tfm3d.Transform3DController;
 
-	import msc.console.mConsoleClient;
-	import msc.console.mIConsoleDelegate;
+import flash.display.DisplayObject;
+import flash.display.DisplayObjectContainer;
+import flash.display.LoaderInfo;
+import flash.display.MovieClip;
+import flash.display.Sprite;
+import flash.display.Stage;
+import flash.events.Event;
+import flash.external.ExternalInterface;
+import flash.system.Security;
+import flash.text.TextField;
 
-	import flash.display.DisplayObject;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.LoaderInfo;
-	import flash.display.MovieClip;
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.events.Event;
-	import flash.external.ExternalInterface;
-	import flash.system.Security;
-	import flash.text.TextField;
+import msc.console.mConsoleClient;
+import msc.console.mConsoleConnName;
+import msc.console.mIConsoleDelegate;
 
-	/**
+/**
 	 * @author itamt[at]qq.com
 	 */
 	public class tInspectorPreloader extends Sprite implements mIConsoleDelegate {
@@ -41,7 +39,7 @@
 		private var tInspector : Inspector;
 		private var gErrorKeeper : GlobalErrorKeeper;
 		private var findKiller : Boolean;
-		
+
 		private var controllerId:String;
 
 		// 由finspector.js分配给的id, 用于与fInspector通信.
@@ -54,7 +52,7 @@
 			if(controllerId) {
 				mConsoleConnName.CONSOLE += controllerId;
 			}
-			
+
 			Debug.trace("tInspectorPreloader loaded, mConsoleId: " + controllerId);
 
 			controlBar = new ControlBar();
@@ -145,7 +143,7 @@
 			// 读取配置，注册相应的插件
 			var arr : Array = fInspectorConfig.getEnablePlugins();
 			if(arr == null) {
-				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW, InspectorPluginId.FLASH_FIREBUG];
+				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
 				for each (var pluginName : String in arr) {
 					fInspectorConfig.setEnablePlugin(pluginName);
 				}
@@ -176,18 +174,9 @@
 						case InspectorPluginId.SWFINFO_VIEW:
 							tInspector.pluginManager.registerPlugin(new SwfInfoView());
 							break;
-						case InspectorPluginId.FLASH_FIREBUG:
-							tInspector.pluginManager.registerPlugin(new FlashFirebug());
-							//tInspector.pluginManager.activePlugin(InspectorPluginId.FLASH_FIREBUG);
-							break;
 					}
 				}
 			}
-			
-			/**
-			 * 弹弹堂外挂
-			 */
-			tInspector.pluginManager.registerPlugin(new DanDanTeng());
 		}
 
 		private function setupControlBar() : void {

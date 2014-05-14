@@ -1,18 +1,18 @@
 package cn.itamt.utils.inspector.firefox.setting {
-	import cn.itamt.utils.Debug;
-	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
-	import cn.itamt.utils.inspector.plugins.InspectorPluginId;
-	import cn.itamt.utils.inspector.ui.InspectorStageReference;
-	import cn.itamt.utils.inspector.ui.InspectorTextField;
-	import cn.itamt.utils.inspector.ui.InspectorViewPanel;
+import cn.itamt.utils.Debug;
+import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
+import cn.itamt.utils.inspector.plugins.InspectorPluginId;
+import cn.itamt.utils.inspector.ui.InspectorStageReference;
+import cn.itamt.utils.inspector.ui.InspectorTextField;
+import cn.itamt.utils.inspector.ui.InspectorViewPanel;
 
-	import flash.display.Sprite;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.events.Event;
-	import flash.external.ExternalInterface;
+import flash.display.Sprite;
+import flash.display.StageAlign;
+import flash.display.StageScaleMode;
+import flash.events.Event;
+import flash.external.ExternalInterface;
 
-	/**
+/**
 	 * @author itamt[at]qq.com
 	 */
 	public class fInspectorSetting extends InspectorViewPanel {
@@ -45,7 +45,7 @@ package cn.itamt.utils.inspector.firefox.setting {
 
 			var arr:Array;
 			if(fInspectorConfig.getPlugins() == null) {
-				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW, InspectorPluginId.FLASH_FIREBUG];
+				arr = [InspectorPluginId.APPSTATS_VIEW, InspectorPluginId.FULL_SCREEN, InspectorPluginId.GLOBAL_ERROR_KEEPER, InspectorPluginId.RELOAD_APP, InspectorPluginId.DOWNLOAD_ALL, InspectorPluginId.SWFINFO_VIEW];
 				fInspectorConfig.setPlugins(arr);
 				for each (var pluginName : String in arr) {
 					fInspectorConfig.setEnablePlugin(pluginName);
@@ -97,9 +97,9 @@ package cn.itamt.utils.inspector.firefox.setting {
 			if(event.target is fInspectorPluginItemRenderer) {
 				item = event.target as fInspectorPluginItemRenderer;
 				if(item.enable) {
-					fInspectorConfig.setEnablePlugin(item.data);
+					fInspectorConfig.setEnablePlugin(String(item.data));
 				} else {
-					fInspectorConfig.setDisablePlugin(item.data);
+					fInspectorConfig.setDisablePlugin(String(item.data));
 				}
 			}
 

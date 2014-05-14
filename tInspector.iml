@@ -2,7 +2,7 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="tInspector">
     <configurations>
-      <configuration name="tInspector" pure-as="true" main-class="tInspectorDemo" output-file="tInspector.swf" output-folder="$MODULE_DIR$/out/production/tInspector">
+      <configuration name="tInspector" pure-as="true" output-type="Library" output-file="tinspector_1.3.1.swc" output-folder="$MODULE_DIR$/swc">
         <dependencies target-player="11.9">
           <entries>
             <entry library-id="d49b40bb-2f61-45e3-be01-a6a4155c8129">
