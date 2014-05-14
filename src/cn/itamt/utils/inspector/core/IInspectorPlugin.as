@@ -7,7 +7,7 @@ package cn.itamt.utils.inspector.core {
 	public interface IInspectorPlugin {
 
 		/**
-		 * get this plugin's id, every InspectorPlugin has an id.
+		 * 插件的id
 		 */
 		function getPluginId() : String;
 
@@ -15,11 +15,6 @@ package cn.itamt.utils.inspector.core {
 		 * the icon will be display on tInspectorControlBar. if your plugin doesn't have an icon, just return null.
 		 */
 		function getPluginIcon() : DisplayObject;
-
-		/**
-		 * get this plugin's version
-		 */
-		function getPluginVersion() : String;
 
 		/**
 		 * get plugin's name in spectified language. cn or en.
