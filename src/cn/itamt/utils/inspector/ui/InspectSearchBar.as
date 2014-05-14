@@ -1,7 +1,7 @@
 package cn.itamt.utils.inspector.ui {
 	import cn.itamt.utils.inspector.lang.InspectorLanguageManager;
 
-	import msc.console.mCmdTextInput;
+	import msc.controls.text.mCmdTextInput;
 	import msc.events.mTextEvent;
 
 	import flash.display.Shape;
@@ -44,7 +44,8 @@ package cn.itamt.utils.inspector.ui {
 			this._matchText.border = false;
 			this._matchText.textColor = 0x99cc00;
 			this._matchText.background = true;
-			//			this._matchText.backgroundColor = InspectorColorStyle.DEFAULT_BG;			this._matchText.backgroundColor = 0;
+			//			this._matchText.backgroundColor = InspectorColorStyle.DEFAULT_BG;
+			this._matchText.backgroundColor = 0;
 			this._matchText.alpha = 1;
 			//			this._matchText.mouseEnabled = true;
 			this._matchText.defaultTextFormat = tfm;
