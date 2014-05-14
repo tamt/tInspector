@@ -106,8 +106,6 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 		//对象的属性重绘
 		override protected function drawPropList() : void {
-			super.drawPropList();
-			return;
 			list.graphics.clear();
 			list.graphics.lineTo(0, 0);
 			while(list.numChildren) {

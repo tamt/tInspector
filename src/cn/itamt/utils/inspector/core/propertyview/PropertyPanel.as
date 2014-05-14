@@ -359,8 +359,6 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 		// 对象的属性重绘
 		protected function drawPropList() : void {
-			list.data = this.propList;
-			return;
 			list.graphics.clear();
 			list.graphics.lineTo(0, 0);
 			while (list.numChildren) {
@@ -382,7 +380,6 @@ package cn.itamt.utils.inspector.core.propertyview {
 
 		// 对象的方法重绘
 		protected function drawMethodList() : void {
-			return;
 			this.listMethod.graphics.clear();
 			listMethod.graphics.lineTo(0, 0);
 			while (listMethod.numChildren) {
